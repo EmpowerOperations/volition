@@ -1,0 +1,33 @@
+﻿<Window x:Class="EmpowerOps.Volition.RefClient.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VolitionClientReference"
+        mc:Ignorable="d"
+        Title="CANSYS Simulator by Empower Operations" Height="450" Width="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="397*"/>
+            <ColumnDefinition Width="395*"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel HorizontalAlignment="Left" Height="399" Margin="10,10,0,0" VerticalAlignment="Top" Width="376" Grid.Column="0">
+            <Image Height="354" Source="{Binding Mode=OneWay, Source={StaticResource Simulation_Idle}}"/>
+            <TextBox Height="42" TextWrapping="Wrap" Text="TextBox"/>
+           
+        </StackPanel>
+        <StackPanel HorizontalAlignment="Left" Height="399" Margin="10,10,0,0" VerticalAlignment="Top" Width="376" Grid.Column="1">
+            <Grid Height="30" HorizontalAlignment="Center">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Button Name="StartOptimization" Content="Start Optimization" Grid.Column="0" Height="30" VerticalAlignment="Bottom" Click="StartOptimization_Click"/>
+                <Label Content="Status: idle" Grid.Column="1"/>
+            </Grid>
+        </StackPanel>
+    </Grid>
+</Window>

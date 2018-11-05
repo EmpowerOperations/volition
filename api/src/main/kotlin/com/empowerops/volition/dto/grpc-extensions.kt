@@ -40,7 +40,19 @@ suspend fun <T, R> wrapToSuspend(call: (T, StreamObserver<R>) -> Unit, outboundM
     }
 }
 
-fun <T> StreamObserver<T>.consume(block: () -> T)= onNext(block())
+fun <T> StreamObserver<T>.consume(block: () -> T) {
+    try {
+        val result = block()
+        onNext(result)
+    }
+    catch(ex: Exception){
+        onError(ex)
+        throw ex
+    }
+    finally {
+        onCompleted()
+    }
+}
 
 class LoggingInterceptor(val output: Appendable): ServerInterceptor {
 

@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2046
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmpowerOps.Volition.ClientRef", "csharp-client-reference\EmpowerOps.Volition.ClientRef.csproj", "{FFA500F3-8844-4887-832C-1F1215119DDA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmpowerOps.Volition.Api", "D:\Users\geoff\Code\volition\api\EmpowerOps.Volition.Api.csproj", "{1AC199B1-9D40-42E6-B124-74E8EE4B8C71}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FFA500F3-8844-4887-832C-1F1215119DDA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFA500F3-8844-4887-832C-1F1215119DDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FFA500F3-8844-4887-832C-1F1215119DDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FFA500F3-8844-4887-832C-1F1215119DDA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1AC199B1-9D40-42E6-B124-74E8EE4B8C71}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1AC199B1-9D40-42E6-B124-74E8EE4B8C71}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1AC199B1-9D40-42E6-B124-74E8EE4B8C71}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1AC199B1-9D40-42E6-B124-74E8EE4B8C71}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FDF3EFB4-132E-4D8A-B7A7-60FFD5660855}
+	EndGlobalSection
+EndGlobal

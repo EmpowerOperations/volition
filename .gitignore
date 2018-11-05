@@ -1,0 +1,27 @@
+
+.idea/
+.gradle/
+build/
+api/build
+api/out
+api/.gradle
+client-reference/build
+client-reference/out
+client-reference/.gradle
+oasis-reference/build
+oasis-reference/out
+oasis-reference/.gradle
+packages/
+
+#CSharp and VS nonsense
+csharp-client-reference/bin
+csharp-client-reference/obj
+csharp-client-reference/.vs
+
+api/obj
+.vs/
+
+
+
+
+!packages/repositories.config

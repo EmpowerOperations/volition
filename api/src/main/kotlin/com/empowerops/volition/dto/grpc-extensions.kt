@@ -2,12 +2,10 @@ package com.empowerops.volition.dto
 
 import io.grpc.*
 import io.grpc.stub.StreamObserver
-import kotlinx.coroutines.async
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
 import kotlinx.coroutines.channels.ReceiveChannel
-import kotlinx.coroutines.runBlocking
-import java.lang.IllegalStateException
 import kotlin.coroutines.intrinsics.COROUTINE_SUSPENDED
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -40,17 +38,17 @@ suspend fun <T, R> wrapToSuspend(call: (T, StreamObserver<R>) -> Unit, outboundM
     }
 }
 
-fun <T> StreamObserver<T>.consume(block: () -> T) {
-    try {
-        val result = block()
-        onNext(result)
-    }
-    catch(ex: Exception){
-        onError(ex)
-        throw ex
-    }
-    finally {
-        onCompleted()
+fun <T> StreamObserver<T>.consume(block: suspend () -> T) {
+     GlobalScope.launch {
+        try {
+            val result = block()
+            onNext(result)
+        } catch(ex: Exception){
+            onError(ex)
+            throw ex
+        } finally {
+            onCompleted()
+        }
     }
 }
 

@@ -49,6 +49,7 @@
     <Reference Include="System.Interactive.Async, Version=3.2.0.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Interactive.Async.3.2.0\lib\net46\System.Interactive.Async.dll</HintPath>
     </Reference>
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -118,7 +119,7 @@
     </Resource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="D:\Users\geoff\Code\volition\api\EmpowerOps.Volition.Api.csproj">
+    <ProjectReference Include="..\api\EmpowerOps.Volition.Api.csproj">
       <Project>{1ac199b1-9d40-42e6-b124-74e8ee4b8c71}</Project>
       <Name>EmpowerOps.Volition.Api</Name>
     </ProjectReference>

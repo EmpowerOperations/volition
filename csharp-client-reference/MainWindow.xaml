@@ -3,31 +3,101 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:VolitionClientReference"
         mc:Ignorable="d"
         Title="CANSYS Simulator by Empower Operations" Height="450" Width="800">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="397*"/>
-            <ColumnDefinition Width="395*"/>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
-        <StackPanel HorizontalAlignment="Left" Height="399" Margin="10,10,0,0" VerticalAlignment="Top" Width="376" Grid.Column="0">
-            <Image Height="354" Source="{Binding Mode=OneWay, Source={StaticResource Simulation_Idle}}"/>
-            <TextBox Height="42" TextWrapping="Wrap" Text="TextBox"/>
-           
-        </StackPanel>
-        <StackPanel HorizontalAlignment="Left" Height="399" Margin="10,10,0,0" VerticalAlignment="Top" Width="376" Grid.Column="1">
-            <Grid Height="30" HorizontalAlignment="Center">
-                <Grid.RowDefinitions>
-                    <RowDefinition/>
-                </Grid.RowDefinitions>
+        <Grid Margin="5,5,5,5" Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="275*"/>
+                <RowDefinition Height="134*"/>
+            </Grid.RowDefinitions>
+            <Image  Name="DisplayImage"  Source="{Binding Mode=OneWay, Source={StaticResource Simulation_Idle}}" Margin="0,0,0,0" />
+            <TextBox  Grid.Row="1" Name="LogInfoTextBox" TextWrapping="Wrap" Margin="0,5"/>
+        </Grid>
+        <Grid Grid.Column="1" Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="87*"/>
+                <RowDefinition Height="88*"/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="1" Margin="2">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <Button Name="StartOptimization" Content="Start Optimization" Grid.Column="0" Height="30" VerticalAlignment="Bottom" Click="StartOptimization_Click"/>
-                <Label Content="Status: idle" Grid.Column="1"/>
+                <Button Name="StartOptimization" Content="Start Optimization" Grid.Column="0" Click="StartOptimization_Click"/>
+                <Label Name="RunStatusLabel" Content="Status: Idle" Grid.Column="3"  />
+                <Button Name="SyncSetting" Content="Sync" Width="75" Grid.Column="2" Click="Button_Click"/>
+                <Button Name="StopOptimization" Content="Stop Optimization" Grid.Column="1" Click="StopOptimization_Click"/>
             </Grid>
-        </StackPanel>
+            <Grid Grid.Row="0" Margin="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Button Name="RegisterButton" Grid.Column="1" Content="Register" Click="Register_Click"/>
+                <TextBox Name="RegName" TextWrapping="Wrap" Text="Node1" Grid.Column="0" />
+                <Label Name="RegisterLabel" Grid.Column="3" Content="Status: Not Registered" />
+                <Button Name="RenameButton" Grid.Column="2" Content="Rename" Click="rename_Button_Click"/>
+            </Grid>
+            <Grid Grid.Row="2" Margin="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <DataGrid AutoGenerateColumns="False" Name="InputGrid" Grid.Row="1" Grid.ColumnSpan="3" >
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
+                        <DataGridTextColumn Header="Lower Bound" Binding="{Binding LowerBound}"/>
+                        <DataGridTextColumn Header="Upper Bound" Binding="{Binding UpperBound}"/>
+                        <DataGridTextColumn Header="Current Value" IsReadOnly ="True" Binding="{Binding CurrentValue}"/>
+                        <DataGridTextColumn Header="Evaluating" IsReadOnly ="True" Binding="{Binding EvaluatingValue}"/>
+                    </DataGrid.Columns>
+
+                </DataGrid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Content="Inputs" HorizontalAlignment="Left" Width="43" />
+                    <Button Content="Add" Click="AddInput_Button_Click" HorizontalAlignment="Right" Width="76" Grid.Column="1"/>
+                    <Button Content="Remove" Grid.Row="0" Click="RemoveInput_Button_Click" Width="76" Grid.Column="2"/>
+                </Grid>
+            </Grid>
+            <Grid Grid.Row="3" Margin="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <DataGrid AutoGenerateColumns="False" Name="OutputGrid" Grid.Row="1" >
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
+                        <DataGridTextColumn Header="Current Value"  IsReadOnly ="True" Binding="{Binding CurrentValue}"/>
+                        <DataGridTextColumn Header="Evaluating" IsReadOnly ="True" Binding="{Binding EvaluatingValue}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Content="Outputs" HorizontalAlignment="Left" />
+                    <Button Content="Add"  Click="AddOutput_Button_Click" HorizontalAlignment="Right" Width="76" Grid.Column="1"/>
+                    <Button Content="Remove"  Click="RemoveOutput_Button_Click"  Width="76" Grid.Column="2"/>
+                </Grid>
+            </Grid>
+        </Grid>
     </Grid>
 </Window>

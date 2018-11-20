@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.28010.2046
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmpowerOps.Volition.ClientRef", "csharp-client-reference\EmpowerOps.Volition.ClientRef.csproj", "{FFA500F3-8844-4887-832C-1F1215119DDA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmpowerOps.Volition.Api", "D:\Users\geoff\Code\volition\api\EmpowerOps.Volition.Api.csproj", "{1AC199B1-9D40-42E6-B124-74E8EE4B8C71}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmpowerOps.Volition.Api", "api\EmpowerOps.Volition.Api.csproj", "{1AC199B1-9D40-42E6-B124-74E8EE4B8C71}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

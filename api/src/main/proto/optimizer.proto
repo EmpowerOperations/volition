@@ -79,6 +79,9 @@ service Optimizer {
 
     // responses to OASIS supplied queries
     rpc offerSimulationResult (SimulationResponseDTO) returns (SimulationResultConfirmDTO) {}
+    rpc offerSimulationConfig (NodeStatusCommandOrResponseDTO) returns (NodeChangeConfirmDTO) {}
+
+    rpc sendMessage (MessageCommandDTO) returns (MessageReponseDTO) {}
     rpc updateNode (NodeStatusCommandOrResponseDTO) returns (NodeChangeConfirmDTO) {}
     rpc changeNodeName (NodeNameChangeCommandDTO) returns (NodeNameChangeResponseDTO) {}
 }
@@ -87,6 +90,15 @@ service Optimizer {
 message RegistrationCommandDTO {
     string name = 1;
 }
+
+message MessageCommandDTO {
+    string name = 1;
+    string message = 2;
+}
+
+message MessageReponseDTO {
+}
+
 message OASISQueryDTO {
     oneof request {
         SimulationEvaluationRequest evaluationRequest = 1;
@@ -94,8 +106,8 @@ message OASISQueryDTO {
     }
 
     message SimulationEvaluationRequest {
-        string name = 1;
-        map<string, double> inputVector = 2;
+          string name = 1;
+          map<string, double> inputVector = 2;
     }
 
     message NodeStatusUpdateRequest {
@@ -106,14 +118,19 @@ message OASISQueryDTO {
 //startOptimization
 message StartOptimizationCommandDTO {}
 message StartOptimizationResponseDTO {
-    //TODO: add UUID
+    //TODO: uuid
+    string message = 1;
+    bool started = 2;
 }
 
 //stopOptimization
 message StopOptimizationCommandDTO {
     //TODO: uuid
 }
-message StopOptimizationResponseDTO {}
+message StopOptimizationResponseDTO {
+    string message = 1;
+    bool stopped = 2;
+}
 
 //updateNode
 message SimulationResultConfirmDTO {}
@@ -127,7 +144,9 @@ message NodeNameChangeCommandDTO {
     string oldName = 1;
     string newName = 2;
 }
-message NodeNameChangeResponseDTO {}
+message NodeNameChangeResponseDTO {
+    bool changed = 1;
+}
 
 //offerNodeUpdate
 message NodeStatusCommandOrResponseDTO {
@@ -160,4 +179,7 @@ message NodeStatusCommandOrResponseDTO {
         string message = 1;
     }
 }
-message NodeChangeConfirmDTO {}
+
+message NodeChangeConfirmDTO {
+    string message = 1;
+}

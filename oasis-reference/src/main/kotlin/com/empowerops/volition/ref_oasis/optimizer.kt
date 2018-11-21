@@ -1,7 +1,9 @@
 package com.empowerops.volition.ref_oasis
 
 import com.empowerops.volition.dto.*
+import io.grpc.stub.ClientCallStreamObserver
 import io.grpc.stub.StreamObserver
+import io.opencensus.trace.Status
 import javafx.application.Application
 import javafx.collections.ObservableList
 import kotlinx.coroutines.Dispatchers
@@ -90,7 +92,15 @@ class OptimizerEndpoint(val list: ObservableList<String>,
             while (canContinue()) {
                 for ((simName, sim) in simulationsByName) {
 
-                    val input = sim.inputs.associate { it.name to Random.nextDouble(it.lowerBound, it.upperBound) }
+                    val input = sim.inputs.associate {
+                        it.name to
+                                if (it.lowerBound == it.upperBound) {
+                                    Random.nextDouble(0.0, 10.0)
+                                } else {
+                                    Random.nextDouble(it.lowerBound, it.upperBound)
+                                }
+                    }
+
                     val message = OASISQueryDTO.newBuilder()
                             .setEvaluationRequest(OASISQueryDTO.SimulationEvaluationRequest.newBuilder()
                                     .setName(simName)
@@ -115,6 +125,17 @@ class OptimizerEndpoint(val list: ObservableList<String>,
                 syncConfigFor(simName)
             }
         }
+    }
+    fun cancel(){
+        GlobalScope.launch {
+            for ((name, sim) in simulationsByName){
+                val message = OASISQueryDTO.newBuilder().setCancelRequest(
+                        OASISQueryDTO.SimulationCancelRequest.newBuilder().setName(name)
+                ).build()
+                sim.input.onNext(message)
+            }
+        }
+
     }
 
     private suspend fun syncConfigFor(simName: String) {

@@ -103,6 +103,7 @@ message OASISQueryDTO {
     oneof request {
         SimulationEvaluationRequest evaluationRequest = 1;
         NodeStatusUpdateRequest nodeStatusRequest = 2;
+        SimulationCancelRequest cancelRequest = 3;
     }
 
     message SimulationEvaluationRequest {
@@ -111,6 +112,10 @@ message OASISQueryDTO {
     }
 
     message NodeStatusUpdateRequest {
+        string name = 1;
+    }
+
+    message SimulationCancelRequest {
         string name = 1;
     }
 }
@@ -152,7 +157,7 @@ message NodeNameChangeResponseDTO {
 message NodeStatusCommandOrResponseDTO {
     string name = 1;
 
-    double description = 6;
+    string description = 6;
     repeated PrototypeInputParameter inputs = 2;
     repeated PrototypeOutputParameter outputs = 3;
     repeated ConfigurationProblem problems = 4;

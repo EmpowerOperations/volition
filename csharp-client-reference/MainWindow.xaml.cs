@@ -26,6 +26,7 @@ namespace EmpowerOps.Volition.RefClient
 
         private string _name;    
         private bool _isRegistered = false;
+        private bool _isCanceled = false;
         private bool _isOptimizing;
         private readonly BindingSource _inputSource = new BindingSource();
         private readonly BindingSource _outputSource = new BindingSource();
@@ -87,7 +88,8 @@ namespace EmpowerOps.Volition.RefClient
             var requestsResponseStream = requests.ResponseStream;
             //https://github.com/grpc/grpc.github.io/blob/master/docs/tutorials/basic/csharp.md
 
-            while (await requestsResponseStream.MoveNext(new CancellationToken()))  
+            var cancellationToken = new CancellationToken();
+            while (await requestsResponseStream.MoveNext(cancellationToken))  
             {
                 HandleRequest(requestsResponseStream.Current);
             }         
@@ -99,13 +101,17 @@ namespace EmpowerOps.Volition.RefClient
             {
                 case OASISQueryDTO.RequestOneofCase.EvaluationRequest:
                     {
-                        MapField<string, double> inputs = request.EvaluationRequest.InputVector;
-                        Log($"Receive Input: {inputs}");
-                        var result = Evaluate(inputs);
-                        Log($"Send Result: {result}");
-                        var simulationResponseDto = new SimulationResponseDTO { Name = _name, OutputVector = { result } };//what is the difference between = {value} vs just = value
-                        var simulationResultConfirmDto = _client.offerSimulationResult(simulationResponseDto);
-                        Log($"got response: Result-{simulationResultConfirmDto}");
+                        Task.Factory.StartNew(()=>
+                        {
+                            _isCanceled = false;
+                            MapField<string, double> inputs = request.EvaluationRequest.InputVector;
+                            Log($"Receive Input: {inputs}");
+                            var result = Evaluate(inputs);
+                            Log($"Send Result: {result}");
+                            var simulationResponseDto = new SimulationResponseDTO { Name = _name, OutputVector = { result } };//what is the difference between = {value} vs just = value
+                            var simulationResultConfirmDto = _client.offerSimulationResult(simulationResponseDto);
+                            Log($"got response: Result-{simulationResultConfirmDto}");
+                        });
                         break;
                     }
                 case OASISQueryDTO.RequestOneofCase.NodeStatusRequest:
@@ -115,7 +121,9 @@ namespace EmpowerOps.Volition.RefClient
                     break;
                 case OASISQueryDTO.RequestOneofCase.None:
                     break;
-                default:
+                case OASISQueryDTO.RequestOneofCase.CancelRequest:
+                    _isCanceled = true;
+                    Log($"get cancel request");
                     break;
             }
         }
@@ -134,7 +142,12 @@ namespace EmpowerOps.Volition.RefClient
             UpdateBindingSourceOnUI(_outputSource);
 
             Log("Evaluating...");
-
+            Thread.Sleep(2000);
+            if (_isCanceled)
+            {
+                Log("Canceled");
+                return new MapField<string, double>();
+            }
             Thread.Sleep(2000);
             var result = new MapField<string, double>();
             var random = new Random();

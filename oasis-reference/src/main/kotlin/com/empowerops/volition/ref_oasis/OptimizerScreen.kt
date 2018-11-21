@@ -48,9 +48,8 @@ class OptimizerScreen : View("Optimizer") {
 
 
     override val root = borderpane {
-        left {
+        bottom {
             listview(controller.messageList) {
-                minWidth = 500.0
                 selectionModel.selectionMode = SelectionMode.SINGLE
             }
         }
@@ -76,6 +75,8 @@ class OptimizerScreen : View("Optimizer") {
                             bind(selected.stringBinding { "Outputs:\n${controller.optimizerEndpoint.simulationsByName[it]?.outputs?.joinToString("\n")}" })
                         }
                     }
+
+
                 }
             }
         }
@@ -90,6 +91,9 @@ class OptimizerScreen : View("Optimizer") {
                     }
                     button("Stop Optimization") {
                         action { GlobalScope.launch(Dispatchers.JavaFx) { controller.optimizerEndpoint.stopOptimization() } }
+                    }
+                    button("Cancel Current Load"){
+                        action { GlobalScope.launch(Dispatchers.JavaFx) { controller.optimizerEndpoint.cancel() } }
                     }
                 }
             }

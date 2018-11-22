@@ -30,6 +30,8 @@ namespace EmpowerOps.Volition.RefClient
         private bool _isOptimizing;
         private readonly BindingSource _inputSource = new BindingSource();
         private readonly BindingSource _outputSource = new BindingSource();
+        private CancellationTokenSource _evaluationCancellationTokenSource;
+
         public MainWindow()
         {
             //https://grpc.io/docs/quickstart/csharp.html#update-the-client
@@ -70,13 +72,6 @@ namespace EmpowerOps.Volition.RefClient
         private void UpdateButton()
         {
             RunStatusLabel.Content = _isOptimizing ? "Status: Running" : "Status: Idle";
-            RegisterButton.IsEnabled = ! _isRegistered;
-
-            SyncSetting.IsEnabled = _isRegistered && !_isOptimizing ;
-            RenameButton.IsEnabled = _isRegistered;
-            StartOptimization.IsEnabled = !_isOptimizing && _isRegistered;
-
-            StopOptimization.IsEnabled = _isOptimizing;
             DisplayImage.Source = _isOptimizing 
                 ? (ImageSource)this.TryFindResource("Simulation_Running") 
                 : (ImageSource)this.TryFindResource("Simulation_Idle");
@@ -88,22 +83,21 @@ namespace EmpowerOps.Volition.RefClient
             var requestsResponseStream = requests.ResponseStream;
             //https://github.com/grpc/grpc.github.io/blob/master/docs/tutorials/basic/csharp.md
 
-            var cancellationToken = new CancellationToken();
-            while (await requestsResponseStream.MoveNext(cancellationToken))  
+            while (await requestsResponseStream.MoveNext(new CancellationToken()))  
             {
                 HandleRequest(requestsResponseStream.Current);
             }         
         }
-
+       
         private void HandleRequest(OASISQueryDTO request)
         {
             switch (request.RequestCase)
             {
                 case OASISQueryDTO.RequestOneofCase.EvaluationRequest:
                     {
-                        Task.Factory.StartNew(()=>
+                        _evaluationCancellationTokenSource = new CancellationTokenSource();
+                        Task.Run(()=>
                         {
-                            _isCanceled = false;
                             MapField<string, double> inputs = request.EvaluationRequest.InputVector;
                             Log($"Receive Input: {inputs}");
                             var result = Evaluate(inputs);
@@ -111,7 +105,7 @@ namespace EmpowerOps.Volition.RefClient
                             var simulationResponseDto = new SimulationResponseDTO { Name = _name, OutputVector = { result } };//what is the difference between = {value} vs just = value
                             var simulationResultConfirmDto = _client.offerSimulationResult(simulationResponseDto);
                             Log($"got response: Result-{simulationResultConfirmDto}");
-                        });
+                        }, _evaluationCancellationTokenSource.Token);
                         break;
                     }
                 case OASISQueryDTO.RequestOneofCase.NodeStatusRequest:
@@ -130,42 +124,51 @@ namespace EmpowerOps.Volition.RefClient
 
         private MapField<string, double> Evaluate(MapField<string, double> inputs)
         {
-            foreach (Input input in _inputSource)
+            try
             {
-                input.EvaluatingValue = inputs[input.Name];
-            }
-            foreach (Output output in _outputSource)
-            {
-                output.EvaluatingValue = "Evaluating...";
-            }
-            UpdateBindingSourceOnUI(_inputSource);
-            UpdateBindingSourceOnUI(_outputSource);
+                foreach (Input input in _inputSource)
+                {
+                    input.EvaluatingValue = inputs[input.Name];
+                }
+                foreach (Output output in _outputSource)
+                {
+                    output.EvaluatingValue = "Evaluating...";
+                }
 
-            Log("Evaluating...");
-            Thread.Sleep(2000);
-            if (_isCanceled)
+                UpdateBindingSourceOnUI(_inputSource);
+                UpdateBindingSourceOnUI(_outputSource);
+
+                _evaluationCancellationTokenSource.Token.ThrowIfCancellationRequested();
+                Log("Evaluating...");
+                Thread.Sleep(2000);
+                _evaluationCancellationTokenSource.Token.ThrowIfCancellationRequested();
+                Thread.Sleep(2000);
+                _evaluationCancellationTokenSource.Token.ThrowIfCancellationRequested();
+
+                var result = new MapField<string, double>();
+                var random = new Random();
+                foreach (Input input in _inputSource)
+                {
+                    input.CurrentValue = inputs[input.Name];
+                }
+                UpdateBindingSourceOnUI(_inputSource);
+
+                foreach (Output output in _outputSource)
+                {
+                    var evaluationResult = random.NextDouble();
+                    result.Add(output.Name, evaluationResult);
+                    output.CurrentValue = evaluationResult;
+                    output.EvaluatingValue = evaluationResult.ToString();
+                    UpdateBindingSourceOnUI(_outputSource);
+                }
+                return result;
+            }
+            catch (OperationCanceledException)
             {
                 Log("Canceled");
                 return new MapField<string, double>();
             }
-            Thread.Sleep(2000);
-            var result = new MapField<string, double>();
-            var random = new Random();
-            foreach (Input input in _inputSource)
-            {
-                input.CurrentValue = inputs[input.Name];
-            }
-            UpdateBindingSourceOnUI(_inputSource);
-
-            foreach (Output output in _outputSource)
-            {
-                var evaluationResult = random.NextDouble();
-                result.Add(output.Name, evaluationResult);
-                output.CurrentValue = evaluationResult;
-                output.EvaluatingValue = evaluationResult.ToString();
-                UpdateBindingSourceOnUI(_outputSource);
-            }
-            return result;
+           
 
         }
 
@@ -303,6 +306,14 @@ namespace EmpowerOps.Volition.RefClient
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             UpdateNode();
+        }
+
+        private void UnRegister_Click(object sender, RoutedEventArgs e)
+        {
+            var reponseDto = _client.unregister(new UnRegistrationRequestDTO() {Name = _name});
+            var message = reponseDto.Unregistered ? "Successful" : "Failed";
+            MessageBox.Show($"Unregistration {message}");
+
         }
     }
 

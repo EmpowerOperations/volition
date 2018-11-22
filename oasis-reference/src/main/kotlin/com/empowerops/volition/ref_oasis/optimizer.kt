@@ -1,9 +1,8 @@
 package com.empowerops.volition.ref_oasis
 
 import com.empowerops.volition.dto.*
-import io.grpc.stub.ClientCallStreamObserver
+import io.grpc.Status
 import io.grpc.stub.StreamObserver
-import io.opencensus.trace.Status
 import javafx.application.Application
 import javafx.collections.ObservableList
 import kotlinx.coroutines.Dispatchers
@@ -22,6 +21,8 @@ fun main(args: Array<String>) {
 class OptimizerEndpoint(val list: ObservableList<String>,
                         val messages : ObservableList<Message>
 ) : OptimizerGrpc.OptimizerImplBase() {
+
+
     var simulationsByName: Map<String, Simulation> = emptyMap()
     var stopRequested = false
 
@@ -70,10 +71,23 @@ class OptimizerEndpoint(val list: ObservableList<String>,
    
     override fun register(request: RegistrationCommandDTO, responseObserver: StreamObserver<OASISQueryDTO>) {
         GlobalScope.launch(Dispatchers.JavaFx){
+            if(request.name in simulationsByName.keys){
+                return@launch
+            }
             list.add(request.name)
+            simulationsByName += request.name to Simulation(emptyList(), emptyList(), responseObserver, Channel(1), Channel(1))
         }
-        simulationsByName += request.name to Simulation(emptyList(), emptyList(), responseObserver, Channel(1), Channel(1))
+    }
 
+    fun unregisterAll(){
+        GlobalScope.launch(Dispatchers.JavaFx){
+            list.clear()
+            simulationsByName.values.forEach { sim ->
+                sim.input.onCompleted()
+                sim.output.close()
+            }
+            simulationsByName = emptyMap()
+        }
     }
 
     override fun startOptimization(request: StartOptimizationCommandDTO, responseObserver: StreamObserver<StartOptimizationResponseDTO>) = responseObserver.consume {
@@ -126,7 +140,8 @@ class OptimizerEndpoint(val list: ObservableList<String>,
             }
         }
     }
-    fun cancel(){
+
+    fun cancelAll(){
         GlobalScope.launch {
             for ((name, sim) in simulationsByName){
                 val message = OASISQueryDTO.newBuilder().setCancelRequest(
@@ -135,7 +150,18 @@ class OptimizerEndpoint(val list: ObservableList<String>,
                 sim.input.onNext(message)
             }
         }
+    }
 
+    fun cancelAndStop(){
+        GlobalScope.launch {
+            stopOptimization()
+            for ((name, sim) in simulationsByName){
+                val message = OASISQueryDTO.newBuilder().setCancelRequest(
+                        OASISQueryDTO.SimulationCancelRequest.newBuilder().setName(name)
+                ).build()
+                sim.input.onNext(message)
+            }
+        }
     }
 
     private suspend fun syncConfigFor(simName: String) {
@@ -192,6 +218,18 @@ class OptimizerEndpoint(val list: ObservableList<String>,
             println("Message from [${request.name}] : ${request.message}")
             messages.add(Message(LocalDateTime.now(), request.name, request.message))
             MessageReponseDTO.newBuilder().build()
+        }
+    }
+
+    override fun unregister(request: UnRegistrationRequestDTO, responseObserver: StreamObserver<UnRegistrationResponseDTO>) = responseObserver.consume{
+        withContext(Dispatchers.JavaFx) {
+            var unregistered = false
+            if(request.name in simulationsByName.keys){
+                simulationsByName -= request.name
+                list -= request.name
+                unregistered = true
+            }
+            UnRegistrationResponseDTO.newBuilder().setUnregistered(unregistered).build()
         }
     }
 

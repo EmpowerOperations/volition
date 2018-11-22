@@ -43,11 +43,13 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <Button Name="RegisterButton" Grid.Column="1" Content="Register" Click="Register_Click"/>
+                <Button Name="UnRegisterButton" Grid.Column="2" Content="Unregister" Click="UnRegister_Click"/>
                 <TextBox Name="RegName" TextWrapping="Wrap" Text="Node1" Grid.Column="0" />
-                <Label Name="RegisterLabel" Grid.Column="3" Content="Status: Not Registered" />
-                <Button Name="RenameButton" Grid.Column="2" Content="Rename" Click="rename_Button_Click"/>
+                <Label Name="RegisterLabel" Grid.Column="4" Content="Status: Not Registered" />
+                <Button Name="RenameButton" Grid.Column="3" Content="Rename" Click="rename_Button_Click"/>
             </Grid>
             <Grid Grid.Row="2" Margin="2">
                 <Grid.RowDefinitions>

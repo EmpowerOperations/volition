@@ -4,13 +4,11 @@ import com.empowerops.volition.dto.LoggingInterceptor
 import io.grpc.Server
 import io.grpc.ServerBuilder
 import io.grpc.ServerInterceptors
-import javafx.beans.binding.BooleanExpression
 import javafx.beans.property.SimpleStringProperty
 import javafx.beans.property.StringProperty
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import javafx.scene.control.SelectionMode
-import javafx.util.StringConverter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.javafx.*
@@ -92,8 +90,14 @@ class OptimizerScreen : View("Optimizer") {
                     button("Stop Optimization") {
                         action { GlobalScope.launch(Dispatchers.JavaFx) { controller.optimizerEndpoint.stopOptimization() } }
                     }
-                    button("Cancel Current Load"){
-                        action { GlobalScope.launch(Dispatchers.JavaFx) { controller.optimizerEndpoint.cancel() } }
+                    button("Cancel All Current Load"){
+                        action { GlobalScope.launch(Dispatchers.JavaFx) { controller.optimizerEndpoint.cancelAll() } }
+                    }
+                    button("Cancel And Stop"){
+                        action { GlobalScope.launch(Dispatchers.JavaFx) { controller.optimizerEndpoint.cancelAndStop() } }
+                    }
+                    button("Unregister All"){
+                        action { GlobalScope.launch(Dispatchers.JavaFx) { controller.optimizerEndpoint.unregisterAll() } }
                     }
                 }
             }

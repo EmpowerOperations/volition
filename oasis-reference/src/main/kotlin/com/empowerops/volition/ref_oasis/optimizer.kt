@@ -10,6 +10,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.javafx.JavaFx
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.selects.select
 import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
 import kotlin.random.Random
@@ -21,7 +22,6 @@ fun main(args: Array<String>) {
 class OptimizerEndpoint(val list: ObservableList<String>,
                         val messages : ObservableList<Message>
 ) : OptimizerGrpc.OptimizerImplBase() {
-
 
     var simulationsByName: Map<String, Simulation> = emptyMap()
     var stopRequested = false
@@ -48,7 +48,8 @@ class OptimizerEndpoint(val list: ObservableList<String>,
             val outputs: List<Output>,
             val input: StreamObserver<OASISQueryDTO>,
             val output: Channel<SimulationResponseDTO>,
-            val update: Channel<NodeStatusCommandOrResponseDTO>
+            val update: Channel<NodeStatusCommandOrResponseDTO>,
+            val error: Channel<SimulationErrorResponseDTO>
     )
 
     override fun changeNodeName(request: NodeNameChangeCommandDTO, responseObserver: StreamObserver<NodeNameChangeResponseDTO>) = responseObserver.consume {
@@ -75,7 +76,7 @@ class OptimizerEndpoint(val list: ObservableList<String>,
                 return@launch
             }
             list.add(request.name)
-            simulationsByName += request.name to Simulation(emptyList(), emptyList(), responseObserver, Channel(1), Channel(1))
+            simulationsByName += request.name to Simulation(emptyList(), emptyList(), responseObserver, Channel(1), Channel(1), Channel(1))
         }
     }
 
@@ -94,6 +95,12 @@ class OptimizerEndpoint(val list: ObservableList<String>,
         startOptimization()
         StartOptimizationResponseDTO.newBuilder().setMessage("Started").setStarted(true).build()
     }
+
+    sealed class SimResult(open val name: String, open val result: Map<String, Double>){
+        data class Success (override val name: String, override val result: Map<String, Double>) : SimResult(name, result)
+        data class Failure (override val name: String, override val result: Map<String, Double>, val exception: String) : SimResult(name, result)
+    }
+
 
     fun startOptimization() {
         stopRequested = false
@@ -123,7 +130,10 @@ class OptimizerEndpoint(val list: ObservableList<String>,
                             .build()
 
                     sim.input.onNext(message)
-                    val result = sim.output.receive()
+                    val result = select<SimResult> {
+                        sim.output.onReceive { it -> SimResult.Success(it.name, it.outputVectorMap) }
+                        sim.error.onReceive { it -> SimResult.Failure(it.name, it.outputVectorMap, it.exception) }
+                    }
                 }
             }
         }
@@ -196,6 +206,17 @@ class OptimizerEndpoint(val list: ObservableList<String>,
         SimulationResultConfirmDTO.newBuilder().build()
     }
 
+    override fun offerErrorResult(request: SimulationErrorResponseDTO, responseObserver: StreamObserver<SimulationErrorConfrimDTO>) {
+        val error = simulationsByName[request.name]?.error
+        if (error != null) {
+            error.offer(request)
+        } else {
+            throw IllegalStateException("no simulation '${request.name}' or buffer full")
+        }
+        SimulationResultConfirmDTO.newBuilder().build()
+    }
+
+
     override fun offerSimulationConfig(request: NodeStatusCommandOrResponseDTO, responseObserver: StreamObserver<NodeChangeConfirmDTO>) = responseObserver.consume {
         val update = simulationsByName[request.name]?.update
 
@@ -206,6 +227,8 @@ class OptimizerEndpoint(val list: ObservableList<String>,
         }
         NodeChangeConfirmDTO.newBuilder().build()
     }
+
+
 
     override fun updateNode(request: NodeStatusCommandOrResponseDTO, responseObserver: StreamObserver<NodeChangeConfirmDTO>) = responseObserver.consume {
         val newNode = updateFromResponse(request)

@@ -16,7 +16,16 @@
                 <RowDefinition Height="134*"/>
             </Grid.RowDefinitions>
             <Image  Name="DisplayImage"  Source="{Binding Mode=OneWay, Source={StaticResource Simulation_Idle}}" Margin="0,0,0,0" />
-            <TextBox  Grid.Row="1" Name="LogInfoTextBox" TextWrapping="Wrap" Margin="0,5"/>
+            <Grid Margin="0,5" Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="5*"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <TextBox x:Name="LogInfoTextBox" TextWrapping="Wrap" Grid.ColumnSpan="2"/>
+                <Grid Grid.Column="1">
+                    <Button Content="Fail Next" VerticalAlignment="Top" HorizontalAlignment="Left" Click="FailNextRun_Click" />
+                </Grid>
+            </Grid>
         </Grid>
         <Grid Grid.Column="1" Margin="5">
             <Grid.RowDefinitions>

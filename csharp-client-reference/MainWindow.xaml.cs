@@ -27,6 +27,7 @@ namespace EmpowerOps.Volition.RefClient
         private string _name;    
         private bool _isRegistered = false;
         private bool _isCanceled = false;
+        private bool _failMark = false;
         private bool _isOptimizing;
         private readonly BindingSource _inputSource = new BindingSource();
         private readonly BindingSource _outputSource = new BindingSource();
@@ -100,11 +101,38 @@ namespace EmpowerOps.Volition.RefClient
                         {
                             MapField<string, double> inputs = request.EvaluationRequest.InputVector;
                             Log($"Receive Input: {inputs}");
-                            var result = Evaluate(inputs);
-                            Log($"Send Result: {result}");
-                            var simulationResponseDto = new SimulationResponseDTO { Name = _name, OutputVector = { result } };//what is the difference between = {value} vs just = value
-                            var simulationResultConfirmDto = _client.offerSimulationResult(simulationResponseDto);
-                            Log($"got response: Result-{simulationResultConfirmDto}");
+                            try
+                            {
+                                var result = Evaluate(inputs);
+                                Log($"Send Result: {result}");
+                                var simulationResponseDto = new SimulationResponseDTO
+                                {
+                                    Name = _name, OutputVector = {result}
+                                }; //what is the difference between = {value} vs just = value
+                                var simulationResultConfirmDto = _client.offerSimulationResult(simulationResponseDto);
+                                Log($"got response: Result-{simulationResultConfirmDto}");
+                            }
+                            catch (EvaluationException e)
+                            {
+                               var result = new MapField<string, double>();
+                                foreach (Output output in _outputSource)
+                                {
+                                    var evaluationResult = Double.PositiveInfinity;
+                                    result.Add(output.Name, evaluationResult);
+                                    output.CurrentValue = evaluationResult;
+                                    output.EvaluatingValue = evaluationResult.ToString();
+                                    UpdateBindingSourceOnUI(_outputSource);
+                                }
+                                
+                                _client.offerErrorResult(new SimulationErrorResponseDTO
+                                {
+                                    Name = _name,
+                                    Exception = e.ToString(),
+                                    OutputVector = { result }
+                                });
+                            }
+                           
+                           
                         }, _evaluationCancellationTokenSource.Token);
                         break;
                     }
@@ -141,7 +169,12 @@ namespace EmpowerOps.Volition.RefClient
                 _evaluationCancellationTokenSource.Token.ThrowIfCancellationRequested();
                 Log("Evaluating...");
                 Thread.Sleep(2000);
-                _evaluationCancellationTokenSource.Token.ThrowIfCancellationRequested();
+                if (_failMark)
+                {
+                    Log($"Error: Error evaluating {inputs}");
+                    _failMark = false;
+                    throw new EvaluationException($"/Error evaluating {inputs}");
+                }
                 Thread.Sleep(2000);
                 _evaluationCancellationTokenSource.Token.ThrowIfCancellationRequested();
 
@@ -168,8 +201,7 @@ namespace EmpowerOps.Volition.RefClient
                 Log("Canceled");
                 return new MapField<string, double>();
             }
-           
-
+          
         }
 
         private async void UpdateNode()
@@ -247,19 +279,9 @@ namespace EmpowerOps.Volition.RefClient
                 new Action(() =>
                 {
                     LogInfoTextBox.Text = LogInfoTextBox.Text += message + "\n";
-                    LogInfoTextBox.ScrollToEnd();
-                    _client.sendMessageAsync(new MessageCommandDTO(){Name = _name, Message = message});
+                    LogInfoTextBox.ScrollToEnd();                  
                 }));
-        }
-
-        private void UpdateOutputs()
-        {
-            Application.Current.Dispatcher.BeginInvoke(
-                DispatcherPriority.Background,
-                new Action(() =>
-                {
-                    _outputSource.ResetBindings(false);
-                }));
+            _client.sendMessageAsync(new MessageCommandDTO() { Name = _name, Message = message });
         }
 
         private void UpdateBindingSourceOnUI(BindingSource bindingSource)
@@ -315,6 +337,12 @@ namespace EmpowerOps.Volition.RefClient
             MessageBox.Show($"Unregistration {message}");
 
         }
+
+       
+        private void FailNextRun_Click(object sender, RoutedEventArgs e)
+        {
+            _failMark = true;
+        }
     }
 
     public class Input
@@ -331,5 +359,11 @@ namespace EmpowerOps.Volition.RefClient
         public string Name { get; set; }
         public double CurrentValue { get; set; }
         public String EvaluatingValue { get; set; }
+    }
+
+    public class EvaluationException : Exception {
+        public EvaluationException(string message) : base(message)
+        {
+        }
     }
 }

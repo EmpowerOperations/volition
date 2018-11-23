@@ -81,6 +81,7 @@ service Optimizer {
     // responses to OASIS supplied queries
     rpc offerSimulationResult (SimulationResponseDTO) returns (SimulationResultConfirmDTO) {}
     rpc offerSimulationConfig (NodeStatusCommandOrResponseDTO) returns (NodeChangeConfirmDTO) {}
+    rpc offerErrorResult (SimulationErrorResponseDTO) returns (SimulationErrorConfrimDTO) {}
 
     rpc sendMessage (MessageCommandDTO) returns (MessageReponseDTO) {}
     rpc updateNode (NodeStatusCommandOrResponseDTO) returns (NodeChangeConfirmDTO) {}
@@ -151,6 +152,12 @@ message SimulationResultConfirmDTO {}
 message SimulationResponseDTO {
     string name = 1;
     map<string, double> outputVector = 2;
+}
+message SimulationErrorConfrimDTO {}
+message SimulationErrorResponseDTO {
+    string name = 1;
+    string exception = 2;
+    map<string, double> outputVector = 3;
 }
 
 //changeNodeName

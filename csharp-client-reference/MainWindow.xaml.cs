@@ -92,21 +92,24 @@ namespace EmpowerOps.Volition.RefClient
             //request for inputs, do the simulation, return result, repeat
             var requestsResponseStream = requests.ResponseStream;
             //https://github.com/grpc/grpc.github.io/blob/master/docs/tutorials/basic/csharp.md
-
-            while (await requestsResponseStream.MoveNext(new CancellationToken()))  
+           
+            while (await requestsResponseStream.MoveNext(new CancellationToken()))
             {
                 HandleRequest(requestsResponseStream.Current);
-            }         
+            }
+            Unregister();
         }
        
         private void HandleRequest(OASISQueryDTO request)
         {
-            switch (request.RequestCase)
+            try
             {
-                case OASISQueryDTO.RequestOneofCase.EvaluationRequest:
+                switch (request.RequestCase)
+                {
+                    case OASISQueryDTO.RequestOneofCase.EvaluationRequest:
                     {
                         _evaluationCancellationTokenSource = new CancellationTokenSource();
-                        Task.Run(()=>
+                        Task.Run(() =>
                         {
                             MapField<string, double> inputs = request.EvaluationRequest.InputVector;
                             Log($"Receive Input: {inputs}");
@@ -116,14 +119,15 @@ namespace EmpowerOps.Volition.RefClient
                                 Log($"Send Result: {result}");
                                 var simulationResponseDto = new SimulationResponseDTO
                                 {
-                                    Name = _name, OutputVector = {result}
+                                    Name = _name,
+                                    OutputVector = {result}
                                 }; //what is the difference between = {value} vs just = value
                                 var simulationResultConfirmDto = _client.offerSimulationResult(simulationResponseDto);
                                 Log($"got response: Result-{simulationResultConfirmDto}");
                             }
                             catch (EvaluationException e)
                             {
-                               var result = new MapField<string, double>();
+                                var result = new MapField<string, double>();
                                 foreach (Output output in _outputSource)
                                 {
                                     var evaluationResult = Double.PositiveInfinity;
@@ -132,31 +136,37 @@ namespace EmpowerOps.Volition.RefClient
                                     output.EvaluatingValue = evaluationResult.ToString();
                                     UpdateBindingSourceOnUI(_outputSource);
                                 }
-                                
+
                                 _client.offerErrorResult(new SimulationErrorResponseDTO
                                 {
                                     Name = _name,
                                     Exception = e.ToString(),
-                                    OutputVector = { result }
+                                    OutputVector = {result}
                                 });
                             }
-                           
-                           
+
+
                         }, _evaluationCancellationTokenSource.Token);
                         break;
                     }
-                case OASISQueryDTO.RequestOneofCase.NodeStatusRequest:
-                    var nodeStatusCommandOrResponseDto = BuildNodeUpdateResponse();
-                    var nodeChangeConfirmDto = _client.offerSimulationConfig(nodeStatusCommandOrResponseDto);
-                    Log($"get response: Config-{nodeChangeConfirmDto}");
-                    break;
-                case OASISQueryDTO.RequestOneofCase.None:
-                    break;
-                case OASISQueryDTO.RequestOneofCase.CancelRequest:
-                    _isCanceled = true;
-                    Log($"get cancel request");
-                    break;
+                    case OASISQueryDTO.RequestOneofCase.NodeStatusRequest:
+                        var nodeStatusCommandOrResponseDto = BuildNodeUpdateResponse();
+                        var nodeChangeConfirmDto = _client.offerSimulationConfig(nodeStatusCommandOrResponseDto);
+                        Log($"get response: Config-{nodeChangeConfirmDto}");
+                        break;
+                    case OASISQueryDTO.RequestOneofCase.None:
+                        break;
+                    case OASISQueryDTO.RequestOneofCase.CancelRequest:
+                        _isCanceled = true;
+                        Log($"get cancel request");
+                        break;
+                }
             }
+            catch (Exception e)
+            {
+                Log($"Error : {e}");
+            }
+          
         }
 
         private MapField<string, double> Evaluate(MapField<string, double> inputs)
@@ -175,9 +185,10 @@ namespace EmpowerOps.Volition.RefClient
                 UpdateBindingSourceOnUI(_inputSource);
                 UpdateBindingSourceOnUI(_outputSource);
 
-                _evaluationCancellationTokenSource.Token.ThrowIfCancellationRequested();
+                
                 Log("Evaluating...");
                 Thread.Sleep(2000);
+                _evaluationCancellationTokenSource.Token.ThrowIfCancellationRequested();
                 if (_failMark)
                 {
                     Log($"Error: Error evaluating {inputs}");
@@ -210,7 +221,7 @@ namespace EmpowerOps.Volition.RefClient
                 Log("Canceled");
                 return new MapField<string, double>();
             }
-          
+         
         }
 
         private async void UpdateNode()
@@ -256,10 +267,7 @@ namespace EmpowerOps.Volition.RefClient
             Log($"got response: {_requests}");
             _isRegistered = true;
             UpdateButton();
-            await Task.Run(()=>
-            {
-               Simulation_loop(_requests);
-            });
+            Simulation_loop(_requests);
         }
 
         private void rename_Button_Click(object sender, RoutedEventArgs e)
@@ -281,6 +289,7 @@ namespace EmpowerOps.Volition.RefClient
 
         private void Log(string message)
         {
+            _client.sendMessageAsync(new MessageCommandDTO() { Name = _name, Message = message });
             Application.Current.Dispatcher.BeginInvoke(
                 DispatcherPriority.Background,
                 new Action(() =>
@@ -288,7 +297,7 @@ namespace EmpowerOps.Volition.RefClient
                     LogInfoTextBox.Text = LogInfoTextBox.Text += message + "\n";
                     LogInfoTextBox.ScrollToEnd();                  
                 }));
-            _client.sendMessageAsync(new MessageCommandDTO() { Name = _name, Message = message });
+            
         }
 
         private void UpdateBindingSourceOnUI(BindingSource bindingSource)
@@ -344,6 +353,12 @@ namespace EmpowerOps.Volition.RefClient
                 MessageBox.Show($"Not yet registered");
                 return ;
             }
+
+            Unregister();
+        }
+
+        private void Unregister()
+        {
             var reponseDto = _client.unregister(new UnRegistrationRequestDTO() {Name = _name});
             var message = reponseDto.Unregistered ? "Successful" : "Failed";
             MessageBox.Show($"Unregistration {message}");
@@ -352,7 +367,7 @@ namespace EmpowerOps.Volition.RefClient
             UpdateButton();
         }
 
-       
+
         private void FailNextRun_Click(object sender, RoutedEventArgs e)
         {
             _failMark = true;

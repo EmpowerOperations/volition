@@ -2,6 +2,7 @@ package com.empowerops.volition.ref_oasis
 
 import com.empowerops.volition.dto.*
 import io.grpc.Status
+import io.grpc.StatusRuntimeException
 import io.grpc.stub.StreamObserver
 import javafx.application.Application
 import javafx.collections.ObservableList
@@ -20,7 +21,7 @@ fun main(args: Array<String>) {
 }
 
 class OptimizerEndpoint(val list: ObservableList<String>,
-                        val messages : ObservableList<Message>
+                        val messages: ObservableList<Message>
 ) : OptimizerGrpc.OptimizerImplBase() {
 
     var simulationsByName: Map<String, Simulation> = emptyMap()
@@ -69,10 +70,10 @@ class OptimizerEndpoint(val list: ObservableList<String>,
             }
         }
     }
-   
+
     override fun register(request: RegistrationCommandDTO, responseObserver: StreamObserver<OASISQueryDTO>) {
-        GlobalScope.launch(Dispatchers.JavaFx){
-            if(request.name in simulationsByName.keys){
+        GlobalScope.launch(Dispatchers.JavaFx) {
+            if (request.name in simulationsByName.keys) {
                 return@launch
             }
             list.add(request.name)
@@ -80,8 +81,8 @@ class OptimizerEndpoint(val list: ObservableList<String>,
         }
     }
 
-    fun unregisterAll(){
-        GlobalScope.launch(Dispatchers.JavaFx){
+    fun unregisterAll() {
+        GlobalScope.launch(Dispatchers.JavaFx) {
             list.clear()
             simulationsByName.values.forEach { sim ->
                 sim.input.onCompleted()
@@ -96,9 +97,9 @@ class OptimizerEndpoint(val list: ObservableList<String>,
         StartOptimizationResponseDTO.newBuilder().setMessage("Started").setStarted(true).build()
     }
 
-    sealed class SimResult(open val name: String, open val result: Map<String, Double>){
-        data class Success (override val name: String, override val result: Map<String, Double>) : SimResult(name, result)
-        data class Failure (override val name: String, override val result: Map<String, Double>, val exception: String) : SimResult(name, result)
+    sealed class SimResult(open val name: String, open val result: Map<String, Double>) {
+        data class Success(override val name: String, override val result: Map<String, Double>) : SimResult(name, result)
+        data class Failure(override val name: String, override val result: Map<String, Double>, val exception: String) : SimResult(name, result)
     }
 
 
@@ -143,7 +144,7 @@ class OptimizerEndpoint(val list: ObservableList<String>,
         stopRequested = true
     }
 
-    fun syncAll(){
+    fun syncAll() {
         GlobalScope.launch {
             for (simName in simulationsByName.keys) {
                 syncConfigFor(simName)
@@ -151,9 +152,9 @@ class OptimizerEndpoint(val list: ObservableList<String>,
         }
     }
 
-    fun cancelAll(){
+    fun cancelAll() {
         GlobalScope.launch {
-            for ((name, sim) in simulationsByName){
+            for ((name, sim) in simulationsByName) {
                 val message = OASISQueryDTO.newBuilder().setCancelRequest(
                         OASISQueryDTO.SimulationCancelRequest.newBuilder().setName(name)
                 ).build()
@@ -162,18 +163,23 @@ class OptimizerEndpoint(val list: ObservableList<String>,
         }
     }
 
-    fun disconnectAll(){
+    fun disconnectAll() {
         GlobalScope.launch {
-            for ((name, sim) in simulationsByName){
-                sim.input.onCompleted()
+            for ((name, sim) in simulationsByName) {
+                try {
+                    sim.input.onCompleted()
+                }catch (e : StatusRuntimeException){
+                    println("Error when disconnect:\n$e")
+                }
+                simulationsByName -= name
             }
         }
     }
 
-    fun cancelAndStop(){
+    fun cancelAndStop() {
         GlobalScope.launch {
             stopOptimization()
-            for ((name, sim) in simulationsByName){
+            for ((name, sim) in simulationsByName) {
                 val message = OASISQueryDTO.newBuilder().setCancelRequest(
                         OASISQueryDTO.SimulationCancelRequest.newBuilder().setName(name)
                 ).build()
@@ -237,7 +243,6 @@ class OptimizerEndpoint(val list: ObservableList<String>,
     }
 
 
-
     override fun updateNode(request: NodeStatusCommandOrResponseDTO, responseObserver: StreamObserver<NodeChangeConfirmDTO>) = responseObserver.consume {
         val newNode = updateFromResponse(request)
 
@@ -252,10 +257,10 @@ class OptimizerEndpoint(val list: ObservableList<String>,
         }
     }
 
-    override fun unregister(request: UnRegistrationRequestDTO, responseObserver: StreamObserver<UnRegistrationResponseDTO>) = responseObserver.consume{
+    override fun unregister(request: UnRegistrationRequestDTO, responseObserver: StreamObserver<UnRegistrationResponseDTO>) = responseObserver.consume {
         withContext(Dispatchers.JavaFx) {
             var unregistered = false
-            if(request.name in simulationsByName.keys){
+            if (request.name in simulationsByName.keys) {
                 val simulation = simulationsByName.getValue(request.name)
                 simulationsByName -= request.name
                 list -= request.name

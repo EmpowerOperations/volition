@@ -123,7 +123,7 @@ namespace EmpowerOps.Volition.RefClient
                                     OutputVector = {result}
                                 }; //what is the difference between = {value} vs just = value
                                 var simulationResultConfirmDto = _client.offerSimulationResult(simulationResponseDto);
-                                Log($"got response: Result-{simulationResultConfirmDto}");
+                                Log($"Receive response: simulationResultConfirmDto");
                             }
                             catch (EvaluationException e)
                             {
@@ -151,8 +151,8 @@ namespace EmpowerOps.Volition.RefClient
                     }
                     case OASISQueryDTO.RequestOneofCase.NodeStatusRequest:
                         var nodeStatusCommandOrResponseDto = BuildNodeUpdateResponse();
-                        var nodeChangeConfirmDto = _client.offerSimulationConfig(nodeStatusCommandOrResponseDto);
-                        Log($"get response: Config-{nodeChangeConfirmDto}");
+                        _client.offerSimulationConfig(nodeStatusCommandOrResponseDto);
+                        Log($"Receive response: nodeChangeConfirmDto");
                         break;
                     case OASISQueryDTO.RequestOneofCase.None:
                         break;
@@ -228,7 +228,7 @@ namespace EmpowerOps.Volition.RefClient
         {
             var nodeStatusCommandOrResponseDto = BuildNodeUpdateResponse();
             var updateNodeAsync = await _client.updateNodeAsync(nodeStatusCommandOrResponseDto);
-            Log($"get response: Sync-{updateNodeAsync}");
+            Log($"Receive response: Sync-{updateNodeAsync}");
         }
 
         private NodeStatusCommandOrResponseDTO BuildNodeUpdateResponse()
@@ -264,7 +264,7 @@ namespace EmpowerOps.Volition.RefClient
             var registrationCommandDto = new RegistrationCommandDTO {Name = RegName.Text };
             _name = registrationCommandDto.Name;
             _requests = _client.register(registrationCommandDto);
-            Log($"got response: {_requests}");
+            Log($"Receive response: {_requests}");
             _isRegistered = true;
             UpdateButton();
             Simulation_loop(_requests);

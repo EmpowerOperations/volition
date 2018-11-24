@@ -93,6 +93,9 @@ class OptimizerScreen : View("Optimizer") {
                     button("Cancel All Current Load"){
                         action { GlobalScope.launch(Dispatchers.JavaFx) { controller.optimizerEndpoint.cancelAll() } }
                     }
+                    button("Disconnect All"){
+                        action { GlobalScope.launch(Dispatchers.JavaFx) { controller.optimizerEndpoint.disconnectAll() } }
+                    }
                     button("Cancel And Stop"){
                         action { GlobalScope.launch(Dispatchers.JavaFx) { controller.optimizerEndpoint.cancelAndStop() } }
                     }

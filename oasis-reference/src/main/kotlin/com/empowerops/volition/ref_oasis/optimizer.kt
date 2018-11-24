@@ -162,6 +162,14 @@ class OptimizerEndpoint(val list: ObservableList<String>,
         }
     }
 
+    fun disconnectAll(){
+        GlobalScope.launch {
+            for ((name, sim) in simulationsByName){
+                sim.input.onCompleted()
+            }
+        }
+    }
+
     fun cancelAndStop(){
         GlobalScope.launch {
             stopOptimization()
@@ -248,6 +256,7 @@ class OptimizerEndpoint(val list: ObservableList<String>,
         withContext(Dispatchers.JavaFx) {
             var unregistered = false
             if(request.name in simulationsByName.keys){
+                val simulation = simulationsByName.getValue(request.name)
                 simulationsByName -= request.name
                 list -= request.name
                 unregistered = true

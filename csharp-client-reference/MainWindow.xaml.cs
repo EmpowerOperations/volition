@@ -72,6 +72,15 @@ namespace EmpowerOps.Volition.RefClient
 
         private void UpdateButton()
         {
+            if (_isRegistered)
+            {
+                RegisterLabel.Content = $"Registered as {_name}";
+            }
+            else
+            {
+                RegisterLabel.Content = $"Not registered";
+            }
+          
             RunStatusLabel.Content = _isOptimizing ? "Status: Running" : "Status: Idle";
             DisplayImage.Source = _isOptimizing 
                 ? (ImageSource)this.TryFindResource("Simulation_Running") 
@@ -244,8 +253,6 @@ namespace EmpowerOps.Volition.RefClient
             var registrationCommandDto = new RegistrationCommandDTO {Name = RegName.Text };
             _name = registrationCommandDto.Name;
             _requests = _client.register(registrationCommandDto);
-            RegisterLabel.Content =$"Registered as {registrationCommandDto.Name}";
-            
             Log($"got response: {_requests}");
             _isRegistered = true;
             UpdateButton();
@@ -332,10 +339,17 @@ namespace EmpowerOps.Volition.RefClient
 
         private void UnRegister_Click(object sender, RoutedEventArgs e)
         {
+            if (! _isRegistered)
+            {
+                MessageBox.Show($"Not yet registered");
+                return ;
+            }
             var reponseDto = _client.unregister(new UnRegistrationRequestDTO() {Name = _name});
             var message = reponseDto.Unregistered ? "Successful" : "Failed";
             MessageBox.Show($"Unregistration {message}");
-
+            _name = "";
+            _isRegistered = false;
+            UpdateButton();
         }
 
        

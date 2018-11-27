@@ -1,17 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
+using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
-using System.Windows.Media;
-using System.Windows.Threading;
 using EmpowerOps.Volition.DTO;
 using Google.Protobuf.Collections;
 using Grpc.Core;
 using static EmpowerOps.Volition.DTO.NodeStatusCommandOrResponseDTO.Types;
-using Application = System.Windows.Application;
 using MessageBox = System.Windows.MessageBox;
 
 namespace EmpowerOps.Volition.RefClient
@@ -22,13 +18,13 @@ namespace EmpowerOps.Volition.RefClient
     public partial class MainWindow : Window
     {
         private readonly Optimizer.OptimizerClient _client;
+        private readonly Channel _channel;
         private AsyncServerStreamingCall<OASISQueryDTO> _requests;
-
+        private ChannelState channelState;
         private string _name;    
         private bool _isRegistered = false;
         private bool _isCanceled = false;
-        private bool _failMark = false;
-        private bool _isOptimizing;
+        private bool _failToggle = false;
         private readonly BindingSource _inputSource = new BindingSource();
         private readonly BindingSource _outputSource = new BindingSource();
         private CancellationTokenSource _evaluationCancellationTokenSource;
@@ -36,12 +32,12 @@ namespace EmpowerOps.Volition.RefClient
         public MainWindow()
         {
             //https://grpc.io/docs/quickstart/csharp.html#update-the-client
-            var channel = new Channel("127.0.0.1:5550", ChannelCredentials.Insecure);
-            _client = new Optimizer.OptimizerClient(channel);
-            
+            _channel = new Channel("127.0.0.1:5550", ChannelCredentials.Insecure);
+            _client = new Optimizer.OptimizerClient(_channel);
             InitializeComponent();
-            ConfigGrid();
+            UpdateConnectionStatus();
             UpdateButton();
+            ConfigGrid();
         }
 
         private void ConfigGrid()
@@ -50,41 +46,36 @@ namespace EmpowerOps.Volition.RefClient
             OutputGrid.ItemsSource = _outputSource;
         }
 
-        private async void StartOptimization_Click(object sender, RoutedEventArgs e)
+        private void StartOptimization_Click(object sender, RoutedEventArgs e)
         {
-            var message = new StartOptimizationCommandDTO();
-            StartOptimizationResponseDTO response = await _client.startOptimizationAsync(message);
-            _isOptimizing = true;
-            Log($"got response: Started-{response}");
-         
+            _client.startOptimization(new StartOptimizationCommandDTO());
+            Log($"Server: Started Received");
             UpdateButton();
         }
 
-        private async void StopOptimization_Click(object sender, RoutedEventArgs e)
+        private void StopOptimization_Click(object sender, RoutedEventArgs e)
         {
-            var message = new StopOptimizationCommandDTO();
-
-            StopOptimizationResponseDTO response = await _client.StopOptimizationAsync(message);
-            _isOptimizing = false;
-            Log($"got response: Stopped-{response}");
+            _client.StopOptimization(new StopOptimizationCommandDTO());
+            Log($"Server: Stopped Received");
             UpdateButton();
         }
 
+        private async void UpdateConnectionStatus()
+        {
+            channelState = _channel.State;
+            ConnectionStatus.Text = $"Connection: {channelState.ToString()}";
+            while (true)
+            {
+                await _channel.WaitForStateChangedAsync(channelState);
+                channelState = _channel.State;
+                ConnectionStatus.Text = $"Connection: {channelState.ToString()}";
+            } 
+
+        }
+        
         private void UpdateButton()
         {
-            if (_isRegistered)
-            {
-                RegisterLabel.Content = $"Registered as {_name}";
-            }
-            else
-            {
-                RegisterLabel.Content = $"Not registered";
-            }
-          
-            RunStatusLabel.Content = _isOptimizing ? "Status: Running" : "Status: Idle";
-            DisplayImage.Source = _isOptimizing 
-                ? (ImageSource)this.TryFindResource("Simulation_Running") 
-                : (ImageSource)this.TryFindResource("Simulation_Idle");
+            RegistrationStatus.Text = _isRegistered ? $"Registered as {_name}" : $"Not registered"; 
         }
 
         private async void Simulation_loop(AsyncServerStreamingCall<OASISQueryDTO> requests)
@@ -92,12 +83,23 @@ namespace EmpowerOps.Volition.RefClient
             //request for inputs, do the simulation, return result, repeat
             var requestsResponseStream = requests.ResponseStream;
             //https://github.com/grpc/grpc.github.io/blob/master/docs/tutorials/basic/csharp.md
-           
-            while (await requestsResponseStream.MoveNext(new CancellationToken()))
+            try
             {
-                HandleRequest(requestsResponseStream.Current);
+                while (await requestsResponseStream.MoveNext(new CancellationToken()))
+                {
+                    HandleRequest(requestsResponseStream.Current);
+                }
+
+                Log("- Query Stream Closed, try Un-register");
+                Unregister();
             }
-            Unregister();
+            catch (Exception e)
+            {
+                Log($"- Error happened when reading from request stream, unregistered\n{e}");
+                _isRegistered = false;
+                UpdateButton();
+            }
+           
         }
        
         private void HandleRequest(OASISQueryDTO request)
@@ -108,57 +110,19 @@ namespace EmpowerOps.Volition.RefClient
                 {
                     case OASISQueryDTO.RequestOneofCase.EvaluationRequest:
                     {
-                        _evaluationCancellationTokenSource = new CancellationTokenSource();
-                        Task.Run(() =>
-                        {
-                            MapField<string, double> inputs = request.EvaluationRequest.InputVector;
-                            Log($"Receive Input: {inputs}");
-                            try
-                            {
-                                var result = Evaluate(inputs);
-                                Log($"Send Result: {result}");
-                                var simulationResponseDto = new SimulationResponseDTO
-                                {
-                                    Name = _name,
-                                    OutputVector = {result}
-                                }; //what is the difference between = {value} vs just = value
-                                var simulationResultConfirmDto = _client.offerSimulationResult(simulationResponseDto);
-                                Log($"Receive response: simulationResultConfirmDto");
-                            }
-                            catch (EvaluationException e)
-                            {
-                                var result = new MapField<string, double>();
-                                foreach (Output output in _outputSource)
-                                {
-                                    var evaluationResult = Double.PositiveInfinity;
-                                    result.Add(output.Name, evaluationResult);
-                                    output.CurrentValue = evaluationResult;
-                                    output.EvaluatingValue = evaluationResult.ToString();
-                                    UpdateBindingSourceOnUI(_outputSource);
-                                }
-
-                                _client.offerErrorResult(new SimulationErrorResponseDTO
-                                {
-                                    Name = _name,
-                                    Exception = e.ToString(),
-                                    OutputVector = {result}
-                                });
-                            }
-
-
-                        }, _evaluationCancellationTokenSource.Token);
+                        Log($"Server: Request Evaluation");
+                        Evaluate(request);
                         break;
                     }
                     case OASISQueryDTO.RequestOneofCase.NodeStatusRequest:
-                        var nodeStatusCommandOrResponseDto = BuildNodeUpdateResponse();
-                        _client.offerSimulationConfig(nodeStatusCommandOrResponseDto);
-                        Log($"Receive response: nodeChangeConfirmDto");
-                        break;
-                    case OASISQueryDTO.RequestOneofCase.None:
+                        Log($"Server: Request Node Status");
+                        _client.offerSimulationConfig(BuildNodeUpdateResponse());
                         break;
                     case OASISQueryDTO.RequestOneofCase.CancelRequest:
-                        _isCanceled = true;
-                        Log($"get cancel request");
+                        Log($"Server: Request Cancel");
+                        _evaluationCancellationTokenSource.Cancel();
+                        break;
+                    case OASISQueryDTO.RequestOneofCase.None:
                         break;
                 }
             }
@@ -169,66 +133,152 @@ namespace EmpowerOps.Volition.RefClient
           
         }
 
-        private MapField<string, double> Evaluate(MapField<string, double> inputs)
+        private async void Evaluate(OASISQueryDTO request)
         {
-            try
+
+            MapField<string, double> inputs = request.EvaluationRequest.InputVector;
+            Log($"- Requested Input: [{inputs}]");
+
+            foreach (Input input in _inputSource)
             {
-                foreach (Input input in _inputSource)
-                {
-                    input.EvaluatingValue = inputs[input.Name];
-                }
-                foreach (Output output in _outputSource)
-                {
-                    output.EvaluatingValue = "Evaluating...";
-                }
-
-                UpdateBindingSourceOnUI(_inputSource);
-                UpdateBindingSourceOnUI(_outputSource);
-
-                
-                Log("Evaluating...");
-                Thread.Sleep(2000);
-                _evaluationCancellationTokenSource.Token.ThrowIfCancellationRequested();
-                if (_failMark)
-                {
-                    Log($"Error: Error evaluating {inputs}");
-                    _failMark = false;
-                    throw new EvaluationException($"/Error evaluating {inputs}");
-                }
-                Thread.Sleep(2000);
-                _evaluationCancellationTokenSource.Token.ThrowIfCancellationRequested();
-
-                var result = new MapField<string, double>();
-                var random = new Random();
-                foreach (Input input in _inputSource)
-                {
-                    input.CurrentValue = inputs[input.Name];
-                }
-                UpdateBindingSourceOnUI(_inputSource);
-
-                foreach (Output output in _outputSource)
-                {
-                    var evaluationResult = random.NextDouble();
-                    result.Add(output.Name, evaluationResult);
-                    output.CurrentValue = evaluationResult;
-                    output.EvaluatingValue = evaluationResult.ToString();
-                    UpdateBindingSourceOnUI(_outputSource);
-                }
-                return result;
+                input.EvaluatingValue = inputs[input.Name];
             }
-            catch (OperationCanceledException)
+            foreach (Output output in _outputSource)
             {
-                Log("Canceled");
-                return new MapField<string, double>();
+                output.EvaluatingValue = "Evaluating...";
             }
-         
+            UpdateBindingSourceOnUI(_inputSource);
+            UpdateBindingSourceOnUI(_outputSource);
+
+            Log("- Evaluating...");
+            _evaluationCancellationTokenSource = new CancellationTokenSource();
+            var result = await Task.Run(()=>SimulationEvaluation(inputs, _outputSource.List));
+
+            foreach (Input input in _inputSource)
+            {
+                input.CurrentValue = inputs[input.Name];
+            }
+
+            foreach (Output output in _outputSource)
+            {
+                if (result.Output.ContainsKey(output.Name))
+                {
+                    output.CurrentValue = result.Output[output.Name].ToString();
+                    output.EvaluatingValue = result.Output[output.Name].ToString();
+                }
+                else
+                {
+                    output.CurrentValue = result.Status.ToString();
+                    output.EvaluatingValue = result.Status.ToString();
+                }
+            }
+
+            UpdateBindingSourceOnUI(_inputSource);
+            UpdateBindingSourceOnUI(_outputSource);
+
+            switch (result.Status)
+            {
+                case EvaluationResult.ResultStatus.Succeed:
+                    Log($"- Evaluation Succeed [{result.Output}]");
+                    Log($"- Send Result");
+                    var simulationResultConfirmDto = _client.offerSimulationResult(new SimulationResponseDTO
+                    {
+                        Name = _name,
+                        OutputVector = { result.Output }
+                    });
+                    Log($"Server: Result Received");
+                    break;
+                case EvaluationResult.ResultStatus.Failed:
+                    Log($"- Evaluation Failed [{result.Output}]\nException: {result.Exception}");
+                    Log($"- Send Error");
+                    var simulationErrorConfrimDto = _client.offerErrorResult(new SimulationErrorResponseDTO
+                    {
+                        Name = _name,
+                        Exception = result.Exception.ToString(),
+                        OutputVector = {result.Output}
+                    });
+                    Log($"Server: Error Received");
+                    break;
+                case EvaluationResult.ResultStatus.Canceled:
+                    Log($"- Evaluation Canceled");
+                    Log($"- Send Result");
+                    var resultConfirmDto = _client.offerSimulationResult(new SimulationResponseDTO
+                    {
+                        Name = _name,
+                        OutputVector = { result.Output }
+                    });
+                    Log($"Server: Result Received");
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
-        private async void UpdateNode()
+        private Task<EvaluationResult> SimulationEvaluation(MapField<string, double> inputs, IList outputs)
         {
-            var nodeStatusCommandOrResponseDto = BuildNodeUpdateResponse();
-            var updateNodeAsync = await _client.updateNodeAsync(nodeStatusCommandOrResponseDto);
-            Log($"Receive response: Sync-{updateNodeAsync}");
+            return Task.Run(() =>
+            {
+                try
+                {
+                    Thread.Sleep(2000);
+                    _evaluationCancellationTokenSource.Token.ThrowIfCancellationRequested();
+                    if (_failToggle)
+                    {
+                        _failToggle = false;
+                        throw new EvaluationException($"Error evaluating {inputs}");
+                    }
+
+                    Thread.Sleep(2000);
+                    _evaluationCancellationTokenSource.Token.ThrowIfCancellationRequested();
+
+                    var result = new MapField<string, double>();
+                    var random = new Random();
+
+                    foreach (Output output in outputs)
+                    {
+                        var evaluationResult = random.NextDouble();
+                        result.Add(output.Name, evaluationResult);
+                    }
+                 
+                    return new EvaluationResult { Input = inputs, Output = result, Status = EvaluationResult.ResultStatus.Succeed };
+                }
+                catch (OperationCanceledException)
+                { 
+                    return new EvaluationResult { Input = inputs, Output = new MapField<string, double>(), Status = EvaluationResult.ResultStatus.Canceled };
+                }
+                catch (EvaluationException e)
+                {
+                    var result = new MapField<string, double>();
+                    foreach (Output output in outputs)
+                    {
+                        var evaluationResult = Double.PositiveInfinity;
+                        result.Add(output.Name, evaluationResult);
+                    }
+
+                    return new EvaluationResult
+                    {
+                        Input = inputs,
+                        Output = result,
+                        Status = EvaluationResult.ResultStatus.Failed,
+                        Exception = e
+                    };
+                }
+                catch (Exception e)
+                {
+                    return new EvaluationResult { Input = inputs,
+                        Output = new MapField<string, double>(),
+                        Status = EvaluationResult.ResultStatus.Failed,
+                        Exception = e
+                    };
+                }
+
+            }, _evaluationCancellationTokenSource.Token);
+        }
+
+        private void UpdateNode()
+        {
+            _client.updateNode(BuildNodeUpdateResponse());
+            Log($"Server: Node Update Received");
         }
 
         private NodeStatusCommandOrResponseDTO BuildNodeUpdateResponse()
@@ -262,12 +312,31 @@ namespace EmpowerOps.Volition.RefClient
         private async void Register_Click(object sender, RoutedEventArgs e)
         {
             var registrationCommandDto = new RegistrationCommandDTO {Name = RegName.Text };
-            _name = registrationCommandDto.Name;
+
+            Log($"- Try Register as {RegName.Text}");
             _requests = _client.register(registrationCommandDto);
-            Log($"Receive response: {_requests}");
-            _isRegistered = true;
-            UpdateButton();
-            Simulation_loop(_requests);
+            if (_channel.State != ChannelState.Ready)
+            {
+                await _channel.WaitForStateChangedAsync(_channel.State);
+            }
+            
+            if (_channel.State == ChannelState.Ready)
+            {
+                Log("- Registered");
+                _isRegistered = true;
+                _name = registrationCommandDto.Name;
+                UpdateButton();
+
+                Simulation_loop(_requests);
+            }
+            else
+            {
+                Log("- Connection Failed, Not Registered");
+                _requests = null;
+                _isRegistered = false;
+                _name = null;
+                UpdateButton();
+            }
         }
 
         private void rename_Button_Click(object sender, RoutedEventArgs e)
@@ -287,27 +356,28 @@ namespace EmpowerOps.Volition.RefClient
             }
         }
 
-        private void Log(string message)
+        private async void Log(string message)
         {
-            _client.sendMessageAsync(new MessageCommandDTO() { Name = _name, Message = message });
-            Application.Current.Dispatcher.BeginInvoke(
-                DispatcherPriority.Background,
-                new Action(() =>
+                  
+            LogInfoTextBox.Text = LogInfoTextBox.Text += message + "\n";
+            LogInfoTextBox.ScrollToEnd();
+            if (_channel.State == ChannelState.Ready)
+            {
+                try
                 {
-                    LogInfoTextBox.Text = LogInfoTextBox.Text += message + "\n";
-                    LogInfoTextBox.ScrollToEnd();                  
-                }));
-            
+                    await _client.sendMessageAsync(new MessageCommandDTO() { Name = _name, Message = message });
+                }
+                catch (Exception e)
+                {
+                    //                LogInfoTextBox.Text = LogInfoTextBox.Text += $"Error: {e}\n";
+                }
+            }
+           
         }
 
         private void UpdateBindingSourceOnUI(BindingSource bindingSource)
         {
-            Application.Current.Dispatcher.BeginInvoke(
-                DispatcherPriority.Background,
-                new Action(() =>
-                {
-                    bindingSource.ResetBindings(false);
-                }));
+            bindingSource.ResetBindings(false); 
         }
 
         private void AddInput_Button_Click(object sender, RoutedEventArgs e)
@@ -323,12 +393,10 @@ namespace EmpowerOps.Volition.RefClient
 
         private void AddOutput_Button_Click(object sender, RoutedEventArgs e)
         {
-
             _outputSource.Add(new Output
             {
                 Name = "f1"
             });
-
         }
 
         private void RemoveInput_Button_Click(object sender, RoutedEventArgs e)
@@ -341,7 +409,7 @@ namespace EmpowerOps.Volition.RefClient
             _outputSource.Remove(OutputGrid.SelectedItem);
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void SyncButton_Click(object sender, RoutedEventArgs e)
         {
             UpdateNode();
         }
@@ -359,9 +427,10 @@ namespace EmpowerOps.Volition.RefClient
 
         private void Unregister()
         {
-            var reponseDto = _client.unregister(new UnRegistrationRequestDTO() {Name = _name});
-            var message = reponseDto.Unregistered ? "Successful" : "Failed";
-            MessageBox.Show($"Unregistration {message}");
+            Log($"- Un-register {_name}");
+            var responseDto = _client.unregister(new UnRegistrationRequestDTO() {Name = _name});
+            var message = (responseDto.Unregistered ? "Successful" : "Failed");
+            Log($"Server: Unregistered {message}");
             _name = "";
             _isRegistered = false;
             UpdateButton();
@@ -370,7 +439,7 @@ namespace EmpowerOps.Volition.RefClient
 
         private void FailNextRun_Click(object sender, RoutedEventArgs e)
         {
-            _failMark = true;
+            _failToggle = true;
         }
     }
 
@@ -386,8 +455,8 @@ namespace EmpowerOps.Volition.RefClient
     public class Output
     {
         public string Name { get; set; }
-        public double CurrentValue { get; set; }
-        public String EvaluatingValue { get; set; }
+        public string CurrentValue { get; set; }
+        public string EvaluatingValue { get; set; }
     }
 
     public class EvaluationException : Exception {
@@ -395,4 +464,20 @@ namespace EmpowerOps.Volition.RefClient
         {
         }
     }
+
+    public class EvaluationResult
+    {
+        public enum ResultStatus
+        {
+            Succeed, Failed, Canceled
+        }
+
+        public ResultStatus Status { get; set; }
+        public Exception Exception { get; set; }
+       
+        public MapField<string, double> Output { get; set; }
+        public MapField<string, double> Input { get; set; }
+    }
+
+
 }

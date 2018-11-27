@@ -220,14 +220,14 @@ class OptimizerEndpoint(val list: ObservableList<String>,
         SimulationResultConfirmDTO.newBuilder().build()
     }
 
-    override fun offerErrorResult(request: SimulationErrorResponseDTO, responseObserver: StreamObserver<SimulationErrorConfrimDTO>) {
+    override fun offerErrorResult(request: SimulationErrorResponseDTO, responseObserver: StreamObserver<SimulationErrorConfrimDTO>) = responseObserver.consume {
         val error = simulationsByName[request.name]?.error
         if (error != null) {
             error.offer(request)
         } else {
             throw IllegalStateException("no simulation '${request.name}' or buffer full")
         }
-        SimulationResultConfirmDTO.newBuilder().build()
+        SimulationErrorConfrimDTO.newBuilder().build()
     }
 
 

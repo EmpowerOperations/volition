@@ -87,7 +87,7 @@ namespace EmpowerOps.Volition.RefClient
             {
                 while (await requestsResponseStream.MoveNext(new CancellationToken()))
                 {
-                    HandleRequest(requestsResponseStream.Current);
+                    await HandleRequest(requestsResponseStream.Current);
                 }
 
                 Log("- Query Stream Closed, try Un-register");
@@ -102,38 +102,32 @@ namespace EmpowerOps.Volition.RefClient
            
         }
        
-        private void HandleRequest(OASISQueryDTO request)
+        private async Task<bool> HandleRequest(OASISQueryDTO request)
         {
-            try
+            switch (request.RequestCase)
             {
-                switch (request.RequestCase)
+                case OASISQueryDTO.RequestOneofCase.EvaluationRequest:
                 {
-                    case OASISQueryDTO.RequestOneofCase.EvaluationRequest:
-                    {
-                        Log($"Server: Request Evaluation");
-                        Evaluate(request);
-                        break;
-                    }
-                    case OASISQueryDTO.RequestOneofCase.NodeStatusRequest:
-                        Log($"Server: Request Node Status");
-                        _client.offerSimulationConfig(BuildNodeUpdateResponse());
-                        break;
-                    case OASISQueryDTO.RequestOneofCase.CancelRequest:
-                        Log($"Server: Request Cancel");
-                        _evaluationCancellationTokenSource.Cancel();
-                        break;
-                    case OASISQueryDTO.RequestOneofCase.None:
-                        break;
+                    Log($"Server: Request Evaluation");
+                    await Evaluate(request);
+                    break;
                 }
+                case OASISQueryDTO.RequestOneofCase.NodeStatusRequest:
+                    Log($"Server: Request Node Status");
+                    _client.offerSimulationConfig(BuildNodeUpdateResponse());
+                    break;
+                case OASISQueryDTO.RequestOneofCase.CancelRequest:
+                    Log($"Server: Request Cancel");
+                    _evaluationCancellationTokenSource.Cancel();
+                    break;
+                case OASISQueryDTO.RequestOneofCase.None:
+                    break;
             }
-            catch (Exception e)
-            {
-                Log($"Error : {e}");
-            }
-          
+
+            return true;
         }
 
-        private async void Evaluate(OASISQueryDTO request)
+        private async Task<bool> Evaluate(OASISQueryDTO request)
         {
 
             MapField<string, double> inputs = request.EvaluationRequest.InputVector;
@@ -152,7 +146,7 @@ namespace EmpowerOps.Volition.RefClient
 
             Log("- Evaluating...");
             _evaluationCancellationTokenSource = new CancellationTokenSource();
-            var result = await Task.Run(()=>SimulationEvaluation(inputs, _outputSource.List));
+            var result = await SimulationEvaluation(inputs, _outputSource.List);
 
             foreach (Input input in _inputSource)
             {
@@ -175,7 +169,7 @@ namespace EmpowerOps.Volition.RefClient
 
             UpdateBindingSourceOnUI(_inputSource);
             UpdateBindingSourceOnUI(_outputSource);
-
+           
             switch (result.Status)
             {
                 case EvaluationResult.ResultStatus.Succeed:
@@ -184,7 +178,7 @@ namespace EmpowerOps.Volition.RefClient
                     var simulationResultConfirmDto = _client.offerSimulationResult(new SimulationResponseDTO
                     {
                         Name = _name,
-                        OutputVector = { result.Output }
+                        OutputVector = {result.Output}
                     });
                     Log($"Server: Result Received");
                     break;
@@ -205,13 +199,15 @@ namespace EmpowerOps.Volition.RefClient
                     var resultConfirmDto = _client.offerSimulationResult(new SimulationResponseDTO
                     {
                         Name = _name,
-                        OutputVector = { result.Output }
+                        OutputVector = {result.Output}
                     });
                     Log($"Server: Result Received");
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+
+            return true;
         }
 
         private Task<EvaluationResult> SimulationEvaluation(MapField<string, double> inputs, IList outputs)
@@ -311,6 +307,8 @@ namespace EmpowerOps.Volition.RefClient
 
         private async void Register_Click(object sender, RoutedEventArgs e)
         {
+            //TODO better error state handing, when register failed due to no connection, it is not well though right now
+            //TODO also when error flow when register e.g. same name
             var registrationCommandDto = new RegistrationCommandDTO {Name = RegName.Text };
 
             Log($"- Try Register as {RegName.Text}");
@@ -356,21 +354,15 @@ namespace EmpowerOps.Volition.RefClient
             }
         }
 
-        private async void Log(string message)
+        private void Log(string message)
         {
                   
             LogInfoTextBox.Text = LogInfoTextBox.Text += message + "\n";
             LogInfoTextBox.ScrollToEnd();
             if (_channel.State == ChannelState.Ready)
             {
-                try
-                {
-                    await _client.sendMessageAsync(new MessageCommandDTO() { Name = _name, Message = message });
-                }
-                catch (Exception e)
-                {
-                    //                LogInfoTextBox.Text = LogInfoTextBox.Text += $"Error: {e}\n";
-                }
+               
+                _client.sendMessage(new MessageCommandDTO() { Name = _name ?? "no_name", Message = message });             
             }
            
         }

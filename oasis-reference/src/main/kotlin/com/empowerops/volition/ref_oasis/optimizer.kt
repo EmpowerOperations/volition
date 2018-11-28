@@ -168,10 +168,10 @@ class OptimizerEndpoint(val list: ObservableList<String>,
             for ((name, sim) in simulationsByName) {
                 try {
                     sim.input.onCompleted()
-                }catch (e : StatusRuntimeException){
-                    println("Error when disconnect:\n$e")
                 }
-                simulationsByName -= name
+                catch (e : StatusRuntimeException){
+                    println("Error when close input for:\n$e")
+                }
             }
         }
     }
@@ -261,7 +261,6 @@ class OptimizerEndpoint(val list: ObservableList<String>,
         withContext(Dispatchers.JavaFx) {
             var unregistered = false
             if (request.name in simulationsByName.keys) {
-                val simulation = simulationsByName.getValue(request.name)
                 simulationsByName -= request.name
                 list -= request.name
                 unregistered = true

@@ -158,4 +158,15 @@ project('oasis-reference'){
         compile 'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.30.2'
         compile 'no.tornado:tornadofx:1.7.17'
     }
+    
+    jar {
+        manifest {
+            attributes 'Main-Class': 'com.empowerops.volition.ref_oasis.OptimizerKt'
+        }
+
+        from {
+            configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+        }
+    }
+    
 }

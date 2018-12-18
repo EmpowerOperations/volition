@@ -82,6 +82,7 @@ service Optimizer {
     rpc offerSimulationResult (SimulationResponseDTO) returns (SimulationResultConfirmDTO) {}
     rpc offerSimulationConfig (NodeStatusCommandOrResponseDTO) returns (NodeChangeConfirmDTO) {}
     rpc offerErrorResult (SimulationErrorResponseDTO) returns (SimulationErrorConfrimDTO) {}
+    rpc offerCancellationResponse(CancellationResponseDTO) returns (CancellationConfirmDTO) {}
 
     rpc sendMessage (MessageCommandDTO) returns (MessageReponseDTO) {}
     rpc updateNode (NodeStatusCommandOrResponseDTO) returns (NodeChangeConfirmDTO) {}
@@ -137,6 +138,12 @@ message StartOptimizationResponseDTO {
     string message = 1;
     bool started = 2;
 }
+
+//offerCancellationResponse
+message CancellationResponseDTO {
+    string name = 1;
+}
+message CancellationConfirmDTO {}
 
 //stopOptimization
 message StopOptimizationCommandDTO {

@@ -8,6 +8,7 @@ import javafx.collections.ObservableList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.Channel.Factory.RENDEZVOUS
 import kotlinx.coroutines.javafx.JavaFx
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.selects.select
@@ -19,8 +20,9 @@ fun main(args: Array<String>) {
     Application.launch(OptimizerApp::class.java)
 }
 
-class OptimizerEndpoint(val list: ObservableList<String>,
-                        val messages: ObservableList<Message>
+class OptimizerEndpoint(
+        val list: ObservableList<String>,
+        val messages: ObservableList<Message>
 ) : OptimizerGrpc.OptimizerImplBase() {
 
     var simulationsByName: Map<String, Simulation> = emptyMap()
@@ -49,7 +51,8 @@ class OptimizerEndpoint(val list: ObservableList<String>,
             val input: StreamObserver<OASISQueryDTO>,
             val output: Channel<SimulationResponseDTO>,
             val update: Channel<NodeStatusCommandOrResponseDTO>,
-            val error: Channel<SimulationErrorResponseDTO>
+            val error: Channel<SimulationErrorResponseDTO>,
+            val cancellations: Channel<CancellationResponseDTO>
     )
 
     override fun changeNodeName(request: NodeNameChangeCommandDTO, responseObserver: StreamObserver<NodeNameChangeResponseDTO>) = responseObserver.consume {
@@ -76,7 +79,8 @@ class OptimizerEndpoint(val list: ObservableList<String>,
                 return@launch
             }
             list.add(request.name)
-            simulationsByName += request.name to Simulation(emptyList(), emptyList(), responseObserver, Channel(1), Channel(1), Channel(1))
+            val simulation = Simulation(emptyList(), emptyList(), responseObserver, Channel(1), Channel(1), Channel(1), Channel(RENDEZVOUS))
+            simulationsByName += request.name to simulation
         }
     }
 
@@ -183,6 +187,7 @@ class OptimizerEndpoint(val list: ObservableList<String>,
                         OASISQueryDTO.SimulationCancelRequest.newBuilder().setName(name)
                 ).build()
                 sim.input.onNext(message)
+                sim.cancellations.receive()
             }
         }
     }
@@ -241,6 +246,12 @@ class OptimizerEndpoint(val list: ObservableList<String>,
         NodeChangeConfirmDTO.newBuilder().build()
     }
 
+    override fun offerCancellationResponse(request: CancellationResponseDTO, responseObserver: StreamObserver<CancellationConfirmDTO>) = responseObserver.consume {
+        simulationsByName[request.name]?.cancellations?.send(request)
+                ?: throw IllegalStateException("no simulation '${request.name}' or buffer full")
+
+        CancellationConfirmDTO.newBuilder().build()
+    }
 
     override fun updateNode(request: NodeStatusCommandOrResponseDTO, responseObserver: StreamObserver<NodeChangeConfirmDTO>) = responseObserver.consume {
         val newNode = updateFromResponse(request)

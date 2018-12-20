@@ -182,18 +182,16 @@ message NodeStatusCommandOrResponseDTO {
         string name = 1;
 
         //optional values
-        double lowerBound = 2;
-        double upperBound = 3;
-        double currentValue = 4;
+        oneof lowerBound_opt { double lowerBound = 5; }
+        oneof upperBound_opt { double upperBound = 6; }
+        oneof currentValue_opt { double currentValue = 7; }
     }
 
     message PrototypeOutputParameter {
         string name = 1;
 
         //optional values
-        oneof currentValue {
-            double value = 2;
-        }
+        oneof currentValue_opt { double currentValue = 3; }
     }
 
     message ConfigurationProblem {
@@ -203,4 +201,5 @@ message NodeStatusCommandOrResponseDTO {
 
 message NodeChangeConfirmDTO {
     string message = 1;
+    bool changed = 2;
 }

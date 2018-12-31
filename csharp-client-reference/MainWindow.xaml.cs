@@ -283,7 +283,8 @@ namespace EmpowerOps.Volition.RefClient
         {
             var nodeStatusCommandOrResponseDto = new NodeStatusCommandOrResponseDTO
             {
-                Name = _name
+                Name = _name,
+                Description = "Volition Reference Client"
             };
             //gather inputs/ outputs NodeStatusCommandOrResponseDTO
             foreach (Input input in _inputSource)
@@ -292,7 +293,7 @@ namespace EmpowerOps.Volition.RefClient
                 {
                     Name = input.Name,
                     LowerBound = input.LowerBound,
-                    UpperBound = input.UpperBound
+                    UpperBound = input.UpperBound,
                 });
             }
 

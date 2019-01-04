@@ -12,6 +12,7 @@ import kotlinx.coroutines.javafx.JavaFx
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.selects.select
 import kotlinx.coroutines.withContext
+import org.funktionale.either.Either
 import java.time.LocalDateTime
 import kotlin.random.Random
 
@@ -25,6 +26,7 @@ class OptimizerEndpoint(val list: ObservableList<String>,
 
     var simulationsByName: Map<String, Simulation> = emptyMap()
     var stopRequested = false
+    private val ErrorValue = Double.POSITIVE_INFINITY
 
     data class Input(
             val name: String,
@@ -49,7 +51,7 @@ class OptimizerEndpoint(val list: ObservableList<String>,
             val input: StreamObserver<OASISQueryDTO>,
             val output: Channel<SimulationResponseDTO>,
             val update: Channel<NodeStatusCommandOrResponseDTO>,
-            val error: Channel<SimulationErrorResponseDTO>
+            val error: Channel<ErrorResponseDTO>
     )
 
     override fun changeNodeName(request: NodeNameChangeCommandDTO, responseObserver: StreamObserver<NodeNameChangeResponseDTO>) = responseObserver.consume {
@@ -92,8 +94,10 @@ class OptimizerEndpoint(val list: ObservableList<String>,
     }
 
     override fun startOptimization(request: StartOptimizationCommandDTO, responseObserver: StreamObserver<StartOptimizationResponseDTO>) = responseObserver.consume {
-        startOptimization()
-        StartOptimizationResponseDTO.newBuilder().setMessage("Started").setStarted(true).build()
+        withContext(Dispatchers.JavaFx) {
+            startOptimization()
+            StartOptimizationResponseDTO.newBuilder().setMessage("Started").setStarted(true).build()
+        }
     }
 
     sealed class SimResult(open val name: String, open val result: Map<String, Double>) {
@@ -101,42 +105,52 @@ class OptimizerEndpoint(val list: ObservableList<String>,
         data class Failure(override val name: String, override val result: Map<String, Double>, val exception: String) : SimResult(name, result)
     }
 
-
-    fun startOptimization() {
+    suspend fun startOptimization() {
         stopRequested = false
 
-        GlobalScope.launch {
-            for (simName in simulationsByName.keys) {
-                syncConfigFor(simName)
-            }
+        for (simName in simulationsByName.keys) {
+            syncConfigFor(simName)
+        }
 
-            while (canContinue()) {
-                for ((simName, sim) in simulationsByName) {
+        while (canContinue()) {
+            for ((simName, sim) in simulationsByName) {
 
-                    val input = sim.inputs.associate {
-                        it.name to
-                                if (it.lowerBound == it.upperBound) {
-                                    Random.nextDouble(0.0, 10.0)
-                                } else {
-                                    Random.nextDouble(it.lowerBound, it.upperBound)
-                                }
+                val input = sim.inputs.associate {
+                    it.name to
+                            if (it.lowerBound == it.upperBound) {
+                                Random.nextDouble(0.0, 10.0)
+                            } else {
+                                Random.nextDouble(it.lowerBound, it.upperBound)
+                            }
+                }
+
+                val message = OASISQueryDTO.newBuilder()
+                        .setEvaluationRequest(OASISQueryDTO.SimulationEvaluationRequest.newBuilder()
+                                .setName(simName)
+                                .putAllInputVector(input)
+                        )
+                        .build()
+
+                sim.input.onNext(message)
+                val result = select<SimResult> {
+                    sim.output.onReceive { it -> SimResult.Success(it.name, it.outputVectorMap) }
+                    sim.error.onReceive { it ->
+                        SimResult.Failure(it.name, buildErrorResult(sim.outputs.map { it.name }), it.exception)
                     }
+                }
 
-                    val message = OASISQueryDTO.newBuilder()
-                            .setEvaluationRequest(OASISQueryDTO.SimulationEvaluationRequest.newBuilder()
-                                    .setName(simName)
-                                    .putAllInputVector(input)
-                            )
-                            .build()
 
-                    sim.input.onNext(message)
-                    val result = select<SimResult> {
-                        sim.output.onReceive { it -> SimResult.Success(it.name, it.outputVectorMap) }
-                        sim.error.onReceive { it -> SimResult.Failure(it.name, it.outputVectorMap, it.exception) }
-                    }
+                when (result) {
+                    is SimResult.Success -> messages.add(Message(LocalDateTime.now(), result.name, "Evaluation Succeed: Result [${result.result}]"))
+                    is SimResult.Failure -> messages.add(Message(LocalDateTime.now(), result.name, "Evaluation Failed: Due to\n${result.exception}"))
                 }
             }
         }
+    }
+
+
+    fun buildErrorResult(outputs: List<String>): Map<String, Double> {
+        return outputs.associate { it to ErrorValue }
     }
 
     fun stopOptimization() {
@@ -167,8 +181,7 @@ class OptimizerEndpoint(val list: ObservableList<String>,
             for ((name, sim) in simulationsByName) {
                 try {
                     sim.input.onCompleted()
-                }
-                catch (e : StatusRuntimeException){
+                } catch (e: StatusRuntimeException) {
                     println("Error when close input for:\n$e")
                 }
             }
@@ -194,8 +207,21 @@ class OptimizerEndpoint(val list: ObservableList<String>,
         ).build()
 
         sim.input.onNext(message)
-        val receive = sim.update.receive()
-        updateFromResponse(receive)
+
+        val result = select<Either<Simulation, Message>> {
+            sim.update.onReceive { it -> Either.Left(updateFromResponse(it)) }
+            sim.error.onReceive { it ->
+                Either.Right(
+                        Message(LocalDateTime.now(), it.name, "Error update node $simName due to ${it.message} :\n${it.exception}")
+                )
+            }
+        }
+
+        if (result.isLeft()) {
+            simulationsByName += simName to result.left().get()
+        } else {
+            messages.add(result.right().get())
+        }
     }
 
     private fun canContinue(): Boolean {
@@ -219,14 +245,14 @@ class OptimizerEndpoint(val list: ObservableList<String>,
         SimulationResultConfirmDTO.newBuilder().build()
     }
 
-    override fun offerErrorResult(request: SimulationErrorResponseDTO, responseObserver: StreamObserver<SimulationErrorConfrimDTO>) = responseObserver.consume {
+    override fun offerErrorResult(request: ErrorResponseDTO, responseObserver: StreamObserver<ErrorConfirmDTO>) = responseObserver.consume {
         val error = simulationsByName[request.name]?.error
         if (error != null) {
             error.offer(request)
         } else {
             throw IllegalStateException("no simulation '${request.name}' or buffer full")
         }
-        SimulationErrorConfrimDTO.newBuilder().build()
+        ErrorConfirmDTO.newBuilder().build()
     }
 
 
@@ -275,8 +301,6 @@ class OptimizerEndpoint(val list: ObservableList<String>,
                 inputs = request.inputsList.map { Input(it.name, it.lowerBound, it.upperBound, it.currentValue) },
                 outputs = request.outputsList.map { Output(it.name) }
         )
-
-        simulationsByName += request.name to newNode
         return newNode
     }
 

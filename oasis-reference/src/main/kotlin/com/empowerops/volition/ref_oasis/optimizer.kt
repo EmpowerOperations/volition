@@ -171,7 +171,16 @@ class OptimizerEndpoint(val list: ObservableList<String>,
                 val message = OASISQueryDTO.newBuilder().setCancelRequest(
                         OASISQueryDTO.SimulationCancelRequest.newBuilder().setName(name)
                 ).build()
+
                 sim.input.onNext(message)
+//                select<SimResult> {
+//                    sim.output.onReceive { it ->
+//                        SimResult.Success(it.name, it.outputVectorMap)
+//                    }
+//                    sim.error.onReceive { it ->
+//                        SimResult.Failure(it.name, buildErrorResult(sim.outputs.map { it.name }), it.exception)
+//                    }
+//                }
             }
         }
     }

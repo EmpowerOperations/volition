@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <exe4j version="6.0.1" transformSequenceNumber="2">
   <directoryPresets config="C:/Users/Geoff/Code/volition/oasis-reference/build/output" />
-  <application name="reference-optimizer" distributionSourceDir="C:/Users/Geoff/Code/volition">
+  <application name="reference-optimizer" distributionSourceDir=".">
     <languages>
       <principalLanguage id="en" customLocalizationFile="" />
     </languages>
   </application>
-  <executable name="ref-opt" type="1" iconSet="false" iconFile="" executableDir="./build/exe4j" redirectStderr="true" stderrFile="error.log" stderrMode="overwrite" redirectStdout="false" stdoutFile="output.log" stdoutMode="overwrite" failOnStderrOutput="true" executableMode="1" changeWorkingDirectory="true" workingDirectory="." singleInstance="false" serviceStartType="2" serviceDependencies="" serviceDescription="" jreLocation="" executionLevel="asInvoker" checkConsoleParameter="false" globalSingleInstance="false" singleInstanceActivate="true" dpiAware="java9+" amd64="false">
+  <executable name="ref-opt" type="1" iconSet="false" iconFile="" executableDir="." redirectStderr="true" stderrFile="error.log" stderrMode="overwrite" redirectStdout="false" stdoutFile="output.log" stdoutMode="overwrite" failOnStderrOutput="true" executableMode="1" changeWorkingDirectory="true" workingDirectory="." singleInstance="false" serviceStartType="2" serviceDependencies="" serviceDescription="" jreLocation="" executionLevel="asInvoker" checkConsoleParameter="false" globalSingleInstance="false" singleInstanceActivate="true" dpiAware="java9+" amd64="false">
     <messageSet />
     <versionInfo include="false" fileVersion="" fileDescription="" legalCopyright="" internalName="" productName="" companyName="" productVersion="" />
   </executable>
@@ -23,8 +23,9 @@
       <envVar name="JDK_HOME" />
     </searchSequence>
     <classPath>
-      <scanDirectory location="./oasis-reference/build/libs" failOnError="false" />
-      <scanDirectory location="./oasis-reference/build/output/lib" failOnError="false" />
+      <scanDirectory location="./build/libs" failOnError="false" />
+      <scanDirectory location="./build/deps" failOnError="false" />
+      <scanDirectory location="." failOnError="false" />
     </classPath>
     <modulePath />
     <nativeLibraryDirectories />

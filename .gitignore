@@ -17,11 +17,10 @@ oasis-reference/.gradle
 csharp-client-reference/bin
 csharp-client-reference/obj
 csharp-client-reference/.vs
+csharp-client-reference/Artifacts
 
 api/obj
 .vs/
-
-
 
 
 !packages/repositories.config

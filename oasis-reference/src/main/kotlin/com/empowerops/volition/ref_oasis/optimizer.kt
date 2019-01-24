@@ -16,9 +16,9 @@ import org.funktionale.either.Either
 import java.time.LocalDateTime
 import kotlin.random.Random
 
-fun main(args: Array<String>) {
-    Application.launch(OptimizerApp::class.java)
-}
+//fun main(args: Array<String>) {
+//    Application.launch(OptimizerApp::class.java)
+//}
 
 class OptimizerEndpoint(val list: ObservableList<String>,
                         val messages: ObservableList<Message>
@@ -105,7 +105,7 @@ class OptimizerEndpoint(val list: ObservableList<String>,
         data class Failure(override val name: String, override val result: Map<String, Double>, val exception: String) : SimResult(name, result)
     }
 
-    suspend fun startOptimization() {
+    suspend fun startOptimization() = GlobalScope.launch(Dispatchers.JavaFx) {
         stopRequested = false
 
         for (simName in simulationsByName.keys) {
@@ -141,8 +141,16 @@ class OptimizerEndpoint(val list: ObservableList<String>,
 
 
                 when (result) {
-                    is SimResult.Success -> messages.add(Message(LocalDateTime.now(), result.name, "Evaluation Succeed: Result [${result.result}]"))
-                    is SimResult.Failure -> messages.add(Message(LocalDateTime.now(), result.name, "Evaluation Failed: Due to\n${result.exception}"))
+                    is SimResult.Success ->{
+
+                            messages.add(Message(LocalDateTime.now(), result.name, "Evaluation Succeed: Result [${result.result}]"))
+
+                    }
+                    is SimResult.Failure ->{
+
+                            messages.add(Message(LocalDateTime.now(), result.name, "Evaluation Failed: Due to\n${result.exception}"))
+
+                    }
                 }
             }
         }
@@ -183,6 +191,10 @@ class OptimizerEndpoint(val list: ObservableList<String>,
 //                }
             }
         }
+    }
+
+    fun cancel(){
+
     }
 
     fun disconnectAll() {
@@ -229,7 +241,9 @@ class OptimizerEndpoint(val list: ObservableList<String>,
         if (result.isLeft()) {
             simulationsByName += simName to result.left().get()
         } else {
-            messages.add(result.right().get())
+            GlobalScope.launch(Dispatchers.JavaFx) {
+                messages.add(result.right().get())
+            }
         }
     }
 
@@ -286,7 +300,9 @@ class OptimizerEndpoint(val list: ObservableList<String>,
     override fun sendMessage(request: MessageCommandDTO, responseObserver: StreamObserver<MessageReponseDTO>) = responseObserver.consume {
         withContext(Dispatchers.JavaFx) {
             println("Message from [${request.name}] : ${request.message}")
-            messages.add(Message(LocalDateTime.now(), request.name, request.message))
+            GlobalScope.launch(Dispatchers.JavaFx) {
+                messages.add(Message(LocalDateTime.now(), request.name, request.message))
+            }
             MessageReponseDTO.newBuilder().build()
         }
     }

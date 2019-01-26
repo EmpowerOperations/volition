@@ -6,6 +6,7 @@ import javafx.fxml.FXML
 import javafx.scene.control.*
 import javafx.scene.control.cell.TreeItemPropertyValueFactory
 import javafx.scene.layout.AnchorPane
+import javafx.scene.layout.VBox
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.javafx.JavaFx
@@ -35,6 +36,7 @@ class OptimizerController {
     @FXML lateinit var endpoint : OptimizerEndpoint
     @FXML lateinit var statusLabel : Label
     @FXML lateinit var descriptionLabel : Label
+    @FXML lateinit var selectedNodeInfoBox : VBox
 
     enum class Type {
         Input, Output, Root
@@ -73,23 +75,22 @@ class OptimizerController {
     @FXML fun initialize() {
         senderColumn.setCellValueFactory { dataFeatures -> SimpleStringProperty(dataFeatures.value.sender) }
         timeColumn.setCellValueFactory { dataFeatures -> SimpleStringProperty(dataFeatures.value.receiveTime.toString()) }
-        messageColumn.setCellValueFactory { dataFeatures -> SimpleStringProperty(dataFeatures.value.message)}
+        messageColumn.setCellValueFactory { dataFeatures -> SimpleStringProperty(dataFeatures.value.message) }
 
         nameColumn.cellValueFactory = TreeItemPropertyValueFactory<Parameter, String>("name")
         valueColumn.cellValueFactory = TreeItemPropertyValueFactory<Parameter, String>("value")
         lbColumn.cellValueFactory = TreeItemPropertyValueFactory<Parameter, String>("lb")
         upColumn.cellValueFactory = TreeItemPropertyValueFactory<Parameter, String>("ub")
 
-        nodesList.selectionModel.selectedItemProperty().addListener { src, oldV, newV ->
-            showNode(newV)
-        }
+        nodesList.selectionModel.selectedItemProperty().addListener { src, oldV, newV -> showNode(newV) }
     }
 
     private fun showNode(newV: String?) {
         if(newV == null){
-            //disableView
+            selectedNodeInfoBox.isDisable = true
         }
         else{
+            selectedNodeInfoBox.isDisable = false
             //fill in name, status
             val sim = endpoint.simulationsByName.getValue(newV)
             //fill in status

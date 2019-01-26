@@ -3,7 +3,6 @@ package com.empowerops.volition.ref_oasis
 import com.empowerops.volition.dto.*
 import io.grpc.StatusRuntimeException
 import io.grpc.stub.StreamObserver
-import javafx.application.Application
 import javafx.collections.ObservableList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -15,10 +14,6 @@ import kotlinx.coroutines.withContext
 import org.funktionale.either.Either
 import java.time.LocalDateTime
 import kotlin.random.Random
-
-//fun main(args: Array<String>) {
-//    Application.launch(OptimizerApp::class.java)
-//}
 
 class OptimizerEndpoint(val list: ObservableList<String>,
                         val messages: ObservableList<Message>
@@ -48,6 +43,7 @@ class OptimizerEndpoint(val list: ObservableList<String>,
     data class Simulation(
             val inputs: List<Input>,
             val outputs: List<Output>,
+            val description: String,
             val input: StreamObserver<OASISQueryDTO>,
             val output: Channel<SimulationResponseDTO>,
             val update: Channel<NodeStatusCommandOrResponseDTO>,
@@ -78,7 +74,7 @@ class OptimizerEndpoint(val list: ObservableList<String>,
                 return@launch
             }
             list.add(request.name)
-            simulationsByName += request.name to Simulation(emptyList(), emptyList(), responseObserver, Channel(1), Channel(1), Channel(1))
+            simulationsByName += request.name to Simulation(emptyList(), emptyList(), "", responseObserver, Channel(1), Channel(1), Channel(1))
         }
     }
 
@@ -193,7 +189,7 @@ class OptimizerEndpoint(val list: ObservableList<String>,
         }
     }
 
-    fun cancel(){
+    fun cancel(nodeName : String){
 
     }
 
@@ -293,7 +289,7 @@ class OptimizerEndpoint(val list: ObservableList<String>,
 
     override fun updateNode(request: NodeStatusCommandOrResponseDTO, responseObserver: StreamObserver<NodeChangeConfirmDTO>) = responseObserver.consume {
         val newNode = updateFromResponse(request)
-
+        simulationsByName += request.name to newNode
         NodeChangeConfirmDTO.newBuilder().setMessage("Node updated with inputs: ${newNode.inputs} outputs: ${newNode.outputs}").build()
     }
 
@@ -324,7 +320,8 @@ class OptimizerEndpoint(val list: ObservableList<String>,
 
         val newNode = existingNode.copy(
                 inputs = request.inputsList.map { Input(it.name, it.lowerBound, it.upperBound, it.currentValue) },
-                outputs = request.outputsList.map { Output(it.name) }
+                outputs = request.outputsList.map { Output(it.name) },
+                description = request.description
         )
         return newNode
     }

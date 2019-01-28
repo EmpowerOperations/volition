@@ -4,7 +4,6 @@ import com.empowerops.volition.dto.*
 import io.grpc.StatusRuntimeException
 import io.grpc.stub.StreamObserver
 import javafx.beans.property.SimpleStringProperty
-import javafx.beans.value.ObservableStringValue
 import javafx.collections.ObservableList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -81,6 +80,7 @@ class OptimizerEndpoint(val list: ObservableList<String>,
             }
             list.add(request.name)
             simulationsByName += request.name to Simulation(emptyList(), emptyList(), "", responseObserver, Channel(1), Channel(1), Channel(1))
+            updateStatusMessage("${request.name} registered")
         }
     }
 
@@ -139,10 +139,11 @@ class OptimizerEndpoint(val list: ObservableList<String>,
             syncConfigFor(simName)
         }
 
+        updateStatusMessage("Evaluating:")
         while (canContinue()) {
 
             for ((simName, sim) in simulationsByName) {
-                updateStatusMessage("Evaluating ${simName}")
+                updateStatusMessage("Evaluating: ${simName}")
                 val inputVector = valueFactory.getInputs(sim.inputs)
                 val message = OASISQueryDTO.newBuilder()
                         .setEvaluationRequest(OASISQueryDTO.SimulationEvaluationRequest.newBuilder()
@@ -191,7 +192,7 @@ class OptimizerEndpoint(val list: ObservableList<String>,
                 }
             }
         }
-        updateStatusMessage("Finished")
+        updateStatusMessage("Idle")
     }
 
     fun updateStatusMessage(message : String)  = GlobalScope.launch(Dispatchers.JavaFx) {
@@ -289,11 +290,11 @@ class OptimizerEndpoint(val list: ObservableList<String>,
         }
     }
 
-    private suspend fun addMessage(message:Message) = withContext(Dispatchers.JavaFx){
+    private suspend fun addMessage(message:Message) =  GlobalScope.launch(Dispatchers.JavaFx){
         messages.add(message)
     }
 
-    private suspend fun addResult(result:Message) = withContext(Dispatchers.JavaFx){
+    private suspend fun addResult(result:Message) =  GlobalScope.launch(Dispatchers.JavaFx){
         results.add(result)
     }
 
@@ -344,6 +345,8 @@ class OptimizerEndpoint(val list: ObservableList<String>,
     override fun updateNode(request: NodeStatusCommandOrResponseDTO, responseObserver: StreamObserver<NodeChangeConfirmDTO>) = responseObserver.consume {
         val newNode = updateFromResponse(request)
         simulationsByName += request.name to newNode
+        updateStatusMessage("${request.name} updated")
+
         NodeChangeConfirmDTO.newBuilder().setMessage("Node updated with inputs: ${newNode.inputs} outputs: ${newNode.outputs}").build()
     }
 

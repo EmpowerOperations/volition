@@ -3,6 +3,8 @@ package com.empowerops.volition.ref_oasis
 import com.empowerops.volition.dto.*
 import io.grpc.StatusRuntimeException
 import io.grpc.stub.StreamObserver
+import javafx.beans.property.SimpleStringProperty
+import javafx.beans.value.ObservableStringValue
 import javafx.collections.ObservableList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -12,11 +14,14 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.selects.select
 import kotlinx.coroutines.withContext
 import org.funktionale.either.Either
+import java.time.Duration
 import java.time.LocalDateTime
 import kotlin.random.Random
 
 class OptimizerEndpoint(val list: ObservableList<String>,
-                        val messages: ObservableList<Message>
+                        val messages: ObservableList<Message>,
+                        val currentEvaluationStatus: SimpleStringProperty,
+                        val results: ObservableList<Message>
 ) : OptimizerGrpc.OptimizerImplBase() {
 
     var simulationsByName: Map<String, Simulation> = emptyMap()
@@ -47,7 +52,8 @@ class OptimizerEndpoint(val list: ObservableList<String>,
             val input: StreamObserver<OASISQueryDTO>,
             val output: Channel<SimulationResponseDTO>,
             val update: Channel<NodeStatusCommandOrResponseDTO>,
-            val error: Channel<ErrorResponseDTO>
+            val error: Channel<ErrorResponseDTO>,
+            val timeOut: Duration? = null
     )
 
     override fun changeNodeName(request: NodeNameChangeCommandDTO, responseObserver: StreamObserver<NodeNameChangeResponseDTO>) = responseObserver.consume {
@@ -91,17 +97,42 @@ class OptimizerEndpoint(val list: ObservableList<String>,
 
     override fun startOptimization(request: StartOptimizationCommandDTO, responseObserver: StreamObserver<StartOptimizationResponseDTO>) = responseObserver.consume {
         withContext(Dispatchers.JavaFx) {
-            startOptimization()
+            startOptimization(RandomNumberOptimizer())
             StartOptimizationResponseDTO.newBuilder().setMessage("Started").setStarted(true).build()
         }
     }
 
     sealed class SimResult(open val name: String, open val result: Map<String, Double>) {
         data class Success(override val name: String, override val result: Map<String, Double>) : SimResult(name, result)
-        data class Failure(override val name: String, override val result: Map<String, Double>, val exception: String) : SimResult(name, result)
+        data class TimeOut(override val name: String) : SimResult(name, emptyMap())
+        data class TimeOutFailure(override val name: String, val exception: String) : SimResult(name, emptyMap())
+        data class Failure(override val name: String, val exception: String) : SimResult(name, emptyMap())
     }
 
-    suspend fun startOptimization() = GlobalScope.launch(Dispatchers.JavaFx) {
+    data class Range(val lower : Double, val upper : Double)
+    interface ValueFactory{
+        fun  getInputs( inputs: List<Input>) : Map<String, Double>
+    }
+
+    class RandomNumberOptimizer : ValueFactory{
+        override fun getInputs(inputs: List<Input>): Map<String, Double> =
+                inputs.associate { it.name to Random.nextDouble(it.lowerBound, it.upperBound) }
+
+    }
+
+    /**
+     * Couple things: we are missing the overall pool of configuration, so far, everything synced are base on one node
+     * in OASIS, we have our problem definition and everything is mapped to the proxy
+     * for the case of tool1 have x1, x2 as input and f3 as output
+     * tool2 have x2, x3 f3 as input, and f4 as output will be impossible to setup in the current way though sync
+     *
+     * However, as a test bed, each evaluation request is tool dependent. You can have different configuration.
+     *
+     * The question here is when how much information is needed to a overall CFE setup relative to a evaluation. It that a
+     * bigger set of information that is need that each individual evaluation. or oasis don't need to know that at all
+     *
+     */
+    suspend fun startOptimization(valueFactory : ValueFactory) = GlobalScope.launch(Dispatchers.JavaFx) {
         stopRequested = false
 
         for (simName in simulationsByName.keys) {
@@ -109,21 +140,14 @@ class OptimizerEndpoint(val list: ObservableList<String>,
         }
 
         while (canContinue()) {
+
             for ((simName, sim) in simulationsByName) {
-
-                val input = sim.inputs.associate {
-                    it.name to
-                            if (it.lowerBound == it.upperBound) {
-                                Random.nextDouble(0.0, 10.0)
-                            } else {
-                                Random.nextDouble(it.lowerBound, it.upperBound)
-                            }
-                }
-
+                updateStatusMessage("Evaluating ${simName}")
+                val inputVector = valueFactory.getInputs(sim.inputs)
                 val message = OASISQueryDTO.newBuilder()
                         .setEvaluationRequest(OASISQueryDTO.SimulationEvaluationRequest.newBuilder()
                                 .setName(simName)
-                                .putAllInputVector(input)
+                                .putAllInputVector(inputVector)
                         )
                         .build()
 
@@ -131,27 +155,48 @@ class OptimizerEndpoint(val list: ObservableList<String>,
                 val result = select<SimResult> {
                     sim.output.onReceive { it -> SimResult.Success(it.name, it.outputVectorMap) }
                     sim.error.onReceive { it ->
-                        SimResult.Failure(it.name, buildErrorResult(sim.outputs.map { it.name }), it.exception)
+                        SimResult.Failure(it.name, it.exception)
+                    }
+                    if(sim.timeOut != null){
+                        onTimeout(sim.timeOut.toMillis()){
+                            //Timed out
+                            val message = OASISQueryDTO.newBuilder().setCancelRequest(
+                                    OASISQueryDTO.SimulationCancelRequest.newBuilder().setName(simName)
+                            ).build()
+                            sim.input.onNext(message)
+                            select {
+                                sim.output.onReceive { it -> SimResult.TimeOut(it.name) }
+                                sim.error.onReceive { it -> SimResult.TimeOutFailure(it.name, it.exception) }
+                            }
+                        }
                     }
                 }
-
-
                 when (result) {
-                    is SimResult.Success ->{
-
-                            messages.add(Message(LocalDateTime.now(), result.name, "Evaluation Succeed: Result [${result.result}]"))
-
+                    is SimResult.Success -> {
+                        addMessage(Message(LocalDateTime.now(), result.name, "Evaluation Succeed: Result [${result.result}]"))
+                        addResult(Message(LocalDateTime.now(), result.name, "Succeed: Result [${result.result}]"))
                     }
-                    is SimResult.Failure ->{
-
-                            messages.add(Message(LocalDateTime.now(), result.name, "Evaluation Failed: Due to\n${result.exception}"))
-
+                    is SimResult.Failure -> {
+                        addMessage(Message(LocalDateTime.now(), result.name, "Evaluation Failed: Due to\n${result.exception}"))
+                        addResult(Message(LocalDateTime.now(), result.name, "Failure: \n${result.exception}"))
+                    }
+                    is SimResult.TimeOut -> {
+                        addMessage(Message(LocalDateTime.now(), result.name, "Evaluation Canceled to timed out after ${sim.timeOut!!.toMillis()} millisecond"))
+                        addResult(Message(LocalDateTime.now(), result.name, "Canceled: Timed Out"))
+                    }
+                    is SimResult.TimeOutFailure -> {
+                        addMessage(Message(LocalDateTime.now(), result.name, "Evaluation try to cancel Timed out after ${sim.timeOut!!.toMillis()} millisecond but Failed: Due to\n${result.exception}"))
+                        addResult(Message(LocalDateTime.now(), result.name, "Cancellation failed:\n${result.exception}"))
                     }
                 }
             }
         }
+        updateStatusMessage("Finished")
     }
 
+    fun updateStatusMessage(message : String)  = GlobalScope.launch(Dispatchers.JavaFx) {
+        currentEvaluationStatus.value = message
+    }
 
     fun buildErrorResult(outputs: List<String>): Map<String, Double> {
         return outputs.associate { it to ErrorValue }
@@ -177,20 +222,23 @@ class OptimizerEndpoint(val list: ObservableList<String>,
                 ).build()
 
                 sim.input.onNext(message)
-//                select<SimResult> {
-//                    sim.output.onReceive { it ->
-//                        SimResult.Success(it.name, it.outputVectorMap)
-//                    }
-//                    sim.error.onReceive { it ->
-//                        SimResult.Failure(it.name, buildErrorResult(sim.outputs.map { it.name }), it.exception)
-//                    }
-//                }
             }
         }
     }
 
     fun cancel(nodeName : String){
 
+    }
+
+    fun setDuration(nodeName : String?, timeOut: Duration?){
+        if(nodeName == null || ! simulationsByName.containsKey(nodeName)){
+            return
+        }
+        val node: Simulation = simulationsByName.getValue(nodeName)
+        val newNode = node.copy(
+                timeOut = timeOut
+        )
+        simulationsByName += nodeName to newNode
     }
 
     fun disconnectAll() {
@@ -237,10 +285,16 @@ class OptimizerEndpoint(val list: ObservableList<String>,
         if (result.isLeft()) {
             simulationsByName += simName to result.left().get()
         } else {
-            GlobalScope.launch(Dispatchers.JavaFx) {
-                messages.add(result.right().get())
-            }
+            addMessage(result.right().get())
         }
+    }
+
+    private suspend fun addMessage(message:Message) = withContext(Dispatchers.JavaFx){
+        messages.add(message)
+    }
+
+    private suspend fun addResult(result:Message) = withContext(Dispatchers.JavaFx){
+        results.add(result)
     }
 
     private fun canContinue(): Boolean {

@@ -5,6 +5,7 @@ import io.grpc.Server
 import io.grpc.ServerBuilder
 import io.grpc.ServerInterceptors
 import javafx.application.Application
+import javafx.beans.property.SimpleStringProperty
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import javafx.fxml.FXMLLoader
@@ -22,9 +23,12 @@ class RefOptimizer : Application(){
     val optimizerEndpoint: OptimizerEndpoint
     val list: ObservableList<String> = FXCollections.observableArrayList()
     val messageList: ObservableList<OptimizerEndpoint.Message> = FXCollections.observableArrayList()
+    val resultList: ObservableList<OptimizerEndpoint.Message> = FXCollections.observableArrayList()
+    val currentEvaluationStatus = SimpleStringProperty()
 
     init {
-        optimizerEndpoint = OptimizerEndpoint(list, messageList)
+
+        optimizerEndpoint = OptimizerEndpoint(list, messageList, currentEvaluationStatus, resultList)
         server = ServerBuilder.forPort(5550)
         .addService(ServerInterceptors.intercept(optimizerEndpoint, LoggingInterceptor(System.out)))
                 .build()
@@ -37,7 +41,7 @@ class RefOptimizer : Application(){
         val controller = fxmlLoader.getController<OptimizerController>();
         primaryStage.scene = Scene(root)
         primaryStage.show()
-        val viewData = ViewData(list, messageList)
+        val viewData = ViewData(list, messageList, currentEvaluationStatus, resultList)
         controller.setData(viewData, optimizerEndpoint)
     }
 

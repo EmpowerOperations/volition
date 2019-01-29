@@ -1,5 +1,6 @@
 package com.empowerops.volition.ref_oasis
 
+import javafx.beans.Observable
 import javafx.beans.property.SimpleStringProperty
 import javafx.collections.ObservableList
 import javafx.fxml.FXML
@@ -16,26 +17,55 @@ import tornadofx.selectedItem
 import java.lang.NumberFormatException
 import java.time.Duration
 
-data class ViewData(
+class ViewData(
         val nodes: ObservableList<String>,
         val allMessages: ObservableList<OptimizerEndpoint.Message>,
         val currentEvaluationStatus: SimpleStringProperty,
-        val resultList: ObservableList<OptimizerEndpoint.Message>
-)
+        val resultList: ObservableList<OptimizerEndpoint.Result>,
+        val updateList : ObservableList<String>){
+
+    fun addNodes(name: String) = GlobalScope.launch(Dispatchers.JavaFx) {
+        nodes.add(name)
+    }
+    fun removeNode(name: String) = GlobalScope.launch(Dispatchers.JavaFx) {
+        nodes.remove(name)
+    }
+    fun removeAll() = GlobalScope.launch(Dispatchers.JavaFx) {
+        nodes.clear()
+    }
+
+    fun updateStatusMessage(message: String) = GlobalScope.launch(Dispatchers.JavaFx) {
+        currentEvaluationStatus.value = message
+    }
+
+    fun addMessage(message: OptimizerEndpoint.Message) = GlobalScope.launch(Dispatchers.JavaFx) {
+        allMessages.add(message)
+    }
+
+    fun addResult(result: OptimizerEndpoint.Result) = GlobalScope.launch(Dispatchers.JavaFx) {
+        resultList.add(result)
+    }
+
+    fun addUpdate(name : String) = GlobalScope.launch(Dispatchers.JavaFx) {
+        updateList += name
+    }
+}
+
 
 class OptimizerController {
     @FXML lateinit var view : AnchorPane
     @FXML lateinit var nodesList : ListView<String>
     @FXML lateinit var messageTableView : TableView<OptimizerEndpoint.Message>
-    @FXML lateinit var resultTableView : TableView<OptimizerEndpoint.Message>
+    @FXML lateinit var resultTableView : TableView<OptimizerEndpoint.Result>
 
     @FXML lateinit var senderColumn : TableColumn<OptimizerEndpoint.Message, String>
     @FXML lateinit var timeColumn : TableColumn<OptimizerEndpoint.Message, String>
     @FXML lateinit var messageColumn : TableColumn<OptimizerEndpoint.Message, String>
 
-    @FXML lateinit var senderColumn1 : TableColumn<OptimizerEndpoint.Message, String>
-    @FXML lateinit var timeColumn1 : TableColumn<OptimizerEndpoint.Message, String>
-    @FXML lateinit var messageColumn1 : TableColumn<OptimizerEndpoint.Message, String>
+    @FXML lateinit var senderColumn1 : TableColumn<OptimizerEndpoint.Result, String>
+    @FXML lateinit var typeColumn : TableColumn<OptimizerEndpoint.Result, String>
+    @FXML lateinit var inputColumn : TableColumn<OptimizerEndpoint.Result, String>
+    @FXML lateinit var outputColumn : TableColumn<OptimizerEndpoint.Result, String>
 
     @FXML lateinit var paramTreeView : TreeTableView<Parameter>
     @FXML lateinit var nameColumn : TreeTableColumn<Parameter, String>
@@ -50,6 +80,7 @@ class OptimizerController {
     @FXML lateinit var selectedNodeInfoBox : VBox
     @FXML lateinit var timeOutTextField : TextField
     @FXML lateinit var useTimeout : CheckBox
+
 
     enum class Type {
         Input, Output, Root
@@ -90,9 +121,10 @@ class OptimizerController {
         timeColumn.setCellValueFactory { dataFeatures -> SimpleStringProperty(dataFeatures.value.receiveTime.toString()) }
         messageColumn.setCellValueFactory { dataFeatures -> SimpleStringProperty(dataFeatures.value.message) }
 
-        senderColumn1.setCellValueFactory { dataFeatures -> SimpleStringProperty(dataFeatures.value.sender) }
-        timeColumn1.setCellValueFactory { dataFeatures -> SimpleStringProperty(dataFeatures.value.receiveTime.toString()) }
-        messageColumn1.setCellValueFactory { dataFeatures -> SimpleStringProperty(dataFeatures.value.message) }
+        senderColumn1.setCellValueFactory { dataFeatures -> SimpleStringProperty(dataFeatures.value.name) }
+        typeColumn.setCellValueFactory { dataFeatures -> SimpleStringProperty(dataFeatures.value.resultType) }
+        inputColumn.setCellValueFactory { dataFeatures -> SimpleStringProperty(dataFeatures.value.inputs) }
+        outputColumn.setCellValueFactory { dataFeatures -> SimpleStringProperty(dataFeatures.value.outputs) }
 
         nameColumn.cellValueFactory = TreeItemPropertyValueFactory<Parameter, String>("name")
         valueColumn.cellValueFactory = TreeItemPropertyValueFactory<Parameter, String>("value")
@@ -139,13 +171,12 @@ class OptimizerController {
         }
         else{
             selectedNodeInfoBox.isDisable = false
-            //fill in name, status
             val sim = endpoint.simulationsByName.getValue(newV)
-            //fill in status
+            descriptionLabel.text = newV
             val buildTree = buildTree(sim)
             paramTreeView.root = buildTree
             paramTreeView.isShowRoot = false
-            statusLabel.text = newV
+            statusLabel.text = sim.description
             if(sim.timeOut!= null){
                 useTimeout.isSelected = true
                 timeOutTextField.text = sim.timeOut.toMillis().toString()
@@ -163,6 +194,11 @@ class OptimizerController {
         resultTableView.items = viewData.resultList
         endpoint = optimizerEndpoint
         optimizerStatusLabel.textProperty().bind(viewData.currentEvaluationStatus)
+        viewData.updateList.addListener { o: Observable ->
+            if(viewData.updateList.contains(nodesList.selectedItem)){
+                showNode(nodesList.selectedItem)
+            }
+        }
     }
 
     @FXML fun startRun() = GlobalScope.launch(Dispatchers.JavaFx){
@@ -190,9 +226,5 @@ class OptimizerController {
 
     @FXML fun syncAll(){
         endpoint.syncAll()
-    }
-
-    @FXML fun refresh(){
-        showNode( nodesList.selectionModel.selectedItem)
     }
 }

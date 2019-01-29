@@ -23,16 +23,19 @@ class RefOptimizer : Application(){
     val optimizerEndpoint: OptimizerEndpoint
     val list: ObservableList<String> = FXCollections.observableArrayList()
     val messageList: ObservableList<OptimizerEndpoint.Message> = FXCollections.observableArrayList()
-    val resultList: ObservableList<OptimizerEndpoint.Message> = FXCollections.observableArrayList()
+    val resultList: ObservableList<OptimizerEndpoint.Result> = FXCollections.observableArrayList()
+    val updateList: ObservableList<String> = FXCollections.observableArrayList()
     val currentEvaluationStatus = SimpleStringProperty()
+    val viewData = ViewData(list, messageList, currentEvaluationStatus, resultList, updateList)
 
     init {
-
-        optimizerEndpoint = OptimizerEndpoint(list, messageList, currentEvaluationStatus, resultList)
-        server = ServerBuilder.forPort(5550)
-        .addService(ServerInterceptors.intercept(optimizerEndpoint, LoggingInterceptor(System.out)))
-                .build()
-        start()
+        optimizerEndpoint = OptimizerEndpoint(viewData)
+        server = ServerBuilder
+                    .forPort(5550)
+                    .addService(ServerInterceptors.intercept(optimizerEndpoint, LoggingInterceptor(System.out)))
+                    .build()
+        server.start()
+        println("reference optimizer is running")
     }
 
     override fun start(primaryStage: Stage) {
@@ -41,13 +44,8 @@ class RefOptimizer : Application(){
         val controller = fxmlLoader.getController<OptimizerController>();
         primaryStage.scene = Scene(root)
         primaryStage.show()
-        val viewData = ViewData(list, messageList, currentEvaluationStatus, resultList)
-        controller.setData(viewData, optimizerEndpoint)
-    }
 
-    fun start() {
-        server.start()
-        println("reference optimizer is running")
+        controller.setData(viewData, optimizerEndpoint)
     }
 
     fun close(){

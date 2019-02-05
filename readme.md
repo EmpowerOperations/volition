@@ -10,7 +10,7 @@ To use the volition API, two components must be run:
 
 > the word 'plugin' is nebulous because the a volition plugin is also a plugin to some kind of FEA or CFD simulator. Thus, we avoid the phrase 'plugin' below in favour of the phrase 'simulator client'.
 
-**TBD: whiteboard picture of typical plugin** 
+![architecture overview](docs/architecture-overview.jpg)
 
 The Volition API is rooted in the `optimizer.grpc` document that is used to generate Python, C#, and Java code for use in the Python, .net, and jvm runtime environments respectively. This means that to build a component against this API from source, the following steps must be performed:
 

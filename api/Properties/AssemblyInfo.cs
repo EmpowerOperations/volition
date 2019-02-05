@@ -5,13 +5,13 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("dotnet-api")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Volition dotnet API")]
+[assembly: AssemblyDescription("The inter-process Optimization API")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("dotnet-api")]
+[assembly: AssemblyCompany("Empower Operations")]
+[assembly: AssemblyProduct("Volition API")]
 [assembly: AssemblyCopyright("Copyright ©  2018")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyTrademark("Empower Operations")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible
@@ -22,15 +22,6 @@ using System.Runtime.InteropServices;
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("1ac199b1-9d40-42e6-b124-74e8ee4b8c71")]
 
-// Version information for an assembly consists of the following four values:
-//
-//      Major Version
-//      Minor Version
-//      Build Number
-//      Revision
-//
-// You can specify all the values or you can default the Build and Revision Numbers
-// by using the '*' as shown below:
-// [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+// version info; updated by teamcity
+[assembly: AssemblyVersion("0.1.147.0")]
+[assembly: AssemblyFileVersion("0.1.147.0")]

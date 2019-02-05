@@ -30,8 +30,9 @@ dependencies {
 }
 
 allprojects {
+
     group 'com.empowerops'
-    version '0.1'
+    version "0.2.147.${System.getenv("BUILD_NUMBER") ?: '0'}"
     
     repositories {
         mavenCentral()
@@ -87,10 +88,17 @@ project('api'){
     apply plugin: 'java'
     apply plugin: 'kotlin'
     apply plugin: 'com.google.protobuf'
+    apply plugin: 'com.jfrog.bintray'
+    apply plugin: 'maven-publish'
 
     dependencies {
         implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.0.0'
         compile 'javax.annotation:javax.annotation-api:1.3.2'
+    }
+
+    ext {
+        volitionName = "volition-api"
+        volitionVersion = '0.2'
     }
 
     protobuf {
@@ -125,22 +133,58 @@ project('api'){
     }
 
     jar {
-        baseName = 'volition-api'
+        baseName = volitionName
     }
     
     task sourcesJar(type: Jar, dependsOn: classes) {
         classifier = 'sources'
+        baseName = volitionName
         from sourceSets.main.allSource
     }
     
     task javadocJar(type: Jar, dependsOn: javadoc) {
         classifier = 'javadoc'
+        baseName = volitionName
         from javadoc.destinationDir
     }
     
     artifacts {
         archives sourcesJar
         archives javadocJar
+    }
+
+    publishing {
+        publications {
+            Production(MavenPublication){
+                groupId 'com.empowerops'
+                artifactId volitionName
+                version volitionVersion
+                
+                //blargwargl: we need to express transitive deps here.
+                // see this: https://docs.gradle.org/current/userguide/publishing_maven.html
+                
+            }
+        }
+    }
+
+    bintray {
+        user = 'empower-operations-team'
+        key = project.properties.bintrayEmpoweropsKey
+        pkg {
+            repo = 'maven'
+            name = volitionName
+            userOrg = 'empower-operations-team'
+            licenses = ['Apache-2.0']
+            vcsUrl = 'https://github.com/EmpowerOperations/volition.git'
+
+            version {
+                name = volitionVersion
+                desc = 'Empower Operations Volition API'
+                released  = new Date()
+            }
+        }
+        configurations = ['archives']
+        publications = ['Production']
     }
 
 }
@@ -171,10 +215,16 @@ project('oasis-reference'){
         manifest {
             attributes 'Main-Class': 'com.empowerops.volition.ref_oasis.OptimizerKt'
         }
+    }
 
-        from {
-            configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-        }
+    task deliverable(type: Zip, dependsOn: assemble) {
+        from "$buildDir/libs"
+        from "$buildDir/deps"
+        from "$projectDir"
+        include "*.exe"
+        include "*.jar"
+        archiveName "optimizer-reference-${version}.zip"
+        destinationDir(file("$buildDir/deliverable"))
     }
     
 }

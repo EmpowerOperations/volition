@@ -136,9 +136,25 @@
   <!-- create releasable zip -->
   <Target Name="AfterBuild">
     <Message Text="creating zip file for output folder" />
-    
+
+    <GetAssemblyIdentity AssemblyFiles="$(OutputPath)\Empowerops.Volition.Api.dll">
+      <Output TaskParameter="Assemblies" ItemName="Targets" />
+    </GetAssemblyIdentity>
+    <ItemGroup>
+      <VersionNumber Include="@(Targets->'%(Version)')"/>
+    </ItemGroup>
+    <PropertyGroup>
+      <VersionString>@(VersionNumber)</VersionString>
+    </PropertyGroup>
+
     <MakeDir Directories="Artifacts"/>
-    <ZipDirectory SourceDirectory="$(OutputPath)" DestinationFile="Artifacts/EmpowerOps.Volition.RefClient.zip"/>
+    
+    <ItemGroup>
+      <FilesToClean Include="Artifacts\EmpowerOps.Volition.RefClient-*.zip" />
+    </ItemGroup>
+    <Delete Files="@(FilesToClean)"/>
+    
+    <ZipDirectory SourceDirectory="$(OutputPath)" DestinationFile="Artifacts/EmpowerOps.Volition.RefClient-$(VersionString).zip" Overwrite="true"/>
     
   </Target>
 </Project>

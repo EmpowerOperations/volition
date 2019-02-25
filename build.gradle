@@ -202,6 +202,7 @@ project('oasis-reference'){
         compile project(":api")
         compile 'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.30.2'
         compile 'no.tornado:tornadofx:1.7.17'
+        compile group: 'org.funktionale', name: 'funktionale-all', version: '1.2'
     }
 
     task copyToLib(type: Copy) {
@@ -213,7 +214,7 @@ project('oasis-reference'){
     
     jar {
         manifest {
-            attributes 'Main-Class': 'com.empowerops.volition.ref_oasis.OptimizerKt'
+            attributes 'Main-Class': 'com.empowerops.volition.ref_oasis.RefOptimizerKt'
         }
     }
 

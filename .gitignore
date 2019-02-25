@@ -22,6 +22,7 @@ csharp-client-reference/Artifacts
 api/obj
 .vs/
 
+*.sln.DotSettings.user
 
 !packages/repositories.config
 /api/EmpowerOps.Volition.Api.0.1.0.nupkg

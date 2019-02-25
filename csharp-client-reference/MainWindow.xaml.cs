@@ -69,7 +69,7 @@ namespace EmpowerOps.Volition.RefClient
                 await _channel.WaitForStateChangedAsync(channelState);
                 channelState = _channel.State;
                 ConnectionStatus.Text = $"Connection: {channelState.ToString()}";
-            } 
+            }
 
         }
         
@@ -82,15 +82,13 @@ namespace EmpowerOps.Volition.RefClient
         {
             //request for inputs, do the simulation, return result, repeat
             var requestsResponseStream = requests.ResponseStream;
-            //https://github.com/grpc/grpc.github.io/blob/master/docs/tutorials/basic/csharp.md
             try
             {
                 while (await requestsResponseStream.MoveNext(new CancellationToken()))
                 {
                     HandleRequestAsync(requestsResponseStream.Current);
                 }
-
-                Log("- Query Stream Closed, try Un-register");
+                Log("- Query Stream Closed, unregister");
                 Unregister();
             }
             catch (Exception e)
@@ -128,7 +126,12 @@ namespace EmpowerOps.Volition.RefClient
             }
             catch (Exception e)
             {
-                Log($"Error handling request [{request.RequestCase}] due to:\n{e}");
+                _client.offerErrorResult(new ErrorResponseDTO
+                {
+                    Name = _name,
+                    Message = $"Error handling request [{request.RequestCase}]",
+                    Exception = e.ToString()
+                });
             }
         }
 
@@ -178,34 +181,28 @@ namespace EmpowerOps.Volition.RefClient
             {
                 case EvaluationResult.ResultStatus.Succeed:
                     Log($"- Evaluation Succeed [{result.Output}]");
-                    Log($"- Send Result");
                     _client.offerSimulationResult(new SimulationResponseDTO
                     {
                         Name = _name,
                         OutputVector = {result.Output}
                     });
-                    Log($"Server: Result Received");
                     break;
                 case EvaluationResult.ResultStatus.Failed:
                     Log($"- Evaluation Failed [{result.Output}]\nException: {result.Exception}");
-                    Log($"- Send Error");
-                    _client.offerErrorResult(new SimulationErrorResponseDTO
+                    _client.offerErrorResult(new ErrorResponseDTO
                     {
                         Name = _name,
-                        Exception = result.Exception.ToString(),
-                        OutputVector = {result.Output}
+                        Message = $"- Evaluation Failed when evaluating [{inputs}]",
+                        Exception = result.Exception.ToString()
                     });
-                    Log($"Server: Error Received");
                     break;
                 case EvaluationResult.ResultStatus.Canceled:
                     Log($"- Evaluation Canceled");
-                    Log($"- Send Result");
                     _client.offerSimulationResult(new SimulationResponseDTO
                     {
                         Name = _name,
                         OutputVector = {result.Output}
                     });
-                    Log($"Server: Result Received");
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -276,14 +273,14 @@ namespace EmpowerOps.Volition.RefClient
         private void UpdateNode()
         {
             _client.updateNode(BuildNodeUpdateResponse());
-            Log($"Server: Node Update Received");
         }
 
         private NodeStatusCommandOrResponseDTO BuildNodeUpdateResponse()
         {
             var nodeStatusCommandOrResponseDto = new NodeStatusCommandOrResponseDTO
             {
-                Name = _name
+                Name = _name,
+                Description = "Volition Reference Client"
             };
             //gather inputs/ outputs NodeStatusCommandOrResponseDTO
             foreach (Input input in _inputSource)
@@ -292,7 +289,7 @@ namespace EmpowerOps.Volition.RefClient
                 {
                     Name = input.Name,
                     LowerBound = input.LowerBound,
-                    UpperBound = input.UpperBound
+                    UpperBound = input.UpperBound,
                 });
             }
 
@@ -326,7 +323,6 @@ namespace EmpowerOps.Volition.RefClient
                 _isRegistered = true;
                 _name = registrationCommandDto.Name;
                 UpdateButton();
-
                 HandlingRequestsAsync(_requests);
             }
             else

@@ -45,7 +45,7 @@ class OptimizerEndpoint(
         if (request.name in modelService.simByName.keys) {
             return
         }
-        modelService.addNewSim(Simulation(request.name, emptyList(), emptyList(), "", responseObserver, Channel(1), Channel(1), Channel(1)))
+        modelService.addNewSim(Simulation(request.name, emptyList(), emptyList(), "", responseObserver, Channel(RENDEZVOUS), Channel(RENDEZVOUS), Channel(RENDEZVOUS)))
         modelService.updateStatusMessage("${request.name} registered")
     }
 

@@ -89,6 +89,9 @@ class OptimizerController {
     }
 
     @FXML fun initialize() {
+
+        modelService.on
+
         messageSenderColumn.setCellValueFactory { dataFeatures ->  StringConstant.valueOf(dataFeatures.value.sender) }
         timeColumn.setCellValueFactory { dataFeatures ->  StringConstant.valueOf(dataFeatures.value.receiveTime.toString()) }
         messageColumn.setCellValueFactory { dataFeatures ->  StringConstant.valueOf(dataFeatures.value.message) }
@@ -162,7 +165,8 @@ class OptimizerController {
     }
 
     fun setData(dataModelService: DataModelService, control: OptimizerEndpoint){
-        nodesList.items = dataModelService.viewData.nodes
+//        nodesList.items = dataModelService.viewData.nodes
+
         messageTableView.items = dataModelService.viewData.allMessages
         resultTableView.items = dataModelService.viewData.resultList
         modelService = dataModelService

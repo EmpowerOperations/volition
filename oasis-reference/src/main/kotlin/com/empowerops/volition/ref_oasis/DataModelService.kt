@@ -4,13 +4,18 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.javafx.JavaFx
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.time.Duration
 
 class DataModelService(
         val viewData: ViewData,
         private val updateCallback: () -> Unit
 ) : ModelService {
+
     override var simByName: Map<String, Simulation> = emptyMap()
+
+
+    public override val onSimulationNameChanged = EventHandler<SimulationNameChangedEvent>()
 
     override fun updateStatusMessage(message: String) {
         GlobalScope.launch(Dispatchers.JavaFx) {
@@ -39,12 +44,23 @@ class DataModelService(
         simByName += nodeName to newNode
     }
 
-    override fun renameSim(target: Simulation, newName: String, oldName: String) {
-        require(simByName.containsKey(oldName) && !simByName.containsKey(newName))
+    class EventHandler<E> {
+        private var handlers: List<suspend (E) -> Unit> = emptyList() // we can make this an atomic reference as an excercise.
+        suspend fun fire(event: E): Unit = handlers.forEach { it.invoke(event) }
+        operator fun plusAssign(handler: suspend (E) -> Unit): Unit { handlers += handler }
+    }
+
+    data class SimulationNameChangedEvent(val target: Simulation, val newName: String, val oldName: String)
+
+    override fun renameSim(target: Simulation, newName: String, oldName: String) = runBlocking {
+        require(oldName in simByName && newName !in simByName)
         simByName += newName to target
         simByName -= oldName
-        removeNodeFromView(oldName)
-        addNodeToView(newName)
+
+//        view.simulations.replace(oldName, newName)
+        onSimulationNameChanged.fire(SimulationNameChangedEvent(target, newName, oldName))
+//        removeNodeFromView(oldName)
+//        addNodeToView(newName)
     }
 
     override fun removeSim(name: String) {

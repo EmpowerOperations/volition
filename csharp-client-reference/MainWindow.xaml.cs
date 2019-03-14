@@ -88,12 +88,17 @@ namespace EmpowerOps.Volition.RefClient
                 {
                     HandleRequestAsync(requestsResponseStream.Current);
                 }
-                Log("- Query Stream Closed, unregister");
-                Unregister();
+
+                Log("- Query Closed, plugin has been unregisred by server");
             }
             catch (Exception e)
             {
                 Log($"- Error happened when reading from request stream, unregistered\n{e}");
+            }
+            finally
+            {
+                _name = "";
+                _requests = null;
                 _isRegistered = false;
                 UpdateButton();
             }
@@ -309,6 +314,11 @@ namespace EmpowerOps.Volition.RefClient
             //TODO better error state handing, when register failed due to no connection, it is not well though right now
             //TODO also when error flow when register e.g. same name
             var registrationCommandDto = new RegistrationCommandDTO {Name = RegName.Text };
+            if (_requests != null)
+            {
+                Log("- Node already registered");
+                return;
+            }
 
             Log($"- Try Register as {RegName.Text}");
             _requests = _client.register(registrationCommandDto);
@@ -316,7 +326,7 @@ namespace EmpowerOps.Volition.RefClient
             {
                 await _channel.WaitForStateChangedAsync(_channel.State);
             }
-            
+
             if (_channel.State == ChannelState.Ready)
             {
                 Log("- Registered");
@@ -421,6 +431,7 @@ namespace EmpowerOps.Volition.RefClient
             var message = (responseDto.Unregistered ? "Successful" : "Failed");
             Log($"Server: Unregistered {message}");
             _name = "";
+            _requests = null;
             _isRegistered = false;
             UpdateButton();
         }

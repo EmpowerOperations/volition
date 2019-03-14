@@ -5,22 +5,10 @@ import com.empowerops.volition.dto.NodeStatusCommandOrResponseDTO
 import com.empowerops.volition.dto.OASISQueryDTO
 import com.empowerops.volition.dto.SimulationResponseDTO
 import io.grpc.stub.StreamObserver
+import javafx.collections.ObservableMap
 import kotlinx.coroutines.channels.Channel
 import java.time.Duration
 import java.time.LocalDateTime
-
-interface ModelService {
-    var simByName: Map<String, Simulation>
-    fun updateStatusMessage(message: String)
-    fun addMessage(message: Message)
-    fun addResult(result: Result)
-    fun setDuration(nodeName: String?, timeOut: Duration?)
-
-    fun updateSim(newNode: Simulation)
-    fun addNewSim(simulation: Simulation)
-    fun removeSim(name: String)
-    fun renameSim(target: Simulation, newName: String, oldName: String)
-}
 
 data class Input(
         val name: String,
@@ -46,14 +34,24 @@ data class Result(
         val outputs: String
 )
 
+interface Nameable{
+    val name: String
+}
+
 data class Simulation(
-        val name: String,
+        override val name: String,
         val inputs: List<Input>,
         val outputs: List<Output>,
         val description: String,
         val input: StreamObserver<OASISQueryDTO>,
         val output: Channel<SimulationResponseDTO>,
         val update: Channel<NodeStatusCommandOrResponseDTO>,
-        val error: Channel<ErrorResponseDTO>,
+        val error: Channel<ErrorResponseDTO>
+) : Nameable
+
+data class Proxy(
+        override val name : String,
+        val inputs: List<Input> = emptyList(),
+        val outputs: List<Output> = emptyList(),
         val timeOut: Duration? = null
-)
+) : Nameable

@@ -1,13 +1,11 @@
 package com.empowerops.volition.ref_oasis
 
 import com.empowerops.volition.dto.LoggingInterceptor
+import com.google.common.eventbus.EventBus
 import io.grpc.Server
 import io.grpc.ServerBuilder
 import io.grpc.ServerInterceptors
 import javafx.application.Application
-import javafx.beans.property.SimpleStringProperty
-import javafx.collections.FXCollections
-import javafx.collections.ObservableList
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
 import javafx.scene.Scene
@@ -17,16 +15,11 @@ fun main(args: Array<String>) {
     Application.launch(Optimizer::class.java)
 }
 
-class Optimizer : Application(){
-    lateinit var server : Server
-    lateinit var endpoint : OptimizerEndpoint
-    lateinit var modelService : DataModelService
-    private val list: ObservableList<String> = FXCollections.observableArrayList()
-    private val messageList: ObservableList<Message> = FXCollections.observableArrayList()
-    private val resultList: ObservableList<Result> = FXCollections.observableArrayList()
-    private val updateList: ObservableList<String> = FXCollections.observableArrayList()
-    private val currentEvaluationStatus = SimpleStringProperty()
-    private val viewData = ViewData(list, messageList, currentEvaluationStatus, resultList, updateList)
+class Optimizer : Application() {
+    lateinit var server: Server
+    lateinit var endpoint: OptimizerEndpoint
+    lateinit var modelService: DataModelService
+    val eventBus: EventBus = EventBus()
 
     override fun start(primaryStage: Stage) {
         val fxmlLoader = FXMLLoader()
@@ -37,19 +30,19 @@ class Optimizer : Application(){
         primaryStage.scene = Scene(root)
         primaryStage.show()
 
-        setupService(controller)
+        setupService()
+        val connectionView = ConnectionView(modelService, endpoint, eventBus)
 
-        controller.setData(modelService, endpoint)
+        controller.setData(modelService, endpoint, eventBus, connectionView.root)
     }
 
-    fun setupService(controller : OptimizerController) {
-        modelService = DataModelService(viewData) { controller.rebindView() }
-        endpoint = OptimizerEndpoint(modelService)
+    fun setupService() {
+        modelService = DataModelService(eventBus)
+        endpoint = OptimizerEndpoint(modelService, eventBus)
         server = ServerBuilder
                 .forPort(5550)
                 .addService(ServerInterceptors.intercept(endpoint, LoggingInterceptor(System.out)))
                 .build()
         server.start()
     }
-
 }

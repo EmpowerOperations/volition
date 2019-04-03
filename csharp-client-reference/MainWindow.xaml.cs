@@ -48,6 +48,12 @@ namespace EmpowerOps.Volition.RefClient
 
         private void StartOptimization_Click(object sender, RoutedEventArgs e)
         {
+            if (! _isRegistered)
+            {
+                ShowNotRegisterMessage();
+                return;
+            }
+
             _client.startOptimization(new StartOptimizationCommandDTO());
             Log($"Server: Started Received");
             UpdateButton();
@@ -55,6 +61,12 @@ namespace EmpowerOps.Volition.RefClient
 
         private void StopOptimization_Click(object sender, RoutedEventArgs e)
         {
+            if (!_isRegistered)
+            {
+                ShowNotRegisterMessage();
+                return;
+            }
+
             _client.StopOptimization(new StopOptimizationCommandDTO());
             Log($"Server: Stopped Received");
             UpdateButton();
@@ -347,6 +359,12 @@ namespace EmpowerOps.Volition.RefClient
 
         private void Rename_Button_Click(object sender, RoutedEventArgs e)
         {
+            if (!_isRegistered)
+            {
+                ShowNotRegisterMessage();
+                return;
+            }
+
             var nodeNameChangeCommandDto = new NodeNameChangeCommandDTO {OldName = _name, NewName = RegName.Text };
 
             NodeNameChangeResponseDTO nodeNameChangeResponseDto = _client.changeNodeName(nodeNameChangeCommandDto);
@@ -410,15 +428,20 @@ namespace EmpowerOps.Volition.RefClient
 
         private void SyncButton_Click(object sender, RoutedEventArgs e)
         {
+            if (!_isRegistered)
+            {
+                ShowNotRegisterMessage();
+                return;
+            }
             UpdateNode();
         }
 
         private void UnRegister_Click(object sender, RoutedEventArgs e)
         {
-            if (! _isRegistered)
+            if (!_isRegistered)
             {
-                MessageBox.Show($"Not yet registered");
-                return ;
+                ShowNotRegisterMessage();
+                return;
             }
 
             Unregister();
@@ -440,6 +463,11 @@ namespace EmpowerOps.Volition.RefClient
         private void FailNextRun_Click(object sender, RoutedEventArgs e)
         {
             _failToggle = true;
+        }
+
+        private void ShowNotRegisterMessage()
+        {
+            MessageBox.Show("Simulation is not registerd.");
         }
     }
 

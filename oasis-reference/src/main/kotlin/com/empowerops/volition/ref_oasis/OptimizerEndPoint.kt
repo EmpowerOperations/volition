@@ -1,282 +1,164 @@
 package com.empowerops.volition.ref_oasis
 
 import com.empowerops.volition.dto.*
-import com.google.common.eventbus.EventBus
+import io.grpc.Status
+import io.grpc.StatusException
 import io.grpc.stub.StreamObserver
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.RENDEZVOUS
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.selects.select
-import org.funktionale.either.Either
 import java.time.Duration
+import java.util.*
 
-sealed class EvaluationResult {
-    data class Success(val name: String, val result: Map<String, Double>) : EvaluationResult()
-    data class TimeOut(val name: String) : EvaluationResult()
-    data class Failed(val name: String, val exception: String) : EvaluationResult()
-    data class Error(val name: String, val exception: String) : EvaluationResult()
-}
-
-sealed class CancelResult {
-    data class Canceled(val name: String) : CancelResult()
-    data class CancelFailed(val name: String, val exception: String) : CancelResult()
-}
-
+/**
+ * All the method in endpoint are handing inbound call.
+ * This also does not need any logging since all of api call are logged.
+ */
 class OptimizerEndpoint(
         private val modelService: DataModelService,
-        private val eventBus: EventBus
+        private val optimizerService : OptimizerService
 ) : OptimizerGrpc.OptimizerImplBase() {
-    private var state = State.Idle
-
-    enum class State {
-        Idle,
-        Running,
-        Pause
-    }
 
     override fun changeNodeName(request: NodeNameChangeCommandDTO, responseObserver: StreamObserver<NodeNameChangeResponseDTO>) = responseObserver.consume {
-        val changed = modelService.renameSim(request.newName, request.oldName)
-        NodeNameChangeResponseDTO.newBuilder().setChanged(changed).build()
+        val changed = modelService.renameSim(newName = request.newName, oldName = request.oldName)
+
+        NodeNameChangeResponseDTO
+                .newBuilder()
+                .setChanged(changed)
+                .setMessage(buildNameChangeMessage(changed, request.oldName, request.newName))
+                .build()
     }
 
-    override fun register(request: RegistrationCommandDTO, responseObserver: StreamObserver<OASISQueryDTO>) {
-        if (modelService.simulations.hasName(request.name)) {
-            responseObserver.onCompleted()
-            return
-        }
-        modelService.addNewSim(Simulation(request.name, emptyList(), emptyList(), "", responseObserver, Channel(RENDEZVOUS), Channel(RENDEZVOUS), Channel(RENDEZVOUS)))
-        eventBus.post(StatusUpdateEvent("${request.name} registered"))
+    override fun autoConfigure(request: NodeStatusCommandOrResponseDTO, responseObserver: StreamObserver<NodeChangeConfirmDTO>) = responseObserver.consume {
+        val autoSetupResult = modelService.autoSetup(request.generateUpdatedSimulation())
+        NodeChangeConfirmDTO
+                .newBuilder()
+                .setMessage(buildAutoSetupMessage(autoSetupResult))
+                .build()
     }
 
-    override fun startOptimization(request: StartOptimizationCommandDTO, responseObserver: StreamObserver<StartOptimizationResponseDTO>) = responseObserver.consume {
-        val issues = modelService.findIssue()
-        val message: String
 
-        if (issues.isNotEmpty()) {
-            message = "Optimization cannot start: ${issues.joinToString(", ")}"
-        } else {
-            message = "Optimization started"
-            GlobalScope.async { startOptimization(RandomNumberOptimizer()) }
-        }
 
-        StartOptimizationResponseDTO.newBuilder().setMessage(message).setStarted(issues.isEmpty()).build()
-    }
+    override fun updateConfiguration(request: ConfigurationCommandDTO, responseObserver: StreamObserver<ConfigurationResponseDTO>)  = responseObserver.consume {
+        val durationSet = modelService.setDuration(request.name, Duration.ofMillis(request.config.timeout))
 
-    suspend fun startOptimization(optimizer: RandomNumberOptimizer) {
-        state = State.Running
-        eventBus.post(StatusUpdateEvent("Evaluating..."))
-        while (state == State.Running) {
-            var pluginNumber = 1
-            for (proxy in modelService.proxies) {
-                eventBus.post(StatusUpdateEvent("Evaluating: ${proxy.name} ($pluginNumber/${modelService.simulations.size})"))
-                val inputVector = optimizer.generateInputs(proxy.inputs)
-                val simResult = evaluate(proxy.name, inputVector)
-                eventBus.post(NewResultEvent(makeResult(simResult, inputVector)))
-                eventBus.post(StatusUpdateEvent("Evaluation finished."))
-                if (simResult is EvaluationResult.TimeOut) {
-                    eventBus.post(StatusUpdateEvent("Timed out, Canceling..."))
-                    cancel(proxy.name)
-                    eventBus.post(StatusUpdateEvent("Cancel finished."))
-                }
-                pluginNumber++
-            }
-            if (state == State.Pause) {
-                eventBus.post(StatusUpdateEvent("Paused"))
-                while (state == State.Pause && state != State.Idle) {
-                    delay(500)
-                }
-            }
-        }
-        eventBus.post(StatusUpdateEvent("Idle"))
-    }
-
-    private fun makeResult(evaluationResult: EvaluationResult, inputVector: Map<String, Double>): Result = when (evaluationResult) {
-        is EvaluationResult.Success -> {
-            Result(evaluationResult.name, "Success", inputVector.toString(), evaluationResult.result.toString())
-        }
-        is EvaluationResult.Failed -> {
-            Result(evaluationResult.name, "Failed", inputVector.toString(), "Evaluation Failed: \n${evaluationResult.exception}")
-        }
-        is EvaluationResult.TimeOut -> {
-            Result(evaluationResult.name, "Timeout", inputVector.toString(), "N/A")
-        }
-        is EvaluationResult.Error -> {
-            Result(evaluationResult.name, "Error", inputVector.toString(), "Error:\n${evaluationResult.exception}")
-        }
-    }
-
-    private suspend fun evaluate(name: String, inputVector: Map<String, Double>): EvaluationResult {
-        val simulation = modelService.simulations.getValue(name)
-        val proxy = modelService.proxies.getValue(name)
-        val message = OASISQueryDTO.newBuilder().setEvaluationRequest(
-                OASISQueryDTO.SimulationEvaluationRequest
-                        .newBuilder()
-                        .setName(name)
-                        .putAllInputVector(inputVector)
-        ).build()
-
-        return try {
-            simulation.input.onNext(message)
-            select {
-                simulation.output.onReceive { EvaluationResult.Success(it.name, it.outputVectorMap) }
-                simulation.error.onReceive { EvaluationResult.Failed(it.name, it.exception) }
-                if (proxy.timeOut != null) {
-                    onTimeout(proxy.timeOut.toMillis()) {
-                        EvaluationResult.TimeOut(name)
-                    }
-                }
-            }
-        } catch (exception: Exception) {
-            EvaluationResult.Error("Optimizer", "Unexpected error happened when try to evaluate $inputVector though simulation $name. Cause: $exception")
-        }
-    }
-
-    fun stopOptimization(): Boolean {
-        state = State.Idle
-        return true
-    }
-
-    fun pauseOptimization(): Boolean = when (state) {
-        State.Running -> {
-            state = State.Pause
-            true
-        }
-        State.Pause -> {
-            state = State.Running
-            false
-        }
-        else -> false
-    }
-
-    suspend fun updateNode(simName: String) {
-        syncConfigFor(simName)
-    }
-
-    suspend fun cancelAll() {
-        modelService.simulations.forEach { cancel(it.name) }
+        ConfigurationResponseDTO
+                .newBuilder()
+                .setMessage(buildUpdateMessage(durationSet))
+                .build()
     }
 
     /**
-     * Cancel is NOT running in async mode because we are not managing state for plugin and we always assume plugin is in ready state
-     * whenever it returns a result
+     * Rethink how result works evaluation one input, for one and for multiple tool
      */
-    private suspend fun cancel(name: String) {
-        val message = OASISQueryDTO.newBuilder().setCancelRequest(OASISQueryDTO.SimulationCancelRequest.newBuilder().setName(name)).build()
-        val simulation = modelService.simulations.getValue(name)
-
-        simulation.input.onNext(message)
-        val cancelResult = select<CancelResult> {
-            simulation.output.onReceive { CancelResult.Canceled(it.name) }
-            simulation.error.onReceive { CancelResult.CancelFailed(it.name, it.exception) }
-        }
-        val cancelMessage = when (cancelResult) {
-            is CancelResult.Canceled -> {
-                Message("Optimizer", "Evaluation Canceled")
-            }
-            is CancelResult.CancelFailed -> {
-                Message("Optimizer", "Cancellation Failed, Cause:\n${cancelResult.exception}")
-            }
-        }
-        eventBus.post(NewMessageEvent(cancelMessage))
-    }
-
-    suspend fun cancelAndStop() {
-        stopOptimization()
-        cancelAll()
-    }
-
-    private suspend fun syncConfigFor(simName: String) {
-        val sim = modelService.simulations.getValue(simName)
-        val message = OASISQueryDTO.newBuilder().setNodeStatusRequest(
-                OASISQueryDTO.NodeStatusUpdateRequest.newBuilder().setName(simName)
-        ).build()
-        var result: Either<Simulation, Message>
-        try {
-            sim.input.onNext(message)
-
-            result = select {
-                sim.update.onReceive { Either.Left(updateFromResponse(it)) }
-                sim.error.onReceive {
-                    Either.Right(Message(it.name, "Error update simulation $simName due to ${it.message} :\n${it.exception}"))
-                }
-                onTimeout(Duration.ofSeconds(5).toMillis()) {
-                    Either.Right(Message("Optimizer", "Update simulation timeout. Please check simulation is registered and responsive."))
-                }
-            }
-        } catch (exception: Exception) {
-            result = Either.Right(Message("Optimizer", "Unexpected error happened when update simulation $simName failed. Please check simulation is registered and responsive. Cause:\n$exception"))
-        }
-
-        if (result.isLeft()) {
-            modelService.updateSim(result.left().get())
+    override fun requestRunResult(request: ResultRequestDTO, responseObserver: StreamObserver<ResultResponseDTO>) = responseObserver.consume {
+        val responseBuilder = ResultResponseDTO.newBuilder()
+        val list = modelService.resultList[UUID.fromString(request.runID)]
+        if (list == null) {
+            responseBuilder.message = buildRunNotFoundMessage(request)
         } else {
-            eventBus.post(NewMessageEvent(result.right().get()))
+            val runResultBuilder = RunResult.newBuilder()
+            runResultBuilder.addAllPoint(list.map { Design.newBuilder().putAllInput(it.inputs).putAllOutput(it.outputs).build() })
+            runResultBuilder.addAllOptimum(emptyList())//TODO update optimum
+            responseBuilder.runResult = runResultBuilder.build()
+
+        }
+        responseBuilder.build()
+    }
+
+
+    override fun register(request: RegistrationCommandDTO, responseObserver: StreamObserver<OASISQueryDTO>) {
+        val added = modelService.addSim(
+                Simulation(request.name, emptyList(), emptyList(), "", responseObserver, Channel(RENDEZVOUS), Channel(RENDEZVOUS), Channel(RENDEZVOUS))
+        )
+
+        if ( ! added) {
+            responseObserver.onError(StatusException(Status.ALREADY_EXISTS))
         }
     }
+
+    override fun startOptimization(request: StartOptimizationCommandDTO, responseObserver: StreamObserver<StartOptimizationResponseDTO>) = responseObserver.consume {
+        val responseBuilder = StartOptimizationResponseDTO.newBuilder()
+        val reply = optimizerService.startOptimization()
+        if (reply.isLeft()) {
+            responseBuilder.message = buildStartIssuesMessage(reply.left().get())
+        }
+        else {
+            responseBuilder.runID = reply.right().get().toString()
+        }
+        responseBuilder.build()
+    }
+
+    private fun buildStartFailedMessage() = "Start order rejected"
 
     override fun stopOptimization(request: StopOptimizationCommandDTO, responseObserver: StreamObserver<StopOptimizationResponseDTO>) = responseObserver.consume {
-        GlobalScope.async { stopOptimization() }
-        StopOptimizationResponseDTO.newBuilder().setMessage("Stop acknowledged").setStopped(true).build()
-    }
+        val stopped = optimizerService.stopOptimization()
 
-    override fun offerSimulationResult(request: SimulationResponseDTO, responseObserver: StreamObserver<SimulationResultConfirmDTO>) = responseObserver.consume {
-        val output = modelService.simulations.getNamed(request.name)?.output
-        if (output != null) {
-            output.send(request)
-        } else {
-            throw IllegalStateException("no simulation '${request.name}' or buffer full")
-        }
-        SimulationResultConfirmDTO.newBuilder().build()
-    }
-
-    override fun offerErrorResult(request: ErrorResponseDTO, responseObserver: StreamObserver<ErrorConfirmDTO>) = responseObserver.consume {
-        val error = modelService.simulations.getNamed(request.name)?.error
-        if (error != null) {
-            error.send(request)
-        } else {
-            throw IllegalStateException("no simulation '${request.name}' or buffer full")
-        }
-        ErrorConfirmDTO.newBuilder().build()
-    }
-
-    override fun offerSimulationConfig(request: NodeStatusCommandOrResponseDTO, responseObserver: StreamObserver<NodeChangeConfirmDTO>) = responseObserver.consume {
-        val update = modelService.simulations.getNamed(request.name)?.update
-
-        if (update != null) {
-            update.send(request)
-        } else {
-            throw IllegalStateException("no simulation '${request.name}' or buffer full")
-        }
-        NodeChangeConfirmDTO.newBuilder().build()
+        StopOptimizationResponseDTO
+                .newBuilder()
+                .setRunID(request.id)
+                .setMessage(buildStopMessage(stopped))
+                .build()
     }
 
     override fun updateNode(request: NodeStatusCommandOrResponseDTO, responseObserver: StreamObserver<NodeChangeConfirmDTO>) = responseObserver.consume {
-        val newNode = updateFromResponse(request)
-        modelService.updateSim(newNode)
-        eventBus.post(StatusUpdateEvent("${request.name} updated"))
-        NodeChangeConfirmDTO.newBuilder().setMessage("Simulation updated with inputs: ${newNode.inputs} outputs: ${newNode.outputs}").build()
+        val newSimulationConfig = request.generateUpdatedSimulation()
+        val updated = modelService.updateSimAndConfiguration(newSimulationConfig)
+
+        NodeChangeConfirmDTO
+                .newBuilder()
+                .setMessage(buildSimulationUpdateMessage(newSimulationConfig, updated))
+                .build()
     }
 
-
-    override fun sendMessage(request: MessageCommandDTO, responseObserver: StreamObserver<MessageReponseDTO>) = responseObserver.consume {
-        eventBus.post(NewMessageEvent(Message(request.name, request.message)))
-        MessageReponseDTO.newBuilder().build()
+    override fun sendMessage(request: MessageCommandDTO, responseObserver: StreamObserver<MessageResponseDTO>) = responseObserver.consume {
+        modelService.addNewMessage(Message(request.name, request.message))
+        MessageResponseDTO
+                .newBuilder()
+                .build()
     }
 
     override fun unregister(request: UnRegistrationRequestDTO, responseObserver: StreamObserver<UnRegistrationResponseDTO>) = responseObserver.consume {
         val unregistered = modelService.closeSim(request.name)
-        UnRegistrationResponseDTO.newBuilder().setUnregistered(unregistered).build()
+
+        UnRegistrationResponseDTO
+                .newBuilder()
+                .setMessage(buildUnregisterMessage(unregistered))
+                .build()
     }
 
-    private fun updateFromResponse(request: NodeStatusCommandOrResponseDTO): Simulation {
-        return modelService.simulations.single { it.name == request.name }.copy(
-                name = request.name,
-                inputs = request.inputsList.map { Input(it.name, it.lowerBound, it.upperBound, it.currentValue) },
-                outputs = request.outputsList.map { Output(it.name) },
-                description = request.description
+    override fun offerSimulationResult(request: SimulationResponseDTO, responseObserver: StreamObserver<SimulationResultConfirmDTO>) = responseObserver.consume {
+        modelService.simulations.getNamed(request.name)?.output.sendAndRespond(request) { SimulationResultConfirmDTO.newBuilder().build() }
+    }
+
+    override fun offerErrorResult(request: ErrorResponseDTO, responseObserver: StreamObserver<ErrorConfirmDTO>) = responseObserver.consume {
+        modelService.simulations.getNamed(request.name)?.error.sendAndRespond(request) { ErrorConfirmDTO.newBuilder().build() }
+    }
+
+    override fun offerSimulationConfig(request: NodeStatusCommandOrResponseDTO, responseObserver: StreamObserver<NodeChangeConfirmDTO>) = responseObserver.consume {
+        modelService.simulations.getNamed(request.name)?.update.sendAndRespond(request) { NodeChangeConfirmDTO.newBuilder().build() }
+    }
+
+    private suspend fun <T, U> Channel<T>?.sendAndRespond(request : T, responseBuilder : () -> U) : U {
+        if(this == null)throw IllegalStateException("no outChannel available for '$request' or buffer full")
+        send(request)
+        return responseBuilder.invoke()
+    }
+
+    private fun NodeStatusCommandOrResponseDTO.generateUpdatedSimulation(): Simulation {
+        return modelService.simulations.single { it.name == name }.copy(
+                name = name,
+                inputs = inputsList.map { Input(it.name, it.lowerBound, it.upperBound, it.currentValue) },
+                outputs = outputsList.map { Output(it.name) },
+                description = description
         )
     }
 
+    private fun buildNameChangeMessage(changed: Boolean, oldName: String, newName: String) = "Name change request from $oldName to $newName ${if (changed) "succeed" else "failed"}"
+    private fun buildUnregisterMessage(result : Boolean) = "Unregister ${if(result) "success" else "failed"}"
+    private fun buildUpdateMessage(updated: Boolean) = "Configuration update request ${if (updated) "succeed" else "failed, there is no existing setup."}"
+    private fun buildSimulationUpdateMessage(newNode: Simulation, updated: Boolean) = "Simulation updated with inputs: ${newNode.inputs} outputs: ${newNode.outputs} ${if(updated)"succeed" else "failed"}"
+    private fun buildStartIssuesMessage(issues: List<String>) = "Optimization cannot start: ${issues.joinToString(", ")}"
+    private fun buildRunNotFoundMessage(request: ResultRequestDTO) = "Requested run ID ${request.runID} is not available"
+    private fun buildAutoSetupMessage(autoSetupResult: Boolean) = "Auto setup ${if (autoSetupResult) "succeed" else "failed"}"
+    private fun buildStopMessage(stopped: Boolean) = "Optimization stop order ${if (stopped) "accepted" else "rejected"}"
 }

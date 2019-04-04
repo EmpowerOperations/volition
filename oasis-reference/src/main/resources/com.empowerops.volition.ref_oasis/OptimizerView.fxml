@@ -129,12 +129,10 @@
                                 <rowConstraints>
                                     <RowConstraints vgrow="NEVER" />
                                     <RowConstraints vgrow="NEVER" />
-                                    <RowConstraints vgrow="NEVER" />
                                 </rowConstraints>
                                 <Label text="Optimization" />
-                                <Button mnemonicParsing="false" onAction="#stopRun" text="Stop" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                <Button mnemonicParsing="false" onAction="#startRun" text="Start" GridPane.columnIndex="1" />
-                                <Button fx:id="pauseButton" mnemonicParsing="false" onAction="#pauseRun" text="Pause" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                <Button fx:id="startButton" mnemonicParsing="false" onAction="#startStopClicked" text="Start" GridPane.columnIndex="1" />
+                                <Button fx:id="pauseButton" mnemonicParsing="false" onAction="#pauseResumeRun" text="Pause" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                             </GridPane>
                         </VBox>
                         <VBox>

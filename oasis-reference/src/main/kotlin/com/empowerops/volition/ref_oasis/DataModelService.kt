@@ -2,39 +2,27 @@ package com.empowerops.volition.ref_oasis
 
 import com.google.common.eventbus.EventBus
 import java.time.Duration
-
-interface Event
-interface ModelEvent : Event
-
-data class StatusUpdateEvent(val status: String) : Event
-data class NewMessageEvent(val message: Message) : Event
-data class NewResultEvent(val result: Result) : Event
-
-data class PluginRegisteredEvent(val name: String) : ModelEvent
-data class PluginUnRegisteredEvent(val name: String) : ModelEvent
-class PluginUpdatedEvent : ModelEvent
-data class PluginRenamedEvent(val oldName: String, val newName: String) : ModelEvent
-data class ProxyAddedEvent(val name: String) : ModelEvent
-data class ProxyRemovedEvent(val name: String) : ModelEvent
-data class ProxyRenamedEvent(val oldName: String, val newName: String) : ModelEvent
-class ProxyUpdatedEvent : ModelEvent
-
-fun <T : Nameable> List<T>.getValue(name: String) : T = single { it.name == name }
-fun <T : Nameable> List<T>.getNamed(name: String?) : T? = singleOrNull { it.name == name }
-fun <T : Nameable> List<T>.hasName(name: String?): Boolean = any { it.name == name }
-fun <T : Nameable> List<T>.replace(old: T, new: T) : List<T> = this - old + new
-fun <T : Nameable> List<T>.getNames(): List<String> = map{it.name}
+import java.util.*
 
 class DataModelService(private val eventBus: EventBus) {
     var simulations: List<Simulation> = emptyList()
     var proxies: List<Proxy> = emptyList()
+    var resultList : Map<UUID, List<Result>> = emptyMap()
+    var messageList : List<Message> = emptyList()
 
+    /**
+     * Update the timeout for configuration by name
+     */
     fun setDuration(nodeName: String?, timeOut: Duration?) : Boolean{
         val oldNode = proxies.getNamed(nodeName) ?: return false
         proxies = proxies.replace(oldNode, oldNode.copy(timeOut = timeOut))
+        eventBus.post(ProxyUpdatedEvent(nodeName!!))
         return true
     }
 
+    /**
+     * Rename a simulation and, if possible, its associated configuration
+     */
     fun renameSim(newName: String, oldName: String): Boolean {
         val oldSim = simulations.getNamed(oldName) ?: return false
         if (simulations.hasName(newName)) return false
@@ -46,13 +34,16 @@ class DataModelService(private val eventBus: EventBus) {
 
     private fun renameProxy(newName: String, oldName: String): Boolean {
         val oldProxy = proxies.getNamed(oldName) ?: return false
-        if (proxies.hasName(newName)) return false
         proxies = proxies.replace(oldProxy, oldProxy.copy(name = newName))
         eventBus.post(ProxyRenamedEvent(oldName, newName))
         return true
     }
 
-    fun addNewSim(simulation: Simulation) : Boolean {
+    /**
+     * Add a new simulation
+     * will return false if simulation with same name already exist
+     */
+    fun addSim(simulation: Simulation) : Boolean {
         if (simulations.hasName(simulation.name)) return false
 
         simulations += simulation
@@ -61,7 +52,9 @@ class DataModelService(private val eventBus: EventBus) {
     }
 
     /**
-     * try unregister a node and remove it
+     * Try unregister a simulation base on name and remove it regardless the result.
+     *
+     * This will also set the StreamObserver of request to completed so the holder of that should get notified
      */
     fun closeSim(name: String) : Boolean{
         val sim = simulations.getNamed(name) ?: return false
@@ -72,6 +65,9 @@ class DataModelService(private val eventBus: EventBus) {
         }
     }
 
+    /**
+     * Remove a simulation base on name. Will return false if requested simulation does not exist
+     */
     private fun removeSim(name: String) : Boolean {
         val sim = simulations.getNamed(name) ?: return false
         simulations -= sim
@@ -79,41 +75,79 @@ class DataModelService(private val eventBus: EventBus) {
         return true
     }
 
-    fun updateSim(newSim: Simulation) : Boolean{
+    /**
+     * Update simulation and, if possible, the associated configuration
+     */
+    fun updateSimAndConfiguration(newSim: Simulation) : Boolean{
         val oldSim = simulations.getNamed(newSim.name) ?: return false
         simulations = simulations.replace(oldSim, newSim)
-        eventBus.post(PluginUpdatedEvent())
-        return true
-    }
-
-    fun addConfiguration(name: String) : Boolean {
-        if (proxies.hasName(name)) return false
-        proxies += Proxy(name)
-        eventBus.post(ProxyAddedEvent(name))
+        eventBus.post(PluginUpdatedEvent(newSim.name))
+        syncConfigurationToSimulation(newSim.name)
         return true
     }
 
     /**
-     * Match the setup between proxy and its simulation
+     * Automatically add the configuration base on existing simulation
+     *
+     * This will:
+     * 1. Remove all the existing configuration
+     * 2. Update the existing simulation base on the request
+     * 3. Create and add a single configuration associated to the new simulation
      */
-    fun syncConfiguration(name: String) : Boolean{
+    fun autoSetup(newSim: Simulation) : Boolean {
+        if(! simulations.hasName(newSim.name)) return false
+
+        proxies.forEach { removeConfiguration(it.name) }
+        var result = true
+        result = result && updateSimAndConfiguration(newSim)
+        result = result && addAndSyncConfiguration(newSim.name)
+        return result
+    }
+
+    /**
+     * Add a new configuration base on exist simulation name
+     */
+    fun addAndSyncConfiguration(name: String) : Boolean {
+        if (proxies.hasName(name) && ! simulations.hasName(name)) return false
+        proxies += Proxy(name)
+        eventBus.post(ProxyAddedEvent(name))
+        syncConfigurationToSimulation(name)
+        return true
+    }
+
+    /**
+     * Refresh the configuration to match to the associated simulation's setup
+     */
+    private fun syncConfigurationToSimulation(name: String) : Boolean{
         val oldProxy = proxies.getNamed(name) ?: return false
         val sim = simulations.getNamed(name) ?: return false
         proxies = proxies.replace(oldProxy, Proxy(name, sim.inputs, sim.outputs, oldProxy.timeOut))
-        eventBus.post(ProxyUpdatedEvent())
+        eventBus.post(ProxyUpdatedEvent(name))
         return true
+    }
+
+    /**
+     * Request to retrieve the setup base on the registered connection name
+     *
+     * Simulation may or may not be updated and the result is up to Plugin Endpoint
+     */
+    fun updateSimulation(name: String){
+        eventBus.post(SimulationUpdateRequestedEvent(name))
     }
 
     /**
      * Match the setup between proxy and its simulation
      */
-    fun syncConfiguration(newProxy: Proxy) : Boolean{
+    fun updateConfiguration(newProxy: Proxy) : Boolean{
         val oldProxy = proxies.getNamed(newProxy.name) ?: return false
         proxies = proxies.replace(oldProxy, newProxy)
-        eventBus.post(ProxyUpdatedEvent())
+        eventBus.post(ProxyUpdatedEvent(newProxy.name))
         return true
     }
 
+    /**
+     * Remove a configuration with name
+     */
     fun removeConfiguration(name: String) : Boolean{
         val proxy = proxies.getNamed(name) ?: return false
         proxies -= proxy
@@ -121,12 +155,14 @@ class DataModelService(private val eventBus: EventBus) {
         return true
     }
 
-
     fun findIssue(): List<String> {
         var issues = emptyList<String>()
         val proxyNames = proxies.getNames()
         val simNames = simulations.getNames()
 
+        if(proxyNames.isEmpty()){
+            issues += "No proxy setup"
+        }
         val proxyWithNoMatchingSim = proxyNames - simNames
         if (proxyWithNoMatchingSim.isNotEmpty()) {
             proxyWithNoMatchingSim.forEach {
@@ -152,4 +188,16 @@ class DataModelService(private val eventBus: EventBus) {
         }
         return issues
     }
+
+    fun addNewResult(runID: UUID, result: Result) {
+        val results = resultList.getOrElse(runID) { emptyList() }
+        resultList += runID to results + result
+        eventBus.post(NewResultEvent(result))
+    }
+
+    fun addNewMessage(message: Message) {
+        messageList += message
+        eventBus.post(NewMessageEvent(message))
+    }
+
 }

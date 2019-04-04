@@ -52,7 +52,11 @@ fun <T> StreamObserver<T>.consume(block: suspend () -> T) {
     }
 }
 
-class LoggingInterceptor(val output: Appendable): ServerInterceptor {
+interface Logger{
+    fun log(message:String, sender: String)
+}
+
+class LoggingInterceptor(val logger: Logger): ServerInterceptor {
 
     override fun <T : Any?, R : Any?> interceptCall(
             call: ServerCall<T, R>,
@@ -75,8 +79,9 @@ class LoggingInterceptor(val output: Appendable): ServerInterceptor {
             }
 
             override fun sendMessage(message: R) {
-                output.appendln("$name: $fullMethodName")
-                output.appendln(message.toString())
+                val messageString = message.toString().let { if(it.isBlank()) "[empty message]" else "\n$it"}
+
+                logger.log("$name: $fullMethodName $messageString", "API")
                 super.sendMessage(message)
             }
         }
@@ -86,13 +91,13 @@ class LoggingInterceptor(val output: Appendable): ServerInterceptor {
         val inboundInterceptor = object: ForwardingServerCallListener.SimpleForwardingServerCallListener<T>(actual) {
             override fun onComplete() {
                 if( ! type.serverSendsOneMessage()){
-                    output.append("CLOSED: $fullMethodName")
+                    logger.log("$fullMethodName", "API CLOSED")
                 }
                 actual.onComplete()
             }
             override fun onMessage(message: T) {
-                output.appendln("INBOUND: $fullMethodName")
-                output.appendln(message.toString())
+                val messageString = message.toString().let { if(it.isBlank()) "[empty message]" else "\n$it" }
+                logger.log("$fullMethodName $messageString", "API INBOUND")
                 actual.onMessage(message)
             }
         }

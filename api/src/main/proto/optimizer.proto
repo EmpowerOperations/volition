@@ -74,6 +74,8 @@ service Optimizer {
     rpc register (RegistrationCommandDTO) returns (stream OASISQueryDTO) {}
     rpc unregister (UnRegistrationRequestDTO) returns (UnRegistrationResponseDTO) {}
 
+    rpc register2 (stream RegistrationOrResponseDTO) returns (stream OASISQueryDTO) {}
+
     // commands/queries to OASIS
     rpc startOptimization (StartOptimizationCommandDTO) returns (StartOptimizationResponseDTO) {}
     rpc StopOptimization (StopOptimizationCommandDTO) returns (StopOptimizationResponseDTO) {}
@@ -92,13 +94,18 @@ service Optimizer {
 message RegistrationCommandDTO {
     string name = 1;
 }
-
 message UnRegistrationRequestDTO {
     string name = 1;
 }
-
 message UnRegistrationResponseDTO {
     bool unregistered = 1;
+}
+
+message RegistrationOrResponseDTO {
+    oneof request {
+        RegistrationCommandDTO registration = 1;
+        SimulationResponseDTO evaluationResponse = 2;
+    }
 }
 
 message MessageCommandDTO {

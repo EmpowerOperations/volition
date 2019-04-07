@@ -7,7 +7,11 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.RENDEZVOUS
+import kotlinx.coroutines.channels.SendChannel
+import kotlinx.coroutines.channels.actor
+import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.selects.select
 import org.funktionale.either.Either
 import java.time.Duration
@@ -48,6 +52,51 @@ class OptimizerEndpoint(
         }
         modelService.addNewSim(Simulation(request.name, emptyList(), emptyList(), "", responseObserver, Channel(RENDEZVOUS), Channel(RENDEZVOUS), Channel(RENDEZVOUS)))
         eventBus.post(StatusUpdateEvent("${request.name} registered"))
+    }
+
+    override fun register2(responseObserver: StreamObserver<OASISQueryDTO>): StreamObserver<RegistrationOrResponseDTO> {
+
+        val result = GlobalScope.actor<RegistrationOrResponseDTO>{
+
+            try {
+                val registration = receive().registration
+                require(registration is RegistrationCommandDTO)
+
+                if(modelService.simulations.hasName(registration.name)){
+                    return@actor
+                }
+
+                val simulation = Simulation(
+                        registration.name, emptyList(), emptyList(), "", responseObserver,
+                        Channel(RENDEZVOUS), Channel(RENDEZVOUS), Channel(RENDEZVOUS)
+                )
+
+                consumeEach { message ->
+                    when(message.requestCase!!){
+                        RegistrationOrResponseDTO.RequestCase.EVALUATIONRESPONSE -> {
+                            simulation.output.send(message.evaluationResponse!!)
+                        }
+                        RegistrationOrResponseDTO.RequestCase.REQUEST_NOT_SET -> TODO()
+                        RegistrationOrResponseDTO.RequestCase.REGISTRATION -> TODO()
+                    } as Any
+                }
+            }
+            catch(ex: Exception){
+                responseObserver.onError(ex)
+                Thread.getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), ex)
+            }
+            finally {
+                responseObserver.onCompleted()
+            }
+        }
+
+        return result.asStreamObserver()
+    }
+
+    fun <T> SendChannel<T>.asStreamObserver() = object: StreamObserver<T> {
+        override fun onNext(value: T) = runBlocking { send(value) }
+        override fun onError(t: Throwable) { close(t) }
+        override fun onCompleted() { close() }
     }
 
     override fun startOptimization(request: StartOptimizationCommandDTO, responseObserver: StreamObserver<StartOptimizationResponseDTO>) = responseObserver.consume {

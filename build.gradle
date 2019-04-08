@@ -24,7 +24,6 @@ repositories {
     maven { url "https://kotlin.bintray.com/kotlin-eap" }
 }
 
-
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 }
@@ -60,8 +59,6 @@ subprojects {
 
         compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.0.0"
         compile "org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.0.0"
-
-        testCompile group: 'junit', name: 'junit', version: '4.12'
     }
 
     compileKotlin {
@@ -205,6 +202,9 @@ project('oasis-reference'){
         compile 'no.tornado:tornadofx:1.7.17'
         compile 'info.picocli:picocli:3.9.5'
         compile group: 'org.funktionale', name: 'funktionale-all', version: '1.2'
+        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
+        testImplementation 'com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0'
+        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
     }
 
     task copyToLib(type: Copy) {
@@ -228,6 +228,10 @@ project('oasis-reference'){
         include "*.jar"
         archiveName "optimizer-reference-${version}.zip"
         destinationDir(file("$buildDir/deliverable"))
+    }
+    
+    test {
+        useJUnitPlatform()
     }
     
 }

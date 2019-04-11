@@ -57,7 +57,7 @@ class OptimizerEndpoint(
             responseBuilder.message = buildRunNotFoundMessage(request)
         } else {
             val runResultBuilder = RunResult.newBuilder()
-            runResultBuilder.addAllPoint(list.map { Design.newBuilder().putAllInput(it.inputs).putAllOutput(it.outputs).build() })
+            runResultBuilder.addAllPoint(list.map { Design.newBuilder().putAllInput(it.inputs).putAllOutput(it.result).build() })
             runResultBuilder.addAllOptimum(emptyList())//TODO update optimum
             responseBuilder.runResult = runResultBuilder.build()
 

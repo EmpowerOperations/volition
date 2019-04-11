@@ -43,14 +43,14 @@ class OptimizerController {
     @FXML lateinit var view: AnchorPane
     @FXML lateinit var nodesList: ListView<String>
     @FXML lateinit var messageTableView: TableView<Message>
-    @FXML lateinit var resultTableView: TableView<Result>
+    @FXML lateinit var resultTableView: TableView<EvaluationResult>
     @FXML lateinit var messageSenderColumn: TableColumn<Message, String>
     @FXML lateinit var timeColumn: TableColumn<Message, String>
     @FXML lateinit var messageColumn: TableColumn<Message, String>
-    @FXML lateinit var resultSenderColumn: TableColumn<Result, String>
-    @FXML lateinit var typeColumn: TableColumn<Result, String>
-    @FXML lateinit var inputColumn: TableColumn<Result, String>
-    @FXML lateinit var outputColumn: TableColumn<Result, String>
+    @FXML lateinit var resultSenderColumn: TableColumn<EvaluationResult, String>
+    @FXML lateinit var typeColumn: TableColumn<EvaluationResult, String>
+    @FXML lateinit var inputColumn: TableColumn<EvaluationResult, String>
+    @FXML lateinit var outputColumn: TableColumn<EvaluationResult, String>
     @FXML internal lateinit var paramTreeView: TreeTableView<Parameter>
     @FXML internal lateinit var nameColumn: TreeTableColumn<Parameter, String>
     @FXML internal lateinit var valueColumn: TreeTableColumn<Parameter, String>
@@ -68,7 +68,7 @@ class OptimizerController {
 
     private val list: ObservableList<String> = FXCollections.observableArrayList()
     private val messageList: ObservableList<Message> = FXCollections.observableArrayList()
-    private val resultList: ObservableList<Result> = FXCollections.observableArrayList()
+    private val resultList: ObservableList<EvaluationResult> = FXCollections.observableArrayList()
     private val currentEvaluationStatus = SimpleStringProperty()
     private val issuesText = SimpleStringProperty()
     private lateinit var modelService: DataModelService
@@ -170,9 +170,24 @@ class OptimizerController {
 
     private fun setupResultTable() {
         resultSenderColumn.setCellValueFactory { dataFeatures -> StringConstant.valueOf(dataFeatures.value.name) }
-        typeColumn.setCellValueFactory { dataFeatures -> StringConstant.valueOf(dataFeatures.value.resultType) }
+        typeColumn.setCellValueFactory { dataFeatures -> StringConstant.valueOf(dataFeatures.value.getTypeDisplayString()) }
         inputColumn.setCellValueFactory { dataFeatures -> StringConstant.valueOf(dataFeatures.value.inputs.toString()) }
-        outputColumn.setCellValueFactory { dataFeatures -> StringConstant.valueOf(if (dataFeatures.value.outputs.isEmpty()) dataFeatures.value.message else dataFeatures.value.outputs.toString()) }
+        outputColumn.setCellValueFactory { dataFeatures -> StringConstant.valueOf(dataFeatures.value.getResultDisplay()) }
+    }
+
+
+    private fun EvaluationResult.getTypeDisplayString() = when (this) {
+        is EvaluationResult.Success -> "Success"
+        is EvaluationResult.TimeOut -> "Timeout"
+        is EvaluationResult.Failed -> "Failed"
+        is EvaluationResult.Error -> "Error"
+    }
+
+    private fun EvaluationResult.getResultDisplay() = when (this) {
+        is EvaluationResult.Success -> result.toString()
+        is EvaluationResult.TimeOut -> "Timed out: N/A"
+        is EvaluationResult.Failed -> "Evaluation Failed: \n$exception"
+        is EvaluationResult.Error -> "Error:\n$exception"
     }
 
     private fun setupParameterTableTree() {

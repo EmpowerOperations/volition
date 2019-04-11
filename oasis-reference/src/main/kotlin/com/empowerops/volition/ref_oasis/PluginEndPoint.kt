@@ -100,16 +100,20 @@ class PluginEndPoint(
         return try {
             simulation.input.onNext(message)
             select {
-                simulation.output.onReceive { EvaluationResult.Success(it.name, it.outputVectorMap) }
-                simulation.error.onReceive { EvaluationResult.Failed(it.name, it.exception) }
+                simulation.output.onReceive { EvaluationResult.Success(it.name, inputVector, it.outputVectorMap) }
+                simulation.error.onReceive { EvaluationResult.Failed(it.name, inputVector, it.exception) }
                 if (proxy.timeOut != null) {
                     onTimeout(proxy.timeOut.toMillis()) {
-                        EvaluationResult.TimeOut(simulation.name)
+                        EvaluationResult.TimeOut(simulation.name, inputVector)
                     }
                 }
             }
         } catch (exception: Exception) {
-            EvaluationResult.Error("Optimizer", "Unexpected error happened when try to evaluate $inputVector though simulation ${simulation.name}. Cause: $exception")
+            EvaluationResult.Error(
+                    "Optimizer",
+                    inputVector,
+                    "Unexpected error happened when try to evaluate $inputVector though simulation ${simulation.name}. Cause: $exception"
+            )
         }
     }
 

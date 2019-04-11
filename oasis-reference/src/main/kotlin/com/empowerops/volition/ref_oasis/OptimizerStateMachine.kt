@@ -22,22 +22,12 @@ class OptimizerStateMachine {
             StopPending to listOf(Idle)
     )
 
-    fun transferTo(newState: State): Boolean {
-        val result = currentState.transfer(newState)
-        return if (result == newState) {
-            currentState = newState
-            true
-        } else {
-            //log error
-            false
-        }
+    fun transferTo(newState: State): Boolean = if (newState in stateTable.getValue(currentState)) {
+        currentState = newState
+        true
+    } else {
+        //do log
+        false
     }
 
-    private fun State.transfer(newState: State): State {
-        return if (newState in stateTable.getValue(this)) {
-            newState
-        } else {
-            this
-        }
-    }
 }

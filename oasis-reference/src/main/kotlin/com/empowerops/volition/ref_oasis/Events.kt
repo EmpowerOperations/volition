@@ -8,7 +8,7 @@ interface OptimizationModelEvent : ModelEvent
 
 open class StatusUpdateEvent(val status: String)                        : Event
 data class NewMessageEvent(val message: Message)                        : ModelEvent, StatusUpdateEvent("New message received: $message")
-data class NewResultEvent(val result: Result)                           : ModelEvent, StatusUpdateEvent("New result received: $result")
+data class NewResultEvent(val result: EvaluationResult)                 : ModelEvent, StatusUpdateEvent("New result received: $result")
 
 data class PluginUnRegisteredEvent(val name: String)                    : OptimizationModelEvent, StatusUpdateEvent("Plugin $name unregistered")
 data class PluginRegisteredEvent(val name: String)                      : OptimizationModelEvent, StatusUpdateEvent("Plugin $name registered")

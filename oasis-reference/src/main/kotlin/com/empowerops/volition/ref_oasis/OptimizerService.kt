@@ -91,7 +91,7 @@ class OptimizerService(
         currentlyEvaluatedProxy = proxy
         val simResult = pluginEndpoint.evaluate(proxy, inputVector)
         currentlyEvaluatedProxy = null
-        modelService.addNewResult(runID, makeResult(simResult, inputVector))
+        modelService.addNewResult(runID, simResult)
         eventBus.post(StatusUpdateEvent("Evaluation finished."))
         if (simResult is EvaluationResult.TimeOut) {
             eventBus.post(StatusUpdateEvent("Timed out, Canceling..."))
@@ -101,18 +101,5 @@ class OptimizerService(
 
     }
 
-    private fun makeResult(evaluationResult: EvaluationResult, inputVector: Map<String, Double>): Result = when (evaluationResult) {
-        is EvaluationResult.Success -> {
-            Result(evaluationResult.name, "Success", inputs = inputVector, outputs = evaluationResult.result)
-        }
-        is EvaluationResult.Failed -> {
-            Result(evaluationResult.name, "Failed", inputs = inputVector, message = "Evaluation Failed: \n${evaluationResult.exception}")
-        }
-        is EvaluationResult.TimeOut -> {
-            Result(evaluationResult.name, "Timeout", inputs = inputVector, message = "N/A")
-        }
-        is EvaluationResult.Error -> {
-            Result(evaluationResult.name, "Error", inputs = inputVector, message = "Error:\n${evaluationResult.exception}")
-        }
-    }
+
 }

@@ -13,7 +13,6 @@ using MessageBox = System.Windows.MessageBox;
 namespace EmpowerOps.Volition.RefClient
 {
 
-    //TODO 1.udpate time out setup, 2.result retreive 3.stop result: best result/predoset 4.Strart issues[V]
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>

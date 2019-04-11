@@ -6,9 +6,13 @@ import java.util.*
 
 class DataModelService(private val eventBus: EventBus) {
     var simulations: List<Simulation> = emptyList()
+        private set
     var proxies: List<Proxy> = emptyList()
-    var resultList : Map<UUID, List<Result>> = emptyMap()
+        private set
+    var resultList : Map<UUID, List<EvaluationResult>> = emptyMap()
+        private set
     var messageList : List<Message> = emptyList()
+        private set
 
     /**
      * Update the timeout for configuration by name
@@ -189,7 +193,7 @@ class DataModelService(private val eventBus: EventBus) {
         return issues
     }
 
-    fun addNewResult(runID: UUID, result: Result) {
+    fun addNewResult(runID: UUID, result: EvaluationResult) {
         val results = resultList.getOrElse(runID) { emptyList() }
         resultList += runID to results + result
         eventBus.post(NewResultEvent(result))

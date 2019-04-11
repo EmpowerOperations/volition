@@ -1,5 +1,5 @@
 ﻿using System;
-using Google.Protobuf.Collections;
+using System.Collections.Generic;
 
 namespace EmpowerOps.Volition.RefClient
 {
@@ -13,8 +13,8 @@ namespace EmpowerOps.Volition.RefClient
         public ResultStatus Status { get; set; }
         public Exception Exception { get; set; }
        
-        public MapField<string, double> Output { get; set; }
-        public MapField<string, double> Input { get; set; }
+        public IDictionary<string, double> Output { get; set; }
+        public IDictionary<string, double> Input { get; set; }
     }
 
 }

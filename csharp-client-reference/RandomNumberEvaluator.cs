@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Google.Protobuf.Collections;
 
 namespace EmpowerOps.Volition.RefClient
 {
@@ -16,13 +16,13 @@ namespace EmpowerOps.Volition.RefClient
             _evaluationCancellationTokenSource.Cancel();
         }
 
-        public EvaluationResult Evaluate(MapField<string, double> inputs, IList outputs)
+        public EvaluationResult Evaluate(IDictionary<string, double> inputs, IList outputs)
         {
             _evaluationCancellationTokenSource = new CancellationTokenSource();
             return Task.Run(()=>SimulationEvaluation(inputs, outputs), _evaluationCancellationTokenSource.Token).Result;
         }
 
-        private EvaluationResult SimulationEvaluation(MapField<string, double> inputs, IList outputs)
+        private EvaluationResult SimulationEvaluation(IDictionary<string, double> inputs, IList outputs)
         {
             try
             {
@@ -37,7 +37,7 @@ namespace EmpowerOps.Volition.RefClient
                 Thread.Sleep(2000);
                 _evaluationCancellationTokenSource.Token.ThrowIfCancellationRequested();
 
-                var result = new MapField<string, double>();
+                var result = new Dictionary<string, double>();
                 var random = new Random();
 
                 foreach (Output output in outputs)
@@ -50,11 +50,11 @@ namespace EmpowerOps.Volition.RefClient
             }
             catch (OperationCanceledException)
             {
-                return new EvaluationResult { Input = inputs, Output = new MapField<string, double>(), Status = EvaluationResult.ResultStatus.Canceled };
+                return new EvaluationResult { Input = inputs, Output = new Dictionary<string, double>(), Status = EvaluationResult.ResultStatus.Canceled };
             }
             catch (EvaluationException e)
             {
-                var result = new MapField<string, double>();
+                var result = new Dictionary<string, double>();
                 foreach (Output output in outputs)
                 {
                     var evaluationResult = Double.PositiveInfinity;
@@ -74,7 +74,7 @@ namespace EmpowerOps.Volition.RefClient
                 return new EvaluationResult
                 {
                     Input = inputs,
-                    Output = new MapField<string, double>(),
+                    Output = new Dictionary<string, double>(),
                     Status = EvaluationResult.ResultStatus.Failed,
                     Exception = e
                 };

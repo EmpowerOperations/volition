@@ -26,35 +26,50 @@ data class Message(
         val receiveTime: LocalDateTime = LocalDateTime.now()
 )
 
-sealed class EvaluationResult {
-    data class Success(val name: String, val result: Map<String, Double>) : EvaluationResult()
-    data class TimeOut(val name: String) : EvaluationResult()
-    data class Failed(val name: String, val exception: String) : EvaluationResult()
-    data class Error(val name: String, val exception: String) : EvaluationResult()
+sealed class EvaluationResult(
+        open val name: String,
+        open val inputs: Map<String, Double> = emptyMap(),
+        open val result: Map<String, Double> = emptyMap()) {
+    data class Success(
+            override val name: String,
+            override val inputs: Map<String, Double>,
+            override val result: Map<String, Double>
+    ) : EvaluationResult(name, inputs, result)
+
+    data class TimeOut(
+            override val name: String,
+            override val inputs: Map<String, Double>
+    ) : EvaluationResult(name, inputs)
+
+    data class Failed(
+            override val name: String,
+            override val inputs: Map<String, Double>,
+            val exception: String
+    ) : EvaluationResult(name, inputs)
+
+    data class Error(
+            override val name: String,
+            override val inputs: Map<String, Double>,
+            val exception: String
+    ) : EvaluationResult(name, inputs)
 }
+
+
 
 sealed class CancelResult {
     data class Canceled(val name: String) : CancelResult()
     data class CancelFailed(val name: String, val exception: String) : CancelResult()
 }
 
-data class Result(
-        val name: String,
-        val resultType: String,
-        val inputs: Map<String, Double> = emptyMap(),
-        val outputs: Map<String, Double> = emptyMap(),
-        val message: String = ""
-)
-
-interface Nameable{
+interface Nameable {
     val name: String
 }
 
-fun <T : Nameable> List<T>.getValue(name: String) : T = single { it.name == name }
-fun <T : Nameable> List<T>.getNamed(name: String?) : T? = singleOrNull { it.name == name }
+fun <T : Nameable> List<T>.getValue(name: String): T = single { it.name == name }
+fun <T : Nameable> List<T>.getNamed(name: String?): T? = singleOrNull { it.name == name }
 fun <T : Nameable> List<T>.hasName(name: String?): Boolean = any { it.name == name }
-fun <T : Nameable> List<T>.replace(old: T, new: T) : List<T> = this - old + new
-fun <T : Nameable> List<T>.getNames(): List<String> = map{it.name}
+fun <T : Nameable> List<T>.replace(old: T, new: T): List<T> = this - old + new
+fun <T : Nameable> List<T>.getNames(): List<String> = map { it.name }
 
 data class Simulation(
         override val name: String,
@@ -68,7 +83,7 @@ data class Simulation(
 ) : Nameable
 
 data class Proxy(
-        override val name : String,
+        override val name: String,
         val inputs: List<Input> = emptyList(),
         val outputs: List<Output> = emptyList(),
         val timeOut: Duration? = null

@@ -169,6 +169,7 @@ class OptimizerController {
         is EvaluationResult.TimeOut -> "Timeout"
         is EvaluationResult.Failed -> "Failed"
         is EvaluationResult.Error -> "Error"
+        is EvaluationResult.Terminated -> "Terminated"
     }
 
     private fun EvaluationResult.getResultDisplay() = when (this) {
@@ -176,6 +177,7 @@ class OptimizerController {
         is EvaluationResult.TimeOut -> "Timed out: N/A"
         is EvaluationResult.Failed -> "Evaluation Failed: \n$exception"
         is EvaluationResult.Error -> "Error:\n$exception"
+        is EvaluationResult.Terminated -> "Stopped by request"
     }
 
     private fun setupParameterTableTree() {

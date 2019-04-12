@@ -9,6 +9,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.selects.select
 import org.funktionale.either.Either
 import java.time.Duration
+import java.util.*
 
 class PluginEndPoint(
         private val modelService : DataModelService,
@@ -88,6 +89,8 @@ class PluginEndPoint(
         }
     }
 
+    var sessionForceStopSignals : List<ForceStopSignal> = emptyList()
+
     suspend fun evaluate(proxy: Proxy, inputVector: Map<String, Double>): EvaluationResult {
         val simulation = modelService.simulations.getValue(proxy.name)
         val message = OASISQueryDTO.newBuilder().setEvaluationRequest(
@@ -96,7 +99,8 @@ class PluginEndPoint(
                         .setName(simulation.name)
                         .putAllInputVector(inputVector)
         ).build()
-
+        val forceStopSignal = ForceStopSignal(proxy.name)
+        sessionForceStopSignals += forceStopSignal
         return try {
             simulation.input.onNext(message)
             select {
@@ -107,8 +111,8 @@ class PluginEndPoint(
                         EvaluationResult.TimeOut(simulation.name, inputVector)
                     }
                 }
-                simulation.forceStopSignal.onAwait{
-                    EvaluationResult.Failed(simulation.name, inputVector, "Force stopped")
+                forceStopSignal.completableDeferred.onAwait{
+                    EvaluationResult.Terminated(simulation.name, inputVector, "Evaluation is terminated")
                 }
             }
         } catch (exception: Exception) {
@@ -117,6 +121,8 @@ class PluginEndPoint(
                     inputVector,
                     "Unexpected error happened when try to evaluate $inputVector though simulation ${simulation.name}. Cause: $exception"
             )
+        } finally {
+            sessionForceStopSignals -= forceStopSignal
         }
     }
 
@@ -146,10 +152,8 @@ class PluginEndPoint(
     }
 
     @Subscribe
-    fun forceStop(event : StopRequestedEvent){
-        modelService.simulations.forEach{
-            it.forceStopSignal.complete(Unit)
-        }
+    fun forceStopEveryThingOnStop(event : StopRequestedEvent){
+        sessionForceStopSignals.forEach{ it.completableDeferred.complete(Unit) }
     }
 
     private fun updateFromResponse(request: NodeStatusCommandOrResponseDTO): Simulation {

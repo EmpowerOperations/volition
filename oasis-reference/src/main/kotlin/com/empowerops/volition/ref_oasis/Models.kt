@@ -1,8 +1,10 @@
 package com.empowerops.volition.ref_oasis
 
-import com.empowerops.volition.dto.*
+import com.empowerops.volition.dto.ErrorResponseDTO
+import com.empowerops.volition.dto.NodeStatusCommandOrResponseDTO
+import com.empowerops.volition.dto.OASISQueryDTO
+import com.empowerops.volition.dto.SimulationResponseDTO
 import io.grpc.stub.StreamObserver
-import javafx.collections.ObservableMap
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.channels.Channel
 import java.time.Duration
@@ -53,6 +55,12 @@ sealed class EvaluationResult(
             override val inputs: Map<String, Double>,
             val exception: String
     ) : EvaluationResult(name, inputs)
+
+    data class Terminated(
+            override val name: String,
+            override val inputs: Map<String, Double>,
+            val message: String
+    ): EvaluationResult(name, inputs)
 }
 
 
@@ -80,9 +88,13 @@ data class Simulation(
         val input: StreamObserver<OASISQueryDTO>,
         val output: Channel<SimulationResponseDTO>,
         val update: Channel<NodeStatusCommandOrResponseDTO>,
-        val error: Channel<ErrorResponseDTO>,
-        val forceStopSignal: CompletableDeferred<Unit> = CompletableDeferred()
+        val error: Channel<ErrorResponseDTO>
 ) : Nameable
+
+data class ForceStopSignal(
+        override val name: String,
+        val completableDeferred : CompletableDeferred<Unit> = CompletableDeferred()
+): Nameable
 
 data class Proxy(
         override val name: String,

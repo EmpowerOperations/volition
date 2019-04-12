@@ -20,6 +20,8 @@ class PluginEndPoint(
         eventBus.register(this)
     }
 
+    private var sessionForceStopSignals : List<ForceStopSignal> = emptyList()
+
     @Subscribe
     fun onUpdateNodeRequested(event : SimulationUpdateRequestedEvent) = GlobalScope.launch{
         val sim = modelService.simulations.getValue(event.name)
@@ -88,8 +90,6 @@ class PluginEndPoint(
             }
         }
     }
-
-    var sessionForceStopSignals : List<ForceStopSignal> = emptyList()
 
     suspend fun evaluate(proxy: Proxy, inputVector: Map<String, Double>): EvaluationResult {
         val simulation = modelService.simulations.getValue(proxy.name)

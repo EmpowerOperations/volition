@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -22,7 +23,7 @@ namespace EmpowerOps.Volition.RefClient
         private readonly Channel _channel;
         private AsyncServerStreamingCall<OASISQueryDTO> _requests;
         private ChannelState channelState;
-        private string _name = "";    
+        private string _name = "";
         private bool _isRegistered = false;
         private readonly BindingSource _inputSource = new BindingSource();
         private readonly BindingSource _outputSource = new BindingSource();
@@ -52,7 +53,7 @@ namespace EmpowerOps.Volition.RefClient
 
         private void StartOptimization_Click(object sender, RoutedEventArgs e)
         {
-			if (! _isRegistered)
+            if (!_isRegistered)
             {
                 ShowNotRegisterMessage();
                 return;
@@ -76,12 +77,12 @@ namespace EmpowerOps.Volition.RefClient
 
         private void ApplyTimeout_Click(object sender, RoutedEventArgs e)
         {
-			if (! _isRegistered)
+            if (!_isRegistered)
             {
                 ShowNotRegisterMessage();
                 return;
             }
-            if (int.TryParse(TimeoutTextBox.Text, out int timeout) && timeout>0)
+            if (int.TryParse(TimeoutTextBox.Text, out int timeout) && timeout > 0)
             {
                 ApplyTimeout(timeout);
             }
@@ -106,7 +107,7 @@ namespace EmpowerOps.Volition.RefClient
                 }
             });
             Log($"{_serverPrefix} {configurationResponseDto.Message}");
-           
+
         }
 
         private void ClearTimeout_Click(object sender, RoutedEventArgs e)
@@ -125,15 +126,15 @@ namespace EmpowerOps.Volition.RefClient
 
         private void StopOptimization_Click(object sender, RoutedEventArgs e)
         {
-            if (! _isRegistered)
+            if (!_isRegistered)
             {
                 ShowNotRegisterMessage();
                 return;
-            }            
+            }
             Log($"{_commandPrefix} Request Stop - ID:{_activeRunID}");
             var stopOptimizationResponseDto = _client.stopOptimization(new StopOptimizationCommandDTO()
             {
-                Name= _name,
+                Name = _name,
                 Id = _activeRunID.ToString()
             });
             switch (stopOptimizationResponseDto.ResponseCase)
@@ -144,7 +145,7 @@ namespace EmpowerOps.Volition.RefClient
                 case StopOptimizationResponseDTO.ResponseOneofCase.RunID:
                     Log($"{_serverPrefix} Stop Reqeust received - Stopping RunID:{stopOptimizationResponseDto.RunID}");
                     break;
-            }     
+            }
             _activeRunID = Guid.Empty;
         }
 
@@ -161,7 +162,7 @@ namespace EmpowerOps.Volition.RefClient
                     break;
             }
 
-         
+
         }
 
         private ResultResponseDTO requestRunResult(Guid runId)
@@ -172,7 +173,7 @@ namespace EmpowerOps.Volition.RefClient
                 Name = _name,
                 RunID = runId.ToString()
             });
-           
+
             return resultResponseDto;
         }
 
@@ -188,10 +189,10 @@ namespace EmpowerOps.Volition.RefClient
             }
 
         }
-        
+
         private void UpdateButton()
         {
-            RegistrationStatus.Text = _isRegistered ? $"Registered as {_name}" : $"Not registered"; 
+            RegistrationStatus.Text = _isRegistered ? $"Registered as {_name}" : $"Not registered";
         }
 
         private async Task HandlingRequestsAsync(AsyncServerStreamingCall<OASISQueryDTO> requests)
@@ -218,10 +219,10 @@ namespace EmpowerOps.Volition.RefClient
                 _isRegistered = false;
                 UpdateButton();
             }
-           
+
         }
 
-        private async Task HandleRequestAsync(OASISQueryDTO request)
+        private async void HandleRequestAsync(OASISQueryDTO request)
         {
             try
             {
@@ -230,7 +231,7 @@ namespace EmpowerOps.Volition.RefClient
                     case OASISQueryDTO.RequestOneofCase.EvaluationRequest:
                         {
                             Log($"{_serverPrefix} Request Evaluation");
-                            await Evaluate(request);
+                            EvaluateAsync(request);
                             break;
                         }
                     case OASISQueryDTO.RequestOneofCase.NodeStatusRequest:
@@ -268,7 +269,7 @@ namespace EmpowerOps.Volition.RefClient
             }
         }
 
-        private async Task Evaluate(OASISQueryDTO request)
+        private async void EvaluateAsync(OASISQueryDTO request)
         {
             MapField<string, double> inputs = request.EvaluationRequest.InputVector;
             Log($"{_commandPrefix} Requested Input: [{inputs}]");
@@ -285,8 +286,8 @@ namespace EmpowerOps.Volition.RefClient
             UpdateBindingSourceOnUI(_outputSource);
 
             Log($"{_commandPrefix} Evaluating...");
-           
-            var result = _randomNumberEvaluator.Evaluate(inputs, _outputSource.List);
+
+            var result = await _randomNumberEvaluator.EvaluateAsync(inputs, _outputSource.List);
 
             foreach (Input input in _inputSource)
             {
@@ -309,19 +310,20 @@ namespace EmpowerOps.Volition.RefClient
 
             UpdateBindingSourceOnUI(_inputSource);
             UpdateBindingSourceOnUI(_outputSource);
-           
+
             switch (result.Status)
             {
                 case EvaluationResult.ResultStatus.Succeed:
-                    Log($"{_commandPrefix} Evaluation Succeed [{result.Output}]");
-                    _client.offerSimulationResult(new SimulationResponseDTO
+                    Log($"{_commandPrefix} Evaluation Succeed [{ToDebugString(result.Output)}]");
+                    SimulationResponseDTO request1 = new SimulationResponseDTO
                     {
                         Name = _name,
-                        OutputVector = {result.Output}
-                    });
+                        OutputVector = { result.Output }
+                    };
+                    _client.offerSimulationResult(request1);
                     break;
                 case EvaluationResult.ResultStatus.Failed:
-                    Log($"{_commandPrefix} Evaluation Failed [{result.Output}]\nException: {result.Exception}");
+                    Log($"{_commandPrefix} Evaluation Failed [{ToDebugString(result.Output)}]\nException: {result.Exception}");
                     _client.offerErrorResult(new ErrorResponseDTO
                     {
                         Name = _name,
@@ -334,12 +336,17 @@ namespace EmpowerOps.Volition.RefClient
                     _client.offerSimulationResult(new SimulationResponseDTO
                     {
                         Name = _name,
-                        OutputVector = {result.Output}
+                        OutputVector = { result.Output }
                     });
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+
+        public static String ToDebugString(IDictionary<string, double> dictionary)
+        {
+            return $"{{{ string.Join(",", dictionary.Select(it => $"\"{it.Key}\": {it.Value}").ToArray())}}}";
         }
 
         private void UpdateNode()
@@ -400,7 +407,7 @@ namespace EmpowerOps.Volition.RefClient
                 _isRegistered = true;
                 _name = registrationCommandDto.Name;
                 UpdateButton();
-                HandlingRequestsAsync(_requests);
+                await HandlingRequestsAsync(_requests);
             }
             else
             {

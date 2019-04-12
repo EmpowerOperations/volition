@@ -13,8 +13,9 @@ class OptimizerService(
         private val modelService: DataModelService,
         private val eventBus: EventBus,
         private val pluginEndpoint: PluginEndPoint) {
-    private var state = OptimizerStateMachine()
-    var currentlyEvaluatedProxy: Proxy? = null  // This is for testing action on cancel current
+    var state = OptimizerStateMachine()
+        private set
+    private var currentlyEvaluatedProxy: Proxy? = null  // This is for testing action on cancel current
 
     fun stopOptimization(): Boolean {
         val stopResult = state.transferTo(StopPending)
@@ -65,26 +66,30 @@ class OptimizerService(
     }
 
     private suspend fun startRunLoop(runID: UUID) {
-        state.transferTo(Running)
-        eventBus.post(RunStartedEvent(runID))
-        while (state.currentState == Running) {
-            var pluginNumber = 1
-            for (proxy in modelService.proxies) {
-                eventBus.post(StatusUpdateEvent("Evaluating: ${proxy.name} ($pluginNumber/${modelService.proxies.size})"))
-                val inputVector = optimizer.generateInputs(proxy.inputs)
-                evaluate(inputVector, proxy, runID)
-                pluginNumber++
-            }
-            if (state.currentState == PausePending) {
-                state.transferTo(Paused)
-                eventBus.post(PausedEvent(runID))
-                while (state.currentState == Paused && state.currentState != StopPending) {
-                    delay(500)
+        try {
+            state.transferTo(Running)
+            eventBus.post(RunStartedEvent(runID))
+            while (state.currentState == Running) {
+                var pluginNumber = 1
+                for (proxy in modelService.proxies) {
+                    eventBus.post(StatusUpdateEvent("Evaluating: ${proxy.name} ($pluginNumber/${modelService.proxies.size})"))
+                    val inputVector = optimizer.generateInputs(proxy.inputs)
+                    evaluate(inputVector, proxy, runID)
+                    pluginNumber++
+                }
+                if (state.currentState == PausePending) {
+                    state.transferTo(Paused)
+                    eventBus.post(PausedEvent(runID))
+                    while (state.currentState == Paused && state.currentState != StopPending) {
+                        delay(500)
+                    }
                 }
             }
         }
-        state.transferTo(Idle)
-        eventBus.post(RunStoppedEvent(runID))
+        finally {
+            state.transferTo(Idle)
+            eventBus.post(RunStoppedEvent(runID))
+        }
     }
 
     private suspend fun evaluate(inputVector: Map<String, Double>, proxy: Proxy, runID: UUID) {
@@ -98,7 +103,6 @@ class OptimizerService(
             pluginEndpoint.cancelCurrentEvaluation(proxy)
             eventBus.post(StatusUpdateEvent("Cancel finished."))
         }
-
     }
 
 

@@ -15,6 +15,7 @@ namespace EmpowerOps.Volition.RefClient
        
         public IDictionary<string, double> Output { get; set; }
         public IDictionary<string, double> Input { get; set; }
+
     }
 
 }

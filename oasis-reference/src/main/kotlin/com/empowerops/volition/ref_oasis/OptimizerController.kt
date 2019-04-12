@@ -80,18 +80,6 @@ class OptimizerController {
         Input, Output, Root
     }
 
-    enum class ButtonState(val displayString: String) {
-        Start("Start"),
-        Starting("Starting.."),
-        Stop("Stop"),
-        Stopping("Stopping..."),
-        Resume("Resume"),
-        Pause("Pause"),
-        Pausing("Pausing...")
-    }
-
-    val uiStateMachine = OptimizerStateMachine()
-
     private fun buildTree(config: Proxy?): TreeItem<Parameter> {
         val root = TreeItem<Parameter>(Parameter("root", Type.Root))
         inputRoot = TreeItem(Parameter("Inputs", Type.Root))
@@ -254,17 +242,17 @@ class OptimizerController {
     }
 
     @FXML fun startStopClicked() = GlobalScope.launch(Dispatchers.JavaFx) {
-        when {
-            startButton.text == Start.displayString -> optimizerService.startOptimization()
-            startButton.text == Stop.displayString -> optimizerService.stopOptimization()
-            else -> throw IllegalStateException("Start/Stop Button is not an actionable state. Current State:${startButton.text}")
+        when (optimizerService.state.currentState){
+            State.Idle -> optimizerService.startOptimization()
+            State.Running, State.PausePending, State.Paused -> optimizerService.stopOptimization()
+            else -> throw IllegalStateException("Start/Stop Button is not an actionable state. Current State:${optimizerService.state.currentState}")
         }
     }
 
     @FXML fun pauseResumeRun() = GlobalScope.launch(Dispatchers.JavaFx) {
-        when {
-            pauseButton.text == Resume.displayString -> optimizerService.resumeOptimization()
-            pauseButton.text == Pause.displayString -> optimizerService.pauseOptimization()
+        when (optimizerService.state.currentState){
+            State.Running -> optimizerService.pauseOptimization()
+            State.Paused -> optimizerService.resumeOptimization()
             else -> throw IllegalStateException("Pause/Resume Button is not an actionable state. Current State:${startButton.text}")
         }
     }
@@ -326,58 +314,29 @@ class OptimizerController {
     }
 
     @Subscribe
-    fun onPaused(event: PausedEvent) = GlobalScope.launch(Dispatchers.JavaFx) {
-        uiStateMachine.transferTo(State.Paused)
-        pauseButton.text = Resume.displayString
-        pauseButton.isDisable = false
+    fun onStateChanged(event : StatusUpdateEvent) = GlobalScope.launch(Dispatchers.JavaFx){
+        val buttonState = when (optimizerService.state.currentState) {
+            State.Idle -> ButtonState.Idle
+            State.StartPending -> ButtonState.Starting
+            State.Running -> ButtonState.Running
+            State.PausePending -> ButtonState.Pausing
+            State.Paused -> ButtonState.Paused
+            State.StopPending -> ButtonState.Stopping
+        }
+
+        startButton.text =  buttonState.start
+        startButton.isDisable =  buttonState.startDisabled
+        pauseButton.text =  buttonState.pause
+        pauseButton.isDisable =  buttonState.pauseDisabled
     }
 
-    @Subscribe
-    fun onRunStarted(event: RunStartedEvent) = GlobalScope.launch(Dispatchers.JavaFx) {
-        uiStateMachine.transferTo(State.Running)
-        startButton.text = Stop.displayString
-        pauseButton.isDisable = false
-        startButton.isDisable = false
+    enum class ButtonState(val start: String, val pause: String, val startDisabled : Boolean, val pauseDisabled : Boolean) {
+        Idle("Start", "Pause", false, true),
+        Starting("Starting..", "Pause", true, true),
+        Running("Stop", "Pause", false, false),
+        Stopping("Stopping...", "Pause", true, true),
+        Paused("Stop", "Resume", false, false),
+        Pausing("Stop","Pausing...", false, true)
     }
-
-    @Subscribe
-    fun onStopped(event: RunStoppedEvent) = GlobalScope.launch(Dispatchers.JavaFx) {
-        uiStateMachine.transferTo(State.Idle)
-        pauseButton.text = Pause.displayString
-        startButton.text = Start.displayString
-        pauseButton.isDisable = true
-        startButton.isDisable = false
-    }
-
-    @Subscribe
-    fun onStartRequested(event: StartRequestedEvent) = GlobalScope.launch(Dispatchers.JavaFx) {
-        uiStateMachine.transferTo(State.StartPending)
-        startButton.text = Starting.displayString
-        startButton.isDisable = true
-        pauseButton.isDisable = true
-    }
-
-    @Subscribe
-    fun onStopRequested(event: StopRequestedEvent) = GlobalScope.launch(Dispatchers.JavaFx) {
-        uiStateMachine.transferTo(State.StopPending)
-        startButton.text = Stopping.displayString
-        startButton.isDisable = true
-        pauseButton.isDisable = true
-    }
-
-    @Subscribe
-    fun onPauseRequested(event: PausedRequestedEvent) = GlobalScope.launch(Dispatchers.JavaFx) {
-        uiStateMachine.transferTo(State.PausePending)
-        pauseButton.text = Pausing.displayString
-        pauseButton.isDisable = true
-    }
-
-    @Subscribe
-    fun onRunResumed(event: RunResumedEvent) = GlobalScope.launch(Dispatchers.JavaFx) {
-        uiStateMachine.transferTo(State.Running)
-        pauseButton.text = Pause.displayString
-        pauseButton.isDisable = false
-    }
-
 }
 

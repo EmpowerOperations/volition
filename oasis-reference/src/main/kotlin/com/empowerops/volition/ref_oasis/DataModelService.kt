@@ -112,7 +112,7 @@ class DataModelService(private val eventBus: EventBus) {
      * Add a new configuration base on exist simulation name
      */
     fun addAndSyncConfiguration(name: String) : Boolean {
-        if (proxies.hasName(name) && ! simulations.hasName(name)) return false
+        if (proxies.hasName(name) || ! simulations.hasName(name)) return false
         proxies += Proxy(name)
         eventBus.post(ProxyAddedEvent(name))
         syncConfigurationToSimulation(name)

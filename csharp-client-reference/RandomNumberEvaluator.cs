@@ -16,10 +16,11 @@ namespace EmpowerOps.Volition.RefClient
             _evaluationCancellationTokenSource.Cancel();
         }
 
-        public EvaluationResult Evaluate(IDictionary<string, double> inputs, IList outputs)
+        public async Task<EvaluationResult> EvaluateAsync(IDictionary<string, double> inputs, IList outputs)
         {
             _evaluationCancellationTokenSource = new CancellationTokenSource();
-            return Task.Run(()=>SimulationEvaluation(inputs, outputs), _evaluationCancellationTokenSource.Token).Result;
+            var result = await Task.Run(() => SimulationEvaluation(inputs, outputs), _evaluationCancellationTokenSource.Token);
+            return result;
         }
 
         private EvaluationResult SimulationEvaluation(IDictionary<string, double> inputs, IList outputs)

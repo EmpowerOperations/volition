@@ -107,6 +107,9 @@ class PluginEndPoint(
                         EvaluationResult.TimeOut(simulation.name, inputVector)
                     }
                 }
+                simulation.forceStopSignal.onAwait{
+                    EvaluationResult.Failed(simulation.name, inputVector, "Force stopped")
+                }
             }
         } catch (exception: Exception) {
             EvaluationResult.Error(
@@ -129,6 +132,7 @@ class PluginEndPoint(
         val cancelResult = select<CancelResult> {
             simulation.output.onReceive { CancelResult.Canceled(it.name) }
             simulation.error.onReceive { CancelResult.CancelFailed(it.name, it.exception) }
+
         }
         val cancelMessage = when (cancelResult) {
             is CancelResult.Canceled -> {
@@ -139,6 +143,13 @@ class PluginEndPoint(
             }
         }
         logger.log(cancelMessage, "Optimizer")
+    }
+
+    @Subscribe
+    fun forceStop(event : StopRequestedEvent){
+        modelService.simulations.forEach{
+            it.forceStopSignal.complete(Unit)
+        }
     }
 
     private fun updateFromResponse(request: NodeStatusCommandOrResponseDTO): Simulation {

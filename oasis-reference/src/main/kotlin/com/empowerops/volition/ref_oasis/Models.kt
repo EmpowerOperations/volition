@@ -3,6 +3,7 @@ package com.empowerops.volition.ref_oasis
 import com.empowerops.volition.dto.*
 import io.grpc.stub.StreamObserver
 import javafx.collections.ObservableMap
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.channels.Channel
 import java.time.Duration
 import java.time.LocalDateTime
@@ -79,7 +80,8 @@ data class Simulation(
         val input: StreamObserver<OASISQueryDTO>,
         val output: Channel<SimulationResponseDTO>,
         val update: Channel<NodeStatusCommandOrResponseDTO>,
-        val error: Channel<ErrorResponseDTO>
+        val error: Channel<ErrorResponseDTO>,
+        val forceStopSignal: CompletableDeferred<Unit> = CompletableDeferred()
 ) : Nameable
 
 data class Proxy(

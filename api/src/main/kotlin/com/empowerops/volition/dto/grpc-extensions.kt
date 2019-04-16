@@ -58,8 +58,8 @@ fun <T> StreamObserver<T>.consumeThen(result : T, block2:(T) -> Unit) {
         throw ex
     } finally {
         onCompleted()
+        block2(result)
     }
-    block2(result)
 }
 
 fun <T> StreamObserver<T>.consumeAsync(block: suspend () -> T) {

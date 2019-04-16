@@ -2,12 +2,11 @@ package com.empowerops.volition.ref_oasis
 
 import com.empowerops.volition.ref_oasis.State.*
 import com.google.common.eventbus.EventBus
-import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
+import kotlinx.coroutines.*
 import kotlinx.coroutines.selects.select
 import org.funktionale.either.Either
 import java.util.*
+import kotlin.collections.HashMap
 
 class OptimizerService(
         private val optimizer: RandomNumberOptimizer,
@@ -17,7 +16,7 @@ class OptimizerService(
     var state = OptimizerStateMachine()
         private set
     private var currentlyEvaluatedProxy: Proxy? = null  // This is for testing action on cancel current
-    private var resumed : CompletableDeferred<Unit>? = null
+    private var resumed: CompletableDeferred<Unit>? = null
 
     private var currentRunID: UUID? = null
 
@@ -26,29 +25,29 @@ class OptimizerService(
     }
 
     fun stopOptimization() {
-        require(canStop()){"Illegal state to stop"}
+        require(canStop()) { "Illegal state to stop" }
         state.transferTo(StopPending)
         resumed?.complete(Unit)
         eventBus.post(StopRequestedEvent())
     }
 
-    fun forceStop() : Boolean{
+    fun forceStop(): Boolean {
         val stopResult = state.transferTo(Idle)
-        if(stopResult) eventBus.post(ForceStopRequestedEvent())
+        if (stopResult) eventBus.post(ForceStopRequestedEvent())
         pluginEndpoint.forceStopAll()
         return stopResult
     }
 
     fun pauseOptimization(): Boolean {
         val transferResult = state.transferTo(PausePending)
-        if(transferResult) eventBus.post(PausedRequestedEvent())
+        if (transferResult) eventBus.post(PausedRequestedEvent())
         return transferResult
     }
 
     fun resumeOptimization(): Boolean {
         val transferResult = state.transferTo(Running)
         resumed!!.complete(Unit)
-        if(transferResult) eventBus.post(RunResumedEvent())
+        if (transferResult) eventBus.post(RunResumedEvent())
         return transferResult
     }
 
@@ -57,7 +56,9 @@ class OptimizerService(
      */
     suspend fun cancelCurrent() {
         val proxy = currentlyEvaluatedProxy
-        if (proxy != null) { pluginEndpoint.cancelCurrentEvaluation(proxy) }
+        if (proxy != null) {
+            pluginEndpoint.cancelCurrentEvaluation(proxy)
+        }
     }
 
     /**
@@ -68,21 +69,20 @@ class OptimizerService(
         cancelCurrent()
     }
 
-    fun requestStart() : Either<List<String>, UUID> {
+    fun requestStart(): Either<List<String>, UUID> {
         var issues = modelService.findIssue()
-        if( ! state.canTransferTo(StartPending)){
+        if (!state.canTransferTo(StartPending)) {
             issues += "Optimization is not ready to start: current state ${state.currentState}"
         }
-        if(issues.isEmpty()){
+        if (issues.isEmpty()) {
             currentRunID = UUID.randomUUID()
             return Either.right(currentRunID!!)
-        }
-        else{
+        } else {
             return Either.left(issues)
         }
     }
 
-    suspend fun startOptimization(){
+    suspend fun startOptimization() {
         require(currentRunID != null && modelService.findIssue().isEmpty() && state.canTransferTo(StartPending))
         state.transferTo(StartPending)
         eventBus.post(StartRequestedEvent())

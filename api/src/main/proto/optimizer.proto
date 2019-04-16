@@ -178,7 +178,7 @@ message StopOptimizationCommandDTO {
 message StopOptimizationResponseDTO {
     oneof response{
         string message = 1;
-        string runID = 3;
+        string runID = 2;
     }
 }
 

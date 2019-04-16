@@ -36,7 +36,7 @@ namespace EmpowerOps.Volition.RefClient
         public MainWindow()
         {
             //https://grpc.io/docs/quickstart/csharp.html#update-the-client
-            _channel = new Channel("192.168.0.116:5550", ChannelCredentials.Insecure);
+            _channel = new Channel("localhost:5550", ChannelCredentials.Insecure);
             _client = new Optimizer.OptimizerClient(_channel);
             InitializeComponent();
             UpdateConnectionStatus();

@@ -62,8 +62,9 @@ class Optimizer {
     private lateinit var optimizerEndpoint: OptimizerEndpoint
     private lateinit var modelService: DataModelService
     private lateinit var optimizerService : OptimizerService
-    private lateinit var pluginEndPoint : PluginEndPoint
+    private lateinit var pluginService : PluginService
     private lateinit var server: Server
+    private lateinit var apiService: ApiService
 
     private val eventBus: EventBus = EventBus()
     private val logger : ConsoleOutput = ConsoleOutput(eventBus)
@@ -74,14 +75,15 @@ class Optimizer {
     @Option(names = ["-p", "--port"], paramLabel = "PORT", description = ["Run optimizer with specified port, when not specified, port number will default to 5550"])
     var port: Int = 5550
 
-    @Option(names = ["-o", "--overwrite"], description = ["Endable register overwrite when duplication happens"])
+    @Option(names = ["-o", "--overwrite"], description = ["Enable register overwrite when duplication happens"])
     var overwrite: Boolean = false
 
     private fun setup(){
         modelService = DataModelService(eventBus, overwrite)
-        pluginEndPoint = PluginEndPoint(modelService, logger, eventBus)
-        optimizerService = OptimizerService(RandomNumberOptimizer(), modelService, eventBus, pluginEndPoint)
-        optimizerEndpoint = OptimizerEndpoint(modelService, optimizerService)
+        pluginService = PluginService(modelService, logger, eventBus)
+        optimizerService = OptimizerService(RandomNumberOptimizer(), modelService, eventBus, pluginService)
+        apiService = ApiService(modelService, optimizerService)
+        optimizerEndpoint = OptimizerEndpoint(apiService)
         server = NettyServerBuilder.forPort(port).addService(ServerInterceptors.intercept(optimizerEndpoint, LoggingInterceptor(logger))).build()
     }
 

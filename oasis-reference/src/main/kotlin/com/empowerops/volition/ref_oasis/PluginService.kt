@@ -11,7 +11,7 @@ import org.funktionale.either.Either
 import java.time.Duration
 import java.util.*
 
-class PluginEndPoint(
+class PluginService(
         private val modelService : DataModelService,
         private val logger: ConsoleOutput,
         private val eventBus: EventBus

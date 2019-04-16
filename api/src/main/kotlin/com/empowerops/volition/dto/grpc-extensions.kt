@@ -50,6 +50,18 @@ fun <T> StreamObserver<T>.consume(block: () -> T) {
     }
 }
 
+fun <T> StreamObserver<T>.consumeThen(result : T, block2:(T) -> Unit) {
+    try {
+        onNext(result)
+    } catch (ex: Exception) {
+        onError(ex)
+        throw ex
+    } finally {
+        onCompleted()
+    }
+    block2(result)
+}
+
 fun <T> StreamObserver<T>.consumeAsync(block: suspend () -> T) {
      GlobalScope.launch {
         try {

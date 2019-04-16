@@ -19,35 +19,10 @@ namespace EmpowerOps.Volition.RefClient
         public async Task<EvaluationResult> EvaluateAsync(IDictionary<string, double> inputs, IList outputs)
         {
             _evaluationCancellationTokenSource = new CancellationTokenSource();
-            var result = await Task.Run(() => SimulationEvaluation(inputs, outputs), _evaluationCancellationTokenSource.Token);
-            return result;
-        }
 
-        private EvaluationResult SimulationEvaluation(IDictionary<string, double> inputs, IList outputs)
-        {
             try
             {
-                Thread.Sleep(2000);
-                _evaluationCancellationTokenSource.Token.ThrowIfCancellationRequested();
-                if (_failToggle)
-                {
-                    _failToggle = false;
-                    throw new EvaluationException($"Error evaluating {inputs}");
-                }
-
-                Thread.Sleep(2000);
-                _evaluationCancellationTokenSource.Token.ThrowIfCancellationRequested();
-
-                var result = new Dictionary<string, double>();
-                var random = new Random();
-
-                foreach (Output output in outputs)
-                {
-                    var evaluationResult = random.NextDouble();
-                    result.Add(output.Name, evaluationResult);
-                }
-
-                return new EvaluationResult { Input = inputs, Output = result, Status = EvaluationResult.ResultStatus.Succeed };
+                return await EvaluationAsync(inputs, outputs, _evaluationCancellationTokenSource.Token);
             }
             catch (OperationCanceledException)
             {
@@ -80,6 +55,29 @@ namespace EmpowerOps.Volition.RefClient
                     Exception = e
                 };
             }
+        }
+
+        private async Task<EvaluationResult> EvaluationAsync(IDictionary<string, double> inputs, IList outputs, CancellationToken ct)
+        {
+            await Task.Delay(1000);
+            ct.ThrowIfCancellationRequested();
+            if (_failToggle)
+            {
+                _failToggle = false;
+                throw new EvaluationException($"Error evaluating {inputs}");
+            }
+            await Task.Delay(4000);
+            ct.ThrowIfCancellationRequested();
+            var result = new Dictionary<string, double>();
+            var random = new Random();
+           
+            foreach (Output output in outputs)
+            {
+                var evaluationResult = random.NextDouble();
+                result.Add(output.Name, evaluationResult);
+            }
+
+            return new EvaluationResult { Input = inputs, Output = result, Status = EvaluationResult.ResultStatus.Succeed };
         }
 
         public void SetFailNext()

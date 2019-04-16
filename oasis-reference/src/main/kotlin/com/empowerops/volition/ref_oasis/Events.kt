@@ -24,6 +24,7 @@ data class RunStartedEvent(val id: UUID): StatusUpdateEvent("Run Started - ID:$i
 data class RunStoppedEvent(val id: UUID): StatusUpdateEvent("Run Stopped - ID:$id")
      class StartRequestedEvent          : StatusUpdateEvent("Run Requested")
      class StopRequestedEvent           : StatusUpdateEvent("Stop Requested")
+     class ForceStopRequestedEvent      : StatusUpdateEvent("Force Stop Requested")
      class PausedRequestedEvent         : StatusUpdateEvent("Pause Requested")
      class RunResumedEvent              : StatusUpdateEvent("Run Resumed")
 

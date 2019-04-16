@@ -66,7 +66,7 @@ class OptimizerEndpoint(
     }
 
 
-    override fun register(request: RegistrationCommandDTO, responseObserver: StreamObserver<OASISQueryDTO>) {
+    override fun registerRequest(request: RequestRegistrationCommandDTO, responseObserver: StreamObserver<RequestQueryDTO>) {
         val added = modelService.addSim(
                 Simulation(request.name, emptyList(), emptyList(), "", responseObserver, Channel(RENDEZVOUS), Channel(RENDEZVOUS), Channel(RENDEZVOUS))
         )
@@ -76,28 +76,38 @@ class OptimizerEndpoint(
         }
     }
 
-    override fun startOptimization(request: StartOptimizationCommandDTO, responseObserver: StreamObserver<StartOptimizationResponseDTO>) = responseObserver.consume {
+    override fun startOptimization(request: StartOptimizationCommandDTO, responseObserver: StreamObserver<StartOptimizationResponseDTO>) {
+        var willStart = false
+
         val responseBuilder = StartOptimizationResponseDTO.newBuilder()
-        val reply = optimizerService.startOptimization()
+        val reply = optimizerService.requestStart()
         if (reply.isLeft()) {
             responseBuilder.message = buildStartIssuesMessage(reply.left().get())
-        }
-        else {
+        } else {
             responseBuilder.runID = reply.right().get().toString()
+            willStart = true
         }
-        responseBuilder.build()
+
+        responseObserver.consume { responseBuilder.build() }
+
+        if (willStart) {
+            optimizerService.startOptimization()
+        }
     }
 
-    private fun buildStartFailedMessage() = "Start order rejected"
+    override fun stopOptimization(request: StopOptimizationCommandDTO, responseObserver: StreamObserver<StopOptimizationResponseDTO>) {
+        var willStop: Boolean = optimizerService.canStop()
+        responseObserver.consume{
+            StopOptimizationResponseDTO
+                    .newBuilder()
+                    .setRunID(request.id)
+                    .setMessage(buildStopMessage(willStop))
+                    .build()
+        }
 
-    override fun stopOptimization(request: StopOptimizationCommandDTO, responseObserver: StreamObserver<StopOptimizationResponseDTO>) = responseObserver.consume {
-        val stopped = optimizerService.stopOptimization()
-
-        StopOptimizationResponseDTO
-                .newBuilder()
-                .setRunID(request.id)
-                .setMessage(buildStopMessage(stopped))
-                .build()
+        if(willStop){
+            optimizerService.stopOptimization()
+        }
     }
 
     override fun updateNode(request: NodeStatusCommandOrResponseDTO, responseObserver: StreamObserver<NodeChangeConfirmDTO>) = responseObserver.consume {
@@ -117,7 +127,7 @@ class OptimizerEndpoint(
                 .build()
     }
 
-    override fun unregister(request: UnRegistrationRequestDTO, responseObserver: StreamObserver<UnRegistrationResponseDTO>) = responseObserver.consume {
+    override fun unregisterRequest(request: RequestUnRegistrationRequestDTO, responseObserver: StreamObserver<UnRegistrationResponseDTO>) = responseObserver.consume {
         val unregistered = modelService.closeSim(request.name)
 
         UnRegistrationResponseDTO
@@ -126,15 +136,15 @@ class OptimizerEndpoint(
                 .build()
     }
 
-    override fun offerSimulationResult(request: SimulationResponseDTO, responseObserver: StreamObserver<SimulationResultConfirmDTO>) = responseObserver.consume {
+    override fun offerSimulationResult(request: SimulationResponseDTO, responseObserver: StreamObserver<SimulationResultConfirmDTO>) = responseObserver.consumeAsync {
         modelService.simulations.getNamed(request.name)?.output.sendAndRespond(request) { SimulationResultConfirmDTO.newBuilder().build() }
     }
 
-    override fun offerErrorResult(request: ErrorResponseDTO, responseObserver: StreamObserver<ErrorConfirmDTO>) = responseObserver.consume {
+    override fun offerErrorResult(request: ErrorResponseDTO, responseObserver: StreamObserver<ErrorConfirmDTO>) = responseObserver.consumeAsync {
         modelService.simulations.getNamed(request.name)?.error.sendAndRespond(request) { ErrorConfirmDTO.newBuilder().build() }
     }
 
-    override fun offerSimulationConfig(request: NodeStatusCommandOrResponseDTO, responseObserver: StreamObserver<NodeChangeConfirmDTO>) = responseObserver.consume {
+    override fun offerSimulationConfig(request: NodeStatusCommandOrResponseDTO, responseObserver: StreamObserver<NodeChangeConfirmDTO>) = responseObserver.consumeAsync {
         modelService.simulations.getNamed(request.name)?.update.sendAndRespond(request) { NodeChangeConfirmDTO.newBuilder().build() }
     }
 

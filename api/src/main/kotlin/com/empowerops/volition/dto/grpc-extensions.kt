@@ -38,7 +38,19 @@ suspend fun <T, R> wrapToSuspend(call: (T, StreamObserver<R>) -> Unit, outboundM
     }
 }
 
-fun <T> StreamObserver<T>.consume(block: suspend () -> T) {
+fun <T> StreamObserver<T>.consume(block: () -> T) {
+    try {
+        val result = block()
+        onNext(result)
+    } catch (ex: Exception) {
+        onError(ex)
+        throw ex
+    } finally {
+        onCompleted()
+    }
+}
+
+fun <T> StreamObserver<T>.consumeAsync(block: suspend () -> T) {
      GlobalScope.launch {
         try {
             val result = block()

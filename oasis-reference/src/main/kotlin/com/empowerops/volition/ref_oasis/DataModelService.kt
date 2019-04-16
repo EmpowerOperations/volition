@@ -4,7 +4,7 @@ import com.google.common.eventbus.EventBus
 import java.time.Duration
 import java.util.*
 
-class DataModelService(private val eventBus: EventBus) {
+class DataModelService(private val eventBus: EventBus, private val overwriteMode : Boolean) {
     var simulations: List<Simulation> = emptyList()
         private set
     var proxies: List<Proxy> = emptyList()
@@ -48,8 +48,10 @@ class DataModelService(private val eventBus: EventBus) {
      * will return false if simulation with same name already exist
      */
     fun addSim(simulation: Simulation) : Boolean {
-        if (simulations.hasName(simulation.name)) return false
-
+        if (simulations.hasName(simulation.name) && ! overwriteMode) return false
+        if(overwriteMode && simulations.hasName(simulation.name)){
+            removeSim(simulation.name)
+        }
         simulations += simulation
         eventBus.post(PluginRegisteredEvent(simulation.name))
         return true

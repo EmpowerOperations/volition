@@ -1,7 +1,7 @@
 package com.empowerops.volition.ref_oasis
 
 import com.empowerops.volition.dto.NodeStatusCommandOrResponseDTO
-import com.empowerops.volition.dto.OASISQueryDTO
+import com.empowerops.volition.dto.RequestQueryDTO
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import kotlinx.coroutines.GlobalScope
@@ -25,8 +25,8 @@ class PluginEndPoint(
     @Subscribe
     fun onUpdateNodeRequested(event : SimulationUpdateRequestedEvent) = GlobalScope.launch{
         val sim = modelService.simulations.getValue(event.name)
-        val message = OASISQueryDTO.newBuilder().setNodeStatusRequest(
-                OASISQueryDTO.NodeStatusUpdateRequest.newBuilder().setName(event.name)
+        val message = RequestQueryDTO.newBuilder().setNodeStatusRequest(
+                RequestQueryDTO.NodeStatusUpdateRequest.newBuilder().setName(event.name)
         ).build()
         var result: Either<Simulation, Message>
         try {
@@ -59,14 +59,16 @@ class PluginEndPoint(
      *
      * Simulation can also ignore this message
      */
-    @Subscribe
-    fun onRunStated(event : RunStartedEvent) = GlobalScope.launch{
+    fun notifyStart(runId : UUID) {
         for(proxy in modelService.proxies){
-            val runStartQueryDTO = OASISQueryDTO.newBuilder().setStartRequest(OASISQueryDTO.SimulationStartedRequest.newBuilder().setRunID(event.id.toString())).build()
+            val runStartQueryDTO = RequestQueryDTO.newBuilder().setStartRequest(
+                    RequestQueryDTO.SimulationStartedRequest.newBuilder().setRunID(runId.toString())
+            ).build()
+
             try{
                 modelService.simulations.getValue(proxy.name).input.onNext(runStartQueryDTO)
             }
-            catch (exception : Exception){
+            catch (exception: Exception) {
                 logger.log("Error sending start request to ${proxy.name}", "Optimizer")
             }
         }
@@ -78,10 +80,12 @@ class PluginEndPoint(
      *
      * Simulation can also ignore this message
      */
-    @Subscribe
-    fun onRunStopped(event : RunStoppedEvent) = GlobalScope.launch{
+    fun notifyStop(runId : UUID) {
         for(proxy in modelService.proxies){
-            val runStopQueryDTO = OASISQueryDTO.newBuilder().setStopRequest(OASISQueryDTO.SimulationStoppedRequest.newBuilder().setRunID(event.id.toString())).build()
+            val runStopQueryDTO = RequestQueryDTO.newBuilder().setStopRequest(
+                    RequestQueryDTO.SimulationStoppedRequest.newBuilder().setRunID(runId.toString())
+            ).build()
+
             try{
                 modelService.simulations.getValue(proxy.name).input.onNext(runStopQueryDTO)
             }
@@ -93,8 +97,8 @@ class PluginEndPoint(
 
     suspend fun evaluate(proxy: Proxy, inputVector: Map<String, Double>): EvaluationResult {
         val simulation = modelService.simulations.getValue(proxy.name)
-        val message = OASISQueryDTO.newBuilder().setEvaluationRequest(
-                OASISQueryDTO.SimulationEvaluationRequest
+        val message = RequestQueryDTO.newBuilder().setEvaluationRequest(
+                RequestQueryDTO.SimulationEvaluationRequest
                         .newBuilder()
                         .setName(simulation.name)
                         .putAllInputVector(inputVector)
@@ -132,7 +136,7 @@ class PluginEndPoint(
      */
     suspend fun cancelCurrentEvaluation(proxy: Proxy) {
         val simulation = modelService.simulations.getValue(proxy.name)
-        val message = OASISQueryDTO.newBuilder().setCancelRequest(OASISQueryDTO.SimulationCancelRequest.newBuilder().setName(simulation.name)).build()
+        val message = RequestQueryDTO.newBuilder().setCancelRequest(RequestQueryDTO.SimulationCancelRequest.newBuilder().setName(simulation.name)).build()
 
         simulation.input.onNext(message)
         val cancelResult = select<CancelResult> {
@@ -151,8 +155,7 @@ class PluginEndPoint(
         logger.log(cancelMessage, "Optimizer")
     }
 
-    @Subscribe
-    fun forceStopEveryThingOnStop(event : StopRequestedEvent){
+    fun forceStopAll(){
         sessionForceStopSignals.forEach{ it.completableDeferred.complete(Unit) }
     }
 

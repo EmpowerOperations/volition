@@ -30,4 +30,6 @@ class OptimizerStateMachine {
         false
     }
 
+    fun canTransferTo(newState: State) : Boolean = newState in stateTable.getValue(currentState)
+
 }

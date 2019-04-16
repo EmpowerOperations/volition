@@ -1,9 +1,6 @@
 package com.empowerops.volition.ref_oasis
 
-import com.empowerops.volition.dto.ErrorResponseDTO
-import com.empowerops.volition.dto.NodeStatusCommandOrResponseDTO
-import com.empowerops.volition.dto.OASISQueryDTO
-import com.empowerops.volition.dto.SimulationResponseDTO
+import com.empowerops.volition.dto.*
 import io.grpc.stub.StreamObserver
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.channels.Channel
@@ -85,7 +82,7 @@ data class Simulation(
         val inputs: List<Input>,
         val outputs: List<Output>,
         val description: String,
-        val input: StreamObserver<OASISQueryDTO>,
+        val input: StreamObserver<RequestQueryDTO>,
         val output: Channel<SimulationResponseDTO>,
         val update: Channel<NodeStatusCommandOrResponseDTO>,
         val error: Channel<ErrorResponseDTO>

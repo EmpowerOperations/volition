@@ -71,8 +71,8 @@ service Optimizer {
     //   https://github.com/protocolbuffers/protobuf/issues/1606
 
     // entry-point, returns stream of OASIS queries/commands
-    rpc register (RegistrationCommandDTO) returns (stream OASISQueryDTO) {}
-    rpc unregister (UnRegistrationRequestDTO) returns (UnRegistrationResponseDTO) {}
+    rpc registerRequest (RequestRegistrationCommandDTO) returns (stream RequestQueryDTO) {}
+    rpc unregisterRequest (RequestUnRegistrationRequestDTO) returns (UnRegistrationResponseDTO) {}
 
     // commands/queries to OASIS
     rpc startOptimization (StartOptimizationCommandDTO) returns (StartOptimizationResponseDTO) {}
@@ -106,11 +106,11 @@ message ConfigurationResponseDTO {
 }
 
 //register
-message RegistrationCommandDTO {
+message RequestRegistrationCommandDTO {
     string name = 1;
 }
 
-message UnRegistrationRequestDTO {
+message RequestUnRegistrationRequestDTO {
     string name = 1;
 }
 
@@ -125,7 +125,7 @@ message MessageCommandDTO {
 
 message MessageResponseDTO {}
 
-message OASISQueryDTO {
+message RequestQueryDTO {
     oneof request {
         SimulationEvaluationRequest evaluationRequest = 1;
         NodeStatusUpdateRequest nodeStatusRequest = 2;
@@ -164,8 +164,8 @@ message StartOptimizationCommandDTO {
 }
 message StartOptimizationResponseDTO {  //response: if a run can not start, a message of reason will be returned. If started, run ID will be returned
     oneof response{
-        string message = 2;
-        string runID = 3;
+        string message = 1;
+        string runID = 2;
     }
 }
 

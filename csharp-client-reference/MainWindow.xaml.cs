@@ -21,7 +21,7 @@ namespace EmpowerOps.Volition.RefClient
     {
         private readonly Optimizer.OptimizerClient _client;
         private readonly Channel _channel;
-        private AsyncServerStreamingCall<OASISQueryDTO> _requests;
+        private AsyncServerStreamingCall<RequestQueryDTO> _requests;
         private ChannelState channelState;
         private string _name = "";
         private bool _isRegistered = false;
@@ -51,7 +51,7 @@ namespace EmpowerOps.Volition.RefClient
             OutputGrid.ItemsSource = _outputSource;
         }
 
-        private void StartOptimization_Click(object sender, RoutedEventArgs e)
+        private async void StartOptimization_Click(object sender, RoutedEventArgs e)
         {
             if (!_isRegistered)
             {
@@ -59,7 +59,7 @@ namespace EmpowerOps.Volition.RefClient
                 return;
             }
             Log($"{_commandPrefix} Start Requested");
-            var startResponse = _client.startOptimization(new StartOptimizationCommandDTO());
+            var startResponse = await _client.startOptimizationAsync(new StartOptimizationCommandDTO());
             switch (startResponse.ResponseCase)
             {
                 case StartOptimizationResponseDTO.ResponseOneofCase.Message:
@@ -95,10 +95,10 @@ namespace EmpowerOps.Volition.RefClient
 
         }
 
-        private void ApplyTimeout(int timeout)
+        private async void ApplyTimeout(int timeout)
         {
             Log($"{_commandPrefix} Try to apply timeout {timeout}");
-            var configurationResponseDto = _client.updateConfiguration(new ConfigurationCommandDTO
+            var configurationResponseDto = await _client.updateConfigurationAsync(new ConfigurationCommandDTO
             {
                 Name = _name,
                 Config = new ConfigurationCommandDTO.Types.Config
@@ -149,9 +149,9 @@ namespace EmpowerOps.Volition.RefClient
             _activeRunID = Guid.Empty;
         }
 
-        private void RequestResult_Click(object sender, RoutedEventArgs e)
+        private async void RequestResult_Click(object sender, RoutedEventArgs e)
         {
-            var resultResponseDto = requestRunResult(_latestRunID);
+            var resultResponseDto = await requestRunResult(_latestRunID);
             switch (resultResponseDto.ResponseCase)
             {
                 case ResultResponseDTO.ResponseOneofCase.Message:
@@ -165,16 +165,14 @@ namespace EmpowerOps.Volition.RefClient
 
         }
 
-        private ResultResponseDTO requestRunResult(Guid runId)
+        private async Task<ResultResponseDTO> requestRunResult(Guid runId)
         {
             Log($"{_commandPrefix} Request run result - ID:{runId}");
-            var resultResponseDto = _client.requestRunResult(new ResultRequestDTO()
+            return await _client.requestRunResultAsync(new ResultRequestDTO()
             {
                 Name = _name,
                 RunID = runId.ToString()
             });
-
-            return resultResponseDto;
         }
 
         private async void UpdateConnectionStatus()
@@ -195,7 +193,7 @@ namespace EmpowerOps.Volition.RefClient
             RegistrationStatus.Text = _isRegistered ? $"Registered as {_name}" : $"Not registered";
         }
 
-        private async Task HandlingRequestsAsync(AsyncServerStreamingCall<OASISQueryDTO> requests)
+        private async Task HandlingRequestsAsync(AsyncServerStreamingCall<RequestQueryDTO> requests)
         {
             //request for inputs, do the simulation, return result, repeat
             var requestsResponseStream = requests.ResponseStream;
@@ -216,43 +214,43 @@ namespace EmpowerOps.Volition.RefClient
             {
                 _name = "";
                 _requests = null;
-                _isRegistered = false;
+                _isRegistered = false; 
                 UpdateButton();
             }
 
         }
 
-        private async void HandleRequestAsync(OASISQueryDTO request)
+        private async void HandleRequestAsync(RequestQueryDTO request)
         {
             try
             {
                 switch (request.RequestCase)
                 {
-                    case OASISQueryDTO.RequestOneofCase.EvaluationRequest:
+                    case RequestQueryDTO.RequestOneofCase.EvaluationRequest:
                         {
                             Log($"{_serverPrefix} Request Evaluation");
                             EvaluateAsync(request);
                             break;
                         }
-                    case OASISQueryDTO.RequestOneofCase.NodeStatusRequest:
+                    case RequestQueryDTO.RequestOneofCase.NodeStatusRequest:
                         Log($"{_serverPrefix} Request Node Status");
-                        _client.offerSimulationConfig(BuildNodeUpdateResponse());
+                        await _client.offerSimulationConfigAsync(BuildNodeUpdateResponse());
                         break;
-                    case OASISQueryDTO.RequestOneofCase.CancelRequest:
+                    case RequestQueryDTO.RequestOneofCase.CancelRequest:
                         Log($"{_serverPrefix} Request Cancel");
                         _randomNumberEvaluator.Cancel();
                         break;
-                    case OASISQueryDTO.RequestOneofCase.StartRequest:
+                    case RequestQueryDTO.RequestOneofCase.StartRequest:
                         Log($"{_serverPrefix} Run Start - ID:{request.StartRequest.RunID}");
                         _activeRunID = Guid.Parse(request.StartRequest.RunID);
                         _latestRunID = _activeRunID;
                         _runIDs.Add(_activeRunID);
                         break;
-                    case OASISQueryDTO.RequestOneofCase.StopRequest:
+                    case RequestQueryDTO.RequestOneofCase.StopRequest:
                         Log($"{_serverPrefix} Run Stop - ID:{request.StopRequest.RunID}");
                         _activeRunID = Guid.Empty;
                         break;
-                    case OASISQueryDTO.RequestOneofCase.None:
+                    case RequestQueryDTO.RequestOneofCase.None:
                         break;
                     default:
                         break;
@@ -260,16 +258,17 @@ namespace EmpowerOps.Volition.RefClient
             }
             catch (Exception e)
             {
-                _client.offerErrorResult(new ErrorResponseDTO
+                await _client.offerErrorResultAsync(new ErrorResponseDTO
                 {
                     Name = _name,
                     Message = $"Error handling request [{request.RequestCase}]",
                     Exception = e.ToString()
                 });
             }
+            
         }
 
-        private async void EvaluateAsync(OASISQueryDTO request)
+        private async void EvaluateAsync(RequestQueryDTO request)
         {
             MapField<string, double> inputs = request.EvaluationRequest.InputVector;
             Log($"{_commandPrefix} Requested Input: [{inputs}]");
@@ -320,11 +319,11 @@ namespace EmpowerOps.Volition.RefClient
                         Name = _name,
                         OutputVector = { result.Output }
                     };
-                    _client.offerSimulationResult(request1);
+                    await _client.offerSimulationResultAsync(request1);
                     break;
                 case EvaluationResult.ResultStatus.Failed:
                     Log($"{_commandPrefix} Evaluation Failed [{ToDebugString(result.Output)}]\nException: {result.Exception}");
-                    _client.offerErrorResult(new ErrorResponseDTO
+                    await _client.offerErrorResultAsync(new ErrorResponseDTO
                     {
                         Name = _name,
                         Message = $"{_commandPrefix} Evaluation Failed when evaluating [{inputs}]",
@@ -333,7 +332,7 @@ namespace EmpowerOps.Volition.RefClient
                     break;
                 case EvaluationResult.ResultStatus.Canceled:
                     Log($"{_commandPrefix} Evaluation Canceled");
-                    _client.offerSimulationResult(new SimulationResponseDTO
+                    await _client.offerSimulationResultAsync(new SimulationResponseDTO
                     {
                         Name = _name,
                         OutputVector = { result.Output }
@@ -349,9 +348,9 @@ namespace EmpowerOps.Volition.RefClient
             return $"{{{ string.Join(",", dictionary.Select(it => $"\"{it.Key}\": {it.Value}").ToArray())}}}";
         }
 
-        private void UpdateNode()
+        private async void UpdateNode()
         {
-            _client.updateNode(BuildNodeUpdateResponse());
+            await _client.updateNodeAsync(BuildNodeUpdateResponse());
         }
 
         private NodeStatusCommandOrResponseDTO BuildNodeUpdateResponse()
@@ -387,7 +386,7 @@ namespace EmpowerOps.Volition.RefClient
         {
             //TODO better error state handing, when register failed due to no connection, it is not well though right now
             //TODO also when error flow when register e.g. same name
-            var registrationCommandDto = new RegistrationCommandDTO {Name = RegName.Text };
+            var registrationCommandDto = new RequestRegistrationCommandDTO {Name = RegName.Text };
             if (_requests != null)
             {
                 Log($"{_commandPrefix} Node already registered");
@@ -395,7 +394,7 @@ namespace EmpowerOps.Volition.RefClient
             }
 
             Log($"{_commandPrefix} Try Register as {RegName.Text}");
-            _requests = _client.register(registrationCommandDto);
+            _requests = _client.registerRequest(registrationCommandDto);
             if (_channel.State != ChannelState.Ready)
             {
                 await _channel.WaitForStateChangedAsync(_channel.State);
@@ -419,7 +418,7 @@ namespace EmpowerOps.Volition.RefClient
             }
         }
 
-        private void Rename_Button_Click(object sender, RoutedEventArgs e)
+        private async void Rename_Button_Click(object sender, RoutedEventArgs e)
         {
             if (!_isRegistered)
             {
@@ -429,7 +428,7 @@ namespace EmpowerOps.Volition.RefClient
 
             var nodeNameChangeCommandDto = new NodeNameChangeCommandDTO {OldName = _name, NewName = RegName.Text };
 
-            NodeNameChangeResponseDTO nodeNameChangeResponseDto = _client.changeNodeName(nodeNameChangeCommandDto);
+            NodeNameChangeResponseDTO nodeNameChangeResponseDto = await _client.changeNodeNameAsync(nodeNameChangeCommandDto);
             if (nodeNameChangeResponseDto.Changed)
             {
                 MessageBox.Show($"Change name {nodeNameChangeCommandDto.OldName} to {nodeNameChangeCommandDto.NewName} succeed.");
@@ -442,14 +441,14 @@ namespace EmpowerOps.Volition.RefClient
             }
         }
 
-        private void Log(string message)
+        private async void Log(string message)
         {
                   
             LogInfoTextBox.Text = LogInfoTextBox.Text += message + "\n";
             LogInfoTextBox.ScrollToEnd();
             if (_channel.State == ChannelState.Ready && ForwardMessageCheckBox.IsChecked.GetValueOrDefault(false))
             { 
-                _client.sendMessage(new MessageCommandDTO() { Name = _name ?? "no_name", Message = message });             
+                await _client.sendMessageAsync(new MessageCommandDTO() { Name = _name ?? "no_name", Message = message });             
             }
            
         }
@@ -509,10 +508,10 @@ namespace EmpowerOps.Volition.RefClient
             Unregister();
         }
 
-        private void Unregister()
+        private async void Unregister()
         {
             Log($"{_commandPrefix} Try Unregister {_name}");
-            var responseDto = _client.unregister(new UnRegistrationRequestDTO() {Name = _name});
+            var responseDto = await _client.unregisterRequestAsync(new RequestUnRegistrationRequestDTO() {Name = _name});
             Log($"{_serverPrefix} {responseDto.Message}");  //We dont care the return result and consider ourself as unregsisted
             _name = "";
             _requests = null;
@@ -535,10 +534,15 @@ namespace EmpowerOps.Volition.RefClient
          * Auto setup will override existing setup and update the optizmer to a
          * single plugin 
          */
-        private void AutoSetupButton_Click(object sender, RoutedEventArgs e)
+        private async void AutoSetupButton_Click(object sender, RoutedEventArgs e)
         {
+            if (!_isRegistered)
+            {
+                ShowNotRegisterMessage();
+                return;
+            }
             Log($"{_commandPrefix} Auto setup request");
-            var nodeChangeConfirmDto = _client.autoConfigure(BuildNodeUpdateResponse());
+            var nodeChangeConfirmDto = await _client.autoConfigureAsync(BuildNodeUpdateResponse());
             Log($"{_serverPrefix} {nodeChangeConfirmDto.Message}");
         }
     }

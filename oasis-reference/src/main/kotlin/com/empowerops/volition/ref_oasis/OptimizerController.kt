@@ -241,12 +241,26 @@ class OptimizerController {
         eventBus.register(this)
         connectionListContainer.children.add(connectionView)
         showNode(null)
+        rebindViewToState(optimizerService.state.currentState)
     }
 
     @FXML fun startStopClicked() = GlobalScope.launch(Dispatchers.JavaFx) {
         when (optimizerService.state.currentState){
-            State.Idle -> optimizerService.startOptimization()
+            State.Idle -> {
+                val requestStart = optimizerService.requestStart()
+                if(requestStart.isRight()){
+                    optimizerService.startOptimization()
+                }
+                else{
+                    val alert = Alert(Alert.AlertType.ERROR)
+                    alert.title = "Error"
+                    alert.headerText = "Can not start"
+                    alert.contentText = requestStart.left().get().joinToString(",")
+                    alert.showAndWait()
+                }
+            }
             State.Running, State.PausePending, State.Paused -> optimizerService.stopOptimization()
+            State.StopPending -> optimizerService.forceStop()
             else -> throw IllegalStateException("Start/Stop Button is not an actionable state. Current State:${optimizerService.state.currentState}")
         }
     }
@@ -269,44 +283,44 @@ class OptimizerController {
     }
 
     @Subscribe
-    fun onNewResult(event: NewResultEvent) = GlobalScope.launch(Dispatchers.JavaFx) {
+    fun onNewResultAsync(event: NewResultEvent) = GlobalScope.launch(Dispatchers.JavaFx) {
         resultList.add(event.result)
     }
 
     @Subscribe
-    fun onStateChange(event: StatusUpdateEvent) = GlobalScope.launch(Dispatchers.JavaFx) {
+    fun onStateChangeAsync(event: StatusUpdateEvent) = GlobalScope.launch(Dispatchers.JavaFx) {
         currentEvaluationStatus.value = event.status
     }
 
     @Subscribe
-    fun onNewMessage(event: NewMessageEvent) = GlobalScope.launch(Dispatchers.JavaFx) {
+    fun onNewMessageAsync(event: NewMessageEvent) = GlobalScope.launch(Dispatchers.JavaFx) {
         messageList.add(event.message)
     }
 
     @Subscribe
-    fun whenProxyAdded(event: ProxyAddedEvent) = GlobalScope.launch(Dispatchers.JavaFx) {
+    fun whenProxyAddedAsync(event: ProxyAddedEvent) = GlobalScope.launch(Dispatchers.JavaFx) {
         list.add(event.name)
     }
 
     @Subscribe
-    fun whenProxyRemoved(event: ProxyRemovedEvent) = GlobalScope.launch(Dispatchers.JavaFx) {
+    fun whenProxyRemovedAsync(event: ProxyRemovedEvent) = GlobalScope.launch(Dispatchers.JavaFx) {
         list.remove(event.name)
     }
 
     @Subscribe
-    fun whenProxyRenamed(event: ProxyRenamedEvent) = GlobalScope.launch(Dispatchers.JavaFx) {
+    fun whenProxyRenamedAsync(event: ProxyRenamedEvent) = GlobalScope.launch(Dispatchers.JavaFx) {
         list.remove(event.oldName)
         list.add(event.newName)
     }
 
     @Subscribe
-    fun whenProxyUpdated(event: ProxyUpdatedEvent) = GlobalScope.launch(Dispatchers.JavaFx) {
+    fun whenProxyUpdatedAsync(event: ProxyUpdatedEvent) = GlobalScope.launch(Dispatchers.JavaFx) {
         nodesList.refresh()
         showNode(nodesList.selectedItem)
     }
 
     @Subscribe
-    fun whenIssueUpdated(event: OptimizationModelEvent) = GlobalScope.launch(Dispatchers.JavaFx) {
+    fun whenIssueUpdatedAsync(event: OptimizationModelEvent) = GlobalScope.launch(Dispatchers.JavaFx) {
         val issueList = modelService.findIssue()
         if (issueList.isNotEmpty()) {
             issuesText.set(issueList.joinToString("\n"))
@@ -316,27 +330,31 @@ class OptimizerController {
     }
 
     @Subscribe
-    fun onStateChanged(event : StatusUpdateEvent) = GlobalScope.launch(Dispatchers.JavaFx){
-        val buttonState = when (optimizerService.state.currentState) {
-            State.Idle -> ButtonState.Idle
-            State.StartPending -> ButtonState.Starting
-            State.Running -> ButtonState.Running
-            State.PausePending -> ButtonState.Pausing
-            State.Paused -> ButtonState.Paused
-            State.StopPending -> ButtonState.Stopping
+    fun onStateChangedAsync(event : StatusUpdateEvent) = GlobalScope.launch(Dispatchers.JavaFx){
+        rebindViewToState(optimizerService.state.currentState)
+    }
+
+    private fun rebindViewToState(currentState: State) {
+        val buttonState = when (currentState) {
+            State.Idle -> Idle
+            State.StartPending -> Starting
+            State.Running -> Running
+            State.PausePending -> Pausing
+            State.Paused -> Paused
+            State.StopPending -> Stopping
         }
 
-        startButton.text =  buttonState.start
-        startButton.isDisable =  buttonState.startDisabled
-        pauseButton.text =  buttonState.pause
-        pauseButton.isDisable =  buttonState.pauseDisabled
+        startButton.text = buttonState.start
+        startButton.isDisable = buttonState.startDisabled
+        pauseButton.text = buttonState.pause
+        pauseButton.isDisable = buttonState.pauseDisabled
     }
 
     enum class ButtonState(val start: String, val pause: String, val startDisabled : Boolean, val pauseDisabled : Boolean) {
         Idle("Start", "Pause", false, true),
         Starting("Starting..", "Pause", true, true),
         Running("Stop", "Pause", false, false),
-        Stopping("Stopping...", "Pause", true, true),
+        Stopping("Stopping...(Force Stop)", "Pause", false, true),
         Paused("Stop", "Resume", false, false),
         Pausing("Stop","Pausing...", false, true)
     }

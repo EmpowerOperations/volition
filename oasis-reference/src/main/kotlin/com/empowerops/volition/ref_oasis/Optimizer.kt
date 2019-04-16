@@ -59,13 +59,14 @@ class OptimizerStarter : Application(){
         version = ["Reference version: 1.0", "Volition API version: 1.0"],
         description = ["Reference optimizer using Volition API"])
 class Optimizer {
-    private var optimizerEndpoint: OptimizerEndpoint
-    private var modelService: DataModelService
-    private var optimizerService : OptimizerService
-    private var pluginEndPoint : PluginEndPoint
+    private lateinit var optimizerEndpoint: OptimizerEndpoint
+    private lateinit var modelService: DataModelService
+    private lateinit var optimizerService : OptimizerService
+    private lateinit var pluginEndPoint : PluginEndPoint
+    private lateinit var server: Server
+
     private val eventBus: EventBus = EventBus()
     private val logger : ConsoleOutput = ConsoleOutput(eventBus)
-    private var server: Server
 
     @Option(names = ["-l", "--headless"], description = ["Run Optimizer in Headless Mode"])
     var headless: Boolean = false
@@ -73,8 +74,11 @@ class Optimizer {
     @Option(names = ["-p", "--port"], paramLabel = "PORT", description = ["Run optimizer with specified port, when not specified, port number will default to 5550"])
     var port: Int = 5550
 
-    init {
-        modelService = DataModelService(eventBus)
+    @Option(names = ["-o", "--overwrite"], description = ["Endable register overwrite when duplication happens"])
+    var overwrite: Boolean = false
+
+    private fun setup(){
+        modelService = DataModelService(eventBus, overwrite)
         pluginEndPoint = PluginEndPoint(modelService, logger, eventBus)
         optimizerService = OptimizerService(RandomNumberOptimizer(), modelService, eventBus, pluginEndPoint)
         optimizerEndpoint = OptimizerEndpoint(modelService, optimizerService)
@@ -82,6 +86,7 @@ class Optimizer {
     }
 
     fun start(primaryStage: Stage) {
+        setup()
         try {
             logger.log("Server started at: localhost:$port", "Optimizer")
             server.start()
@@ -103,7 +108,7 @@ class Optimizer {
 
     fun stop() {
         logger.outChannel.close()
-        server?.shutdown()
+        server.shutdown()
     }
 
 }

@@ -13,7 +13,6 @@ import tornadofx.*
 
 class ConnectionView(
         val dataModel: DataModelService,
-        val control: OptimizerEndpoint,
         val eventBus: EventBus) : View("My View") {
 
 
@@ -57,8 +56,7 @@ class ConnectionView(
                     button("refresh") {
                         action {
                             GlobalScope.launch {
-                                control.updateNode(name)
-                                dataModel.syncConfiguration(name)
+                                dataModel.updateSimulation(name)
                             }
                         }
                     }
@@ -72,8 +70,7 @@ class ConnectionView(
                     button("add setup") {
                         action {
                             GlobalScope.launch {
-                                dataModel.addConfiguration(name)
-                                dataModel.syncConfiguration(name)
+                                dataModel.addAndSyncConfiguration(name)
                             }
                         }
                     }

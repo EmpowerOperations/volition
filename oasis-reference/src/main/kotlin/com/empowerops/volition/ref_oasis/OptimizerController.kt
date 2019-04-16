@@ -1,5 +1,6 @@
 package com.empowerops.volition.ref_oasis
 
+import com.empowerops.volition.ref_oasis.OptimizerController.ButtonState.*
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import com.sun.javafx.binding.StringConstant
@@ -20,10 +21,10 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.javafx.JavaFx
 import kotlinx.coroutines.launch
 import tornadofx.*
+import java.lang.IllegalStateException
 import java.time.Duration
 
 class OptimizerController {
-
     /**
      * This is backing view object for the tree table view, Not intended to use for any data model
      */
@@ -42,14 +43,14 @@ class OptimizerController {
     @FXML lateinit var view: AnchorPane
     @FXML lateinit var nodesList: ListView<String>
     @FXML lateinit var messageTableView: TableView<Message>
-    @FXML lateinit var resultTableView: TableView<Result>
+    @FXML lateinit var resultTableView: TableView<EvaluationResult>
     @FXML lateinit var messageSenderColumn: TableColumn<Message, String>
     @FXML lateinit var timeColumn: TableColumn<Message, String>
     @FXML lateinit var messageColumn: TableColumn<Message, String>
-    @FXML lateinit var resultSenderColumn: TableColumn<Result, String>
-    @FXML lateinit var typeColumn: TableColumn<Result, String>
-    @FXML lateinit var inputColumn: TableColumn<Result, String>
-    @FXML lateinit var outputColumn: TableColumn<Result, String>
+    @FXML lateinit var resultSenderColumn: TableColumn<EvaluationResult, String>
+    @FXML lateinit var typeColumn: TableColumn<EvaluationResult, String>
+    @FXML lateinit var inputColumn: TableColumn<EvaluationResult, String>
+    @FXML lateinit var outputColumn: TableColumn<EvaluationResult, String>
     @FXML internal lateinit var paramTreeView: TreeTableView<Parameter>
     @FXML internal lateinit var nameColumn: TreeTableColumn<Parameter, String>
     @FXML internal lateinit var valueColumn: TreeTableColumn<Parameter, String>
@@ -63,17 +64,17 @@ class OptimizerController {
     @FXML lateinit var connectionListContainer: VBox
     @FXML lateinit var issuesTextArea: TextArea
     @FXML lateinit var pauseButton: Button
+    @FXML lateinit var startButton: Button
 
     private val list: ObservableList<String> = FXCollections.observableArrayList()
     private val messageList: ObservableList<Message> = FXCollections.observableArrayList()
-    private val resultList: ObservableList<Result> = FXCollections.observableArrayList()
+    private val resultList: ObservableList<EvaluationResult> = FXCollections.observableArrayList()
     private val currentEvaluationStatus = SimpleStringProperty()
     private val issuesText = SimpleStringProperty()
-
-    private lateinit var endpoint: OptimizerEndpoint
     private lateinit var modelService: DataModelService
     private lateinit var inputRoot: TreeItem<Parameter>
     private lateinit var outputRoot: TreeItem<Parameter>
+    private lateinit var optimizerService: OptimizerService
 
     enum class Type {
         Input, Output, Root
@@ -83,7 +84,7 @@ class OptimizerController {
         val root = TreeItem<Parameter>(Parameter("root", Type.Root))
         inputRoot = TreeItem(Parameter("Inputs", Type.Root))
         outputRoot = TreeItem(Parameter("Outputs", Type.Root))
-        if(config==null) return root
+        if (config == null) return root
 
         val inputs: List<TreeItem<Parameter>> = config.inputs.map {
             val value = Parameter(it.name, Type.Input, it.currentValue)
@@ -105,7 +106,8 @@ class OptimizerController {
         return root
     }
 
-    @FXML fun initialize() {
+    @FXML
+    fun initialize() {
         nodesList.items = list
         messageTableView.items = messageList
         resultTableView.items = resultList
@@ -135,8 +137,8 @@ class OptimizerController {
             }
         }
 
-        useTimeout.selectedProperty().addListener { s, oldV, newV ->
-            if (newV) {
+        useTimeout.setOnAction {
+            if (useTimeout.isSelected) {
                 modelService.setDuration(nodesList.selectedItem, Duration.ZERO)
                 timeOutTextField.text = "0"
             } else {
@@ -146,8 +148,6 @@ class OptimizerController {
         }
 
         timeOutTextField.disableProperty().bind(useTimeout.selectedProperty().not())
-
-
     }
 
     private fun setupMessageTable() {
@@ -158,9 +158,26 @@ class OptimizerController {
 
     private fun setupResultTable() {
         resultSenderColumn.setCellValueFactory { dataFeatures -> StringConstant.valueOf(dataFeatures.value.name) }
-        typeColumn.setCellValueFactory { dataFeatures -> StringConstant.valueOf(dataFeatures.value.resultType) }
-        inputColumn.setCellValueFactory { dataFeatures -> StringConstant.valueOf(dataFeatures.value.inputs) }
-        outputColumn.setCellValueFactory { dataFeatures -> StringConstant.valueOf(dataFeatures.value.outputs) }
+        typeColumn.setCellValueFactory { dataFeatures -> StringConstant.valueOf(dataFeatures.value.getTypeDisplayString()) }
+        inputColumn.setCellValueFactory { dataFeatures -> StringConstant.valueOf(dataFeatures.value.inputs.toString()) }
+        outputColumn.setCellValueFactory { dataFeatures -> StringConstant.valueOf(dataFeatures.value.getResultDisplay()) }
+    }
+
+
+    private fun EvaluationResult.getTypeDisplayString() = when (this) {
+        is EvaluationResult.Success -> "Success"
+        is EvaluationResult.TimeOut -> "Timeout"
+        is EvaluationResult.Failed -> "Failed"
+        is EvaluationResult.Error -> "Error"
+        is EvaluationResult.Terminated -> "Terminated"
+    }
+
+    private fun EvaluationResult.getResultDisplay() = when (this) {
+        is EvaluationResult.Success -> result.toString()
+        is EvaluationResult.TimeOut -> "Timed out: N/A"
+        is EvaluationResult.Failed -> "Evaluation Failed: \n$exception"
+        is EvaluationResult.Error -> "Error:\n$exception"
+        is EvaluationResult.Terminated -> "Stopped by request"
     }
 
     private fun setupParameterTableTree() {
@@ -180,7 +197,7 @@ class OptimizerController {
         }
     }
 
-    private fun generateAndUpdateNewProxy() : Boolean{
+    private fun generateAndUpdateNewProxy(): Boolean {
         val selectedItem = nodesList.selectionModel.selectedItem
         if (selectedItem == null) {
             return false
@@ -191,14 +208,14 @@ class OptimizerController {
                 Input(parameter.name, parameter.lowerBound ?: Double.NaN, parameter.upperBound ?: Double.NaN, 0.0)
             }
             val newProxy = proxy.copy(inputs = rebuildInputList)
-            modelService.syncConfiguration(newProxy)
+            modelService.updateConfiguration(newProxy)
             return true
         }
     }
 
     private fun showNode(newV: String?) {
         selectedNodeInfoBox.isDisable = newV == null
-        displayConfiguration(modelService.proxies.singleOrNull{it.name == newV})
+        displayConfiguration(modelService.proxies.singleOrNull { it.name == newV })
     }
 
     private fun displayConfiguration(proxy: Proxy?) {
@@ -214,79 +231,96 @@ class OptimizerController {
         }
     }
 
-    fun setData(dataModelService: DataModelService, endpoint: OptimizerEndpoint, eventBus: EventBus, connectionView: ListView<String>) {
+    fun attachToModel(
+            modelService: DataModelService,
+            eventBus: EventBus,
+            connectionView: ListView<String>,
+            optimizerService: OptimizerService) {
+        this.optimizerService = optimizerService
+        this.modelService = modelService
         eventBus.register(this)
-        modelService = dataModelService
         connectionListContainer.children.add(connectionView)
-        this.endpoint = endpoint
         showNode(null)
+        rebindViewToState(optimizerService.state.currentState)
     }
 
-    @FXML
-    fun startRun() = GlobalScope.launch {
-        endpoint.startOptimization(RandomNumberOptimizer())
+    @FXML fun startStopClicked() = GlobalScope.launch(Dispatchers.JavaFx) {
+        when (optimizerService.state.currentState){
+            State.Idle -> {
+                val requestStart = optimizerService.requestStart()
+                if(requestStart.isRight()){
+                    optimizerService.startOptimization()
+                }
+                else{
+                    val alert = Alert(Alert.AlertType.ERROR)
+                    alert.title = "Error"
+                    alert.headerText = "Can not start"
+                    alert.contentText = requestStart.left().get().joinToString(",")
+                    alert.showAndWait()
+                }
+            }
+            State.Running, State.PausePending, State.Paused -> optimizerService.stopOptimization()
+            State.StopPending -> optimizerService.forceStop()
+            else -> throw IllegalStateException("Start/Stop Button is not an actionable state. Current State:${optimizerService.state.currentState}")
+        }
     }
 
-    @FXML
-    fun stopRun() = GlobalScope.launch(Dispatchers.JavaFx) {
-        endpoint.stopOptimization()
-        pauseButton.text = "Pause"
+    @FXML fun pauseResumeRun() = GlobalScope.launch(Dispatchers.JavaFx) {
+        when (optimizerService.state.currentState){
+            State.Running -> optimizerService.pauseOptimization()
+            State.Paused -> optimizerService.resumeOptimization()
+            else -> throw IllegalStateException("Pause/Resume Button is not an actionable state. Current State:${startButton.text}")
+        }
     }
 
-    @FXML
-    fun pauseRun() = GlobalScope.launch(Dispatchers.JavaFx) {
-        val paused = endpoint.pauseOptimization()
-        pauseButton.text = if (paused) "Resume" else "Pause"
-    }
+    @FXML fun cancelAll() = GlobalScope.launch(Dispatchers.JavaFx) { optimizerService.cancelCurrent() }
 
-    @FXML
-    fun cancelAll() = GlobalScope.launch {
-        endpoint.cancelAll()
-    }
+    @FXML fun cancelAndStop() = GlobalScope.launch(Dispatchers.JavaFx) { optimizerService.cancelStop() }
 
-    @FXML
-    fun cancelAndStop() = GlobalScope.launch {
-        endpoint.cancelAndStop()
-    }
-
-    @FXML
-    fun removeSelectedSetup() = GlobalScope.launch {
+    @FXML fun removeSelectedSetup() = GlobalScope.launch {
         val selectedItem = nodesList.selectedItem
         if (selectedItem != null) modelService.removeConfiguration(selectedItem)
     }
 
-    @Subscribe fun onNewResult(event: NewResultEvent) = GlobalScope.launch(Dispatchers.JavaFx) {
+    @Subscribe
+    fun onNewResultAsync(event: NewResultEvent) = GlobalScope.launch(Dispatchers.JavaFx) {
         resultList.add(event.result)
     }
 
-    @Subscribe fun onStateChange(event: StatusUpdateEvent) = GlobalScope.launch(Dispatchers.JavaFx) {
+    @Subscribe
+    fun onStateChangeAsync(event: StatusUpdateEvent) = GlobalScope.launch(Dispatchers.JavaFx) {
         currentEvaluationStatus.value = event.status
     }
 
-    @Subscribe fun onNewMessage(event: NewMessageEvent) = GlobalScope.launch(Dispatchers.JavaFx) {
+    @Subscribe
+    fun onNewMessageAsync(event: NewMessageEvent) = GlobalScope.launch(Dispatchers.JavaFx) {
         messageList.add(event.message)
     }
 
-    @Subscribe fun whenProxyAdded(event: ProxyAddedEvent) = GlobalScope.launch(Dispatchers.JavaFx) {
+    @Subscribe
+    fun whenProxyAddedAsync(event: ProxyAddedEvent) = GlobalScope.launch(Dispatchers.JavaFx) {
         list.add(event.name)
     }
 
-    @Subscribe fun whenProxyRemoved(event: ProxyRemovedEvent) = GlobalScope.launch(Dispatchers.JavaFx) {
+    @Subscribe
+    fun whenProxyRemovedAsync(event: ProxyRemovedEvent) = GlobalScope.launch(Dispatchers.JavaFx) {
         list.remove(event.name)
     }
 
-    @Subscribe fun whenProxyRenamed(event: ProxyRenamedEvent) = GlobalScope.launch(Dispatchers.JavaFx) {
+    @Subscribe
+    fun whenProxyRenamedAsync(event: ProxyRenamedEvent) = GlobalScope.launch(Dispatchers.JavaFx) {
         list.remove(event.oldName)
         list.add(event.newName)
     }
 
-    @Subscribe fun whenProxyUpdated(event: ProxyUpdatedEvent) = GlobalScope.launch(Dispatchers.JavaFx) {
+    @Subscribe
+    fun whenProxyUpdatedAsync(event: ProxyUpdatedEvent) = GlobalScope.launch(Dispatchers.JavaFx) {
         nodesList.refresh()
-        showNode(null)
         showNode(nodesList.selectedItem)
     }
 
-    @Subscribe fun whenIssueUpdated(event: ModelEvent) = GlobalScope.launch(Dispatchers.JavaFx) {
+    @Subscribe
+    fun whenIssueUpdatedAsync(event: OptimizationModelEvent) = GlobalScope.launch(Dispatchers.JavaFx) {
         val issueList = modelService.findIssue()
         if (issueList.isNotEmpty()) {
             issuesText.set(issueList.joinToString("\n"))
@@ -295,4 +329,34 @@ class OptimizerController {
         }
     }
 
+    @Subscribe
+    fun onStateChangedAsync(event : StatusUpdateEvent) = GlobalScope.launch(Dispatchers.JavaFx){
+        rebindViewToState(optimizerService.state.currentState)
+    }
+
+    private fun rebindViewToState(currentState: State) {
+        val buttonState = when (currentState) {
+            State.Idle -> Idle
+            State.StartPending -> Starting
+            State.Running -> Running
+            State.PausePending -> Pausing
+            State.Paused -> Paused
+            State.StopPending -> Stopping
+        }
+
+        startButton.text = buttonState.start
+        startButton.isDisable = buttonState.startDisabled
+        pauseButton.text = buttonState.pause
+        pauseButton.isDisable = buttonState.pauseDisabled
+    }
+
+    enum class ButtonState(val start: String, val pause: String, val startDisabled : Boolean, val pauseDisabled : Boolean) {
+        Idle("Start", "Pause", false, true),
+        Starting("Starting..", "Pause", true, true),
+        Running("Stop", "Pause", false, false),
+        Stopping("Stopping...(Force Stop)", "Pause", false, true),
+        Paused("Stop", "Resume", false, false),
+        Pausing("Stop","Pausing...", false, true)
+    }
 }
+

@@ -58,7 +58,7 @@ object Client {
     suspend fun register() = withContext(Dispatchers.JavaFx) {
 
         try {
-            val channel = wrapToServerSideChannel(service::register, makeRegisterRequest())
+            val channel = wrapToServerSideChannel(service::registerRequest, makeRegisterRequest())
             registered = true
 
             //yeah so, this is an excellent demonstration of why coroutines matter..
@@ -68,7 +68,6 @@ object Client {
 
                     val result = try {
                         simulating = true
-//                        delay(3000)
                         makeWorkResult()
                     }
                     finally {
@@ -109,7 +108,7 @@ object Client {
     private fun makeOptimizationRequest() = StartOptimizationCommandDTO.newBuilder()
             .build()
 
-    private fun makeRegisterRequest() = RegistrationCommandDTO.newBuilder()
+    private fun makeRegisterRequest() = RequestRegistrationCommandDTO.newBuilder()
             .setName("cansys")
             .build()
 

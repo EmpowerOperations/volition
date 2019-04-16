@@ -19,9 +19,10 @@
                 <MenuItem Header="_Exit" />
             </MenuItem>
         </Menu>
-      
+
         <Grid Margin="5" DockPanel.Dock="Left" Width="350">
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="87*"/>
@@ -32,11 +33,24 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <Button Name="StartOptimization" Content="Start Optimization" Grid.Column="0" Click="StartOptimization_Click"/>
-                <Button Name="SyncSetting" Content="Sync" Width="75" Grid.Column="2" Click="SyncButton_Click"/>
+                <Button Name="Update" Content="Update" Grid.Column="2" Click="UpdateButton_Click"/>
                 <Button Name="StopOptimization" Content="Stop Optimization" Grid.Column="1" Click="StopOptimization_Click"/>
+                <Button Content="Auto Setup" Grid.Column="3" Click="AutoSetupButton_Click"/>
+            </Grid>
+            <Grid Grid.Row="2" Margin="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Button Name ="ApplyTimeoutToSetup" Content="Apply" Grid.Column="2" Click="ApplyTimeout_Click" />
+                <Button Name ="RemoveTimeout" Content="Clear" Grid.Column="3" Click="ClearTimeout_Click" />
+                <TextBox Name ="TimeoutTextBox" Grid.Column="1" HorizontalAlignment="Left" TextWrapping="Wrap" Width="120"/>
+                <Label Content="Timeout(in millisec)" Grid.Column="0" HorizontalAlignment="Left" />
             </Grid>
             <Grid Grid.Row="0" Margin="2">
                 <Grid.ColumnDefinitions>
@@ -52,7 +66,7 @@
                 <Label Name="RegisterLabel" Grid.Column="4" Content="Status: Not Registered" />
                 <Button Name="RenameButton" Grid.Column="3" Content="Rename" Click="Rename_Button_Click"/>
             </Grid>
-            <Grid Grid.Row="2" Margin="2">
+            <Grid Grid.Row="3" Margin="2">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition/>
@@ -78,7 +92,7 @@
                     <Button Content="Remove" Grid.Row="0" Click="RemoveInput_Button_Click" Width="76" Grid.Column="2"/>
                 </Grid>
             </Grid>
-            <Grid Grid.Row="3" Margin="2">
+            <Grid Grid.Row="4" Margin="2">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition/>
@@ -103,13 +117,20 @@
             </Grid>
         </Grid>
         <Grid Margin="5">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            <TextBox x:Name="LogInfoTextBox" TextWrapping="Wrap" Grid.ColumnSpan="1"/>
-            <Grid Grid.Column="1">
-                <Button Content="Fail Next" VerticalAlignment="Top" HorizontalAlignment="Left" Click="FailNextRun_Click" />
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <TextBox x:Name="LogInfoTextBox" TextWrapping="Wrap" Grid.Row="0"/>
+            <Grid Margin="5" Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Button Content="Fail Next" Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Left" Click="FailNextRun_Click" Grid.Row="1" />
+                <CheckBox x:Name="ForwardMessageCheckBox" Grid.Column="2" Content="Forward Message" HorizontalAlignment="Right" Grid.Row="1" VerticalAlignment="Center"/>
+                <Button Content="Request Result" Grid.Column="1" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top" Click ="RequestResult_Click"/>
             </Grid>
         </Grid>
     </DockPanel>

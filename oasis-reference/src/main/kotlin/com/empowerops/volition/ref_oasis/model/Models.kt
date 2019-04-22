@@ -1,4 +1,4 @@
-package com.empowerops.volition.ref_oasis
+package com.empowerops.volition.ref_oasis.model
 
 import com.empowerops.volition.dto.*
 import io.grpc.stub.StreamObserver
@@ -6,6 +6,7 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.channels.Channel
 import java.time.Duration
 import java.time.LocalDateTime
+import java.util.*
 import java.util.logging.Level
 
 data class Input(
@@ -60,11 +61,10 @@ sealed class EvaluationResult(
     ): EvaluationResult(name, inputs)
 }
 
-
-
 sealed class CancelResult {
     data class Canceled(val name: String) : CancelResult()
     data class CancelFailed(val name: String, val exception: String) : CancelResult()
+    data class CancelTerminated(val name: String, val exception: String) : CancelResult()
 }
 
 interface Nameable {
@@ -79,18 +79,18 @@ fun <T : Nameable> List<T>.getNames(): List<String> = map { it.name }
 
 data class Simulation(
         override val name: String,
-        val inputs: List<Input>,
-        val outputs: List<Output>,
-        val description: String,
         val input: StreamObserver<RequestQueryDTO>,
-        val output: Channel<SimulationResponseDTO>,
-        val update: Channel<NodeStatusCommandOrResponseDTO>,
-        val error: Channel<ErrorResponseDTO>
+        val inputs: List<Input> = emptyList(),
+        val outputs: List<Output> = emptyList(),
+        val description: String= "",
+        val output: Channel<SimulationResponseDTO> = Channel(Channel.RENDEZVOUS),
+        val update: Channel<NodeStatusCommandOrResponseDTO> = Channel(Channel.RENDEZVOUS),
+        val error: Channel<ErrorResponseDTO> = Channel(Channel.RENDEZVOUS)
 ) : Nameable
 
 data class ForceStopSignal(
         override val name: String,
-        val completableDeferred : CompletableDeferred<Unit> = CompletableDeferred()
+        val forceStopped : CompletableDeferred<Unit> = CompletableDeferred()
 ): Nameable
 
 data class Proxy(
@@ -99,3 +99,7 @@ data class Proxy(
         val outputs: List<Output> = emptyList(),
         val timeOut: Duration? = null
 ) : Nameable
+
+data class Issue(val message: String)
+
+

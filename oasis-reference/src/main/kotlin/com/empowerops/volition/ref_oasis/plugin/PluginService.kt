@@ -1,18 +1,20 @@
-package com.empowerops.volition.ref_oasis
+package com.empowerops.volition.ref_oasis.plugin
 
 import com.empowerops.volition.dto.NodeStatusCommandOrResponseDTO
 import com.empowerops.volition.dto.RequestQueryDTO
+import com.empowerops.volition.ref_oasis.front_end.ConsoleOutput
+import com.empowerops.volition.ref_oasis.model.*
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.selects.select
 import org.funktionale.either.Either
-import java.time.Duration
 import java.util.*
 
 class PluginService(
-        private val modelService : DataModelService,
+        private val modelService : ModelService,
         private val logger: ConsoleOutput,
         private val eventBus: EventBus
 ){
@@ -20,8 +22,7 @@ class PluginService(
         eventBus.register(this)
     }
 
-    private var sessionForceStopSignals : List<ForceStopSignal> = emptyList()
-
+    @ExperimentalCoroutinesApi
     @Subscribe
     fun onUpdateNodeRequested(event : SimulationUpdateRequestedEvent) = GlobalScope.launch{
         val sim = modelService.simulations.getValue(event.name)
@@ -37,7 +38,7 @@ class PluginService(
                 sim.error.onReceive {
                     Either.Right(Message(it.name, "Error update simulation ${event.name} due to ${it.message} :\n${it.exception}"))
                 }
-                this.onTimeout(Duration.ofSeconds(5).toMillis()) {
+                onTimeout(modelService.updateTimeout) {
                     Either.Right(Message("Optimizer", "Update simulation timeout. Please check simulation is registered and responsive."))
                 }
             }
@@ -93,70 +94,6 @@ class PluginService(
                 logger.log("Error sending stop request to ${proxy.name}", "Optimizer")
             }
         }
-    }
-
-    suspend fun evaluate(proxy: Proxy, inputVector: Map<String, Double>): EvaluationResult {
-        val simulation = modelService.simulations.getValue(proxy.name)
-        val message = RequestQueryDTO.newBuilder().setEvaluationRequest(
-                RequestQueryDTO.SimulationEvaluationRequest
-                        .newBuilder()
-                        .setName(simulation.name)
-                        .putAllInputVector(inputVector)
-        ).build()
-        val forceStopSignal = ForceStopSignal(proxy.name)
-        sessionForceStopSignals += forceStopSignal
-        return try {
-            simulation.input.onNext(message)
-            select {
-                simulation.output.onReceive { EvaluationResult.Success(it.name, inputVector, it.outputVectorMap) }
-                simulation.error.onReceive { EvaluationResult.Failed(it.name, inputVector, it.exception) }
-                if (proxy.timeOut != null) {
-                    onTimeout(proxy.timeOut.toMillis()) {
-                        EvaluationResult.TimeOut(simulation.name, inputVector)
-                    }
-                }
-                forceStopSignal.completableDeferred.onAwait{
-                    EvaluationResult.Terminated(simulation.name, inputVector, "Evaluation is terminated")
-                }
-            }
-        } catch (exception: Exception) {
-            EvaluationResult.Error(
-                    "Optimizer",
-                    inputVector,
-                    "Unexpected error happened when try to evaluate $inputVector though simulation ${simulation.name}. Cause: $exception"
-            )
-        } finally {
-            sessionForceStopSignals -= forceStopSignal
-        }
-    }
-
-    /**
-     * Cancel is NOT running in async mode because we are not managing state for plugin and we always assume plugin is in ready state
-     * whenever it returns a result
-     */
-    suspend fun cancelCurrentEvaluation(proxy: Proxy) {
-        val simulation = modelService.simulations.getValue(proxy.name)
-        val message = RequestQueryDTO.newBuilder().setCancelRequest(RequestQueryDTO.SimulationCancelRequest.newBuilder().setName(simulation.name)).build()
-
-        simulation.input.onNext(message)
-        val cancelResult = select<CancelResult> {
-            simulation.output.onReceive { CancelResult.Canceled(it.name) }
-            simulation.error.onReceive { CancelResult.CancelFailed(it.name, it.exception) }
-
-        }
-        val cancelMessage = when (cancelResult) {
-            is CancelResult.Canceled -> {
-                "Evaluation Canceled"
-            }
-            is CancelResult.CancelFailed -> {
-                "Cancellation Failed, Cause:\n${cancelResult.exception}"
-            }
-        }
-        logger.log(cancelMessage, "Optimizer")
-    }
-
-    fun forceStopAll(){
-        sessionForceStopSignals.forEach{ it.completableDeferred.complete(Unit) }
     }
 
     private fun updateFromResponse(request: NodeStatusCommandOrResponseDTO): Simulation {

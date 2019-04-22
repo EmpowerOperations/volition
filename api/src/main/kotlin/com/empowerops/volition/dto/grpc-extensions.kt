@@ -1,5 +1,6 @@
 package com.empowerops.volition.dto
 
+import com.google.protobuf.Message
 import io.grpc.*
 import io.grpc.stub.StreamObserver
 import kotlinx.coroutines.*
@@ -42,36 +43,36 @@ fun <T> StreamObserver<T>.consume(block: () -> T) {
     try {
         val result = block()
         onNext(result)
+        onCompleted()
     } catch (ex: Exception) {
         onError(ex)
         throw ex
-    } finally {
-        onCompleted()
     }
 }
 
-fun <T> StreamObserver<T>.consumeThen(result : T, block2:(T) -> Unit) {
+inline fun <T> StreamObserver<T>.consumeThen(block : () -> T, block2:(T) -> Unit) {
     try {
+        val result = block()
         onNext(result)
+        block2(result)
+        onCompleted()
     } catch (ex: Exception) {
         onError(ex)
         throw ex
-    } finally {
-        onCompleted()
-        block2(result)
     }
 }
 
-fun <T> StreamObserver<T>.consumeAsync(block: suspend () -> T) {
+fun <T> StreamObserver<T>.consumeAsync(message: Message? = null, block: suspend () -> T) {
+    val sourceEx = Exception("error caused while processing $message")
      GlobalScope.launch {
         try {
             val result = block()
             onNext(result)
+            onCompleted()
         } catch(ex: Exception){
+            generateSequence<Throwable>(ex) { ex.cause }.last().initCause(sourceEx)
             onError(ex)
             throw ex
-        } finally {
-            onCompleted()
         }
     }
 }

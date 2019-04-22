@@ -1,6 +1,9 @@
-package com.empowerops.volition.ref_oasis
+package com.empowerops.volition.ref_oasis.front_end
 
-import com.empowerops.volition.ref_oasis.OptimizerController.ButtonState.*
+import com.empowerops.volition.ref_oasis.front_end.OptimizerController.ButtonState.*
+import com.empowerops.volition.ref_oasis.model.*
+import com.empowerops.volition.ref_oasis.optimizer.*
+import com.empowerops.volition.ref_oasis.optimizer.buildStartIssuesMessage
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import com.sun.javafx.binding.StringConstant
@@ -16,10 +19,8 @@ import javafx.scene.input.KeyCode
 import javafx.scene.layout.AnchorPane
 import javafx.scene.layout.VBox
 import javafx.util.converter.DoubleStringConverter
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.*
 import kotlinx.coroutines.javafx.JavaFx
-import kotlinx.coroutines.launch
 import tornadofx.*
 import java.lang.IllegalStateException
 import java.time.Duration
@@ -30,7 +31,7 @@ class OptimizerController {
      */
     internal class Parameter(
             val name: String,
-            val type: OptimizerController.Type,
+            val type: Type,
             val value: Double? = null
     ) {
         var upperBound: Double? by property()
@@ -39,6 +40,7 @@ class OptimizerController {
         var lowerBound: Double? by property()
         fun lowerBoundProperty(): Property<Double?> = getProperty(Parameter::lowerBound)
     }
+
 
     @FXML lateinit var view: AnchorPane
     @FXML lateinit var nodesList: ListView<String>
@@ -71,10 +73,10 @@ class OptimizerController {
     private val resultList: ObservableList<EvaluationResult> = FXCollections.observableArrayList()
     private val currentEvaluationStatus = SimpleStringProperty()
     private val issuesText = SimpleStringProperty()
-    private lateinit var modelService: DataModelService
+    private lateinit var modelService: ModelService
     private lateinit var inputRoot: TreeItem<Parameter>
     private lateinit var outputRoot: TreeItem<Parameter>
-    private lateinit var optimizerService: OptimizerService
+    private lateinit var runStateMachine: RunStateMachine
 
     enum class Type {
         Input, Output, Root
@@ -131,7 +133,7 @@ class OptimizerController {
                 if (duration == null) {
                     timeOutTextField.text = ""
                 } else {
-                    modelService.setDuration(nodesList.selectedItem, Duration.ofMillis(duration))
+                    modelService.setTimeout(nodesList.selectedItem, Duration.ofMillis(duration))
                 }
                 view.requestFocus()
             }
@@ -139,10 +141,10 @@ class OptimizerController {
 
         useTimeout.setOnAction {
             if (useTimeout.isSelected) {
-                modelService.setDuration(nodesList.selectedItem, Duration.ZERO)
+                modelService.setTimeout(nodesList.selectedItem, Duration.ZERO)
                 timeOutTextField.text = "0"
             } else {
-                modelService.setDuration(nodesList.selectedItem, null)
+                modelService.setTimeout(nodesList.selectedItem, null)
                 timeOutTextField.text = ""
             }
         }
@@ -205,7 +207,8 @@ class OptimizerController {
             val proxy = modelService.proxies.single { it.name == selectedItem }
             val rebuildInputList: List<Input> = inputRoot.children.map {
                 val parameter = it.value
-                Input(parameter.name, parameter.lowerBound ?: Double.NaN, parameter.upperBound ?: Double.NaN, 0.0)
+                Input(parameter.name, parameter.lowerBound
+                        ?: Double.NaN, parameter.upperBound ?: Double.NaN, 0.0)
             }
             val newProxy = proxy.copy(inputs = rebuildInputList)
             modelService.updateConfiguration(newProxy)
@@ -232,50 +235,49 @@ class OptimizerController {
     }
 
     fun attachToModel(
-            modelService: DataModelService,
+            modelService: ModelService,
             eventBus: EventBus,
             connectionView: ListView<String>,
-            optimizerService: OptimizerService) {
-        this.optimizerService = optimizerService
+            stateMachine: RunStateMachine) {
         this.modelService = modelService
+        this.runStateMachine = stateMachine
         eventBus.register(this)
         connectionListContainer.children.add(connectionView)
         showNode(null)
-        rebindViewToState(optimizerService.state.currentState)
+        rebindViewToState(runStateMachine.currentState)
     }
 
     @FXML fun startStopClicked() = GlobalScope.launch(Dispatchers.JavaFx) {
-        when (optimizerService.state.currentState){
+        when (runStateMachine.currentState){
             State.Idle -> {
-                val requestStart = optimizerService.requestStart()
-                if(requestStart.isRight()){
-                    optimizerService.startOptimization()
-                }
-                else{
-                    val alert = Alert(Alert.AlertType.ERROR)
-                    alert.title = "Error"
-                    alert.headerText = "Can not start"
-                    alert.contentText = requestStart.left().get().joinToString(",")
-                    alert.showAndWait()
+                val startResult = CompletableDeferred<RunStateMachine.StartResult>()
+                runStateMachine.start(startResult)
+                when(startResult.await()){
+                    is RunStateMachine.StartResult.Success -> {
+                        //NOOP
+                    }
+                    is RunStateMachine.StartResult.Failed -> {
+                        val alert = Alert(Alert.AlertType.ERROR)
+                        alert.title = "Error"
+                        alert.headerText = "Can not start"
+                        alert.contentText = buildStartIssuesMessage(modelService.findIssues())
+                        alert.showAndWait()
+                    }
                 }
             }
-            State.Running, State.PausePending, State.Paused -> optimizerService.stopOptimization()
-            State.StopPending -> optimizerService.forceStop()
-            else -> throw IllegalStateException("Start/Stop Button is not an actionable state. Current State:${optimizerService.state.currentState}")
+            State.Running, State.PausePending, State.Paused -> runStateMachine.stop()
+            State.StopPending -> runStateMachine.forceStop()
+            else -> throw IllegalStateException("Start/Stop Button is not an actionable state. Current State:${runStateMachine.currentState}")
         }
     }
 
     @FXML fun pauseResumeRun() = GlobalScope.launch(Dispatchers.JavaFx) {
-        when (optimizerService.state.currentState){
-            State.Running -> optimizerService.pauseOptimization()
-            State.Paused -> optimizerService.resumeOptimization()
+        when (runStateMachine.currentState){
+            State.Running -> runStateMachine.pause()
+            State.Paused -> runStateMachine.resume()
             else -> throw IllegalStateException("Pause/Resume Button is not an actionable state. Current State:${startButton.text}")
         }
     }
-
-    @FXML fun cancelAll() = GlobalScope.launch(Dispatchers.JavaFx) { optimizerService.cancelCurrent() }
-
-    @FXML fun cancelAndStop() = GlobalScope.launch(Dispatchers.JavaFx) { optimizerService.cancelStop() }
 
     @FXML fun removeSelectedSetup() = GlobalScope.launch {
         val selectedItem = nodesList.selectedItem
@@ -321,7 +323,7 @@ class OptimizerController {
 
     @Subscribe
     fun whenIssueUpdatedAsync(event: OptimizationModelEvent) = GlobalScope.launch(Dispatchers.JavaFx) {
-        val issueList = modelService.findIssue()
+        val issueList = modelService.findIssues()
         if (issueList.isNotEmpty()) {
             issuesText.set(issueList.joinToString("\n"))
         } else {
@@ -331,7 +333,7 @@ class OptimizerController {
 
     @Subscribe
     fun onStateChangedAsync(event : StatusUpdateEvent) = GlobalScope.launch(Dispatchers.JavaFx){
-        rebindViewToState(optimizerService.state.currentState)
+        rebindViewToState(runStateMachine.currentState)
     }
 
     private fun rebindViewToState(currentState: State) {
@@ -342,6 +344,7 @@ class OptimizerController {
             State.PausePending -> Pausing
             State.Paused -> Paused
             State.StopPending -> Stopping
+            State.ForceStopPending -> ForceStopping
         }
 
         startButton.text = buttonState.start
@@ -350,11 +353,17 @@ class OptimizerController {
         pauseButton.isDisable = buttonState.pauseDisabled
     }
 
-    enum class ButtonState(val start: String, val pause: String, val startDisabled : Boolean, val pauseDisabled : Boolean) {
+    enum class ButtonState(
+            val start: String,
+            val pause: String,
+            val startDisabled : Boolean,
+            val pauseDisabled : Boolean
+    ) {
         Idle("Start", "Pause", false, true),
         Starting("Starting..", "Pause", true, true),
         Running("Stop", "Pause", false, false),
         Stopping("Stopping...(Force Stop)", "Pause", false, true),
+        ForceStopping("ForceStopping...", "Pause", true, true),
         Paused("Stop", "Resume", false, false),
         Pausing("Stop","Pausing...", false, true)
     }

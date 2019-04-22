@@ -1,23 +1,43 @@
-package com.empowerops.volition.ref_oasis
+package com.empowerops.volition.ref_oasis.model
 
+import com.empowerops.volition.dto.NodeStatusCommandOrResponseDTO
+import com.empowerops.volition.dto.RunResult
+import com.google.common.annotations.VisibleForTesting
 import com.google.common.eventbus.EventBus
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
 import java.time.Duration
 import java.util.*
 
-class DataModelService(private val eventBus: EventBus, private val overwriteMode : Boolean) {
+interface IssueFinder{
+    fun findIssues() : List<Issue>
+}
+
+data class RunResults(
+        val uuid : UUID,
+        val evaluationResults: Channel<EvaluationResult> = Channel(UNLIMITED)
+)
+
+class ModelService(private val eventBus: EventBus, private val overwriteMode : Boolean) : IssueFinder {
     var simulations: List<Simulation> = emptyList()
-        private set
+        internal set
+
     var proxies: List<Proxy> = emptyList()
         private set
+
+    @VisibleForTesting
     var resultList : Map<UUID, List<EvaluationResult>> = emptyMap()
-        private set
+        internal set
+
     var messageList : List<Message> = emptyList()
         private set
+
+    @VisibleForTesting val updateTimeout = Duration.ofSeconds(5).toMillis()
 
     /**
      * Update the timeout for configuration by name
      */
-    fun setDuration(nodeName: String?, timeOut: Duration?) : Boolean{
+    fun setTimeout(nodeName: String?, timeOut: Duration?) : Boolean{
         val oldNode = proxies.getNamed(nodeName) ?: return false
         proxies = proxies.replace(oldNode, oldNode.copy(timeOut = timeOut))
         eventBus.post(ProxyUpdatedEvent(nodeName!!))
@@ -92,6 +112,12 @@ class DataModelService(private val eventBus: EventBus, private val overwriteMode
         return true
     }
 
+    fun updateSimAndConfiguration(statusDTO: NodeStatusCommandOrResponseDTO) : Pair<Boolean, Simulation>{
+        val newSim = statusDTO.generateUpdatedSimulation()
+        val setupResult = updateSimAndConfiguration(newSim)
+        return Pair(setupResult, newSim)
+    }
+
     /**
      * Automatically add the configuration base on existing simulation
      *
@@ -108,6 +134,21 @@ class DataModelService(private val eventBus: EventBus, private val overwriteMode
         result = result && updateSimAndConfiguration(newSim)
         result = result && addAndSyncConfiguration(newSim.name)
         return result
+    }
+
+    fun autoSetup(statusDTO : NodeStatusCommandOrResponseDTO) : Pair<Boolean, Simulation> {
+        val newSim = statusDTO.generateUpdatedSimulation()
+        val setupResult = autoSetup(newSim)
+        return Pair(setupResult, newSim)
+    }
+
+    private fun NodeStatusCommandOrResponseDTO.generateUpdatedSimulation(): Simulation {
+        return simulations.single { it.name == name }.copy(
+                name = name,
+                inputs = inputsList.map { Input(it.name, it.lowerBound, it.upperBound, it.currentValue) },
+                outputs = outputsList.map { Output(it.name) },
+                description = description
+        )
     }
 
     /**
@@ -161,25 +202,25 @@ class DataModelService(private val eventBus: EventBus, private val overwriteMode
         return true
     }
 
-    fun findIssue(): List<String> {
-        var issues = emptyList<String>()
+     override fun findIssues(): List<Issue> {
+        var issues = emptyList<Issue>()
         val proxyNames = proxies.getNames()
         val simNames = simulations.getNames()
 
         if(proxyNames.isEmpty()){
-            issues += "No proxy setup"
+            issues += Issue("No proxy setup")
         }
         val proxyWithNoMatchingSim = proxyNames - simNames
         if (proxyWithNoMatchingSim.isNotEmpty()) {
             proxyWithNoMatchingSim.forEach {
-                issues += "Proxy Missing Simulation: Proxy setup \"$it\" reference to a missing simulation"
+                issues += Issue("Proxy Missing Simulation: Proxy setup \"$it\" reference to a missing simulation")
             }
         }
 
         val simWithNoMatchingProxy = simNames - proxyNames
         if (simWithNoMatchingProxy.isNotEmpty()) {
             simWithNoMatchingProxy.forEach {
-                issues += "Not used Simulation: Simulation \"$it\" are not used in any proxy setup"
+                issues += Issue("Not used Simulation: Simulation \"$it\" are not used in any proxy setup")
             }
         }
 
@@ -188,7 +229,7 @@ class DataModelService(private val eventBus: EventBus, private val overwriteMode
             val simulation = simulations.getNamed(name)
             if (simulation != null) {
                 if (proxy.inputs.map { it.name } != simulation.inputs.map { it.name } || proxy.outputs != simulation.outputs) {
-                    issues += "Sync issue: Proxy setup \"$name\" is out of sync with simluaiton \"$name\""
+                    issues += Issue("Sync issue: Proxy setup \"$name\" is out of sync with simulation \"$name\"")
                 }
             }
         }

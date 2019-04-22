@@ -205,6 +205,7 @@ project('oasis-reference'){
         testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
         testImplementation 'com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0'
         testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
+        testCompile("org.assertj:assertj-core:3.11.1")
     }
 
     task copyToLib(type: Copy) {

@@ -4,7 +4,7 @@ import com.google.common.eventbus.EventBus
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
 
-class OptimizerGUIRootController (modelService: DataModelService, optimizerService: OptimizerService, eventBus: EventBus){
+class OptimizerGUIRootController (modelService: DataModelService, optimizerService: OptimizationService2, sharedResourcee: RunResources, eventBus: EventBus){
     val root : Parent
     init {
         val fxmlLoader = FXMLLoader()
@@ -13,6 +13,6 @@ class OptimizerGUIRootController (modelService: DataModelService, optimizerServi
 
         val controller = fxmlLoader.getController<OptimizerController>()
         val connectionView = ConnectionView(modelService, eventBus)
-        controller.attachToModel(modelService, eventBus, connectionView.root, optimizerService)
+        controller.attachToModel(modelService, eventBus, connectionView.root, optimizerService, sharedResourcee)
     }
 }

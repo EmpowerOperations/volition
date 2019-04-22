@@ -60,18 +60,14 @@ namespace EmpowerOps.Volition.RefClient
             }
             Log($"{_commandPrefix} Start Requested");
             var startResponse = await _client.startOptimizationAsync(new StartOptimizationCommandDTO());
-            switch (startResponse.ResponseCase)
+            if (startResponse.Acknowledged)
             {
-                case StartOptimizationResponseDTO.ResponseOneofCase.Message:
-                    MessageBox.Show($"Optimizer can not start the run. {Environment.NewLine}Issues: {startResponse.Message}");
-                    Log($"{_serverPrefix} {startResponse.Message}");
-                    break;
-                case StartOptimizationResponseDTO.ResponseOneofCase.RunID:
-                    Log($"{_serverPrefix} Start Reqeust received - Start RunID:{startResponse.RunID}");
-                    _activeRunID = Guid.Parse(startResponse.RunID);
-                    _latestRunID = _activeRunID;
-                    _runIDs.Add(_activeRunID);
-                    break;
+                Log($"{_serverPrefix} Start Reqeust received - awating run ID"); 
+            }
+            else
+            {
+                MessageBox.Show($"Optimizer can not start the run. {Environment.NewLine}Issues: {startResponse.Message}");
+                Log($"{_serverPrefix} {startResponse.Message}");
             }
         }
 

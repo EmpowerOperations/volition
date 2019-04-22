@@ -6,7 +6,6 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.selects.select
 import org.funktionale.either.Either
 import java.util.*
-import kotlin.collections.HashMap
 
 class OptimizerService(
         private val optimizer: RandomNumberOptimizer,
@@ -19,6 +18,8 @@ class OptimizerService(
     private var resumed: CompletableDeferred<Unit>? = null
 
     private var currentRunID: UUID? = null
+
+    var forceStopSignals = emptyList<ForceStopSignal>()
 
     fun canStop(): Boolean {
         return (currentRunID != null) && state.canTransferTo(StopPending)
@@ -34,8 +35,12 @@ class OptimizerService(
     fun forceStop(): Boolean {
         val stopResult = state.transferTo(Idle)
         if (stopResult) eventBus.post(ForceStopRequestedEvent())
-        pluginEndpoint.forceStopAll()
+        forceStopAll()
         return stopResult
+    }
+
+    fun forceStopAll(){
+        forceStopSignals.forEach{ it.completableDeferred.complete(Unit) }
     }
 
     fun pauseOptimization(): Boolean {
@@ -57,7 +62,9 @@ class OptimizerService(
     suspend fun cancelCurrent() {
         val proxy = currentlyEvaluatedProxy
         if (proxy != null) {
-            pluginEndpoint.cancelCurrentEvaluation(proxy)
+            forceStopSignals.singleOrNull { it.name == proxy.name }?.let {
+                pluginEndpoint.cancelCurrentEvaluationAsync(proxy, it)
+            } ?: TODO("force stop signal is missing, make sure proxy are being evaluated")
         }
     }
 
@@ -70,20 +77,21 @@ class OptimizerService(
     }
 
     fun requestStart(): Either<List<String>, UUID> {
-        var issues = modelService.findIssue()
-        if (!state.canTransferTo(StartPending)) {
-            issues += "Optimization is not ready to start: current state ${state.currentState}"
-        }
-        if (issues.isEmpty()) {
-            currentRunID = UUID.randomUUID()
-            return Either.right(currentRunID!!)
-        } else {
-            return Either.left(issues)
-        }
+//        var issues = modelService.findIssues()
+//        if (!state.canTransferTo(StartPending)) {
+//            issues += Issue("Optimization is not ready to start: current state ${state.currentState}")
+//        }
+//        if (issues.isEmpty()) {
+//            currentRunID = UUID.randomUUID()
+//            return Either.right(currentRunID!!)
+//        } else {
+//            return Either.left(issues)
+//        }
+        TODO()
     }
 
     suspend fun startOptimization() {
-        require(currentRunID != null && modelService.findIssue().isEmpty() && state.canTransferTo(StartPending))
+        require(currentRunID != null && modelService.findIssues().isEmpty() && state.canTransferTo(StartPending))
         state.transferTo(StartPending)
         eventBus.post(StartRequestedEvent())
 
@@ -116,14 +124,19 @@ class OptimizerService(
     }
 
     private suspend fun evaluate(inputVector: Map<String, Double>, proxy: Proxy, runID: UUID) {
+        val forceStopSignal = ForceStopSignal(proxy.name)
+
         currentlyEvaluatedProxy = proxy
-        val simResult = pluginEndpoint.evaluate(proxy, inputVector)
+        forceStopSignals += forceStopSignal
+        val simResult = pluginEndpoint.evaluateAsync(proxy, inputVector, forceStopSignal).await()
         currentlyEvaluatedProxy = null
+        forceStopSignals -= forceStopSignal
+
         modelService.addNewResult(runID, simResult)
         eventBus.post(StatusUpdateEvent("Evaluation finished."))
         if (simResult is EvaluationResult.TimeOut) {
             eventBus.post(StatusUpdateEvent("Timed out, Canceling..."))
-            pluginEndpoint.cancelCurrentEvaluation(proxy)
+            pluginEndpoint.cancelCurrentEvaluationAsync(proxy, forceStopSignal).await()
             eventBus.post(StatusUpdateEvent("Cancel finished."))
         }
     }

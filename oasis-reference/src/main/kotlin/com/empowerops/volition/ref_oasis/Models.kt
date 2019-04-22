@@ -65,6 +65,7 @@ sealed class EvaluationResult(
 sealed class CancelResult {
     data class Canceled(val name: String) : CancelResult()
     data class CancelFailed(val name: String, val exception: String) : CancelResult()
+    data class CancelTerminated(val name: String, val exception: String) : CancelResult()
 }
 
 interface Nameable {
@@ -79,14 +80,15 @@ fun <T : Nameable> List<T>.getNames(): List<String> = map { it.name }
 
 data class Simulation(
         override val name: String,
-        val inputs: List<Input>,
-        val outputs: List<Output>,
-        val description: String,
         val input: StreamObserver<RequestQueryDTO>,
-        val output: Channel<SimulationResponseDTO>,
-        val update: Channel<NodeStatusCommandOrResponseDTO>,
-        val error: Channel<ErrorResponseDTO>
+        val inputs: List<Input> = emptyList(),
+        val outputs: List<Output> = emptyList(),
+        val description: String= "",
+        val output: Channel<SimulationResponseDTO> = Channel(Channel.RENDEZVOUS),
+        val update: Channel<NodeStatusCommandOrResponseDTO> = Channel(Channel.RENDEZVOUS),
+        val error: Channel<ErrorResponseDTO> = Channel(Channel.RENDEZVOUS)
 ) : Nameable
+
 
 data class ForceStopSignal(
         override val name: String,

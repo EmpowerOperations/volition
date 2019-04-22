@@ -4,7 +4,9 @@ import com.empowerops.volition.dto.NodeStatusCommandOrResponseDTO
 import com.empowerops.volition.dto.RequestQueryDTO
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.selects.select
 import org.funktionale.either.Either
@@ -19,8 +21,6 @@ class PluginService(
     init {
         eventBus.register(this)
     }
-
-    private var sessionForceStopSignals : List<ForceStopSignal> = emptyList()
 
     @Subscribe
     fun onUpdateNodeRequested(event : SimulationUpdateRequestedEvent) = GlobalScope.launch{
@@ -95,7 +95,11 @@ class PluginService(
         }
     }
 
-    suspend fun evaluate(proxy: Proxy, inputVector: Map<String, Double>): EvaluationResult {
+    suspend fun evaluateAsync(
+            proxy: Proxy,
+            inputVector: Map<String, Double>,
+            forceStopSignal: ForceStopSignal
+    ): Deferred<EvaluationResult> = GlobalScope.async {
         val simulation = modelService.simulations.getValue(proxy.name)
         val message = RequestQueryDTO.newBuilder().setEvaluationRequest(
                 RequestQueryDTO.SimulationEvaluationRequest
@@ -103,11 +107,10 @@ class PluginService(
                         .setName(simulation.name)
                         .putAllInputVector(inputVector)
         ).build()
-        val forceStopSignal = ForceStopSignal(proxy.name)
-        sessionForceStopSignals += forceStopSignal
-        return try {
+
+        return@async try {
             simulation.input.onNext(message)
-            select {
+            select<EvaluationResult> {
                 simulation.output.onReceive { EvaluationResult.Success(it.name, inputVector, it.outputVectorMap) }
                 simulation.error.onReceive { EvaluationResult.Failed(it.name, inputVector, it.exception) }
                 if (proxy.timeOut != null) {
@@ -115,8 +118,8 @@ class PluginService(
                         EvaluationResult.TimeOut(simulation.name, inputVector)
                     }
                 }
-                forceStopSignal.completableDeferred.onAwait{
-                    EvaluationResult.Terminated(simulation.name, inputVector, "Evaluation is terminated")
+                forceStopSignal.completableDeferred.onAwait {
+                    EvaluationResult.Terminated(simulation.name, inputVector, "Evaluation is terminated during evaluation")
                 }
             }
         } catch (exception: Exception) {
@@ -125,8 +128,6 @@ class PluginService(
                     inputVector,
                     "Unexpected error happened when try to evaluate $inputVector though simulation ${simulation.name}. Cause: $exception"
             )
-        } finally {
-            sessionForceStopSignals -= forceStopSignal
         }
     }
 
@@ -134,29 +135,18 @@ class PluginService(
      * Cancel is NOT running in async mode because we are not managing state for plugin and we always assume plugin is in ready state
      * whenever it returns a result
      */
-    suspend fun cancelCurrentEvaluation(proxy: Proxy) {
+    suspend fun cancelCurrentEvaluationAsync(proxy: Proxy, forceStopSignal: ForceStopSignal) = GlobalScope.async {
         val simulation = modelService.simulations.getValue(proxy.name)
         val message = RequestQueryDTO.newBuilder().setCancelRequest(RequestQueryDTO.SimulationCancelRequest.newBuilder().setName(simulation.name)).build()
 
         simulation.input.onNext(message)
-        val cancelResult = select<CancelResult> {
+        return@async select<CancelResult> {
             simulation.output.onReceive { CancelResult.Canceled(it.name) }
             simulation.error.onReceive { CancelResult.CancelFailed(it.name, it.exception) }
-
-        }
-        val cancelMessage = when (cancelResult) {
-            is CancelResult.Canceled -> {
-                "Evaluation Canceled"
-            }
-            is CancelResult.CancelFailed -> {
-                "Cancellation Failed, Cause:\n${cancelResult.exception}"
+            forceStopSignal.completableDeferred.onAwait {
+                CancelResult.CancelTerminated(simulation.name, "Cancellation is terminated")
             }
         }
-        logger.log(cancelMessage, "Optimizer")
-    }
-
-    fun forceStopAll(){
-        sessionForceStopSignals.forEach{ it.completableDeferred.complete(Unit) }
     }
 
     private fun updateFromResponse(request: NodeStatusCommandOrResponseDTO): Simulation {

@@ -74,7 +74,8 @@ class OptimizerController {
     private lateinit var modelService: DataModelService
     private lateinit var inputRoot: TreeItem<Parameter>
     private lateinit var outputRoot: TreeItem<Parameter>
-    private lateinit var optimizerService: OptimizerService
+    private lateinit var optimizerService: OptimizationService2
+    private lateinit var sharedResource: RunResources
 
     enum class Type {
         Input, Output, Root
@@ -235,47 +236,49 @@ class OptimizerController {
             modelService: DataModelService,
             eventBus: EventBus,
             connectionView: ListView<String>,
-            optimizerService: OptimizerService) {
+            optimizerService: OptimizationService2,
+            shareResource: RunResources) {
         this.optimizerService = optimizerService
         this.modelService = modelService
+        this.sharedResource = shareResource
         eventBus.register(this)
         connectionListContainer.children.add(connectionView)
         showNode(null)
-        rebindViewToState(optimizerService.state.currentState)
+        rebindViewToState(shareResource.stateMachine.currentState)
     }
 
     @FXML fun startStopClicked() = GlobalScope.launch(Dispatchers.JavaFx) {
-        when (optimizerService.state.currentState){
+        when (sharedResource.stateMachine.currentState){
             State.Idle -> {
-                val requestStart = optimizerService.requestStart()
-                if(requestStart.isRight()){
-                    optimizerService.startOptimization()
+                val canStart = optimizerService.canStart()
+                if(canStart){
+                    optimizerService.start()
                 }
                 else{
                     val alert = Alert(Alert.AlertType.ERROR)
                     alert.title = "Error"
                     alert.headerText = "Can not start"
-                    alert.contentText = requestStart.left().get().joinToString(",")
+                    alert.contentText = buildStartIssuesMessage(sharedResource.issueFinder.findIssues())
                     alert.showAndWait()
                 }
             }
-            State.Running, State.PausePending, State.Paused -> optimizerService.stopOptimization()
+            State.Running, State.PausePending, State.Paused -> optimizerService.stop()
             State.StopPending -> optimizerService.forceStop()
-            else -> throw IllegalStateException("Start/Stop Button is not an actionable state. Current State:${optimizerService.state.currentState}")
+            else -> throw IllegalStateException("Start/Stop Button is not an actionable state. Current State:${sharedResource.stateMachine.currentState}")
         }
     }
 
     @FXML fun pauseResumeRun() = GlobalScope.launch(Dispatchers.JavaFx) {
-        when (optimizerService.state.currentState){
-            State.Running -> optimizerService.pauseOptimization()
-            State.Paused -> optimizerService.resumeOptimization()
+        when (sharedResource.stateMachine.currentState){
+            State.Running -> optimizerService.pause()
+            State.Paused -> optimizerService.resume()
             else -> throw IllegalStateException("Pause/Resume Button is not an actionable state. Current State:${startButton.text}")
         }
     }
 
-    @FXML fun cancelAll() = GlobalScope.launch(Dispatchers.JavaFx) { optimizerService.cancelCurrent() }
+    @FXML fun cancelAll() = GlobalScope.launch(Dispatchers.JavaFx) { TODO() }
 
-    @FXML fun cancelAndStop() = GlobalScope.launch(Dispatchers.JavaFx) { optimizerService.cancelStop() }
+    @FXML fun cancelAndStop() = GlobalScope.launch(Dispatchers.JavaFx) { TODO() }
 
     @FXML fun removeSelectedSetup() = GlobalScope.launch {
         val selectedItem = nodesList.selectedItem
@@ -321,7 +324,7 @@ class OptimizerController {
 
     @Subscribe
     fun whenIssueUpdatedAsync(event: OptimizationModelEvent) = GlobalScope.launch(Dispatchers.JavaFx) {
-        val issueList = modelService.findIssue()
+        val issueList = modelService.findIssues()
         if (issueList.isNotEmpty()) {
             issuesText.set(issueList.joinToString("\n"))
         } else {
@@ -331,7 +334,7 @@ class OptimizerController {
 
     @Subscribe
     fun onStateChangedAsync(event : StatusUpdateEvent) = GlobalScope.launch(Dispatchers.JavaFx){
-        rebindViewToState(optimizerService.state.currentState)
+        rebindViewToState(sharedResource.stateMachine.currentState)
     }
 
     private fun rebindViewToState(currentState: State) {

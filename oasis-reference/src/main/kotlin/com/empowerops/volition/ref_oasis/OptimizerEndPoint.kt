@@ -44,7 +44,7 @@ class OptimizerEndpoint(private val apiService: IApiService) : OptimizerGrpc.Opt
             request: StartOptimizationCommandDTO,
             responseObserver: StreamObserver<StartOptimizationResponseDTO>
     ) = responseObserver.consumeThen(apiService.issueStartOptimization(request)) { response ->
-        if (response.responseCase == StartOptimizationResponseDTO.ResponseCase.RUNID) apiService.startAsync()
+        if (response.acknowledged) apiService.startAsync()
     }
 
     override fun stopOptimization(

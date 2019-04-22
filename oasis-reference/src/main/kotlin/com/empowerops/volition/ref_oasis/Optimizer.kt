@@ -61,10 +61,12 @@ class OptimizerStarter : Application(){
 class Optimizer {
     private lateinit var optimizerEndpoint: OptimizerEndpoint
     private lateinit var modelService: DataModelService
-    private lateinit var optimizerService : OptimizerService
+    private lateinit var optimizerService : OptimizationService2
     private lateinit var pluginService : PluginService
     private lateinit var server: Server
     private lateinit var apiService: ApiService
+    private lateinit var sharedResources: RunResources
+    private lateinit var optimizerEngine: OptimizerEngine
 
     private val eventBus: EventBus = EventBus()
     private val logger : ConsoleOutput = ConsoleOutput(eventBus)
@@ -81,7 +83,15 @@ class Optimizer {
     private fun setup(){
         modelService = DataModelService(eventBus, overwrite)
         pluginService = PluginService(modelService, logger, eventBus)
-        optimizerService = OptimizerService(RandomNumberOptimizer(), modelService, eventBus, pluginService)
+        sharedResources = RunResourceImpl(pluginService, modelService, eventBus, RandomNumberOptimizer(),logger)
+        optimizerEngine = OptimizerEngineImpl(sharedResources)
+        optimizerService = OptimizationService2(
+                OptimizationStartActor(sharedResources, optimizerEngine),
+                OptimizationStopActor(sharedResources),
+                OptimizerForceStopActor(sharedResources),
+                OptimizerPauseActor(sharedResources),
+                OptimizerResumeActor(sharedResources)
+        )
         apiService = ApiService(modelService, optimizerService)
         optimizerEndpoint = OptimizerEndpoint(apiService)
         server = NettyServerBuilder.forPort(port).addService(ServerInterceptors.intercept(optimizerEndpoint, LoggingInterceptor(logger))).build()
@@ -101,7 +111,7 @@ class Optimizer {
             //TODO splash screen etc.
         }
         else{
-            val optimizerGUI = OptimizerGUIRootController(modelService, optimizerService, eventBus)
+            val optimizerGUI = OptimizerGUIRootController(modelService, optimizerService, sharedResources, eventBus)
             primaryStage.title = "Volition Reference Optimizer"
             primaryStage.scene = Scene(optimizerGUI.root)
             primaryStage.show()

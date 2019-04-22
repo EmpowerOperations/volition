@@ -162,11 +162,9 @@ message RequestQueryDTO {
 message StartOptimizationCommandDTO {
     string name = 1;
 }
-message StartOptimizationResponseDTO {  //response: if a run can not start, a message of reason will be returned. If started, run ID will be returned
-    oneof response{
-        string message = 1;
-        string runID = 2;
-    }
+message StartOptimizationResponseDTO {
+    string message = 1;
+    bool acknowledged = 2;
 }
 
 //stopOptimization

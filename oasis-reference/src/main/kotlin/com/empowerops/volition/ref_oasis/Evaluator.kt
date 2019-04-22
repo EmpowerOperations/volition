@@ -18,7 +18,18 @@ class EvaluationTask(private val evaluable: Evaluable) {
     }
 }
 
-class Evaluator(private val dep: Dependencies) {
+/**
+ * Not yet used, also not intended
+ * This may not be the most efficient way and it is just a proof of concept using some basic recursion and the
+ * fact that coroutine are light weight and cheap.
+ * Some note:
+ * This evaluator is designed to be able to run parallel using coroutine, however, this is not really partial and a good
+ * dispatcher/order finding is much more important
+ *  1. first of all, this is not a good algorithm it self, it is not correct
+ *  2. it is also not efficient, the base line of a order is not there
+ *  3. this doesn't considering anything else but running everything that can run at the same tim
+ */
+class Evaluator(private val dep: EvaluationOrder) {
 
     suspend fun start(input: Map<String, Double>,
                       baseTasks: List<EvaluationTask>
@@ -26,7 +37,7 @@ class Evaluator(private val dep: Dependencies) {
         val resultMap = HashMap<String, Double>()
         baseTasks.map { async { it.evaluate(input) } }.awaitAll().forEach { resultMap.putAll(it) }
         val newInputMap = resultMap.toMap() + input
-        baseTasks.flatMap { dep.findNextTasks(it) }
+        baseTasks.flatMap { dep.findNextTasks(it) }.toSet()
                 .map { async { evaluate(it, newInputMap) } }
                 .run { awaitAll() }
                 .forEach(resultMap::putAll)
@@ -49,11 +60,11 @@ class Evaluator(private val dep: Dependencies) {
     }
 }
 
-interface Dependencies {
+interface EvaluationOrder {
     fun findNextTasks(evaluationTask: EvaluationTask): List<EvaluationTask>
 }
 
-class SequentialDependencies(val list: List<EvaluationTask>) : Dependencies{
+class SequentialEvaluationOrder(val list: List<EvaluationTask>) : EvaluationOrder{
     override fun findNextTasks(evaluationTask: EvaluationTask): List<EvaluationTask> = if (evaluationTask.equals(list.last())) {
         emptyList()
     } else {
@@ -61,7 +72,7 @@ class SequentialDependencies(val list: List<EvaluationTask>) : Dependencies{
     }
 }
 
-class FakeDependencies(val map: Map<EvaluationTask, List<EvaluationTask>>) : Dependencies{
+class FakeEvaluationOrder(val map: Map<EvaluationTask, List<EvaluationTask>>) : EvaluationOrder{
     override fun findNextTasks(evaluationTask: EvaluationTask): List<EvaluationTask> {
         return map[evaluationTask]?: emptyList()
     }

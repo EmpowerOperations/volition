@@ -6,7 +6,6 @@ import io.grpc.StatusException
 import io.grpc.stub.StreamObserver
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import org.funktionale.either.Either
 import java.time.Duration
 import java.time.Duration.*
 import java.util.*
@@ -30,7 +29,7 @@ interface IApiService {
 }
 
 class ApiService(private val modelService: DataModelService,
-                 private val optimizerService: OptimizationService2) : IApiService {
+                 private val optimizerService: OptimizationService) : IApiService {
 
     override fun register(request: RequestRegistrationCommandDTO, responseObserver: StreamObserver<RequestQueryDTO>) {
         modelService.addSim(Simulation(request.name, responseObserver)).let { added ->

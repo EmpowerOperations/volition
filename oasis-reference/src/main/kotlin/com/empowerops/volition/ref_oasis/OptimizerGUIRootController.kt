@@ -4,7 +4,7 @@ import com.google.common.eventbus.EventBus
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
 
-class OptimizerGUIRootController (modelService: DataModelService, optimizerService: OptimizationService2, sharedResourcee: RunResources, eventBus: EventBus){
+class OptimizerGUIRootController (modelService: DataModelService, optimizerService: OptimizationService, sharedResourcee: RunResources, eventBus: EventBus){
     val root : Parent
     init {
         val fxmlLoader = FXMLLoader()

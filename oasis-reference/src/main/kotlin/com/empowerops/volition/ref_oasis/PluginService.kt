@@ -119,6 +119,7 @@ class PluginService(
                     }
                 }
                 forceStopSignal.completableDeferred.onAwait {
+                    modelService.closeSim(simulation.name)
                     EvaluationResult.Terminated(simulation.name, inputVector, "Evaluation is terminated during evaluation")
                 }
             }
@@ -131,10 +132,6 @@ class PluginService(
         }
     }
 
-    /**
-     * Cancel is NOT running in async mode because we are not managing state for plugin and we always assume plugin is in ready state
-     * whenever it returns a result
-     */
     suspend fun cancelCurrentEvaluationAsync(proxy: Proxy, forceStopSignal: ForceStopSignal) = GlobalScope.async {
         val simulation = modelService.simulations.getValue(proxy.name)
         val message = RequestQueryDTO.newBuilder().setCancelRequest(RequestQueryDTO.SimulationCancelRequest.newBuilder().setName(simulation.name)).build()
@@ -144,6 +141,7 @@ class PluginService(
             simulation.output.onReceive { CancelResult.Canceled(it.name) }
             simulation.error.onReceive { CancelResult.CancelFailed(it.name, it.exception) }
             forceStopSignal.completableDeferred.onAwait {
+                modelService.closeSim(simulation.name)
                 CancelResult.CancelTerminated(simulation.name, "Cancellation is terminated")
             }
         }

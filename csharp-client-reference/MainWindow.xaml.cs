@@ -1,13 +1,13 @@
-﻿using System;
+﻿using EmpowerOps.Volition.DTO;
+using Google.Protobuf.Collections;
+using Grpc.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
-using EmpowerOps.Volition.DTO;
-using Google.Protobuf.Collections;
-using Grpc.Core;
 using static EmpowerOps.Volition.DTO.NodeStatusCommandOrResponseDTO.Types;
 using MessageBox = System.Windows.MessageBox;
 
@@ -51,6 +51,7 @@ namespace EmpowerOps.Volition.RefClient
             OutputGrid.ItemsSource = _outputSource;
         }
 
+
         private async void StartOptimization_Click(object sender, RoutedEventArgs e)
         {
             if (!_isRegistered)
@@ -59,16 +60,27 @@ namespace EmpowerOps.Volition.RefClient
                 return;
             }
             Log($"{_commandPrefix} Start Requested");
-            var startResponse = await _client.startOptimizationAsync(new StartOptimizationCommandDTO());
-            if (startResponse.Acknowledged)
+            try
             {
-                Log($"{_serverPrefix} Start Reqeust received - awating run ID"); 
+                var startResponse = await _client.startOptimizationAsync(new StartOptimizationCommandDTO
+                {
+                    Name = _name
+                });
+                if (startResponse.Acknowledged)
+                {
+                    Log($"{_serverPrefix} Start Reqeust received - awating run ID");
+                }
+                else
+                {
+                    MessageBox.Show($"Optimizer can not start the run. {Environment.NewLine}Issues: {startResponse.Message}");
+                    Log($"{_serverPrefix} {startResponse.Message}");
+                }
             }
-            else
+            catch (RpcException exception)
             {
-                MessageBox.Show($"Optimizer can not start the run. {Environment.NewLine}Issues: {startResponse.Message}");
-                Log($"{_serverPrefix} {startResponse.Message}");
+                Log($"{_serverPrefix} Error invoke \"startOptimizationAsync()\" Exception: {exception.Status}");
             }
+
         }
 
         private void ApplyTimeout_Click(object sender, RoutedEventArgs e)
@@ -210,7 +222,7 @@ namespace EmpowerOps.Volition.RefClient
             {
                 _name = "";
                 _requests = null;
-                _isRegistered = false; 
+                _isRegistered = false;
                 UpdateButton();
             }
 
@@ -261,7 +273,7 @@ namespace EmpowerOps.Volition.RefClient
                     Exception = e.ToString()
                 });
             }
-            
+
         }
 
         private async void EvaluateAsync(RequestQueryDTO request)
@@ -305,7 +317,6 @@ namespace EmpowerOps.Volition.RefClient
 
             UpdateBindingSourceOnUI(_inputSource);
             UpdateBindingSourceOnUI(_outputSource);
-
             switch (result.Status)
             {
                 case EvaluationResult.ResultStatus.Succeed:
@@ -382,7 +393,7 @@ namespace EmpowerOps.Volition.RefClient
         {
             //TODO better error state handing, when register failed due to no connection, it is not well though right now
             //TODO also when error flow when register e.g. same name
-            var registrationCommandDto = new RequestRegistrationCommandDTO {Name = RegName.Text };
+            var registrationCommandDto = new RequestRegistrationCommandDTO { Name = RegName.Text };
             if (_requests != null)
             {
                 Log($"{_commandPrefix} Node already registered");
@@ -422,7 +433,7 @@ namespace EmpowerOps.Volition.RefClient
                 return;
             }
 
-            var nodeNameChangeCommandDto = new NodeNameChangeCommandDTO {OldName = _name, NewName = RegName.Text };
+            var nodeNameChangeCommandDto = new NodeNameChangeCommandDTO { OldName = _name, NewName = RegName.Text };
 
             NodeNameChangeResponseDTO nodeNameChangeResponseDto = await _client.changeNodeNameAsync(nodeNameChangeCommandDto);
             if (nodeNameChangeResponseDto.Changed)
@@ -439,30 +450,30 @@ namespace EmpowerOps.Volition.RefClient
 
         private async void Log(string message)
         {
-                  
+
             LogInfoTextBox.Text = LogInfoTextBox.Text += message + "\n";
             LogInfoTextBox.ScrollToEnd();
             if (_channel.State == ChannelState.Ready && ForwardMessageCheckBox.IsChecked.GetValueOrDefault(false))
-            { 
-                await _client.sendMessageAsync(new MessageCommandDTO() { Name = _name ?? "no_name", Message = message });             
+            {
+                await _client.sendMessageAsync(new MessageCommandDTO() { Name = _name ?? "no_name", Message = message });
             }
-           
+
         }
 
         private void UpdateBindingSourceOnUI(BindingSource bindingSource)
         {
-            bindingSource.ResetBindings(false); 
+            bindingSource.ResetBindings(false);
         }
 
         private void AddInput_Button_Click(object sender, RoutedEventArgs e)
         {
             _inputSource.Add(new Input
             {
-                Name = "x1", 
+                Name = "x1",
                 LowerBound = 0.0,
                 UpperBound = 10.0
             });
-           
+
         }
 
         private void AddOutput_Button_Click(object sender, RoutedEventArgs e)
@@ -507,7 +518,7 @@ namespace EmpowerOps.Volition.RefClient
         private async void Unregister()
         {
             Log($"{_commandPrefix} Try Unregister {_name}");
-            var responseDto = await _client.unregisterRequestAsync(new RequestUnRegistrationRequestDTO() {Name = _name});
+            var responseDto = await _client.unregisterRequestAsync(new RequestUnRegistrationRequestDTO() { Name = _name });
             Log($"{_serverPrefix} {responseDto.Message}");  //We dont care the return result and consider ourself as unregsisted
             _name = "";
             _requests = null;

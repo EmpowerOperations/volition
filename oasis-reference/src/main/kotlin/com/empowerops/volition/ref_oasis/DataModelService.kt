@@ -7,6 +7,10 @@ import org.funktionale.either.Either
 import java.time.Duration
 import java.util.*
 
+interface IssueFinder{
+    fun findIssues() : List<Issue>
+}
+
 class DataModelService(private val eventBus: EventBus, private val overwriteMode : Boolean) : IssueFinder {
     var simulations: List<Simulation> = emptyList()
         internal set

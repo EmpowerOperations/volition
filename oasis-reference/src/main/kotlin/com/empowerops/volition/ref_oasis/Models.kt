@@ -89,7 +89,6 @@ data class Simulation(
         val error: Channel<ErrorResponseDTO> = Channel(Channel.RENDEZVOUS)
 ) : Nameable
 
-
 data class ForceStopSignal(
         override val name: String,
         val completableDeferred : CompletableDeferred<Unit> = CompletableDeferred()
@@ -101,3 +100,5 @@ data class Proxy(
         val outputs: List<Output> = emptyList(),
         val timeOut: Duration? = null
 ) : Nameable
+
+data class Issue(val message: String)

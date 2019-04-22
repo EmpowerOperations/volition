@@ -8,7 +8,8 @@ enum class State {
     Running,
     PausePending,
     Paused,
-    StopPending
+    StopPending,
+    ForceStopPending,
 }
 
 class OptimizerStateMachine {
@@ -19,7 +20,7 @@ class OptimizerStateMachine {
             Running to listOf(PausePending, StopPending),
             PausePending to listOf(Paused, StopPending),
             Paused to listOf(Running, StopPending),
-            StopPending to listOf(Idle)
+            StopPending to listOf(Idle, ForceStopPending)
     )
 
     fun transferTo(newState: State): Boolean = if (newState in stateTable.getValue(currentState)) {

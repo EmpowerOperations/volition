@@ -20,6 +20,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.javafx.JavaFx
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.selects.select
 import tornadofx.*
 import java.lang.IllegalStateException
 import java.time.Duration
@@ -74,7 +75,7 @@ class OptimizerController {
     private lateinit var modelService: DataModelService
     private lateinit var inputRoot: TreeItem<Parameter>
     private lateinit var outputRoot: TreeItem<Parameter>
-    private lateinit var optimizerService: OptimizationService2
+    private lateinit var optimizerService: OptimizationService
     private lateinit var sharedResource: RunResources
 
     enum class Type {
@@ -236,7 +237,7 @@ class OptimizerController {
             modelService: DataModelService,
             eventBus: EventBus,
             connectionView: ListView<String>,
-            optimizerService: OptimizationService2,
+            optimizerService: OptimizationService,
             shareResource: RunResources) {
         this.optimizerService = optimizerService
         this.modelService = modelService
@@ -258,7 +259,7 @@ class OptimizerController {
                     val alert = Alert(Alert.AlertType.ERROR)
                     alert.title = "Error"
                     alert.headerText = "Can not start"
-                    alert.contentText = buildStartIssuesMessage(sharedResource.issueFinder.findIssues())
+                    alert.contentText = buildStartIssuesMessage(modelService.findIssues())
                     alert.showAndWait()
                 }
             }
@@ -275,10 +276,6 @@ class OptimizerController {
             else -> throw IllegalStateException("Pause/Resume Button is not an actionable state. Current State:${startButton.text}")
         }
     }
-
-    @FXML fun cancelAll() = GlobalScope.launch(Dispatchers.JavaFx) { TODO() }
-
-    @FXML fun cancelAndStop() = GlobalScope.launch(Dispatchers.JavaFx) { TODO() }
 
     @FXML fun removeSelectedSetup() = GlobalScope.launch {
         val selectedItem = nodesList.selectedItem
@@ -345,6 +342,7 @@ class OptimizerController {
             State.PausePending -> Pausing
             State.Paused -> Paused
             State.StopPending -> Stopping
+            State.ForceStopPending -> ForceStopping
         }
 
         startButton.text = buttonState.start
@@ -353,11 +351,17 @@ class OptimizerController {
         pauseButton.isDisable = buttonState.pauseDisabled
     }
 
-    enum class ButtonState(val start: String, val pause: String, val startDisabled : Boolean, val pauseDisabled : Boolean) {
+    enum class ButtonState(
+            val start: String,
+            val pause: String,
+            val startDisabled : Boolean,
+            val pauseDisabled : Boolean
+    ) {
         Idle("Start", "Pause", false, true),
         Starting("Starting..", "Pause", true, true),
         Running("Stop", "Pause", false, false),
         Stopping("Stopping...(Force Stop)", "Pause", false, true),
+        ForceStopping("ForceStopping...", "Pause", true, true),
         Paused("Stop", "Resume", false, false),
         Pausing("Stop","Pausing...", false, true)
     }

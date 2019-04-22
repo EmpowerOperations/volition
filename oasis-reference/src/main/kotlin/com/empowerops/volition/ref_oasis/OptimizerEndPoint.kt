@@ -1,56 +1,75 @@
 package com.empowerops.volition.ref_oasis
 
 import com.empowerops.volition.dto.*
+import io.grpc.Status
+import io.grpc.StatusRuntimeException
 import io.grpc.stub.StreamObserver
 
-class OptimizerEndpoint(private val apiService: IApiService) : OptimizerGrpc.OptimizerImplBase() {
+class OptimizerEndpoint(private val apiService: IApiService, private val modelService: DataModelService) : OptimizerGrpc.OptimizerImplBase() {
 
     override fun changeNodeName(
             request: NodeNameChangeCommandDTO,
             responseObserver: StreamObserver<NodeNameChangeResponseDTO>
     ) = responseObserver.consume {
-        apiService.changeNodeName(request)
+        checkThenRun(modelService.simulations.hasName(request.oldName)) {
+            apiService.changeNodeName(request)
+        }
     }
+
 
     override fun autoConfigure(
             request: NodeStatusCommandOrResponseDTO,
             responseObserver: StreamObserver<NodeChangeConfirmDTO>
     ) = responseObserver.consume {
-        apiService.autoConfigure(request)
+        checkThenRun(modelService.simulations.hasName(request.name)) {
+            apiService.autoConfigure(request)
+        }
     }
 
     override fun updateConfiguration(
             request: ConfigurationCommandDTO,
             responseObserver: StreamObserver<ConfigurationResponseDTO>
     ) = responseObserver.consume {
-        apiService.updateConfiguration(request)
+        checkThenRun(modelService.simulations.hasName(request.name)) {
+            apiService.updateConfiguration(request)
+        }
     }
 
     override fun requestRunResult(
             request: ResultRequestDTO,
             responseObserver: StreamObserver<ResultResponseDTO>
     ) = responseObserver.consume {
-        apiService.resultRequest(request)
+        checkThenRun(modelService.simulations.hasName(request.name)) {
+            apiService.resultRequest(request)
+        }
     }
 
     override fun registerRequest(
             request: RequestRegistrationCommandDTO,
             responseObserver: StreamObserver<RequestQueryDTO>
     ) {
-        apiService.register(request, responseObserver)
+            apiService.register(request, responseObserver)
     }
 
     override fun startOptimization(
             request: StartOptimizationCommandDTO,
             responseObserver: StreamObserver<StartOptimizationResponseDTO>
-    ) = responseObserver.consumeThen(apiService.issueStartOptimization(request)) { response ->
+    ) = responseObserver.consumeThen({
+        checkThenRun(modelService.simulations.hasName(request.name)) {
+            apiService.issueStartOptimization(request)
+        }
+    }) { response ->
         if (response.acknowledged) apiService.startAsync()
     }
 
     override fun stopOptimization(
             request: StopOptimizationCommandDTO,
             responseObserver: StreamObserver<StopOptimizationResponseDTO>
-    ) = responseObserver.consumeThen(apiService.issueStopOptimization(request)) { response ->
+    ) = responseObserver.consumeThen({
+        checkThenRun(modelService.simulations.hasName(request.name)) {
+            apiService.issueStopOptimization(request)
+        }
+    }) { response ->
         if (response.responseCase == StopOptimizationResponseDTO.ResponseCase.RUNID) apiService.stop()
     }
 
@@ -58,41 +77,71 @@ class OptimizerEndpoint(private val apiService: IApiService) : OptimizerGrpc.Opt
             request: NodeStatusCommandOrResponseDTO,
             responseObserver: StreamObserver<NodeChangeConfirmDTO>
     ) = responseObserver.consume {
-        apiService.updateNode(request)
+        checkThenRun(modelService.simulations.hasName(request.name)) {
+            apiService.updateNode(request)
+        }
     }
 
     override fun sendMessage(
             request: MessageCommandDTO,
             responseObserver: StreamObserver<MessageResponseDTO>
     ) = responseObserver.consume {
-        apiService.sendMessage(request)
+        checkThenRun(modelService.simulations.hasName(request.name)) {
+            apiService.sendMessage(request)
+        }
     }
 
     override fun unregisterRequest(
             request: RequestUnRegistrationRequestDTO,
             responseObserver: StreamObserver<UnRegistrationResponseDTO>
     ) = responseObserver.consume {
-        apiService.unregister(request)
+        checkThenRun(modelService.simulations.hasName(request.name)) {
+            apiService.unregister(request)
+        }
     }
 
     override fun offerSimulationResult(
             request: SimulationResponseDTO,
             responseObserver: StreamObserver<SimulationResultConfirmDTO>
     ) = responseObserver.consumeAsync {
-        apiService.offerResult(request)
+        checkThenRunAsync(modelService.simulations.hasName(request.name)) {
+            apiService.offerResult(request)
+        }
     }
 
     override fun offerErrorResult(
             request: ErrorResponseDTO,
             responseObserver: StreamObserver<ErrorConfirmDTO>
     ) = responseObserver.consumeAsync {
-        apiService.offerError(request)
+        checkThenRunAsync(modelService.simulations.hasName(request.name)) {
+            apiService.offerError(request)
+        }
     }
 
     override fun offerSimulationConfig(
             request: NodeStatusCommandOrResponseDTO,
             responseObserver: StreamObserver<NodeChangeConfirmDTO>
     ) = responseObserver.consumeAsync {
-        apiService.offerConfig(request)
+        checkThenRunAsync(modelService.simulations.hasName(request.name)) {
+            apiService.offerConfig(request)
+        }
     }
+
+    private fun <V> checkThenRun(hasPermission: Boolean, action: () -> V): V {
+        if (hasPermission) {
+            return action()
+        } else {
+            throw StatusRuntimeException(Status.PERMISSION_DENIED)
+        }
+    }
+
+    private suspend fun <V> checkThenRunAsync(hasPermission: Boolean, action: suspend () -> V): V {
+        if (hasPermission) {
+            return action()
+        } else {
+            throw StatusRuntimeException(Status.PERMISSION_DENIED)
+        }
+    }
+
+
 }

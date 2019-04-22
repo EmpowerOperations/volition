@@ -1,144 +1,154 @@
 package com.empowerops.volition.ref_oasis
 
-import com.empowerops.volition.ref_oasis.State.*
 import com.google.common.eventbus.EventBus
 import kotlinx.coroutines.*
-import kotlinx.coroutines.selects.select
-import org.funktionale.either.Either
 import java.util.*
 
-class OptimizerService(
-        private val optimizer: RandomNumberOptimizer,
-        private val modelService: DataModelService,
+interface Actor
+
+interface StartActor : Actor {
+    fun canStart(): Boolean
+    fun start()
+}
+
+interface StopActor : Actor {
+    fun canStop(): Boolean
+    fun stop(): Job
+}
+
+interface PauseActor : Actor {
+    fun canPause(): Boolean
+    fun pause()
+}
+
+interface ResumeActor : Actor {
+    fun canResume(): Boolean
+    fun resume()
+}
+
+interface ForceStopActor : Actor {
+    fun canForceStop(): Boolean
+    fun forceStop()
+}
+
+class OptimizationService(
+        private val startActor: StartActor,
+        private val stopActor: StopActor,
+        private val forceStopActor: ForceStopActor,
+        private val pauseActor: PauseActor,
+        private val resumeActor: ResumeActor
+) : StartActor by startActor,
+        StopActor by stopActor,
+        ForceStopActor by forceStopActor,
+        PauseActor by pauseActor,
+        ResumeActor by resumeActor
+
+class OptimizerPauseActor(
         private val eventBus: EventBus,
-        private val pluginEndpoint: PluginService) {
-    var state = OptimizerStateMachine()
-        private set
-    private var currentlyEvaluatedProxy: Proxy? = null  // This is for testing action on cancel current
-    private var resumed: CompletableDeferred<Unit>? = null
-
-    private var currentRunID: UUID? = null
-
-    var forceStopSignals = emptyList<ForceStopSignal>()
-
-    fun canStop(): Boolean {
-        return (currentRunID != null) && state.canTransferTo(StopPending)
+        private val sharedResource: RunResources
+) : PauseActor {
+    override fun canPause(): Boolean {
+        return sharedResource.stateMachine.canTransferTo(State.PausePending)
     }
 
-    fun stopOptimization() {
-        require(canStop()) { "Illegal state to stop" }
-        state.transferTo(StopPending)
-        resumed?.complete(Unit)
-        eventBus.post(StopRequestedEvent())
-    }
-
-    fun forceStop(): Boolean {
-        val stopResult = state.transferTo(Idle)
-        if (stopResult) eventBus.post(ForceStopRequestedEvent())
-        forceStopAll()
-        return stopResult
-    }
-
-    fun forceStopAll(){
-        forceStopSignals.forEach{ it.completableDeferred.complete(Unit) }
-    }
-
-    fun pauseOptimization(): Boolean {
-        val transferResult = state.transferTo(PausePending)
-        if (transferResult) eventBus.post(PausedRequestedEvent())
-        return transferResult
-    }
-
-    fun resumeOptimization(): Boolean {
-        val transferResult = state.transferTo(Running)
-        resumed!!.complete(Unit)
-        if (transferResult) eventBus.post(RunResumedEvent())
-        return transferResult
-    }
-
-    /**
-     * This is a debugging feature
-     */
-    suspend fun cancelCurrent() {
-        val proxy = currentlyEvaluatedProxy
-        if (proxy != null) {
-            forceStopSignals.singleOrNull { it.name == proxy.name }?.let {
-                pluginEndpoint.cancelCurrentEvaluationAsync(proxy, it)
-            } ?: TODO("force stop signal is missing, make sure proxy are being evaluated")
+    override fun pause() {
+        if (!canPause()) return
+        sharedResource.apply {
+            stateMachine.transferTo(State.PausePending)
+            resumeSignal = CompletableDeferred()
+            eventBus.post(PausedRequestedEvent())
         }
     }
+}
 
-    /**
-     * This is a debugging feature
-     */
-    suspend fun cancelStop() {
-        stopOptimization()
-        cancelCurrent()
+class OptimizerResumeActor(
+        private val eventBus: EventBus,
+        private val sharedResource: RunResources
+) : ResumeActor {
+    override fun canResume(): Boolean {
+        if (sharedResource.stateMachine.currentState != State.Paused) return false
+        if (!sharedResource.stateMachine.canTransferTo(State.Running)) return false
+        return true
     }
 
-    fun requestStart(): Either<List<String>, UUID> {
-//        var issues = modelService.findIssues()
-//        if (!state.canTransferTo(StartPending)) {
-//            issues += Issue("Optimization is not ready to start: current state ${state.currentState}")
-//        }
-//        if (issues.isEmpty()) {
-//            currentRunID = UUID.randomUUID()
-//            return Either.right(currentRunID!!)
-//        } else {
-//            return Either.left(issues)
-//        }
-        TODO()
-    }
-
-    suspend fun startOptimization() {
-        require(currentRunID != null && modelService.findIssues().isEmpty() && state.canTransferTo(StartPending))
-        state.transferTo(StartPending)
-        eventBus.post(StartRequestedEvent())
-
-        try {
-            state.transferTo(Running)
-            eventBus.post(RunStartedEvent(currentRunID!!))
-            pluginEndpoint.notifyStart(currentRunID!!)
-            while (state.currentState == Running) {
-                var pluginNumber = 1
-                for (proxy in modelService.proxies) {
-                    eventBus.post(StatusUpdateEvent("Evaluating: ${proxy.name} ($pluginNumber/${modelService.proxies.size})"))
-                    val inputVector = optimizer.generateInputs(proxy.inputs)
-                    evaluate(inputVector, proxy, currentRunID!!)
-                    pluginNumber++
-                }
-                if (state.currentState == PausePending) {
-                    state.transferTo(Paused)
-                    eventBus.post(PausedEvent(currentRunID!!))
-                    resumed = CompletableDeferred()
-                    select<Unit> {
-                        resumed!!.onAwait { Unit }
-                    }
-                }
-            }
-        } finally {
-            state.transferTo(Idle)
-            eventBus.post(RunStoppedEvent(currentRunID!!))
-            pluginEndpoint.notifyStop(currentRunID!!)
+    override fun resume() {
+        if (!canResume()) return
+        sharedResource.run {
+            stateMachine.transferTo(State.Running)
+            resumeSignal!!.complete(Unit)
+            eventBus.post(RunResumedEvent())
         }
     }
+}
 
-    private suspend fun evaluate(inputVector: Map<String, Double>, proxy: Proxy, runID: UUID) {
-        val forceStopSignal = ForceStopSignal(proxy.name)
-
-        currentlyEvaluatedProxy = proxy
-        forceStopSignals += forceStopSignal
-        val simResult = pluginEndpoint.evaluateAsync(proxy, inputVector, forceStopSignal).await()
-        currentlyEvaluatedProxy = null
-        forceStopSignals -= forceStopSignal
-
-        modelService.addNewResult(runID, simResult)
-        eventBus.post(StatusUpdateEvent("Evaluation finished."))
-        if (simResult is EvaluationResult.TimeOut) {
-            eventBus.post(StatusUpdateEvent("Timed out, Canceling..."))
-            pluginEndpoint.cancelCurrentEvaluationAsync(proxy, forceStopSignal).await()
-            eventBus.post(StatusUpdateEvent("Cancel finished."))
-        }
+class OptimizerForceStopActor(
+        private val eventBus: EventBus,
+        private val sharedResource: RunResources
+) : ForceStopActor {
+    override fun canForceStop(): Boolean {
+        if (sharedResource.stateMachine.currentState != State.StopPending) return false
+        if (sharedResource.stateMachine.canTransferTo(State.ForceStopPending)) return false
+        if (sharedResource.sessionForceStopSignals.isEmpty()) return false
+        return true
     }
 
+    override fun forceStop() {
+        if (!canForceStop()) return
+        sharedResource.run {
+            sharedResource.sessionForceStopSignals.forEach { it.completableDeferred.complete(Unit) }
+            eventBus.post(ForceStopRequestedEvent())
+        }
+    }
+}
+
+class OptimizationStartActor(
+        private val eventBus: EventBus,
+        private val sharedResource: RunResources,
+        private val evaluationEngine: IEvaluationEngine,
+        private val pluginService: PluginService,
+        private val issueFinder: IssueFinder
+) : StartActor {
+    override fun canStart(): Boolean {
+        if (issueFinder.findIssues().isNotEmpty()) return false
+        if (sharedResource.stateMachine.currentState != State.Idle) return false
+        if (!sharedResource.stateMachine.canTransferTo(State.StartPending)) return false
+        return true
+    }
+
+    override fun start() {
+        if (!canStart()) return
+        sharedResource.run {
+            runID = UUID.randomUUID()
+            stateMachine.transferTo(State.StartPending)
+            pluginService.notifyStart(sharedResource.runID)
+            runLoopFinished = evaluationEngine.startRunLoopAsync(sharedResource.runID)
+            eventBus.post(StartRequestedEvent())
+        }
+    }
+}
+
+class OptimizationStopActor(
+        private val eventBus: EventBus,
+        private val sharedResource: RunResources,
+        private val pluginService: PluginService
+) : StopActor {
+    override fun canStop(): Boolean {
+        if (!sharedResource.stateMachine.canTransferTo(State.StopPending)) return false
+        return true
+    }
+
+    override fun stop() = GlobalScope.launch {
+        if (!canStop()) return@launch
+        sharedResource.run {
+            stateMachine.transferTo(State.StopPending)
+            resumeSignal?.complete(Unit)
+            eventBus.post(StopRequestedEvent())
+
+            runLoopFinished!!.await()
+
+            stateMachine.transferTo(State.Idle)
+            eventBus.post(RunStoppedEvent(runID))
+            pluginService.notifyStop(runID)
+        }
+    }
 }

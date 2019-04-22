@@ -42,23 +42,22 @@ fun <T> StreamObserver<T>.consume(block: () -> T) {
     try {
         val result = block()
         onNext(result)
+        onCompleted()
     } catch (ex: Exception) {
         onError(ex)
         throw ex
-    } finally {
-        onCompleted()
     }
 }
 
-fun <T> StreamObserver<T>.consumeThen(result : T, block2:(T) -> Unit) {
+fun <T> StreamObserver<T>.consumeThen(block : () -> T, block2:(T) -> Unit) {
     try {
+        val result = block()
         onNext(result)
+        block2(result)
+        onCompleted()
     } catch (ex: Exception) {
         onError(ex)
         throw ex
-    } finally {
-        onCompleted()
-        block2(result)
     }
 }
 
@@ -67,11 +66,10 @@ fun <T> StreamObserver<T>.consumeAsync(block: suspend () -> T) {
         try {
             val result = block()
             onNext(result)
+            onCompleted()
         } catch(ex: Exception){
             onError(ex)
             throw ex
-        } finally {
-            onCompleted()
         }
     }
 }

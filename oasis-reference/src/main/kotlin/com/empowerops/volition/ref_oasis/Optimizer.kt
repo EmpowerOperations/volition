@@ -24,7 +24,7 @@ fun main(args: Array<String>) {
     Application.launch(OptimizerStarter::class.java, *args)
 }
 
-class OptimizerStarter : Application(){
+class OptimizerStarter : Application() {
     private val optimizer = Optimizer()
 
     override fun start(primaryStage: Stage) {
@@ -61,15 +61,15 @@ class OptimizerStarter : Application(){
 class Optimizer {
     private lateinit var optimizerEndpoint: OptimizerEndpoint
     private lateinit var modelService: DataModelService
-    private lateinit var optimizerService : OptimizationService2
-    private lateinit var pluginService : PluginService
+    private lateinit var optimizerService: OptimizationService
+    private lateinit var pluginService: PluginService
     private lateinit var server: Server
     private lateinit var apiService: ApiService
     private lateinit var sharedResources: RunResources
-    private lateinit var optimizerEngine: OptimizerEngine
+    private lateinit var evaluationEngine: IEvaluationEngine
 
     private val eventBus: EventBus = EventBus()
-    private val logger : ConsoleOutput = ConsoleOutput(eventBus)
+    private val logger: ConsoleOutput = ConsoleOutput(eventBus)
 
     @Option(names = ["-l", "--headless"], description = ["Run Optimizer in Headless Mode"])
     var headless: Boolean = false
@@ -80,20 +80,20 @@ class Optimizer {
     @Option(names = ["-o", "--overwrite"], description = ["Enable register overwrite when duplication happens"])
     var overwrite: Boolean = false
 
-    private fun setup(){
+    private fun setup() {
         modelService = DataModelService(eventBus, overwrite)
         pluginService = PluginService(modelService, logger, eventBus)
-        sharedResources = RunResourceImpl(pluginService, modelService, eventBus, RandomNumberOptimizer(),logger)
-        optimizerEngine = OptimizerEngineImpl(sharedResources)
-        optimizerService = OptimizationService2(
-                OptimizationStartActor(sharedResources, optimizerEngine),
-                OptimizationStopActor(sharedResources),
-                OptimizerForceStopActor(sharedResources),
-                OptimizerPauseActor(sharedResources),
-                OptimizerResumeActor(sharedResources)
+        sharedResources = RunResources()
+        evaluationEngine = EvaluationEngine(sharedResources, RandomNumberOptimizer(), modelService, pluginService, eventBus, logger)
+        optimizerService = OptimizationService(
+                OptimizationStartActor(eventBus, sharedResources, evaluationEngine, pluginService, modelService),
+                OptimizationStopActor(eventBus, sharedResources, pluginService),
+                OptimizerForceStopActor(eventBus, sharedResources),
+                OptimizerPauseActor(eventBus, sharedResources),
+                OptimizerResumeActor(eventBus, sharedResources)
         )
         apiService = ApiService(modelService, optimizerService)
-        optimizerEndpoint = OptimizerEndpoint(apiService)
+        optimizerEndpoint = OptimizerEndpoint(apiService, modelService)
         server = NettyServerBuilder.forPort(port).addService(ServerInterceptors.intercept(optimizerEndpoint, LoggingInterceptor(logger))).build()
     }
 
@@ -107,10 +107,9 @@ class Optimizer {
             return
         }
 
-        if(headless){
+        if (headless) {
             //TODO splash screen etc.
-        }
-        else{
+        } else {
             val optimizerGUI = OptimizerGUIRootController(modelService, optimizerService, sharedResources, eventBus)
             primaryStage.title = "Volition Reference Optimizer"
             primaryStage.scene = Scene(optimizerGUI.root)

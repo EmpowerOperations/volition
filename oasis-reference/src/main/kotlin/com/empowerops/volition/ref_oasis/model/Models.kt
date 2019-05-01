@@ -1,4 +1,4 @@
-package com.empowerops.volition.ref_oasis
+package com.empowerops.volition.ref_oasis.model
 
 import com.empowerops.volition.dto.*
 import io.grpc.stub.StreamObserver
@@ -6,6 +6,7 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.channels.Channel
 import java.time.Duration
 import java.time.LocalDateTime
+import java.util.*
 import java.util.logging.Level
 
 data class Input(
@@ -102,3 +103,12 @@ data class Proxy(
 ) : Nameable
 
 data class Issue(val message: String)
+
+
+class Helpers{
+    companion object {
+        val NullUUID = UUID(0,0)
+    }
+}
+
+

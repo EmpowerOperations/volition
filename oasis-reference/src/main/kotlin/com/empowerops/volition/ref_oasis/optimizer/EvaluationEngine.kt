@@ -1,6 +1,9 @@
-package com.empowerops.volition.ref_oasis
+package com.empowerops.volition.ref_oasis.optimizer
 
 import com.empowerops.volition.dto.Logger
+import com.empowerops.volition.ref_oasis.model.RunResources
+import com.empowerops.volition.ref_oasis.model.*
+import com.empowerops.volition.ref_oasis.plugin.PluginService
 import com.google.common.eventbus.EventBus
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.GlobalScope
@@ -13,70 +16,66 @@ interface IEvaluationEngine {
 }
 
 class EvaluationEngine(
-        private val runResources : RunResources,
-        private val optimizer : RandomNumberOptimizer,
-        private val modelService: DataModelService,
-        private val pluginService : PluginService,
+        private val runResources: RunResources,
+        private val optimizer: InputGenerator,
+        private val modelService: ModelService,
+        private val pluginService: PluginService,
         private val eventBus: EventBus,
         private val logger: Logger
-        ) : IEvaluationEngine {
+) : IEvaluationEngine {
     private suspend fun evaluate(inputVector: Map<String, Double>, proxy: Proxy, runID: UUID) {
         val forceStopSignal = ForceStopSignal(proxy.name)
-        runResources.run {
+        with(runResources) {
             try {
                 currentlyEvaluatedProxy = proxy
                 sessionForceStopSignals += forceStopSignal
                 val simResult = pluginService.evaluateAsync(proxy, inputVector, forceStopSignal).await()
                 modelService.addNewResult(runID, simResult)
-                eventBus.post(StatusUpdateEvent("Evaluation finished."))
+                eventBus.post(BasicStatusUpdateEvent("Evaluation finished."))
                 if (simResult is EvaluationResult.TimeOut) {
-                    eventBus.post(StatusUpdateEvent("Timed out, Canceling..."))
+                    eventBus.post(BasicStatusUpdateEvent("Timed out, Canceling..."))
                     val cancelResult = pluginService.cancelCurrentEvaluationAsync(proxy, forceStopSignal).await()
 
                     val cancelMessage = when (cancelResult) {
-                        is CancelResult.Canceled -> {
-                            "Evaluation Canceled"
-                        }
-                        is CancelResult.CancelFailed -> {
-                            "Cancellation Failed, Cause:\n${cancelResult.exception}"
-                        }
-                        is CancelResult.CancelTerminated -> {
-                            "Cancellation Terminated, Cause:\nForce-stopped"
-                        }
+                        is CancelResult.Canceled -> "Evaluation Canceled"
+                        is CancelResult.CancelFailed -> "Cancellation Failed, Cause:\n${cancelResult.exception}"
+                        is CancelResult.CancelTerminated -> "Cancellation Terminated, Cause:\nForce-stopped"
                     }
                     logger.log(cancelMessage, "Optimizer")
-                    eventBus.post(StatusUpdateEvent("Cancel finished. [$cancelResult]"))
+                    eventBus.post(BasicStatusUpdateEvent("Cancel finished. [$cancelResult]"))
                 }
-            }finally {
+            } finally {
                 currentlyEvaluatedProxy = null
                 sessionForceStopSignals -= forceStopSignal
             }
         }
     }
 
-    override fun startRunLoopAsync(currentRunID: UUID) = GlobalScope.async{
-        runResources.run {
+    override fun startRunLoopAsync(currentRunID: UUID) = GlobalScope.async {
+        with(runResources) {
             try {
+                require(currentRunID == runID)
                 stateMachine.transferTo(State.Running)
-                eventBus.post(RunStartedEvent(currentRunID))
+                eventBus.post(RunStartedEvent(runID))
                 while (stateMachine.currentState == State.Running) {
                     var pluginNumber = 1
                     for (proxy in modelService.proxies) {
-                        eventBus.post(StatusUpdateEvent("Evaluating: ${proxy.name} ($pluginNumber/${modelService.proxies.size})"))
+                        eventBus.post(BasicStatusUpdateEvent("Evaluating: ${proxy.name} ($pluginNumber/${modelService.proxies.size})"))
                         val inputVector = optimizer.generateInputs(proxy.inputs)
-                        evaluate(inputVector, proxy, currentRunID)
+                        evaluate(inputVector, proxy, runID)
                         pluginNumber++
                     }
                     if (stateMachine.currentState == State.PausePending) {
                         stateMachine.transferTo(State.Paused)
-                        eventBus.post(PausedEvent(currentRunID))
+                        eventBus.post(PausedEvent(runID))
                         select<Unit> {
                             resumeSignal!!.onAwait { Unit }
                         }
                     }
+                    iterationFinished.send(Unit)
                 }
             } finally {
-               logger.log("Run finished", "Optimizer")
+                runLoopFinished!!.complete(Unit)
             }
         }
     }

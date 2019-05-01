@@ -1,7 +1,9 @@
-package com.empowerops.volition.ref_oasis
+package com.empowerops.volition.ref_oasis.plugin
 
 import com.empowerops.volition.dto.NodeStatusCommandOrResponseDTO
 import com.empowerops.volition.dto.RequestQueryDTO
+import com.empowerops.volition.ref_oasis.front_end.ConsoleOutput
+import com.empowerops.volition.ref_oasis.model.*
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import kotlinx.coroutines.Deferred
@@ -10,11 +12,10 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.selects.select
 import org.funktionale.either.Either
-import java.time.Duration
 import java.util.*
 
 class PluginService(
-        private val modelService : DataModelService,
+        private val modelService : ModelService,
         private val logger: ConsoleOutput,
         private val eventBus: EventBus
 ){
@@ -37,7 +38,7 @@ class PluginService(
                 sim.error.onReceive {
                     Either.Right(Message(it.name, "Error update simulation ${event.name} due to ${it.message} :\n${it.exception}"))
                 }
-                this.onTimeout(Duration.ofSeconds(5).toMillis()) {
+                this.onTimeout(modelService.updateTimeout) {
                     Either.Right(Message("Optimizer", "Update simulation timeout. Please check simulation is registered and responsive."))
                 }
             }
@@ -125,7 +126,7 @@ class PluginService(
             }
         } catch (exception: Exception) {
             EvaluationResult.Error(
-                    "Optimizer",
+                    simulation.name,
                     inputVector,
                     "Unexpected error happened when try to evaluate $inputVector though simulation ${simulation.name}. Cause: $exception"
             )

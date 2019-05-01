@@ -1,6 +1,8 @@
-package com.empowerops.volition.ref_oasis
+package com.empowerops.volition.ref_oasis.front_end
 
 import com.empowerops.volition.dto.Logger
+import com.empowerops.volition.ref_oasis.model.Message
+import com.empowerops.volition.ref_oasis.model.StatusUpdateEvent
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import kotlinx.coroutines.channels.Channel

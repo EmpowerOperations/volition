@@ -1,6 +1,8 @@
-package com.empowerops.volition.ref_oasis
+package com.empowerops.volition.ref_oasis.optimizer
 
 import com.empowerops.volition.dto.*
+import com.empowerops.volition.ref_oasis.model.*
+import com.empowerops.volition.ref_oasis.toUUIDOrNull
 import io.grpc.Status
 import io.grpc.StatusException
 import io.grpc.stub.StreamObserver
@@ -19,8 +21,8 @@ interface IApiService {
     fun sendMessage(request: MessageCommandDTO): MessageResponseDTO
     fun updateNode(request: NodeStatusCommandOrResponseDTO): NodeChangeConfirmDTO
     fun resultRequest(request: ResultRequestDTO): ResultResponseDTO
-    fun issueStopOptimization(request: StopOptimizationCommandDTO): StopOptimizationResponseDTO
-    fun issueStartOptimization(request: StartOptimizationCommandDTO): StartOptimizationResponseDTO
+    fun requestStop(request: StopOptimizationCommandDTO): StopOptimizationResponseDTO
+    fun requestStart(request: StartOptimizationCommandDTO): StartOptimizationResponseDTO
     fun updateConfiguration(request: ConfigurationCommandDTO): ConfigurationResponseDTO
     fun autoConfigure(request: NodeStatusCommandOrResponseDTO): NodeChangeConfirmDTO
     fun changeNodeName(request: NodeNameChangeCommandDTO): NodeNameChangeResponseDTO
@@ -28,8 +30,8 @@ interface IApiService {
     fun startAsync()
 }
 
-class ApiService(private val modelService: DataModelService,
-                 private val optimizerService: OptimizationService) : IApiService {
+class ApiService(private val modelService: ModelService,
+                 private val optimizerService: OptimizerService) : IApiService {
 
     override fun register(request: RequestRegistrationCommandDTO, responseObserver: StreamObserver<RequestQueryDTO>) {
         modelService.addSim(Simulation(request.name, responseObserver)).let { added ->
@@ -38,17 +40,20 @@ class ApiService(private val modelService: DataModelService,
     }
 
     override suspend fun offerResult(request: SimulationResponseDTO): SimulationResultConfirmDTO {
-        modelService.simulations.getNamed(request.name)?.output?.send(request)?:TODO("Simulation/output channel doesn't exit")
+        require(modelService.simulations.hasName(request.name)){"Simulation/output channel doesn't exit"}
+        modelService.simulations.getValue(request.name).output.send(request)
         return SimulationResultConfirmDTO.newBuilder().build()
     }
 
     override suspend fun offerConfig(request: NodeStatusCommandOrResponseDTO): NodeChangeConfirmDTO {
-        modelService.simulations.getNamed(request.name)?.update?.send(request)?:TODO("Simulation/update channel doesn't exit")
+        require(modelService.simulations.hasName(request.name)){"Simulation/update channel doesn't exit"}
+        modelService.simulations.getValue(request.name).update.send(request)
         return NodeChangeConfirmDTO.newBuilder().build()
     }
 
     override suspend fun offerError(request: ErrorResponseDTO): ErrorConfirmDTO {
-        modelService.simulations.getNamed(request.name)?.error?.send(request)?:TODO("Simulation/error channel doesn't exit")
+        require(modelService.simulations.hasName(request.name)){"Simulation/error channel doesn't exit"}
+        modelService.simulations.getValue(request.name).error.send(request)
         return ErrorConfirmDTO.newBuilder().build()
     }
 
@@ -67,14 +72,13 @@ class ApiService(private val modelService: DataModelService,
         return NodeChangeConfirmDTO.newBuilder().setMessage(buildSimulationUpdateMessage(simulation, result)).build()
     }
 
-    override fun issueStopOptimization(request: StopOptimizationCommandDTO): StopOptimizationResponseDTO {
-        val canStop = optimizerService.canStop()
-        val newBuilder = StopOptimizationResponseDTO.newBuilder()
-        return if(canStop){
-            newBuilder.setRunID(request.id).build()
+    override fun requestStop(request: StopOptimizationCommandDTO): StopOptimizationResponseDTO {
+        val runID = request.id.toUUIDOrNull()
+        return if(optimizerService.canStop(runID)){
+            StopOptimizationResponseDTO.newBuilder().setRunID(request.id).build()
         }
         else{
-            newBuilder.setMessage(buildStopMessage()).build()
+            StopOptimizationResponseDTO.newBuilder().setMessage(buildStopMessage()).build()
         }
     }
 
@@ -96,7 +100,7 @@ class ApiService(private val modelService: DataModelService,
         }
     }.build()
 
-    override fun issueStartOptimization(
+    override fun requestStart(
             request: StartOptimizationCommandDTO
     ): StartOptimizationResponseDTO = StartOptimizationResponseDTO.newBuilder().apply {
         val canStart = optimizerService.canStart()
@@ -113,8 +117,9 @@ class ApiService(private val modelService: DataModelService,
     }
 
     override fun updateConfiguration(request: ConfigurationCommandDTO): ConfigurationResponseDTO =
-            modelService.setDuration(request.name, ofMillis(request.config.timeout)).let { setupResult ->
+            modelService.setTimeout(request.name, ofMillis(request.config.timeout)).let { setupResult ->
                 ConfigurationResponseDTO.newBuilder().apply {
+                    updated = setupResult
                     message = buildUpdateMessage(request.name, ofMillis(request.config.timeout), setupResult)
                 }
             }.build()
@@ -141,16 +146,14 @@ internal fun buildNameChangeMessage(changed: Boolean, oldName: String, newName: 
 internal fun buildUnregisterMessage(result: Boolean)
         = "Unregister ${if (result) "success" else "failed"}"
 internal fun buildStartIssuesMessage(issues: List<Issue>)
-        = "Optimization cannot start: ${issues.joinToString(", ")}"
+        = if(issues.isEmpty()) "Optimization start issued" else "Optimization cannot start: ${issues.joinToString(", ")}"
 internal fun buildRunNotFoundMessage(runID: String)
         = "Requested run ID $runID is not available"
-
 internal fun buildAutoSetupMessage(newNode: Simulation, updated: Boolean)
         = "Auto setup ${if (updated) "Succeed" else "Failed"} with inputs: ${newNode.inputs} outputs: ${newNode.outputs}"
 internal fun buildUpdateMessage(name: String, timeOut: Duration, updated: Boolean)
         = "Configuration update ${if (updated) "succeed with timeout: ${timeOut}ms" else "failed, there is no existing setup named $name."}"
 internal fun buildSimulationUpdateMessage(newNode: Simulation, updated: Boolean)
         = "Simulation updated ${if (updated) "succeed" else "failed"} with inputs: ${newNode.inputs} outputs: ${newNode.outputs}"
-
 internal fun buildStopMessage()
         = "Optimization stop order rejected"

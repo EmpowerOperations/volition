@@ -1,6 +1,12 @@
-package com.empowerops.volition.ref_oasis
+package com.empowerops.volition.ref_oasis.front_end
 
 import com.empowerops.volition.dto.LoggingInterceptor
+import com.empowerops.volition.ref_oasis.model.ModelService
+import com.empowerops.volition.ref_oasis.model.RunResources
+import com.empowerops.volition.ref_oasis.optimizer.*
+import com.empowerops.volition.ref_oasis.optimizer.StopAction
+import com.empowerops.volition.ref_oasis.optimizer.ApiService
+import com.empowerops.volition.ref_oasis.plugin.PluginService
 import com.google.common.eventbus.EventBus
 import io.grpc.Server
 import io.grpc.ServerInterceptors
@@ -60,8 +66,8 @@ class OptimizerStarter : Application() {
         description = ["Reference optimizer using Volition API"])
 class Optimizer {
     private lateinit var optimizerEndpoint: OptimizerEndpoint
-    private lateinit var modelService: DataModelService
-    private lateinit var optimizerService: OptimizationService
+    private lateinit var modelService: ModelService
+    private lateinit var optimizerService: OptimizerService
     private lateinit var pluginService: PluginService
     private lateinit var server: Server
     private lateinit var apiService: ApiService
@@ -81,16 +87,16 @@ class Optimizer {
     var overwrite: Boolean = false
 
     private fun setup() {
-        modelService = DataModelService(eventBus, overwrite)
+        modelService = ModelService(eventBus, overwrite)
         pluginService = PluginService(modelService, logger, eventBus)
         sharedResources = RunResources()
         evaluationEngine = EvaluationEngine(sharedResources, RandomNumberOptimizer(), modelService, pluginService, eventBus, logger)
-        optimizerService = OptimizationService(
-                OptimizationStartActor(eventBus, sharedResources, evaluationEngine, pluginService, modelService),
-                OptimizationStopActor(eventBus, sharedResources, pluginService),
-                OptimizerForceStopActor(eventBus, sharedResources),
-                OptimizerPauseActor(eventBus, sharedResources),
-                OptimizerResumeActor(eventBus, sharedResources)
+        optimizerService = OptimizerService(
+                OptimizationStartAction(eventBus, sharedResources, evaluationEngine, pluginService, modelService),
+                StopAction(eventBus, sharedResources, pluginService),
+                ForceStopAction(eventBus, sharedResources),
+                OptimizerPauseAction(eventBus, sharedResources),
+                ResumeAction(eventBus, sharedResources)
         )
         apiService = ApiService(modelService, optimizerService)
         optimizerEndpoint = OptimizerEndpoint(apiService, modelService)

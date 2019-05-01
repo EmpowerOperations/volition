@@ -1,11 +1,16 @@
-package com.empowerops.volition.ref_oasis
+package com.empowerops.volition.ref_oasis.optimizer
 
 import com.empowerops.volition.dto.*
+import com.empowerops.volition.ref_oasis.model.ModelService
+import com.empowerops.volition.ref_oasis.model.hasName
 import io.grpc.Status
 import io.grpc.StatusRuntimeException
 import io.grpc.stub.StreamObserver
 
-class OptimizerEndpoint(private val apiService: IApiService, private val modelService: DataModelService) : OptimizerGrpc.OptimizerImplBase() {
+class OptimizerEndpoint(
+        private val apiService: IApiService,
+        private val modelService: ModelService
+) : OptimizerGrpc.OptimizerImplBase() {
 
     override fun changeNodeName(
             request: NodeNameChangeCommandDTO,
@@ -15,7 +20,6 @@ class OptimizerEndpoint(private val apiService: IApiService, private val modelSe
             apiService.changeNodeName(request)
         }
     }
-
 
     override fun autoConfigure(
             request: NodeStatusCommandOrResponseDTO,
@@ -56,7 +60,7 @@ class OptimizerEndpoint(private val apiService: IApiService, private val modelSe
             responseObserver: StreamObserver<StartOptimizationResponseDTO>
     ) = responseObserver.consumeThen({
         checkThenRun(modelService.simulations.hasName(request.name)) {
-            apiService.issueStartOptimization(request)
+            apiService.requestStart(request)
         }
     }) { response ->
         if (response.acknowledged) apiService.startAsync()
@@ -67,7 +71,7 @@ class OptimizerEndpoint(private val apiService: IApiService, private val modelSe
             responseObserver: StreamObserver<StopOptimizationResponseDTO>
     ) = responseObserver.consumeThen({
         checkThenRun(modelService.simulations.hasName(request.name)) {
-            apiService.issueStopOptimization(request)
+            apiService.requestStop(request)
         }
     }) { response ->
         if (response.responseCase == StopOptimizationResponseDTO.ResponseCase.RUNID) apiService.stop()

@@ -1,5 +1,6 @@
-package com.empowerops.volition.ref_oasis
+package com.empowerops.volition.ref_oasis.front_end
 
+import com.empowerops.volition.ref_oasis.model.*
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import javafx.collections.FXCollections
@@ -12,7 +13,7 @@ import kotlinx.coroutines.launch
 import tornadofx.*
 
 class ConnectionView(
-        val dataModel: DataModelService,
+        val model: ModelService,
         val eventBus: EventBus) : View("My View") {
 
 
@@ -23,7 +24,7 @@ class ConnectionView(
         //TODO make this good looking item
         isEditable = false
         cellFormat {name ->
-            val node = dataModel.simulations.getValue(name)
+            val node = model.simulations.getValue(name)
             graphic = vbox {
                 hbox {
                     label("Name: ")
@@ -56,28 +57,28 @@ class ConnectionView(
                     button("refresh") {
                         action {
                             GlobalScope.launch {
-                                dataModel.updateSimulation(name)
+                                model.updateSimulation(name)
                             }
                         }
                     }
                     button("delete") {
                         action {
                             GlobalScope.launch {
-                                dataModel.closeSim(name)
+                                model.closeSim(name)
                             }
                         }
                     }
                     button("add setup") {
                         action {
                             GlobalScope.launch {
-                                dataModel.addAndSyncConfiguration(name)
+                                model.addAndSyncConfiguration(name)
                             }
                         }
                     }
                     button("remove setup") {
                         action {
                             GlobalScope.launch {
-                                dataModel.removeConfiguration(name)
+                                model.removeConfiguration(name)
                             }
                         }
                     }

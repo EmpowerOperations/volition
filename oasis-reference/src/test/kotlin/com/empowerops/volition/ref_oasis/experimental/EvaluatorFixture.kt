@@ -1,4 +1,4 @@
-package com.empowerops.volition.ref_oasis
+package com.empowerops.volition.ref_oasis.experimental
 
 import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test
 import kotlin.system.measureTimeMillis
 
 class EvaluatorFixture{
-
+    //This should be excluded from this branch or put into language fixture with much simpler implementation
     @Test
     fun `test1`() {
             //setup
@@ -14,7 +14,7 @@ class EvaluatorFixture{
             val b1Task = EvaluationTask(Evaluable(listOf("x1", "f1"), listOf("f2")))
             val b2Task = EvaluationTask(Evaluable(listOf("x2", "f1"), listOf("f3")))
 
-            val sequentialDependencies = FakeDependencies(mapOf(a1Task to listOf(b1Task, b2Task)))
+            val sequentialDependencies = FakeEvaluationOrder(mapOf(a1Task to listOf(b1Task, b2Task)))
             val evaluator = Evaluator(sequentialDependencies)
 
             var result : Map<String, Double>? = null
@@ -26,7 +26,7 @@ class EvaluatorFixture{
 
             //assert
             assertThat(result!!).hasSize(3)
-            assertThat(time).isGreaterThan(1200)
+            assertThat(time).isLessThan(1200)
     }
 
 

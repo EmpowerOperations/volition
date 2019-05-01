@@ -1,6 +1,10 @@
-package com.empowerops.volition.ref_oasis
+package com.empowerops.volition.ref_oasis.front_end
 
-import com.empowerops.volition.ref_oasis.OptimizerController.ButtonState.*
+import com.empowerops.volition.ref_oasis.optimizer.buildStartIssuesMessage
+import com.empowerops.volition.ref_oasis.front_end.OptimizerController.ButtonState.*
+import com.empowerops.volition.ref_oasis.model.*
+import com.empowerops.volition.ref_oasis.optimizer.OptimizerService
+import com.empowerops.volition.ref_oasis.optimizer.State
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import com.sun.javafx.binding.StringConstant
@@ -20,7 +24,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.javafx.JavaFx
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.selects.select
 import tornadofx.*
 import java.lang.IllegalStateException
 import java.time.Duration
@@ -31,7 +34,7 @@ class OptimizerController {
      */
     internal class Parameter(
             val name: String,
-            val type: OptimizerController.Type,
+            val type: Type,
             val value: Double? = null
     ) {
         var upperBound: Double? by property()
@@ -72,10 +75,10 @@ class OptimizerController {
     private val resultList: ObservableList<EvaluationResult> = FXCollections.observableArrayList()
     private val currentEvaluationStatus = SimpleStringProperty()
     private val issuesText = SimpleStringProperty()
-    private lateinit var modelService: DataModelService
+    private lateinit var modelService: ModelService
     private lateinit var inputRoot: TreeItem<Parameter>
     private lateinit var outputRoot: TreeItem<Parameter>
-    private lateinit var optimizerService: OptimizationService
+    private lateinit var optimizerService: OptimizerService
     private lateinit var sharedResource: RunResources
 
     enum class Type {
@@ -133,7 +136,7 @@ class OptimizerController {
                 if (duration == null) {
                     timeOutTextField.text = ""
                 } else {
-                    modelService.setDuration(nodesList.selectedItem, Duration.ofMillis(duration))
+                    modelService.setTimeout(nodesList.selectedItem, Duration.ofMillis(duration))
                 }
                 view.requestFocus()
             }
@@ -141,10 +144,10 @@ class OptimizerController {
 
         useTimeout.setOnAction {
             if (useTimeout.isSelected) {
-                modelService.setDuration(nodesList.selectedItem, Duration.ZERO)
+                modelService.setTimeout(nodesList.selectedItem, Duration.ZERO)
                 timeOutTextField.text = "0"
             } else {
-                modelService.setDuration(nodesList.selectedItem, null)
+                modelService.setTimeout(nodesList.selectedItem, null)
                 timeOutTextField.text = ""
             }
         }
@@ -207,7 +210,8 @@ class OptimizerController {
             val proxy = modelService.proxies.single { it.name == selectedItem }
             val rebuildInputList: List<Input> = inputRoot.children.map {
                 val parameter = it.value
-                Input(parameter.name, parameter.lowerBound ?: Double.NaN, parameter.upperBound ?: Double.NaN, 0.0)
+                Input(parameter.name, parameter.lowerBound
+                        ?: Double.NaN, parameter.upperBound ?: Double.NaN, 0.0)
             }
             val newProxy = proxy.copy(inputs = rebuildInputList)
             modelService.updateConfiguration(newProxy)
@@ -234,10 +238,10 @@ class OptimizerController {
     }
 
     fun attachToModel(
-            modelService: DataModelService,
+            modelService: ModelService,
             eventBus: EventBus,
             connectionView: ListView<String>,
-            optimizerService: OptimizationService,
+            optimizerService: OptimizerService,
             shareResource: RunResources) {
         this.optimizerService = optimizerService
         this.modelService = modelService

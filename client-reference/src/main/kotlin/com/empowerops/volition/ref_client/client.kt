@@ -1,14 +1,15 @@
 package com.empowerops.volition.ref_client
 
 import com.empowerops.volition.dto.*
-import com.google.protobuf.DoubleValue
 import io.grpc.ManagedChannelBuilder
-import io.grpc.stub.StreamObserver
 import javafx.application.Application
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.value.ObservableBooleanValue
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.javafx.JavaFx
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import tornadofx.*
 
 fun main(args: Array<String>){

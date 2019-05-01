@@ -1,4 +1,4 @@
-package com.empowerops.volition.ref_oasis
+package com.empowerops.volition.ref_oasis.experimental
 
 import kotlinx.coroutines.*
 
@@ -64,7 +64,7 @@ interface EvaluationOrder {
     fun findNextTasks(evaluationTask: EvaluationTask): List<EvaluationTask>
 }
 
-class SequentialEvaluationOrder(val list: List<EvaluationTask>) : EvaluationOrder{
+class SequentialEvaluationOrder(val list: List<EvaluationTask>) : EvaluationOrder {
     override fun findNextTasks(evaluationTask: EvaluationTask): List<EvaluationTask> = if (evaluationTask.equals(list.last())) {
         emptyList()
     } else {
@@ -72,7 +72,7 @@ class SequentialEvaluationOrder(val list: List<EvaluationTask>) : EvaluationOrde
     }
 }
 
-class FakeEvaluationOrder(val map: Map<EvaluationTask, List<EvaluationTask>>) : EvaluationOrder{
+class FakeEvaluationOrder(val map: Map<EvaluationTask, List<EvaluationTask>>) : EvaluationOrder {
     override fun findNextTasks(evaluationTask: EvaluationTask): List<EvaluationTask> {
         return map[evaluationTask]?: emptyList()
     }

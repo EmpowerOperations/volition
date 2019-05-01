@@ -101,7 +101,7 @@ message ConfigurationCommandDTO {
 }
 
 message ConfigurationResponseDTO {
-    string name = 1;
+    bool updated = 1;
     string message =2;
 }
 

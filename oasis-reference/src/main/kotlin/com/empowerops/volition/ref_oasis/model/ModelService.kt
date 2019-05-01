@@ -1,9 +1,8 @@
-package com.empowerops.volition.ref_oasis
+package com.empowerops.volition.ref_oasis.model
 
 import com.empowerops.volition.dto.NodeStatusCommandOrResponseDTO
 import com.google.common.annotations.VisibleForTesting
 import com.google.common.eventbus.EventBus
-import org.funktionale.either.Either
 import java.time.Duration
 import java.util.*
 
@@ -11,7 +10,7 @@ interface IssueFinder{
     fun findIssues() : List<Issue>
 }
 
-class DataModelService(private val eventBus: EventBus, private val overwriteMode : Boolean) : IssueFinder {
+class ModelService(private val eventBus: EventBus, private val overwriteMode : Boolean) : IssueFinder {
     var simulations: List<Simulation> = emptyList()
         internal set
     var proxies: List<Proxy> = emptyList()
@@ -21,11 +20,11 @@ class DataModelService(private val eventBus: EventBus, private val overwriteMode
         internal set
     var messageList : List<Message> = emptyList()
         private set
-
+    @VisibleForTesting val updateTimeout = Duration.ofSeconds(5).toMillis()
     /**
      * Update the timeout for configuration by name
      */
-    fun setDuration(nodeName: String?, timeOut: Duration?) : Boolean{
+    fun setTimeout(nodeName: String?, timeOut: Duration?) : Boolean{
         val oldNode = proxies.getNamed(nodeName) ?: return false
         proxies = proxies.replace(oldNode, oldNode.copy(timeOut = timeOut))
         eventBus.post(ProxyUpdatedEvent(nodeName!!))
@@ -100,7 +99,7 @@ class DataModelService(private val eventBus: EventBus, private val overwriteMode
         return true
     }
 
-    fun updateSimAndConfiguration(statusDTO: NodeStatusCommandOrResponseDTO) : Pair<Boolean,Simulation>{
+    fun updateSimAndConfiguration(statusDTO: NodeStatusCommandOrResponseDTO) : Pair<Boolean, Simulation>{
         val newSim = statusDTO.generateUpdatedSimulation()
         val setupResult = updateSimAndConfiguration(newSim)
         return Pair(setupResult, newSim)

@@ -102,17 +102,13 @@ class OptimizerEndpointFixture {
                         StopOptimizationCommandDTO.newBuilder().setName("node1").setId(randomRunID.toString()).build(),
                         StopOptimizationResponseDTO.newBuilder().setMessage(buildStopMessage()).build(),
                         endpoint::requestStop,
-                        {
-                            whenever(optimizerService.canStop(eq(randomRunID))) doReturn false
-                        }
+                        { whenever(optimizerService.canStop(eq(randomRunID))) doReturn false }
                 ),
                 Params("when request stop optimization and can stop should return a correct response",
                         StopOptimizationCommandDTO.newBuilder().setName("node1").setId(randomRunID.toString()).build(),
                         StopOptimizationResponseDTO.newBuilder().setRunID(randomRunID.toString()).build(),
                         endpoint::requestStop,
-                        {
-                            whenever(optimizerService.canStop(eq(randomRunID))) doReturn true
-                        }
+                        { whenever(optimizerService.canStop(eq(randomRunID))) doReturn true }
                 ),
                 Params("when send a message should return a response",
                         MessageCommandDTO.newBuilder().setName("node1").setMessage("test message").build(),
@@ -123,81 +119,61 @@ class OptimizerEndpointFixture {
                         testStatusRequest,
                         NodeChangeConfirmDTO.newBuilder().setMessage(buildSimulationUpdateMessage(testSimulation, false)).build(),
                         endpoint::updateNode,
-                        {
-                            whenever(modelService.updateSimAndConfiguration(any<NodeStatusCommandOrResponseDTO>())) doReturn Pair(false, testSimulation)
-                        }
+                        { whenever(modelService.updateSimAndConfiguration(any<NodeStatusCommandOrResponseDTO>())) doReturn Pair(false, testSimulation) }
                 ),
                 Params("when request update and succeed should return a success response",
                         testStatusRequest,
                         NodeChangeConfirmDTO.newBuilder().setMessage(buildSimulationUpdateMessage(testSimulation, true)).build(),
                         endpoint::updateNode,
-                        {
-                            whenever(modelService.updateSimAndConfiguration(any<NodeStatusCommandOrResponseDTO>())) doReturn Pair(true, testSimulation)
-                        }
+                        { whenever(modelService.updateSimAndConfiguration(any<NodeStatusCommandOrResponseDTO>())) doReturn Pair(true, testSimulation) }
                 ),
                 Params("when request auto setup and succeed should return a success response",
                         testStatusRequest,
                         NodeChangeConfirmDTO.newBuilder().setMessage(buildAutoSetupMessage(testSimulation, true)).build(),
                         endpoint::autoConfigure,
-                        {
-                            whenever(modelService.autoSetup(any<NodeStatusCommandOrResponseDTO>())) doReturn Pair(true, testSimulation)
-                        }
+                        { whenever(modelService.autoSetup(any<NodeStatusCommandOrResponseDTO>())) doReturn Pair(true, testSimulation) }
                 ),
                 Params("when request auto setup and failed should return a failed response",
                         testStatusRequest,
                         NodeChangeConfirmDTO.newBuilder().setMessage(buildAutoSetupMessage(testSimulation, false)).build(),
                         endpoint::autoConfigure,
-                        {
-                            whenever(modelService.autoSetup(any<NodeStatusCommandOrResponseDTO>())) doReturn Pair(false, testSimulation)
-                        }
+                        { whenever(modelService.autoSetup(any<NodeStatusCommandOrResponseDTO>())) doReturn Pair(false, testSimulation) }
                 ),
                 Params("when request result and it exist should return the result response",
                         ResultRequestDTO.newBuilder().setName("Node1").setRunID(randomID.toString()).build(),
                         testRunResultResponse,
                         endpoint::resultRequest,
-                        {
-                            whenever(modelService.resultList) doReturn (mapOf(randomID to resultList))
-                        }
+                        { whenever(modelService.resultList) doReturn (mapOf(randomID to resultList)) }
                 ),
                 Params("when request result but it does not exist should return the result response",
                         ResultRequestDTO.newBuilder().setName("Node1").setRunID(randomRunID.toString()).build(),
                         ResultResponseDTO.newBuilder().setMessage(buildRunNotFoundMessage(randomRunID.toString())).build(),
                         endpoint::resultRequest,
-                        {
-                            whenever(modelService.resultList) doReturn (mapOf())
-                        }
+                        { whenever(modelService.resultList) doReturn (mapOf()) }
                 ),
                 Params("when request update a configuration(proxy) should update the node",
                         ConfigurationCommandDTO.newBuilder().setName("Node1").setConfig(ConfigurationCommandDTO.Config.newBuilder().setTimeout(5000)).build(),
                         ConfigurationResponseDTO.newBuilder().setUpdated(true).setMessage(buildUpdateMessage("Node1", Duration.ofMillis(5000), true)).build(),
                         endpoint::updateConfiguration,
-                        {
-                            whenever(modelService.setTimeout(eq("Node1"), eq(Duration.ofMillis(5000)))) doReturn true
-                        }
+                        { whenever(modelService.setTimeout(eq("Node1"), eq(Duration.ofMillis(5000)))) doReturn true }
                 ),
                 Params("when request update a configuration(proxy) should update the node",
                         ConfigurationCommandDTO.newBuilder().setName("Node1").setConfig(ConfigurationCommandDTO.Config.newBuilder().setTimeout(5000)).build(),
                         ConfigurationResponseDTO.newBuilder().setUpdated(false).setMessage(buildUpdateMessage("Node1", Duration.ofMillis(5000), false)).build(),
                         endpoint::updateConfiguration,
-                        {
-                            whenever(modelService.setTimeout(eq("Node1"), eq(Duration.ofMillis(5000)))) doReturn false
-                        }
+                        { whenever(modelService.setTimeout(eq("Node1"), eq(Duration.ofMillis(5000)))) doReturn false }
                 ),
                 Params("when request unregister a node succeed should return the correct response",
                         RequestUnRegistrationRequestDTO.newBuilder().setName("Node1").build(),
                         UnRegistrationResponseDTO.newBuilder().setMessage(buildUnregisterMessage(true)).build(),
                         endpoint::unregister,
-                        {
-                            whenever(modelService.closeSim(eq("Node1"))) doReturn true
-                        }
+                        { whenever(modelService.closeSim(eq("Node1"))) doReturn true }
                 ),
                 Params("when request unregister a node failed should return the failed response",
                         RequestUnRegistrationRequestDTO.newBuilder().setName("Node1").build(),
                         UnRegistrationResponseDTO.newBuilder().setMessage(buildUnregisterMessage(false)).build(),
                         endpoint::unregister,
-                        {
-                            whenever(modelService.closeSim(eq("Node1"))) doReturn false
-                        }
+                        { whenever(modelService.closeSim(eq("Node1"))) doReturn false }
                 )
         )
 

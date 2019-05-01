@@ -27,7 +27,7 @@ interface IApiService {
     fun autoConfigure(request: NodeStatusCommandOrResponseDTO): NodeChangeConfirmDTO
     fun changeNodeName(request: NodeNameChangeCommandDTO): NodeNameChangeResponseDTO
     fun stop()
-    fun startAsync()
+    fun start()
 }
 
 class ApiService(private val modelService: ModelService,
@@ -110,7 +110,7 @@ class ApiService(private val modelService: ModelService,
         acknowledged = issues.isEmpty()
     }.build()
 
-    override fun startAsync() {
+    override fun start() {
         GlobalScope.launch {
             optimizerService.start()
         }

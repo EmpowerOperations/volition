@@ -63,7 +63,7 @@ class OptimizerEndpoint(
             apiService.requestStart(request)
         }
     }) { response ->
-        if (response.acknowledged) apiService.startAsync()
+        if (response.acknowledged) apiService.start()
     }
 
     override fun stopOptimization(

@@ -52,7 +52,7 @@ class SystemTest {
         }
     }
 
-    fun create(): OptimizerEndpoint {
+    private fun create(): OptimizerEndpoint {
         val eventBus = EventBus()
         logger = ConsoleOutput(eventBus)
         modelService = ModelService(eventBus, false)
@@ -76,7 +76,7 @@ class SystemTest {
      * Register/Unregister
      */
     @Test
-    fun `when register new node`() {
+    fun `when register new node should add the new node`() {
         //setup
         val optimizerEndpoint = create()
 
@@ -89,9 +89,8 @@ class SystemTest {
         """.trimMargin())
     }
 
-
     @Test
-    fun `when register then unregister`() {
+    fun `when unregister should remove the node`() {
         //setup
         val optimizerEndpoint = create()
 
@@ -111,7 +110,7 @@ class SystemTest {
     }
 
     @Test
-    fun `when double register`() {
+    fun `when register the node with duplicated name should reject`() {
         //setup
         val optimizerEndpoint = create()
 
@@ -151,7 +150,7 @@ class SystemTest {
      * Rename
      */
     @Test
-    fun `rename existing node`() {
+    fun `rename existing node should update the node`() {
         //setup
         val optimizerEndpoint = create()
         optimizerEndpoint.registerRequest(registerDTO, mock())
@@ -171,7 +170,7 @@ class SystemTest {
     }
 
     @Test
-    fun `rename when there are both proxy and sim should rename both`() {
+    fun `when request rename and there are both proxy and sim should rename both`() {
         //setup
         val optimizerEndpoint = create()
         optimizerEndpoint.registerRequest(registerDTO, mock())
@@ -194,13 +193,13 @@ class SystemTest {
         """.trimMargin())
     }
 
-    @Test
+    @Test @Disabled("Not implmented")
     fun `rename non existing node`() {
         //deny
     }
 
     @Test
-    fun `rename to duplicated name`() {
+    fun `rename existing node to a dupcliated name should not do the rename`() {
         //setup
         val optimizerEndpoint = create()
         optimizerEndpoint.registerRequest(registerDTO, mock())
@@ -224,7 +223,7 @@ class SystemTest {
      * setups: auto update/ update/ update configuration
      */
     @Test
-    fun `auto setup`() {
+    fun `when request auto setup should add the proxy for the connected plugin`() {
         //setup
         val endpoint = create()
         endpoint.registerRequest(registerDTO, mock())
@@ -245,7 +244,7 @@ class SystemTest {
         """.trimMargin())
     }
 
-    @Test
+    @Test @Disabled("Not implmented")
     fun `auto setup but not register should deny`() {
         //deny
     }

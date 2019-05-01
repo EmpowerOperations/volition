@@ -19,9 +19,12 @@ class EvaluationTask(private val evaluable: Evaluable) {
 }
 
 /**
- * Not yet used, also not intended
+ * The biggest lesson here is about structured concurrency to avoid leakage when evaluation crash/error 
+ * Not yet used, also not intended to used yet
+ *
  * This may not be the most efficient way and it is just a proof of concept using some basic recursion and the
  * fact that coroutine are light weight and cheap.
+ *
  * Some note:
  * This evaluator is designed to be able to run parallel using coroutine, however, this is not really partial and a good
  * dispatcher/order finding is much more important

@@ -1,41 +1,82 @@
 package com.empowerops.volition.ref_oasis.optimizer
 
 import com.empowerops.volition.dto.Logger
-import com.empowerops.volition.ref_oasis.model.RunResources
+import com.empowerops.volition.dto.RequestQueryDTO
 import com.empowerops.volition.ref_oasis.model.*
-import com.empowerops.volition.ref_oasis.plugin.PluginService
 import com.google.common.eventbus.EventBus
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
+import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.selects.select
 import java.util.*
 
 interface IEvaluationEngine {
-    fun startRunLoopAsync(runId: UUID): Deferred<Unit>
+    suspend fun handle(runs: ReceiveChannel<Run>
+    )
 }
 
+data class EvaluationRequest(
+        val inputVector: Map<String, Double>,
+        val proxy: Proxy,
+        val simulation: Simulation,
+        val forceStopSignal: ForceStopSignal = ForceStopSignal(proxy.name)
+)
+
+data class Iteration(
+        val number: Int,
+        val evaluations: Channel<EvaluationRequest> = Channel(),
+        val evaluationEnds : Channel<Unit> = Channel()
+)
+data class Run(
+        val runID: UUID,
+        val iterations: Channel<Iteration> = Channel(),
+        val iterationEnds: Channel<Unit> = Channel()
+)
+
+
 class EvaluationEngine(
-        private val runResources: RunResources,
-        private val optimizer: InputGenerator,
         private val modelService: ModelService,
-        private val pluginService: PluginService,
         private val eventBus: EventBus,
         private val logger: Logger
 ) : IEvaluationEngine {
-    private suspend fun evaluate(inputVector: Map<String, Double>, proxy: Proxy, runID: UUID) {
-        val forceStopSignal = ForceStopSignal(proxy.name)
-        with(runResources) {
-            try {
-                currentlyEvaluatedProxy = proxy
-                sessionForceStopSignals += forceStopSignal
-                val simResult = pluginService.evaluateAsync(proxy, inputVector, forceStopSignal).await()
-                modelService.addNewResult(runID, simResult)
+
+    override suspend fun handle(
+            runs: ReceiveChannel<Run>
+    ) = coroutineScope {
+        for (run in runs) {
+            for (iteration in run.iterations) {
+                var pluginNumber = 1
+                val requests = Channel<EvaluationRequest>()
+                val results = Channel<EvaluationResult>()
+                evaluate(requests, results)
+                for (request in iteration.evaluations) {
+                    requests.send(request)
+                    eventBus.post(BasicStatusUpdateEvent("Evaluating: ${request.proxy.name} ($pluginNumber/${modelService.proxies.size})"))
+                    val result = results.receive()
+                    modelService.addNewResult(run.runID, result)
+                    iteration.evaluationEnds.send(Unit)
+                    pluginNumber++
+                }
+                requests.close()
+                results.close()
+                run.iterationEnds.send(Unit)
+            }
+        }
+    }
+
+    private suspend fun CoroutineScope.evaluate(
+            requests: ReceiveChannel<EvaluationRequest>,
+            results: SendChannel<EvaluationResult>
+    ) = launch{
+        for (request in requests) {
+            with(request) {
+                val simResult = evaluateAsync(proxy, simulation, inputVector, forceStopSignal).await()
                 eventBus.post(BasicStatusUpdateEvent("Evaluation finished."))
+                results.send(simResult)
                 if (simResult is EvaluationResult.TimeOut) {
                     eventBus.post(BasicStatusUpdateEvent("Timed out, Canceling..."))
-                    val cancelResult = pluginService.cancelCurrentEvaluationAsync(proxy, forceStopSignal).await()
-
+                    val cancelResult = cancelCurrentEvaluationAsync(simulation, forceStopSignal).await()
                     val cancelMessage = when (cancelResult) {
                         is CancelResult.Canceled -> "Evaluation Canceled"
                         is CancelResult.CancelFailed -> "Cancellation Failed, Cause:\n${cancelResult.exception}"
@@ -44,38 +85,60 @@ class EvaluationEngine(
                     logger.log(cancelMessage, "Optimizer")
                     eventBus.post(BasicStatusUpdateEvent("Cancel finished. [$cancelResult]"))
                 }
-            } finally {
-                currentlyEvaluatedProxy = null
-                sessionForceStopSignals -= forceStopSignal
+
             }
         }
     }
 
-    override fun startRunLoopAsync(currentRunID: UUID) = GlobalScope.async {
-        with(runResources) {
-            try {
-                require(currentRunID == runID)
-                stateMachine.transferTo(State.Running)
-                eventBus.post(RunStartedEvent(runID))
-                while (stateMachine.currentState == State.Running) {
-                    var pluginNumber = 1
-                    for (proxy in modelService.proxies) {
-                        eventBus.post(BasicStatusUpdateEvent("Evaluating: ${proxy.name} ($pluginNumber/${modelService.proxies.size})"))
-                        val inputVector = optimizer.generateInputs(proxy.inputs)
-                        evaluate(inputVector, proxy, runID)
-                        pluginNumber++
+    private fun CoroutineScope.evaluateAsync(
+            proxy: Proxy,
+            simulation : Simulation,
+            inputVector: Map<String, Double>,
+            forceStopSignal: ForceStopSignal
+    ): Deferred<EvaluationResult> = async{
+        val message = RequestQueryDTO.newBuilder().setEvaluationRequest(
+                RequestQueryDTO.SimulationEvaluationRequest
+                        .newBuilder()
+                        .setName(simulation.name)
+                        .putAllInputVector(inputVector)
+        ).build()
+
+        return@async try {
+            simulation.input.onNext(message)
+            select<EvaluationResult> {
+                simulation.output.onReceive { EvaluationResult.Success(it.name, inputVector, it.outputVectorMap) }
+                simulation.error.onReceive { EvaluationResult.Failed(it.name, inputVector, it.exception) }
+                if (proxy.timeOut != null) {
+                    onTimeout(proxy.timeOut.toMillis()) {
+                        EvaluationResult.TimeOut(simulation.name, inputVector)
                     }
-                    if (stateMachine.currentState == State.PausePending) {
-                        stateMachine.transferTo(State.Paused)
-                        eventBus.post(PausedEvent(runID))
-                        select<Unit> {
-                            resumeSignal!!.onAwait { Unit }
-                        }
-                    }
-                    iterationFinished.send(Unit)
                 }
-            } finally {
-                runLoopFinished!!.complete(Unit)
+                forceStopSignal.completableDeferred.onAwait {
+                    modelService.closeSim(simulation.name)
+                    EvaluationResult.Terminated(simulation.name, inputVector, "Evaluation is terminated during evaluation")
+                }
+            }
+        } catch (exception: Exception) {
+            EvaluationResult.Error(
+                    simulation.name,
+                    inputVector,
+                    "Unexpected error happened when try to evaluate $inputVector though simulation ${simulation.name}. Cause: $exception"
+            )
+        }
+    }
+
+    private fun CoroutineScope.cancelCurrentEvaluationAsync(
+            simulation: Simulation,
+            forceStopSignal: ForceStopSignal) = async {
+        val message = RequestQueryDTO.newBuilder().setCancelRequest(RequestQueryDTO.SimulationCancelRequest.newBuilder().setName(simulation.name)).build()
+
+        simulation.input.onNext(message)
+        return@async select<CancelResult> {
+            simulation.output.onReceive { CancelResult.Canceled(it.name) }
+            simulation.error.onReceive { CancelResult.CancelFailed(it.name, it.exception) }
+            forceStopSignal.completableDeferred.onAwait {
+                modelService.closeSim(simulation.name)
+                CancelResult.CancelTerminated(simulation.name, "Cancellation is terminated")
             }
         }
     }

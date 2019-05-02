@@ -1,31 +1,21 @@
 package com.empowerops.volition.ref_oasis.optimizer
 
 import com.empowerops.volition.ref_oasis.model.RunResources
-import com.empowerops.volition.ref_oasis.model.RunResumedEvent
-import com.google.common.eventbus.EventBus
 
 interface IResumeAction {
     fun canResume(): Boolean
-    fun resume()
+    suspend fun resume()
 }
 
 class ResumeAction(
-        private val eventBus: EventBus,
-        private val sharedResource: RunResources
+        private val runResources: RunResources
 ) : IResumeAction {
-    override fun canResume(): Boolean = with(sharedResource) {
-        if (stateMachine.currentState != State.Paused) return false
-        if (!stateMachine.canTransferTo(State.Running)) return false
-        if (resumeSignal == null) return false
+    override fun canResume(): Boolean {
         return true
     }
 
-    override fun resume() {
+    override suspend fun resume() {
         if (!canResume()) return
-        with(sharedResource) {
-            stateMachine.transferTo(State.Running)
-            resumeSignal!!.complete(Unit)
-            eventBus.post(RunResumedEvent(runID))
-        }
+        runResources.states.send(State.Running)
     }
 }

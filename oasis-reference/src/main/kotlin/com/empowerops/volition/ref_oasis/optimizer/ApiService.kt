@@ -31,7 +31,8 @@ interface IApiService {
 }
 
 class ApiService(private val modelService: ModelService,
-                 private val optimizerService: OptimizerService) : IApiService {
+                 private val optimizerService: OptimizerService,
+                 private val actions: Actions) : IApiService {
 
     override fun register(request: RequestRegistrationCommandDTO, responseObserver: StreamObserver<RequestQueryDTO>) {
         modelService.addSim(Simulation(request.name, responseObserver)).let { added ->
@@ -74,7 +75,7 @@ class ApiService(private val modelService: ModelService,
 
     override fun requestStop(request: StopOptimizationCommandDTO): StopOptimizationResponseDTO {
         val runID = request.id.toUUIDOrNull()
-        return if(optimizerService.canStop(runID)){
+        return if(actions.canStop()){
             StopOptimizationResponseDTO.newBuilder().setRunID(request.id).build()
         }
         else{
@@ -83,7 +84,9 @@ class ApiService(private val modelService: ModelService,
     }
 
     override fun stop(){
-        optimizerService.stop()
+        GlobalScope.launch {
+            actions.stop()
+        }
     }
 
     override fun resultRequest(request: ResultRequestDTO): ResultResponseDTO = ResultResponseDTO.newBuilder().apply {
@@ -103,7 +106,7 @@ class ApiService(private val modelService: ModelService,
     override fun requestStart(
             request: StartOptimizationCommandDTO
     ): StartOptimizationResponseDTO = StartOptimizationResponseDTO.newBuilder().apply {
-        val canStart = optimizerService.canStart()
+        val canStart = actions.canStart()
         var issues = modelService.findIssues()
         if (!canStart) issues += Issue("Optimization are not able to start")
         message = buildStartIssuesMessage(issues)
@@ -112,7 +115,8 @@ class ApiService(private val modelService: ModelService,
 
     override fun start() {
         GlobalScope.launch {
-            optimizerService.start()
+            optimizerService.startProcess()
+            actions.start()
         }
     }
 

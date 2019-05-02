@@ -4,26 +4,22 @@ import com.empowerops.volition.ref_oasis.model.PausedRequestedEvent
 import com.empowerops.volition.ref_oasis.model.RunResources
 import com.google.common.eventbus.EventBus
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.channels.SendChannel
+import java.nio.channels.Channel
 
 interface IPauseAction {
     fun canPause(): Boolean
-    fun pause()
+    suspend fun pause()
 }
 
 class OptimizerPauseAction(
-        private val eventBus: EventBus,
         private val sharedResource: RunResources
 ) : IPauseAction {
     override fun canPause(): Boolean {
-        return sharedResource.stateMachine.canTransferTo(State.PausePending)
+        TODO()
     }
 
-    override fun pause() {
-        if (!canPause()) return
-        sharedResource.apply {
-            stateMachine.transferTo(State.PausePending)
-            resumeSignal = CompletableDeferred()
-            eventBus.post(PausedRequestedEvent(runID))
-        }
+    override suspend fun pause(){
+        sharedResource.states.send(State.PausePending)
     }
 }

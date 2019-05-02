@@ -3,6 +3,7 @@ package com.empowerops.volition.ref_oasis.front_end
 import com.empowerops.volition.ref_oasis.optimizer.buildStartIssuesMessage
 import com.empowerops.volition.ref_oasis.front_end.OptimizerController.ButtonState.*
 import com.empowerops.volition.ref_oasis.model.*
+import com.empowerops.volition.ref_oasis.optimizer.Actions
 import com.empowerops.volition.ref_oasis.optimizer.OptimizerService
 import com.empowerops.volition.ref_oasis.optimizer.State
 import com.google.common.eventbus.EventBus
@@ -44,6 +45,7 @@ class OptimizerController {
         fun lowerBoundProperty(): Property<Double?> = getProperty(Parameter::lowerBound)
     }
 
+
     @FXML lateinit var view: AnchorPane
     @FXML lateinit var nodesList: ListView<String>
     @FXML lateinit var messageTableView: TableView<Message>
@@ -79,7 +81,7 @@ class OptimizerController {
     private lateinit var inputRoot: TreeItem<Parameter>
     private lateinit var outputRoot: TreeItem<Parameter>
     private lateinit var optimizerService: OptimizerService
-    private lateinit var sharedResource: RunResources
+    private lateinit var actions: Actions
 
     enum class Type {
         Input, Output, Root
@@ -242,22 +244,23 @@ class OptimizerController {
             eventBus: EventBus,
             connectionView: ListView<String>,
             optimizerService: OptimizerService,
-            shareResource: RunResources) {
+            actions: Actions) {
         this.optimizerService = optimizerService
         this.modelService = modelService
-        this.sharedResource = shareResource
+        this.actions = actions
         eventBus.register(this)
         connectionListContainer.children.add(connectionView)
         showNode(null)
-        rebindViewToState(shareResource.stateMachine.currentState)
+        rebindViewToState(optimizerService.currentState)
     }
 
     @FXML fun startStopClicked() = GlobalScope.launch(Dispatchers.JavaFx) {
-        when (sharedResource.stateMachine.currentState){
+        when (optimizerService.currentState){
             State.Idle -> {
-                val canStart = optimizerService.canStart()
+                val canStart = actions.canStart()
                 if(canStart){
-                    optimizerService.start()
+                    optimizerService.startProcess()
+                    actions.start()
                 }
                 else{
                     val alert = Alert(Alert.AlertType.ERROR)
@@ -267,16 +270,16 @@ class OptimizerController {
                     alert.showAndWait()
                 }
             }
-            State.Running, State.PausePending, State.Paused -> optimizerService.stop()
-            State.StopPending -> optimizerService.forceStop()
-            else -> throw IllegalStateException("Start/Stop Button is not an actionable state. Current State:${sharedResource.stateMachine.currentState}")
+            State.Running, State.PausePending, State.Paused -> actions.stop()
+            State.StopPending -> actions.forceStop()
+            else -> throw IllegalStateException("Start/Stop Button is not an actionable state. Current State:${optimizerService.currentState}")
         }
     }
 
     @FXML fun pauseResumeRun() = GlobalScope.launch(Dispatchers.JavaFx) {
-        when (sharedResource.stateMachine.currentState){
-            State.Running -> optimizerService.pause()
-            State.Paused -> optimizerService.resume()
+        when (optimizerService.currentState){
+            State.Running -> actions.pause()
+            State.Paused -> actions.resume()
             else -> throw IllegalStateException("Pause/Resume Button is not an actionable state. Current State:${startButton.text}")
         }
     }
@@ -335,7 +338,7 @@ class OptimizerController {
 
     @Subscribe
     fun onStateChangedAsync(event : StatusUpdateEvent) = GlobalScope.launch(Dispatchers.JavaFx){
-        rebindViewToState(sharedResource.stateMachine.currentState)
+        rebindViewToState(optimizerService.currentState)
     }
 
     private fun rebindViewToState(currentState: State) {

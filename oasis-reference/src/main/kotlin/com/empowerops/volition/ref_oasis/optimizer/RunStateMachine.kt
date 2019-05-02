@@ -2,14 +2,14 @@ package com.empowerops.volition.ref_oasis.optimizer
 
 import com.empowerops.volition.ref_oasis.optimizer.State.*
 
-enum class State {
-    Idle,
-    StartPending,
-    Running,
-    PausePending,
-    Paused,
-    StopPending,
-    ForceStopPending,
+sealed class State {
+    object Idle : State()
+    object StartPending : State()
+    object Running : State()
+    object PausePending : State()
+    object Paused : State()
+    object StopPending : State()
+    object ForceStopPending : State()
 }
 
 class RunStateMachine : IStateMachine {

@@ -73,6 +73,8 @@ class Optimizer {
     private lateinit var apiService: ApiService
     private lateinit var sharedResources: RunResources
     private lateinit var evaluationEngine: IEvaluationEngine
+    private lateinit var inputGenerator: InputGenerator
+    private lateinit var actions: Actions
 
     private val eventBus: EventBus = EventBus()
     private val logger: ConsoleOutput = ConsoleOutput(eventBus)
@@ -90,15 +92,24 @@ class Optimizer {
         modelService = ModelService(eventBus, overwrite)
         pluginService = PluginService(modelService, logger, eventBus)
         sharedResources = RunResources()
-        evaluationEngine = EvaluationEngine(sharedResources, RandomNumberOptimizer(), modelService, pluginService, eventBus, logger)
-        optimizerService = OptimizerService(
-                OptimizationStartAction(eventBus, sharedResources, evaluationEngine, pluginService, modelService),
-                StopAction(eventBus, sharedResources, pluginService),
-                ForceStopAction(eventBus, sharedResources),
-                OptimizerPauseAction(eventBus, sharedResources),
-                ResumeAction(eventBus, sharedResources)
+        evaluationEngine = EvaluationEngine(modelService, eventBus, logger)
+        inputGenerator = RandomNumberOptimizer()
+        actions = Actions(
+                OptimizationStartAction(modelService, sharedResources),
+                StopAction(sharedResources),
+                ForceStopAction(sharedResources),
+                OptimizerPauseAction(sharedResources),
+                ResumeAction(sharedResources)
         )
-        apiService = ApiService(modelService, optimizerService)
+        optimizerService = OptimizerService(
+                eventBus,
+                modelService,
+                inputGenerator,
+                pluginService,
+                sharedResources,
+                evaluationEngine
+        )
+        apiService = ApiService(modelService, optimizerService, actions)
         optimizerEndpoint = OptimizerEndpoint(apiService, modelService)
         server = NettyServerBuilder.forPort(port).addService(ServerInterceptors.intercept(optimizerEndpoint, LoggingInterceptor(logger))).build()
     }
@@ -116,7 +127,7 @@ class Optimizer {
         if (headless) {
             //TODO splash screen etc.
         } else {
-            val optimizerGUI = OptimizerGUIRootController(modelService, optimizerService, sharedResources, eventBus)
+            val optimizerGUI = OptimizerGUIRootController(modelService, optimizerService, eventBus, actions)
             primaryStage.title = "Volition Reference Optimizer"
             primaryStage.scene = Scene(optimizerGUI.root)
             primaryStage.show()

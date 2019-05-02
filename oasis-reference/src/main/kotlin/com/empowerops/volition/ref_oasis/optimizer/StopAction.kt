@@ -8,41 +8,26 @@ import com.empowerops.volition.ref_oasis.plugin.PluginService
 import com.google.common.eventbus.EventBus
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.launch
 import java.util.*
 
 interface IStopAction {
-    fun canStop(runID: UUID?): Boolean
-    fun stop(): Job
+    fun canStop(): Boolean
+    suspend fun stop()
 }
 
 class StopAction(
-        private val eventBus: EventBus,
-        private val sharedResource: RunResources,
-        private val pluginService: PluginService
+        private val runResources: RunResources
 ) : IStopAction {
-    override fun canStop(runID: UUID?): Boolean = with(sharedResource){
-        if (runID != runID) return false
-        if (runID == Helpers.NullUUID) return false
-        if (!stateMachine.canTransferTo(State.StopPending)) return false
+    override fun canStop(): Boolean {
         return true
     }
 
-    override fun stop() = GlobalScope.launch {
-        with(sharedResource) {
-            if (!canStop(runID)) return@launch
-
-            stateMachine.transferTo(State.StopPending)
-            stopPending!!.complete(Unit)
-            resumeSignal?.complete(Unit)
-            eventBus.post(StopRequestedEvent(runID))
-
-            runLoopFinished!!.await()
-
-            stateMachine.transferTo(State.Idle)
-            eventBus.post(RunStoppedEvent(runID))
-            pluginService.notifyStop(runID)
-            runID = Helpers.NullUUID
-        }
+    override suspend fun stop()  {
+        if (!canStop()) return
+        runResources.states.send(State.StopPending)
     }
 }

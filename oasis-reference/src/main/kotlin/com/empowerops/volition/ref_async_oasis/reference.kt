@@ -167,7 +167,6 @@ class OptimizerServiceAsync private constructor(){
                             val client = findMakeOrResumeSimulationClient(request.name)
                             client.send(SimulationClientRegistered(request.name, inbound.response))
 
-                            val y = 4;
                             null
                         }
                         is StartOptimizationCommandDTO -> {
@@ -216,7 +215,7 @@ class OptimizerServiceAsync private constructor(){
                         ))
                     }
                 }
-            }
+            } as Any
 
         }
     }.also { job = it }
@@ -316,7 +315,7 @@ private inline fun <T, R> SendChannel<T>.closeAfter(block: () -> R) = asCloseabl
 
 private fun SendChannel<*>.asCloseable() = Closeable { this@asCloseable.close() }
 
-private inline suspend fun <T: Any, reified E: T> ReceiveChannel<T>.expect(): E {
+public inline suspend fun <T: Any, reified E: T> ReceiveChannel<T>.expect(): E {
     val next = receiveOrNull()
     require(next != null){ "protocol voliation: expected inbound message to be an instance of ${E::class.simpleName} but it was null" }
     require(next is E) { "protocol violation: expected $next to be ${E::class.simpleName} but it was actually ${next::class.simpleName}" }

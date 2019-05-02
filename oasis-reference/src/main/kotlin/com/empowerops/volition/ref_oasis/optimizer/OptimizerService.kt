@@ -160,7 +160,8 @@ class OptimizerService(
                         )
                 )
 
-                //This block doesn't really works
+                //we are blocking on evaluation, remove this we need a newer evaluation block, so this can consider as the implementation for sequential evaluation
+                // when considering parallel, we need a list of channel/deffered to block at the end, figuring out dependency, put a worker pool limit
                 currentIteration.evaluationEnds.receive()
                 if (currentState == PausePending) {
                     runResources.states.send(Paused)

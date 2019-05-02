@@ -1,7 +1,6 @@
 package com.empowerops.volition.ref_oasis.front_end
 
 import com.empowerops.volition.ref_oasis.model.ModelService
-import com.empowerops.volition.ref_oasis.model.RunResources
 import com.empowerops.volition.ref_oasis.optimizer.Actions
 import com.empowerops.volition.ref_oasis.optimizer.OptimizerService
 import com.google.common.eventbus.EventBus

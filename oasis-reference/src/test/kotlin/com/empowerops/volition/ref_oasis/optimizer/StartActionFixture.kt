@@ -22,7 +22,7 @@
 //            on{findIssues()} doReturn emptyList()
 //        }
 //        val sharedResource = RunResources().apply{
-//            stateMachine.currentState = State.Running
+//            stateMachine.stateMachine = State.Running
 //        }
 //
 //        val actor = OptimizationStartAction(mock(), sharedResource, evaluationEngine, pluginService, issueFinder)
@@ -43,7 +43,7 @@
 //            on{findIssues()} doReturn listOf(Issue("issue1"))
 //        }
 //        val sharedResource = RunResources().apply{
-//            stateMachine.currentState = State.Idle
+//            stateMachine.stateMachine = State.Idle
 //        }
 //
 //        val actor = OptimizationStartAction(mock(), sharedResource, evaluationEngine, pluginService, issueFinder)
@@ -66,7 +66,7 @@
 //            on{findIssues()} doReturn emptyList()
 //        }
 //        val sharedResource = RunResources().apply{
-//            stateMachine.currentState = State.Idle
+//            stateMachine.stateMachine = State.Idle
 //        }
 //        val eventBus = mock<EventBus>()
 //        val actor = OptimizationStartAction(
@@ -78,7 +78,7 @@
 //
 //        //assert
 //        with(sharedResource){
-//            assertThat(stateMachine.currentState).isEqualTo(State.StartPending)
+//            assertThat(stateMachine.stateMachine).isEqualTo(State.StartPending)
 //            assertThat(runID).isNotEqualTo(NullUUID)
 //        }
 //        verify(pluginService, times(1)).notifyStart(eq(sharedResource.runID))

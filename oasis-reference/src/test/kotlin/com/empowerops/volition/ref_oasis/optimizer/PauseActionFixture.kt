@@ -19,7 +19,7 @@
 //    fun `when is running check can pause should return true`() {
 //        //setup
 //        val (_, runResources, optimizerPauseActor) = create()
-//        runResources.stateMachine.currentState = State.Running
+//        runResources.stateMachine.stateMachine = State.Running
 //        //act
 //        val canPause = optimizerPauseActor.canPause()
 //
@@ -31,7 +31,7 @@
 //    fun `when is running check can pause should return false`() {
 //        //setup
 //        val (_, runResources, optimizerPauseActor) = create()
-//        runResources.stateMachine.currentState = State.Idle
+//        runResources.stateMachine.stateMachine = State.Idle
 //
 //        //act
 //        val canPause = optimizerPauseActor.canPause()
@@ -44,13 +44,13 @@
 //    fun `when try pause in sate that can not pause should do nothing`() {
 //        //setup
 //        val (eventBus, runResources, optimizerPauseActor) = create()
-//        runResources.stateMachine.currentState = State.Running
+//        runResources.stateMachine.stateMachine = State.Running
 //
 //        //act
 //        optimizerPauseActor.pause()
 //
 //        with(runResources) {
-//            assertThat(stateMachine.currentState).isEqualTo(State.PausePending)
+//            assertThat(stateMachine.stateMachine).isEqualTo(State.PausePending)
 //            assertThat(resumeSignal).isNotNull
 //        }
 //
@@ -61,13 +61,13 @@
 //    fun `when try pause in sate that can pause should do pause`() {
 //        //setup
 //        val (eventBus, runResources, optimizerPauseActor) = create()
-//        runResources.stateMachine.currentState = State.Idle
+//        runResources.stateMachine.stateMachine = State.Idle
 //
 //        //act
 //        optimizerPauseActor.pause()
 //
 //        with(runResources) {
-//            assertThat(stateMachine.currentState).isEqualTo(State.Idle)
+//            assertThat(stateMachine.stateMachine).isEqualTo(State.Idle)
 //            assertThat(resumeSignal).isNull()
 //        }
 //

@@ -15,7 +15,7 @@
 //    @Test fun `when check can force stop and not ready should return false`(){
 //        val eventBus = mock<EventBus>()
 //        val sharedResource = RunResources().apply {
-//            stateMachine.currentState = State.Running
+//            stateMachine.stateMachine = State.Running
 //        }
 //        val actor = ForceStopAction(eventBus, sharedResource)
 //
@@ -29,7 +29,7 @@
 //    @Test fun `when check can force stop there is nothing to force stop should return false`(){
 //        val eventBus = mock<EventBus>()
 //        val sharedResource = RunResources().apply {
-//            stateMachine.currentState = State.StopPending
+//            stateMachine.stateMachine = State.StopPending
 //        }
 //        val actor = ForceStopAction(eventBus, sharedResource)
 //
@@ -44,7 +44,7 @@
 //        //setup
 //        val eventBus = mock<EventBus>()
 //        val sharedResource = RunResources().apply {
-//            stateMachine.currentState = State.StopPending
+//            stateMachine.stateMachine = State.StopPending
 //            sessionForceStopSignals = listOf(ForceStopSignal("tool1"), ForceStopSignal("tool2"))
 //        }
 //        val actor = ForceStopAction(eventBus, sharedResource)
@@ -54,7 +54,7 @@
 //
 //        //assert
 //        with(sharedResource){
-//            assertThat(stateMachine.currentState).isEqualTo(State.ForceStopPending)
+//            assertThat(stateMachine.stateMachine).isEqualTo(State.ForceStopPending)
 //            assertThat(sessionForceStopSignals.all { it.completableDeferred.isCompleted }).isTrue()
 //        }
 //        verify(eventBus, times(1)).post(check{it is ForceStopRequestedEvent })

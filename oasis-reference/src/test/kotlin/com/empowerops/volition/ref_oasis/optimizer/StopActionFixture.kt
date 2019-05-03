@@ -20,7 +20,7 @@
 //        val runLoopFinishedSignal = CompletableDeferred<Unit>()
 //        val sharedResource = RunResources().apply{
 //            runID = currentRunID
-//            stateMachine.currentState = State.Running
+//            stateMachine.stateMachine = State.Running
 //            runLoopFinished = runLoopFinishedSignal
 //            stopPending = CompletableDeferred()
 //        }
@@ -37,7 +37,7 @@
 //
 //        with(sharedResource){
 //            assertThat(runID).isEqualTo(NullUUID)
-//            assertThat(stateMachine.currentState).isEqualTo(State.Idle)
+//            assertThat(stateMachine.stateMachine).isEqualTo(State.Idle)
 //        }
 //        verify(pluginService, times(1)).notifyStop(currentRunID)
 //

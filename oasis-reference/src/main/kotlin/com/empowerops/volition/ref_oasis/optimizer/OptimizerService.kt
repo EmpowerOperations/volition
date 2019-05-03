@@ -7,46 +7,32 @@ import com.empowerops.volition.ref_oasis.plugin.PluginService
 import com.google.common.eventbus.EventBus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.toList
 import kotlinx.coroutines.launch
 import java.util.*
-
-class Actions(
-        private val startAction: IStartAction,
-        private val stopAction: IStopAction,
-        private val forceStopAction: IForceStopAction,
-        private val pauseAction: IPauseAction,
-        private val resumeAction: IResumeAction
-) : IStartAction by startAction,
-        IStopAction by stopAction,
-        IForceStopAction by forceStopAction,
-        IPauseAction by pauseAction,
-        IResumeAction by resumeAction
 
 class OptimizerService(
         private val eventBus: EventBus,
         private val modelService: ModelService,
         private val inputGenerator: InputGenerator,
         private val pluginService: PluginService,
-        private val runResources: RunResources,
+        private val stateMachine: RunStateMachine,
         private val evaluationEngine: IEvaluationEngine
-)  {
-    var currentState: State = Idle
-    val forceStopSignals : MutableList<ForceStopSignal> = mutableListOf()
-
-    suspend fun startProcess() = GlobalScope.launch{
-        for (newState in runResources.states) {
-
-            when (currentState) {
+) {
+    suspend fun startProcess() = GlobalScope.launch {
+        var currentResource : RunResources? = null
+        for (newState in stateMachine.states) {
+            when (stateMachine.currentState) {
                 Idle -> {
                     when (newState) {
                         StartPending -> {
-                            currentState = newState
-                            val runID = UUID.randomUUID()
-                            runResources.runID = runID
-                            pluginService.notifyStart(runID)
-                            launch { evaluationEngine.handle(runResources.runs) }
-                            eventBus.post(StartRequestedEvent(runID))
-                            launch {runResources.states.send(Running) }
+                            stateMachine.transferTo(newState)
+                            currentResource = stateMachine.runResources.receive()
+                            pluginService.notifyStart(currentResource.runID)
+                            launch { evaluationEngine.handle(currentResource.runs) }
+                            eventBus.post(StartRequestedEvent(currentResource.runID))
+                            launch { stateMachine.states.send(Running) }
                         }
                         Idle, Running, PausePending, Paused, StopPending, ForceStopPending -> TODO()
 
@@ -54,43 +40,43 @@ class OptimizerService(
                 }
                 StartPending -> {
                     when (newState) {
-                        Running -> { onRunning(newState) }
+                        Running -> onRunning(newState, currentResource)
                         Idle, StartPending, PausePending, Paused, StopPending, ForceStopPending -> TODO()
                     }
                 }
                 Running -> {
                     when (newState) {
-                        PausePending -> { onPausePending(newState) }
-                        StopPending -> { onStopPending(newState) }
+                        PausePending -> onPausePending(newState, currentResource)
+                        StopPending -> onStopPending(newState, currentResource)
                         Idle, StartPending, Running, Paused, ForceStopPending -> TODO()
                     }
                 }
                 PausePending -> {
                     when (newState) {
-                        Paused ->{ onPaused(newState) }
-                        StopPending -> { onStopPending(newState) }
-                        ForceStopPending ->{ onForceStopPending(newState) }
+                        Paused -> onPaused(newState, currentResource)
+                        StopPending -> onStopPending(newState, currentResource)
+                        ForceStopPending -> onForceStopPending(newState, currentResource)
                         Idle, StartPending, Running, PausePending -> TODO()
                     }
                 }
                 Paused -> {
                     when (newState) {
-                        Running -> { onUnpause(newState) }
-                        StopPending -> { onStopPending(newState) }
+                        Running -> onUnpause(newState, currentResource)
+                        StopPending -> onStopPending(newState, currentResource)
                         Idle, StartPending, PausePending, Paused, ForceStopPending -> TODO()
                     }
                 }
                 StopPending -> {
                     when (newState) {
-                        Idle -> { onToIdle(newState) }
-                        ForceStopPending -> { onForceStopPending(newState) }
+                        Idle -> onToIdle(newState, currentResource)
+                        ForceStopPending -> onForceStopPending(newState, currentResource)
                         StartPending, Running, PausePending, Paused, StopPending -> TODO()
                     }
                 }
                 ForceStopPending -> {
                     when (newState) {
-                        Idle -> { onToIdle(newState) }
-                        StartPending , Running , PausePending, Paused , StopPending , ForceStopPending -> TODO()
+                        Idle -> onToIdle(newState, currentResource)
+                        StartPending, Running, PausePending, Paused, StopPending, ForceStopPending -> TODO()
                     }
                 }
             }
@@ -98,58 +84,69 @@ class OptimizerService(
         }
     }
 
-    private suspend fun CoroutineScope.onRunning(newState: State) {
-        currentState = newState
-        runT()
+    private suspend fun CoroutineScope.onRunning(newState: State, runResources: RunResources?) {
+        require(runResources!=null)
+        stateMachine.transferTo(newState)
+        runT(runResources)
         eventBus.post(RunStartedEvent(runResources.runID))
     }
 
-    private fun onPausePending(newState: State) {
-        currentState = newState
+    private fun onPausePending(newState: State, runResources: RunResources?) {
+        require(runResources!=null)
+        stateMachine.transferTo(newState)
         eventBus.post(PausedRequestedEvent(runResources.runID))
     }
 
-    private fun onPaused(newState: State) {
-        currentState = newState
+    private fun onPaused(newState: State, runResources: RunResources?) {
+        require(runResources!=null)
+        stateMachine.transferTo(newState)
         eventBus.post(PausedEvent(runResources.runID))
     }
 
-    private suspend fun onStopPending(newState: State) {
-        currentState = newState
+    private suspend fun onStopPending(newState: State, runResources: RunResources?) {
+        require(runResources!=null)
+        stateMachine.transferTo(newState)
         runResources.resumes.send(Unit)
         eventBus.post(StopRequestedEvent(runResources.runID))
     }
 
-    private suspend fun onUnpause(newState: State) {
-        currentState = newState
+    private suspend fun onUnpause(newState: State, runResources: RunResources?) {
+        require(runResources!=null)
+        stateMachine.transferTo(newState)
         runResources.resumes.send(Unit)
         eventBus.post(RunResumedEvent(runResources.runID))
     }
 
-    private fun onForceStopPending(newState: State) {
-        currentState = newState
-        forceStopSignals.forEach { it.completableDeferred.complete(Unit) }
+    private suspend fun onForceStopPending(newState: State, runResources: RunResources?) {
+        require(runResources!=null)
+        stateMachine.transferTo(newState)
+        runResources.forceStopSignals.close()// force stop issued, no more evaluation will be accepted
+        for(signal in runResources.forceStopSignals){
+            signal.completableDeferred.complete(Unit)
+        }
         eventBus.post(ForceStopRequestedEvent(runResources.runID))
     }
 
-    private fun onToIdle(newState: State) {
-        currentState = newState
+    private fun onToIdle(newState: State, runResources: RunResources?) {
+        require(runResources!=null)
+        stateMachine.transferTo(newState)
         eventBus.post(RunStoppedEvent(runResources.runID))
         pluginService.notifyStop(runResources.runID)
-        runResources.runID = NullUUID
+        //dispose
     }
 
-    suspend fun CoroutineScope.runT() = launch {
+    suspend fun CoroutineScope.runT(runResources: RunResources?) = launch {
+        require(runResources!=null)
         val currentRun = Run(runResources.runID)
         runResources.runs.send(currentRun)
-        while (currentState == Running) {
+        while (stateMachine.currentState == Running) {
             var iterationCount = 1
             val currentIteration = Iteration(iterationCount)
             currentRun.iterations.send(currentIteration)
             for (proxy in modelService.proxies) {
                 val inputVector = inputGenerator.generateInputs(proxy.inputs)
                 val forceStopSignal = ForceStopSignal(proxy.name)
-                forceStopSignals += forceStopSignal
+                runResources.forceStopSignals.send(forceStopSignal)
                 currentIteration.evaluations.send(
                         EvaluationRequest(
                                 inputVector,
@@ -162,22 +159,24 @@ class OptimizerService(
                 //we are blocking on evaluation, remove this we need a newer evaluation block, so this can consider as the implementation for sequential evaluation
                 // when considering parallel, we need a list of channel/deffered to block at the end, figuring out dependency, put a worker pool limit
                 currentIteration.evaluationEnds.receive()
-                if (currentState == PausePending) {
-                    runResources.states.send(Paused)
+                if (stateMachine.currentState == PausePending) {
+                    stateMachine.states.send(Paused)
                     runResources.resumes.receive()
-                    if (currentState == StopPending || currentState == ForceStopPending) {
-                        runResources.states.send(Idle)
+                    if (stateMachine.currentState == StopPending || stateMachine.currentState == ForceStopPending) {
+                        stateMachine.states.send(Idle)
                     }
                 }
             }
             currentIteration.evaluations.close()
             currentRun.iterationEnds.receive()
-            if (currentState == StopPending || currentState == ForceStopPending) {
-                runResources.states.send(Idle)
+            if (stateMachine.currentState == StopPending || stateMachine.currentState == ForceStopPending) {
+                stateMachine.states.send(Idle)
             }
-            iterationCount+=1
+            iterationCount += 1
         }
         currentRun.iterations.close()
         runResources.runs.close()
     }
+
+
 }

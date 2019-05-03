@@ -1,11 +1,9 @@
 package com.empowerops.volition.ref_oasis.front_end
 
-import com.empowerops.volition.ref_oasis.optimizer.buildStartIssuesMessage
 import com.empowerops.volition.ref_oasis.front_end.OptimizerController.ButtonState.*
 import com.empowerops.volition.ref_oasis.model.*
-import com.empowerops.volition.ref_oasis.optimizer.Actions
-import com.empowerops.volition.ref_oasis.optimizer.OptimizerService
-import com.empowerops.volition.ref_oasis.optimizer.State
+import com.empowerops.volition.ref_oasis.optimizer.*
+import com.empowerops.volition.ref_oasis.optimizer.buildStartIssuesMessage
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import com.sun.javafx.binding.StringConstant
@@ -28,6 +26,7 @@ import kotlinx.coroutines.launch
 import tornadofx.*
 import java.lang.IllegalStateException
 import java.time.Duration
+import java.util.*
 
 class OptimizerController {
     /**
@@ -80,8 +79,7 @@ class OptimizerController {
     private lateinit var modelService: ModelService
     private lateinit var inputRoot: TreeItem<Parameter>
     private lateinit var outputRoot: TreeItem<Parameter>
-    private lateinit var optimizerService: OptimizerService
-    private lateinit var actions: Actions
+    private lateinit var runStateMachine: RunStateMachine
 
     enum class Type {
         Input, Output, Root
@@ -243,24 +241,21 @@ class OptimizerController {
             modelService: ModelService,
             eventBus: EventBus,
             connectionView: ListView<String>,
-            optimizerService: OptimizerService,
-            actions: Actions) {
-        this.optimizerService = optimizerService
+            stateMachine: RunStateMachine) {
         this.modelService = modelService
-        this.actions = actions
+        this.runStateMachine = stateMachine
         eventBus.register(this)
         connectionListContainer.children.add(connectionView)
         showNode(null)
-        rebindViewToState(optimizerService.currentState)
+        rebindViewToState(runStateMachine.currentState)
     }
 
     @FXML fun startStopClicked() = GlobalScope.launch(Dispatchers.JavaFx) {
-        when (optimizerService.currentState){
+        when (runStateMachine.currentState){
             State.Idle -> {
-                val canStart = actions.canStart()
+                val canStart = runStateMachine.canStart(modelService)
                 if(canStart){
-                    optimizerService.startProcess()
-                    actions.start()
+                    runStateMachine.start(modelService)
                 }
                 else{
                     val alert = Alert(Alert.AlertType.ERROR)
@@ -270,16 +265,16 @@ class OptimizerController {
                     alert.showAndWait()
                 }
             }
-            State.Running, State.PausePending, State.Paused -> actions.stop()
-            State.StopPending -> actions.forceStop()
-            else -> throw IllegalStateException("Start/Stop Button is not an actionable state. Current State:${optimizerService.currentState}")
+            State.Running, State.PausePending, State.Paused -> runStateMachine.stop()
+            State.StopPending -> runStateMachine.forceStop()
+            else -> throw IllegalStateException("Start/Stop Button is not an actionable state. Current State:${runStateMachine.currentState}")
         }
     }
 
     @FXML fun pauseResumeRun() = GlobalScope.launch(Dispatchers.JavaFx) {
-        when (optimizerService.currentState){
-            State.Running -> actions.pause()
-            State.Paused -> actions.resume()
+        when (runStateMachine.currentState){
+            State.Running -> runStateMachine.pause()
+            State.Paused -> runStateMachine.resume()
             else -> throw IllegalStateException("Pause/Resume Button is not an actionable state. Current State:${startButton.text}")
         }
     }
@@ -338,7 +333,7 @@ class OptimizerController {
 
     @Subscribe
     fun onStateChangedAsync(event : StatusUpdateEvent) = GlobalScope.launch(Dispatchers.JavaFx){
-        rebindViewToState(optimizerService.currentState)
+        rebindViewToState(runStateMachine.currentState)
     }
 
     private fun rebindViewToState(currentState: State) {

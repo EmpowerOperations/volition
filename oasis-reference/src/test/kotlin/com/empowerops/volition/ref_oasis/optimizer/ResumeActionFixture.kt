@@ -16,7 +16,7 @@
 //        val sharedResource = RunResources()
 //        val eventBus = mock<EventBus>()
 //        val optimizerPauseActor = ResumeAction(eventBus, sharedResource)
-//        sharedResource.stateMachine.currentState = State.Paused
+//        sharedResource.stateMachine.stateMachine = State.Paused
 //        sharedResource.resumeSignal = CompletableDeferred(Unit)
 //
 //        //act
@@ -32,7 +32,7 @@
 //        val sharedResource = RunResources()
 //        val eventBus = mock<EventBus>()
 //        val optimizerPauseActor = ResumeAction(eventBus, sharedResource)
-//        sharedResource.stateMachine.currentState = State.PausePending
+//        sharedResource.stateMachine.stateMachine = State.PausePending
 //
 //        //act
 //        val canResume = optimizerPauseActor.canResume()
@@ -48,7 +48,7 @@
 //        val sharedResource = RunResources()
 //        val eventBus = mock<EventBus>()
 //        val optimizerPauseActor = ResumeAction(eventBus, sharedResource)
-//        sharedResource.stateMachine.currentState = State.Paused
+//        sharedResource.stateMachine.stateMachine = State.Paused
 //        sharedResource.resumeSignal = CompletableDeferred(Unit)
 //
 //        //act
@@ -57,7 +57,7 @@
 //        //assert
 //        with(sharedResource){
 //            assertThat(resumeSignal!!.isCompleted).isTrue()
-//            assertThat(stateMachine.currentState).isEqualTo(State.Running)
+//            assertThat(stateMachine.stateMachine).isEqualTo(State.Running)
 //        }
 //        verify(eventBus, times(1)).post(check{it is RunResumedEvent })
 //    }
@@ -68,7 +68,7 @@
 //        val sharedResource = RunResources()
 //        val eventBus = mock<EventBus>()
 //        val optimizerPauseActor = ResumeAction(eventBus, sharedResource)
-//        sharedResource.stateMachine.currentState = State.Idle
+//        sharedResource.stateMachine.stateMachine = State.Idle
 //
 //        //act
 //        optimizerPauseActor.resume()
@@ -76,7 +76,7 @@
 //        //assert
 //        with(sharedResource){
 //            assertThat(resumeSignal).isNull()
-//            assertThat(stateMachine.currentState).isEqualTo(State.Idle)
+//            assertThat(stateMachine.stateMachine).isEqualTo(State.Idle)
 //        }
 //        verify(eventBus, never()).post(check{it is RunResumedEvent })
 //    }

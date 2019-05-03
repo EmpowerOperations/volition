@@ -78,7 +78,7 @@ namespace EmpowerOps.Volition.RefClient
             }
             catch (RpcException exception)
             {
-                Log($"{_serverPrefix} Error invoke \"startOptimizationAsync()\" Exception: {exception.Status}");
+                Log($"{_serverPrefix} Error invoke {nameof(_client.startOptimizationAsync)} Exception: {exception.Status}");
             }
 
         }

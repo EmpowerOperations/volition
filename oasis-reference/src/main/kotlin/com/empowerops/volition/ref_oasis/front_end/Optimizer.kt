@@ -4,8 +4,6 @@ import com.empowerops.volition.dto.LoggingInterceptor
 import com.empowerops.volition.ref_oasis.model.ModelService
 import com.empowerops.volition.ref_oasis.model.RunResources
 import com.empowerops.volition.ref_oasis.optimizer.*
-import com.empowerops.volition.ref_oasis.optimizer.StopAction
-import com.empowerops.volition.ref_oasis.optimizer.ApiService
 import com.empowerops.volition.ref_oasis.plugin.PluginService
 import com.google.common.eventbus.EventBus
 import io.grpc.Server
@@ -15,6 +13,8 @@ import javafx.application.Application
 import javafx.application.Platform
 import javafx.scene.Scene
 import javafx.stage.Stage
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.runBlocking
 import picocli.CommandLine
 import picocli.CommandLine.Command
 import picocli.CommandLine.Option
@@ -71,10 +71,10 @@ class Optimizer {
     private lateinit var pluginService: PluginService
     private lateinit var server: Server
     private lateinit var apiService: ApiService
-    private lateinit var sharedResources: RunResources
     private lateinit var evaluationEngine: IEvaluationEngine
     private lateinit var inputGenerator: InputGenerator
-    private lateinit var actions: Actions
+    private lateinit var stateMachine: RunStateMachine
+
 
     private val eventBus: EventBus = EventBus()
     private val logger: ConsoleOutput = ConsoleOutput(eventBus)
@@ -91,47 +91,42 @@ class Optimizer {
     private fun setup() {
         modelService = ModelService(eventBus, overwrite)
         pluginService = PluginService(modelService, logger, eventBus)
-        sharedResources = RunResources()
+        stateMachine = RunStateMachine()
         evaluationEngine = EvaluationEngine(modelService, eventBus, logger)
         inputGenerator = RandomNumberOptimizer()
-        actions = Actions(
-                OptimizationStartAction(modelService, sharedResources),
-                StopAction(sharedResources),
-                ForceStopAction(sharedResources),
-                OptimizerPauseAction(sharedResources),
-                ResumeAction(sharedResources)
-        )
         optimizerService = OptimizerService(
                 eventBus,
                 modelService,
                 inputGenerator,
                 pluginService,
-                sharedResources,
+                stateMachine,
                 evaluationEngine
         )
-        apiService = ApiService(modelService, optimizerService, actions)
+        apiService = ApiService(modelService, stateMachine)
         optimizerEndpoint = OptimizerEndpoint(apiService, modelService)
         server = NettyServerBuilder.forPort(port).addService(ServerInterceptors.intercept(optimizerEndpoint, LoggingInterceptor(logger))).build()
     }
 
-    fun start(primaryStage: Stage) {
+    fun start(primaryStage: Stage) = runBlocking {
         setup()
         try {
             logger.log("Server started at: localhost:$port", "Optimizer")
             server.start()
         } catch (e: IOException) {
             logger.log("Error encountered when try to start the optimizer server.", "Optimizer")
-            return
+            return@runBlocking
         }
 
         if (headless) {
             //TODO splash screen etc.
         } else {
-            val optimizerGUI = OptimizerGUIRootController(modelService, optimizerService, eventBus, actions)
+            val optimizerGUI = OptimizerGUIRootController(modelService, eventBus, stateMachine)
             primaryStage.title = "Volition Reference Optimizer"
             primaryStage.scene = Scene(optimizerGUI.root)
             primaryStage.show()
         }
+
+        stateMachine.initService(optimizerService)
     }
 
     fun stop() {

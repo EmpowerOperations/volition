@@ -31,8 +31,7 @@ interface IApiService {
 }
 
 class ApiService(private val modelService: ModelService,
-                 private val optimizerService: OptimizerService,
-                 private val actions: Actions) : IApiService {
+                 private val actions: RunStateMachine) : IApiService {
 
     override fun register(request: RequestRegistrationCommandDTO, responseObserver: StreamObserver<RequestQueryDTO>) {
         modelService.addSim(Simulation(request.name, responseObserver)).let { added ->
@@ -106,7 +105,7 @@ class ApiService(private val modelService: ModelService,
     override fun requestStart(
             request: StartOptimizationCommandDTO
     ): StartOptimizationResponseDTO = StartOptimizationResponseDTO.newBuilder().apply {
-        val canStart = actions.canStart()
+        val canStart = actions.canStart(modelService)
         var issues = modelService.findIssues()
         if (!canStart) issues += Issue("Optimization are not able to start")
         message = buildStartIssuesMessage(issues)
@@ -115,8 +114,7 @@ class ApiService(private val modelService: ModelService,
 
     override fun start() {
         GlobalScope.launch {
-            optimizerService.startProcess()
-            actions.start()
+            actions.start(modelService)
         }
     }
 

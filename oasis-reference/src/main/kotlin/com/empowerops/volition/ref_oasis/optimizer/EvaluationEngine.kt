@@ -12,8 +12,7 @@ import kotlinx.coroutines.selects.select
 import java.util.*
 
 interface IEvaluationEngine {
-    suspend fun handle(runs: ReceiveChannel<Run>
-    )
+    suspend fun handle(runs: ReceiveChannel<Run>)
 }
 
 data class EvaluationRequest(
@@ -41,9 +40,7 @@ class EvaluationEngine(
         private val logger: Logger
 ) : IEvaluationEngine {
 
-    override suspend fun handle(
-            runs: ReceiveChannel<Run>
-    ) = coroutineScope {
+    override suspend fun handle(runs: ReceiveChannel<Run>) = coroutineScope {
         for (run in runs) {
             for (iteration in run.iterations) {
                 var pluginNumber = 1

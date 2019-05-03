@@ -54,90 +54,89 @@ class OptimizerService(
                 }
                 StartPending -> {
                     when (newState) {
-                        Running -> {
-                            currentState = newState
-                            runT()
-                            eventBus.post(RunStartedEvent(runResources.runID)) }
+                        Running -> { onRunning(newState) }
                         Idle, StartPending, PausePending, Paused, StopPending, ForceStopPending -> TODO()
                     }
                 }
                 Running -> {
                     when (newState) {
-                        PausePending -> {
-                            currentState = newState
-                            eventBus.post(PausedRequestedEvent(runResources.runID)) }
-                        StopPending -> {
-                            currentState = newState
-                            runResources.resumes.send(Unit)
-                            eventBus.post(StopRequestedEvent(runResources.runID))
-                        }
+                        PausePending -> { onPausePending(newState) }
+                        StopPending -> { onStopPending(newState) }
                         Idle, StartPending, Running, Paused, ForceStopPending -> TODO()
                     }
                 }
                 PausePending -> {
                     when (newState) {
-                        Paused ->{
-                            currentState = newState
-                            eventBus.post(PausedEvent(runResources.runID))
-                        }
-                        StopPending -> {
-                            currentState = newState
-                            runResources.resumes.send(Unit)
-                            eventBus.post(StopRequestedEvent(runResources.runID))
-                        }
-                        ForceStopPending ->{
-                            currentState = newState
-                            forceStopSignals.forEach { it.completableDeferred.complete(Unit) }
-                            eventBus.post(ForceStopRequestedEvent(runResources.runID))
-                        }
+                        Paused ->{ onPaused(newState) }
+                        StopPending -> { onStopPending(newState) }
+                        ForceStopPending ->{ onForceStopPending(newState) }
                         Idle, StartPending, Running, PausePending -> TODO()
                     }
                 }
                 Paused -> {
                     when (newState) {
-                        Running -> {
-                            currentState = newState
-                            runResources.resumes.send(Unit)
-                            eventBus.post(RunResumedEvent(runResources.runID))
-                        }
-                        StopPending -> {
-                            currentState = newState
-                            runResources.resumes.send(Unit)
-                            eventBus.post(StopRequestedEvent(runResources.runID))
-                        }
+                        Running -> { onUnpause(newState) }
+                        StopPending -> { onStopPending(newState) }
                         Idle, StartPending, PausePending, Paused, ForceStopPending -> TODO()
                     }
                 }
                 StopPending -> {
                     when (newState) {
-                        Idle -> {
-                            currentState = newState
-                            eventBus.post(RunStoppedEvent(runResources.runID))
-                            pluginService.notifyStop(runResources.runID)
-                            runResources.runID = NullUUID
-                        }
-                        ForceStopPending -> {
-                            currentState = newState
-                            forceStopSignals.forEach { it.completableDeferred.complete(Unit) }
-                            eventBus.post(ForceStopRequestedEvent(runResources.runID))
-                        }
+                        Idle -> { onToIdle(newState) }
+                        ForceStopPending -> { onForceStopPending(newState) }
                         StartPending, Running, PausePending, Paused, StopPending -> TODO()
                     }
                 }
                 ForceStopPending -> {
                     when (newState) {
-                        Idle -> {
-                            currentState = newState
-                            eventBus.post(RunStoppedEvent(runResources.runID))
-                            pluginService.notifyStop(runResources.runID)
-                            runResources.runID = NullUUID
-                        }
+                        Idle -> { onToIdle(newState) }
                         StartPending , Running , PausePending, Paused , StopPending , ForceStopPending -> TODO()
                     }
                 }
             }
 
         }
+    }
+
+    private suspend fun CoroutineScope.onRunning(newState: State) {
+        currentState = newState
+        runT()
+        eventBus.post(RunStartedEvent(runResources.runID))
+    }
+
+    private fun onPausePending(newState: State) {
+        currentState = newState
+        eventBus.post(PausedRequestedEvent(runResources.runID))
+    }
+
+    private fun onPaused(newState: State) {
+        currentState = newState
+        eventBus.post(PausedEvent(runResources.runID))
+    }
+
+    private suspend fun onStopPending(newState: State) {
+        currentState = newState
+        runResources.resumes.send(Unit)
+        eventBus.post(StopRequestedEvent(runResources.runID))
+    }
+
+    private suspend fun onUnpause(newState: State) {
+        currentState = newState
+        runResources.resumes.send(Unit)
+        eventBus.post(RunResumedEvent(runResources.runID))
+    }
+
+    private fun onForceStopPending(newState: State) {
+        currentState = newState
+        forceStopSignals.forEach { it.completableDeferred.complete(Unit) }
+        eventBus.post(ForceStopRequestedEvent(runResources.runID))
+    }
+
+    private fun onToIdle(newState: State) {
+        currentState = newState
+        eventBus.post(RunStoppedEvent(runResources.runID))
+        pluginService.notifyStop(runResources.runID)
+        runResources.runID = NullUUID
     }
 
     suspend fun CoroutineScope.runT() = launch {

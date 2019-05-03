@@ -2,8 +2,10 @@ package com.empowerops.volition.ref_oasis.experimental
 
 import kotlinx.coroutines.*
 
-class Evaluable(val inputs: List<String>,
-                val outputs: List<String>) {
+class Evaluable(
+        val inputs: List<String>,
+        val outputs: List<String>
+) {
     suspend fun evaluate(symbolMap: Map<String, Double>): Map<String, Double> {
         val inputs = inputs.associate { it to symbolMap.getValue(it) }
         val output = outputs.associate { it to Math.random() }

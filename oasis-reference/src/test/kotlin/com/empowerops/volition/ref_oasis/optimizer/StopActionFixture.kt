@@ -29,10 +29,7 @@ internal class StopActionFixture{
         val actor = StopAction(eventBus, sharedResource, pluginService)
 
         //act
-        async {
-            delay(50)
-            runLoopFinishedSignal.complete(Unit)
-        }
+        launch { runLoopFinishedSignal.complete(Unit) }
         actor.stop().join()
 
         with(sharedResource){

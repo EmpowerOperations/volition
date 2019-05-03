@@ -108,7 +108,7 @@ class OptimizerEndpoint(
             request: SimulationResponseDTO,
             responseObserver: StreamObserver<SimulationResultConfirmDTO>
     ) = responseObserver.consumeAsync {
-        checkThenRunAsync(modelService.simulations.hasName(request.name)) {
+        checkThenRun(modelService.simulations.hasName(request.name)) {
             apiService.offerResult(request)
         }
     }
@@ -117,7 +117,7 @@ class OptimizerEndpoint(
             request: ErrorResponseDTO,
             responseObserver: StreamObserver<ErrorConfirmDTO>
     ) = responseObserver.consumeAsync {
-        checkThenRunAsync(modelService.simulations.hasName(request.name)) {
+        checkThenRun(modelService.simulations.hasName(request.name)) {
             apiService.offerError(request)
         }
     }
@@ -126,20 +126,12 @@ class OptimizerEndpoint(
             request: NodeStatusCommandOrResponseDTO,
             responseObserver: StreamObserver<NodeChangeConfirmDTO>
     ) = responseObserver.consumeAsync {
-        checkThenRunAsync(modelService.simulations.hasName(request.name)) {
+        checkThenRun(modelService.simulations.hasName(request.name)) {
             apiService.offerConfig(request)
         }
     }
 
-    private fun <V> checkThenRun(hasPermission: Boolean, action: () -> V): V {
-        if (hasPermission) {
-            return action()
-        } else {
-            throw StatusRuntimeException(Status.PERMISSION_DENIED)
-        }
-    }
-
-    private suspend fun <V> checkThenRunAsync(hasPermission: Boolean, action: suspend () -> V): V {
+    private inline fun <V> checkThenRun(hasPermission: Boolean, action: () -> V): V {
         if (hasPermission) {
             return action()
         } else {

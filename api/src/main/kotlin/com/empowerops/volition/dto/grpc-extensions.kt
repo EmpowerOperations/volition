@@ -50,7 +50,7 @@ fun <T> StreamObserver<T>.consume(block: () -> T) {
     }
 }
 
-fun <T> StreamObserver<T>.consumeThen(block : () -> T, block2:(T) -> Unit) {
+inline fun <T> StreamObserver<T>.consumeThen(block : () -> T, block2:(T) -> Unit) {
     try {
         val result = block()
         onNext(result)

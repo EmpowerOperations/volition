@@ -1,45 +1,45 @@
-//package com.empowerops.volition.ref_oasis.optimizer
-//
-//import com.empowerops.volition.dto.*
-//import com.empowerops.volition.ref_oasis.model.*
-//import com.nhaarman.mockitokotlin2.*
-//import io.grpc.Status
-//import io.grpc.StatusException
-//import io.grpc.stub.StreamObserver
-//import kotlinx.coroutines.channels.Channel
-//import kotlinx.coroutines.runBlocking
-//import org.assertj.core.api.Assertions.assertThat
-//import org.junit.jupiter.api.BeforeEach
-//import org.junit.jupiter.api.DynamicTest
-//import org.junit.jupiter.api.Test
-//import org.junit.jupiter.api.TestFactory
-//import java.time.Duration
-//import java.util.*
-//
-//class OptimizerEndpointFixture {
-//    private lateinit var optimizerService: OptimizerService
-//    private lateinit var modelService: ModelService
-//    private lateinit var endpoint: ApiService
-//
-//    data class Params<T, U>(
-//            val name: String,
-//            val request: T,
-//            val expectedResponse: U,
-//            val act: (T) -> U,
-//            val before: () -> Unit = {},
-//            val after: () -> Unit = {}
-//    )
-//
-//    private fun <T, U> assertResponse(param: Params<T, U>) {
-//        //setup
-//        param.before.invoke()
-//        //act
-//        val response: U = param.act.invoke(param.request)
-//        //assert
-//        assertThat(response).isEqualTo(param.expectedResponse)
-//        param.after.invoke()
-//    }
-//
+package com.empowerops.volition.ref_oasis.optimizer
+
+import com.empowerops.volition.dto.*
+import com.empowerops.volition.ref_oasis.model.*
+import com.nhaarman.mockitokotlin2.*
+import io.grpc.Status
+import io.grpc.StatusException
+import io.grpc.stub.StreamObserver
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.runBlocking
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.DynamicTest
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestFactory
+import java.time.Duration
+import java.util.*
+
+class OptimizerEndpointFixture {
+    private lateinit var optimizerService: OptimizerService
+    private lateinit var modelService: ModelService
+    private lateinit var endpoint: ApiService
+
+    data class Params<T, U>(
+            val name: String,
+            val request: T,
+            val expectedResponse: U,
+            val act: (T) -> U,
+            val before: () -> Unit = {},
+            val after: () -> Unit = {}
+    )
+
+    private fun <T, U> assertResponse(param: Params<T, U>) {
+        //setup
+        param.before.invoke()
+        //act
+        val response: U = param.act.invoke(param.request)
+        //assert
+        assertThat(response).isEqualTo(param.expectedResponse)
+        param.after.invoke()
+    }
+
 //    @BeforeEach
 //    fun setup() {
 //        optimizerService = mock()
@@ -309,36 +309,36 @@
 //                }
 //        )
 //    }
-//}
-//
-//fun buildNodeStatusCommandDTO(name: String, inputs: List<String>, outputs: List<String>): NodeStatusCommandOrResponseDTO {
-//    return NodeStatusCommandOrResponseDTO.newBuilder().setName(name).apply {
-//        addAllInputs(inputs.map {
-//            NodeStatusCommandOrResponseDTO.PrototypeInputParameter.newBuilder()
-//                    .setName(it)
-//                    .setLowerBound(0.0)
-//                    .setUpperBound(5.0)
-//                    .build()
-//        }
-//        )
-//        addAllOutputs(outputs.map {
-//            NodeStatusCommandOrResponseDTO.PrototypeOutputParameter.newBuilder()
-//                    .setName(it)
-//                    .build()
-//        }
-//        )
-//    }.build()
-//}
-//
-//fun buildSim(name: String,
-//             inputs: List<String>,
-//             outputs: List<String>,
-//             inputStream: StreamObserver<RequestQueryDTO> = mock()
-//): Simulation {
-//    return Simulation(
-//            name,
-//            inputStream,
-//            inputs.map { Input(it, 0.0, 5.0, 0.0) },
-//            outputs.map { Output(it) }
-//    )
-//}
+}
+
+fun buildNodeStatusCommandDTO(name: String, inputs: List<String>, outputs: List<String>): NodeStatusCommandOrResponseDTO {
+    return NodeStatusCommandOrResponseDTO.newBuilder().setName(name).apply {
+        addAllInputs(inputs.map {
+            NodeStatusCommandOrResponseDTO.PrototypeInputParameter.newBuilder()
+                    .setName(it)
+                    .setLowerBound(0.0)
+                    .setUpperBound(5.0)
+                    .build()
+        }
+        )
+        addAllOutputs(outputs.map {
+            NodeStatusCommandOrResponseDTO.PrototypeOutputParameter.newBuilder()
+                    .setName(it)
+                    .build()
+        }
+        )
+    }.build()
+}
+
+fun buildSim(name: String,
+             inputs: List<String>,
+             outputs: List<String>,
+             inputStream: StreamObserver<RequestQueryDTO> = mock()
+): Simulation {
+    return Simulation(
+            name,
+            inputStream,
+            inputs.map { Input(it, 0.0, 5.0, 0.0) },
+            outputs.map { Output(it) }
+    )
+}

@@ -21,6 +21,7 @@ class ModelService(private val eventBus: EventBus, private val overwriteMode : B
     var messageList : List<Message> = emptyList()
         private set
     @VisibleForTesting val updateTimeout = Duration.ofSeconds(5).toMillis()
+
     /**
      * Update the timeout for configuration by name
      */

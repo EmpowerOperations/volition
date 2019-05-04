@@ -30,7 +30,8 @@ data class Iteration(
 data class Run(
         val runID: UUID,
         val iterations: Channel<Iteration> = Channel(),
-        val iterationEnds: Channel<Unit> = Channel()
+        val iterationEnds: Channel<Unit> = Channel(),
+        val forceStopped: Channel<Unit> = Channel()
 )
 
 
@@ -62,6 +63,15 @@ class EvaluationEngine(
         }
     }
 
+    /**
+     * About cancel:
+     * As we finishing the evaluation, results.send(simResult) will trigger the next request to be send.
+     * Question is do we do that before or after we proceed when cancel. Ideally, cancel should be a async process but in order to
+     * go ahead to do the next evaluation we need confirm we can do the next evaluation by asking the plugin readiness.
+     * CheckIsReady seems the most logical way to do it but it will also make the implementation more complicated.
+     *
+     * The decision here is we treat it as a sequential process, even both actions are async ready.
+     */
     private suspend fun CoroutineScope.evaluate(
             requests: ReceiveChannel<EvaluationRequest>,
             results: SendChannel<EvaluationResult>
@@ -69,8 +79,6 @@ class EvaluationEngine(
         for (request in requests) {
             with(request) {
                 val simResult = evaluateAsync(proxy, simulation, inputVector, forceStopSignal).await()
-                eventBus.post(BasicStatusUpdateEvent("Evaluation finished."))
-                results.send(simResult)
                 if (simResult is EvaluationResult.TimeOut) {
                     eventBus.post(BasicStatusUpdateEvent("Timed out, Canceling..."))
                     val cancelResult = cancelCurrentEvaluationAsync(simulation, forceStopSignal).await()
@@ -83,6 +91,8 @@ class EvaluationEngine(
                     eventBus.post(BasicStatusUpdateEvent("Cancel finished. [$cancelResult]"))
                 }
 
+                eventBus.post(BasicStatusUpdateEvent("Evaluation finished."))
+                results.send(simResult)
             }
         }
     }

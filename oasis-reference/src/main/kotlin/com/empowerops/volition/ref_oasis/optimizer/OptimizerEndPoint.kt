@@ -6,6 +6,8 @@ import com.empowerops.volition.ref_oasis.model.hasName
 import io.grpc.Status
 import io.grpc.StatusRuntimeException
 import io.grpc.stub.StreamObserver
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class OptimizerEndpoint(
         private val apiService: IApiService,
@@ -74,7 +76,9 @@ class OptimizerEndpoint(
             apiService.requestStop(request)
         }
     }) { response ->
-        if (response.responseCase == StopOptimizationResponseDTO.ResponseCase.RUNID) apiService.stop()
+        GlobalScope.launch {
+            if (response.responseCase == StopOptimizationResponseDTO.ResponseCase.RUNID) apiService.stop()
+        }
     }
 
     override fun updateNode(

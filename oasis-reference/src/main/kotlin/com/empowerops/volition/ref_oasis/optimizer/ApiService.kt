@@ -26,12 +26,12 @@ interface IApiService {
     fun updateConfiguration(request: ConfigurationCommandDTO): ConfigurationResponseDTO
     fun autoConfigure(request: NodeStatusCommandOrResponseDTO): NodeChangeConfirmDTO
     fun changeNodeName(request: NodeNameChangeCommandDTO): NodeNameChangeResponseDTO
-    fun stop()
+    suspend fun stop()
     fun start()
 }
 
 class ApiService(private val modelService: ModelService,
-                 private val actions: RunStateMachine) : IApiService {
+                 private val stateMachine: RunStateMachine) : IApiService {
 
     override fun register(request: RequestRegistrationCommandDTO, responseObserver: StreamObserver<RequestQueryDTO>) {
         modelService.addSim(Simulation(request.name, responseObserver)).let { added ->
@@ -73,8 +73,7 @@ class ApiService(private val modelService: ModelService,
     }
 
     override fun requestStop(request: StopOptimizationCommandDTO): StopOptimizationResponseDTO {
-        val runID = request.id.toUUIDOrNull()
-        return if(actions.canStop()){
+        return if(stateMachine.canStop()){
             StopOptimizationResponseDTO.newBuilder().setRunID(request.id).build()
         }
         else{
@@ -82,10 +81,8 @@ class ApiService(private val modelService: ModelService,
         }
     }
 
-    override fun stop(){
-        GlobalScope.launch {
-            actions.stop()
-        }
+    override suspend fun stop(){
+        stateMachine.stop()
     }
 
     override fun resultRequest(request: ResultRequestDTO): ResultResponseDTO = ResultResponseDTO.newBuilder().apply {
@@ -105,7 +102,7 @@ class ApiService(private val modelService: ModelService,
     override fun requestStart(
             request: StartOptimizationCommandDTO
     ): StartOptimizationResponseDTO = StartOptimizationResponseDTO.newBuilder().apply {
-        val canStart = actions.canStart(modelService)
+        val canStart = stateMachine.canStart(modelService)
         var issues = modelService.findIssues()
         if (!canStart) issues += Issue("Optimization are not able to start")
         message = buildStartIssuesMessage(issues)
@@ -114,7 +111,7 @@ class ApiService(private val modelService: ModelService,
 
     override fun start() {
         GlobalScope.launch {
-            actions.start(modelService)
+            stateMachine.start(modelService)
         }
     }
 

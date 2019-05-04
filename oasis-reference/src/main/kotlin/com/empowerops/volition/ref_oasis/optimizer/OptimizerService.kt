@@ -8,8 +8,12 @@ import com.google.common.eventbus.EventBus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.map
 import kotlinx.coroutines.channels.toList
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.selects.SelectClause1
+import kotlinx.coroutines.selects.select
 import java.util.*
 
 class OptimizerService(
@@ -54,7 +58,10 @@ class OptimizerService(
                 PausePending -> {
                     when (newState) {
                         Paused -> onPaused(newState, currentResource)
-                        StopPending -> onStopPending(newState, currentResource)
+                        StopPending -> {
+                            currentResource!!.resumes.send(Unit)
+                            onStopPending(newState, currentResource)
+                        }
                         ForceStopPending -> onForceStopPending(newState, currentResource)
                         Idle, StartPending, Running, PausePending -> TODO()
                     }
@@ -62,7 +69,10 @@ class OptimizerService(
                 Paused -> {
                     when (newState) {
                         Running -> onUnpause(newState, currentResource)
-                        StopPending -> onStopPending(newState, currentResource)
+                        StopPending -> {
+                            currentResource!!.resumes.send(Unit)
+                            onStopPending(newState, currentResource)
+                        }
                         Idle, StartPending, PausePending, Paused, ForceStopPending -> TODO()
                     }
                 }
@@ -80,7 +90,6 @@ class OptimizerService(
                     }
                 }
             }
-
         }
     }
 
@@ -103,10 +112,9 @@ class OptimizerService(
         eventBus.post(PausedEvent(runResources.runID))
     }
 
-    private suspend fun onStopPending(newState: State, runResources: RunResources?) {
+    private fun onStopPending(newState: State, runResources: RunResources?) {
         require(runResources!=null)
         stateMachine.transferTo(newState)
-        runResources.resumes.send(Unit)
         eventBus.post(StopRequestedEvent(runResources.runID))
     }
 
@@ -119,12 +127,9 @@ class OptimizerService(
 
     private suspend fun onForceStopPending(newState: State, runResources: RunResources?) {
         require(runResources!=null)
-        stateMachine.transferTo(newState)
-        runResources.forceStopSignals.close()// force stop issued, no more evaluation will be accepted
-        for(signal in runResources.forceStopSignals){
-            signal.completableDeferred.complete(Unit)
-        }
         eventBus.post(ForceStopRequestedEvent(runResources.runID))
+        stateMachine.transferTo(newState)
+        runResources.forceStops.send(Unit)
     }
 
     private fun onToIdle(newState: State, runResources: RunResources?) {
@@ -138,6 +143,7 @@ class OptimizerService(
     suspend fun CoroutineScope.runT(runResources: RunResources?) = launch {
         require(runResources!=null)
         val currentRun = Run(runResources.runID)
+        val forceStopSignals = mutableListOf<ForceStopSignal>()
         runResources.runs.send(currentRun)
         while (stateMachine.currentState == Running) {
             var iterationCount = 1
@@ -146,7 +152,7 @@ class OptimizerService(
             for (proxy in modelService.proxies) {
                 val inputVector = inputGenerator.generateInputs(proxy.inputs)
                 val forceStopSignal = ForceStopSignal(proxy.name)
-                runResources.forceStopSignals.send(forceStopSignal)
+                forceStopSignals += forceStopSignal
                 currentIteration.evaluations.send(
                         EvaluationRequest(
                                 inputVector,
@@ -158,17 +164,33 @@ class OptimizerService(
 
                 //we are blocking on evaluation, remove this we need a newer evaluation block, so this can consider as the implementation for sequential evaluation
                 // when considering parallel, we need a list of channel/deffered to block at the end, figuring out dependency, put a worker pool limit
-                currentIteration.evaluationEnds.receive()
+                select<Unit>{
+                    currentIteration.evaluationEnds.onReceive{println("Evaluation finished")}
+                    runResources.forceStops.onReceive{println("Force stop triggered")}
+                }
+
                 if (stateMachine.currentState == PausePending) {
                     stateMachine.states.send(Paused)
-                    runResources.resumes.receive()
+                    select<Unit> {
+                        runResources.resumes.onReceive
+                        runResources.forceStops.onReceive
+                    }
                     if (stateMachine.currentState == StopPending || stateMachine.currentState == ForceStopPending) {
                         stateMachine.states.send(Idle)
                     }
                 }
+                else if (stateMachine.currentState == ForceStopPending){
+                    for(signal in forceStopSignals){
+                        signal.completableDeferred.complete(Unit)
+                    }
+                }
             }
             currentIteration.evaluations.close()
-            currentRun.iterationEnds.receive()
+            forceStopSignals.clear()
+            select<Unit>{
+                currentRun.iterationEnds.onReceive{println("Evaluation finished")}
+                runResources.forceStops.onReceive{println("Force stop triggered")}
+            }
             if (stateMachine.currentState == StopPending || stateMachine.currentState == ForceStopPending) {
                 stateMachine.states.send(Idle)
             }

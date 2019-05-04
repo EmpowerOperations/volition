@@ -21,6 +21,7 @@ class PluginService(
         eventBus.register(this)
     }
 
+    @ExperimentalCoroutinesApi
     @Subscribe
     fun onUpdateNodeRequested(event : SimulationUpdateRequestedEvent) = GlobalScope.launch{
         val sim = modelService.simulations.getValue(event.name)
@@ -36,7 +37,7 @@ class PluginService(
                 sim.error.onReceive {
                     Either.Right(Message(it.name, "Error update simulation ${event.name} due to ${it.message} :\n${it.exception}"))
                 }
-                this.onTimeout(modelService.updateTimeout) {
+                onTimeout(modelService.updateTimeout) {
                     Either.Right(Message("Optimizer", "Update simulation timeout. Please check simulation is registered and responsive."))
                 }
             }
@@ -93,8 +94,6 @@ class PluginService(
             }
         }
     }
-
-
 
     private fun updateFromResponse(request: NodeStatusCommandOrResponseDTO): Simulation {
         return modelService.simulations.single { it.name == request.name }.copy(

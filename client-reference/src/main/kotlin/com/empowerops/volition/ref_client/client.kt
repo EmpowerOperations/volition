@@ -11,7 +11,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.javafx.JavaFx
 import tornadofx.*
 
-fun main(args: Array<String>){
+fun Fmain(args: Array<String>){
     Application.launch(SimulatorApp::class.java)
 }
 

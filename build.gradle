@@ -201,6 +201,7 @@ project('client-reference'){
 project('oasis-reference'){
     dependencies {
         compile project(":api")
+        compile 'org.conscrypt:conscrypt-openjdk-uber:2.1.0'
         compile 'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.30.2'
         compile 'no.tornado:tornadofx:1.7.17'
         compile group: 'org.funktionale', name: 'funktionale-all', version: '1.2'

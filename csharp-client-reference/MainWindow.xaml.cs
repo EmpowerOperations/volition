@@ -1,5 +1,9 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -8,6 +12,7 @@ using EmpowerOps.Volition.DTO;
 using Google.Protobuf.Collections;
 using Grpc.Core;
 using static EmpowerOps.Volition.DTO.NodeStatusCommandOrResponseDTO.Types;
+using Application = System.Windows.Application;
 using MessageBox = System.Windows.MessageBox;
 
 namespace EmpowerOps.Volition.RefClient
@@ -31,13 +36,33 @@ namespace EmpowerOps.Volition.RefClient
 
         public MainWindow()
         {
-            //https://grpc.io/docs/quickstart/csharp.html#update-the-client
-            _channel = new Channel("127.0.0.1:5550", ChannelCredentials.Insecure);
-            _client = new Optimizer.OptimizerClient(_channel);
-            InitializeComponent();
-            UpdateConnectionStatus();
-            UpdateButton();
-            ConfigGrid();
+            try
+            {
+                
+//                KeyCertificatePair x = new KeyCertificatePair();
+                
+                //https://grpc.io/docs/quickstart/csharp.html#update-the-client
+                var certText = File.ReadAllText("C:/Users/Geoff/Desktop/certificate.crt");
+//                var selfSignedCert = new SslCredentials(certText);
+                var selfSignedCert = ChannelCredentials.Insecure;
+
+                var options = new List<ChannelOption>
+                {
+                    new ChannelOption(ChannelOptions.SslTargetNameOverride, Environment.MachineName)
+                };
+                
+                _channel = new Channel("127.0.0.1", 5550, selfSignedCert, options);
+                _client = new Optimizer.OptimizerClient(_channel);
+                InitializeComponent();
+                
+                UpdateConnectionStatusAsync();
+                UpdateButton();
+                ConfigGrid();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.ToString());
+            }
         }
 
         private void ConfigGrid()
@@ -60,7 +85,7 @@ namespace EmpowerOps.Volition.RefClient
             UpdateButton();
         }
 
-        private async void UpdateConnectionStatus()
+        private async void UpdateConnectionStatusAsync()
         {
             channelState = _channel.State;
             ConnectionStatus.Text = $"Connection: {channelState.ToString()}";
@@ -311,37 +336,53 @@ namespace EmpowerOps.Volition.RefClient
 
         private async void Register_Click(object sender, RoutedEventArgs e)
         {
-            //TODO better error state handing, when register failed due to no connection, it is not well though right now
-            //TODO also when error flow when register e.g. same name
-            var registrationCommandDto = new RegistrationCommandDTO {Name = RegName.Text };
-            if (_requests != null)
+            try
             {
-                Log("- Node already registered");
-                return;
-            }
+                //TODO better error state handing, when register failed due to no connection, it is not well though right now
+                //TODO also when error flow when register e.g. same name
+                var registrationCommandDto = new RegistrationCommandDTO {Name = RegName.Text};
+                if (_requests != null)
+                {
+                    Log("- Node already registered");
+                    return;
+                }
 
-            Log($"- Try Register as {RegName.Text}");
-            _requests = _client.register(registrationCommandDto);
-            if (_channel.State != ChannelState.Ready)
-            {
-                await _channel.WaitForStateChangedAsync(_channel.State);
-            }
+                if (_channel.State != ChannelState.Ready)
+                {
+                    Log($"- Attempting to connect...");
 
-            if (_channel.State == ChannelState.Ready)
-            {
-                Log("- Registered");
-                _isRegistered = true;
-                _name = registrationCommandDto.Name;
-                UpdateButton();
-                HandlingRequestsAsync(_requests);
+                    var deadline = DateTime.UtcNow + TimeSpan.FromSeconds(20);
+                    await _channel.ConnectAsync(deadline);
+                }
+
+                Log($"- Try Register as {RegName.Text}");
+                _requests = _client.register(registrationCommandDto);
+                if (_channel.State != ChannelState.Ready)
+                {
+                    await _channel.WaitForStateChangedAsync(_channel.State);
+                }
+
+                if (_channel.State == ChannelState.Ready)
+                {
+                    Log("- Registered");
+                    _isRegistered = true;
+                    _name = registrationCommandDto.Name;
+                    UpdateButton();
+                    HandlingRequestsAsync(_requests);
+                }
+                else
+                {
+                    Log("- Connection Failed, Not Registered");
+                    _requests = null;
+                    _isRegistered = false;
+                    _name = null;
+                    UpdateButton();
+                }
             }
-            else
+            catch (Exception ex)
             {
-                Log("- Connection Failed, Not Registered");
-                _requests = null;
-                _isRegistered = false;
-                _name = null;
-                UpdateButton();
+                Log($"Exception in registration call:\n{ex}");
+                Debug.WriteLine(ex);
             }
         }
 

@@ -17,7 +17,7 @@ import java.time.Duration
 import java.util.*
 
 class OptimizerEndpointFixture {
-    private lateinit var optimizerService: OptimizerService
+    private lateinit var runStateMachine: RunStateMachine
     private lateinit var modelService: ModelService
     private lateinit var endpoint: ApiService
 
@@ -40,13 +40,13 @@ class OptimizerEndpointFixture {
         param.after.invoke()
     }
 
-//    @BeforeEach
-//    fun setup() {
-//        optimizerService = mock()
-//        modelService = mock()
-//        endpoint = ApiService(modelService, optimizerService)
-//    }
-//
+    @BeforeEach
+    fun setup() {
+        runStateMachine = mock()
+        modelService = mock()
+        endpoint = ApiService(modelService, runStateMachine)
+    }
+
 //    @TestFactory
 //    fun `Unit test driver`(): Collection<DynamicTest> {
 //        val testSimulation = buildSim("node1", listOf("x1", "x2"), listOf("f1", "f2"))
@@ -179,136 +179,136 @@ class OptimizerEndpointFixture {
 //
 //        return params.map { param -> DynamicTest.dynamicTest("[${param.name}]") { assertResponse(param) } }
 //    }
-//
-//
-//    @Test
-//    fun `when optimizer ask to register a node register`() {
-//        //setup
-//        val streamObserver = mock<StreamObserver<RequestQueryDTO>>()
-//        val name = "TestNode1"
-//        val registrationDTO = RequestRegistrationCommandDTO.newBuilder().setName(name).build()
-//
-//        //act
-//        endpoint.register(registrationDTO, streamObserver)
-//
-//        //assert
-//        verify(modelService, times(1)).addSim(
-//                check {
-//                    assertThat(it.name).isEqualTo(name)
-//                    assertThat(it.input).isEqualTo(streamObserver)
-//                }
-//        )
-//    }
-//
-//    @Test
-//    fun `when try register a node that is already registered should call on error with message`() {
-//        //setup
-//        val name = "Node1"
-//        val responseObserver = mock<StreamObserver<RequestQueryDTO>>()
-//        whenever(modelService.simulations) doReturn listOf(Simulation(name, responseObserver))
-//
-//        //act
-//        endpoint.register(RequestRegistrationCommandDTO.newBuilder().setName(name).build(), responseObserver)
-//
-//        //assert
-//        verify(modelService, times(1)).addSim(
-//                check {
-//                    assertThat(it.name).isEqualTo(name)
-//                    assertThat(it.input).isEqualTo(responseObserver)
-//                }
-//        )
-//
-//        verify(responseObserver, times(1)).onError(
-//                check {
-//                    assertThat((it as StatusException).status).isEqualTo(Status.ALREADY_EXISTS)
-//                }
-//        )
-//    }
-//
-//
-//    @Test
-//    fun `when offering a result should get a response`() = runBlocking {
-//        //setup
-//        val model = mock<ModelService>()
-//        val request = SimulationResponseDTO.newBuilder().setName("node1").build()
-//        val outputChannel = mock<Channel<SimulationResponseDTO>>()
-//        val simulation = Simulation(
-//                "node1",
-//                mock(),
-//                output = outputChannel
-//        )
-//
-//        whenever(model.simulations).thenReturn(listOf(simulation))
-//        val apiService = ApiService(model, mock())
-//
-//        //act
-//        val offerResult = apiService.offerResult(request)
-//
-//
-//        //assert
-//        assertThat(offerResult).isEqualTo(SimulationResultConfirmDTO.newBuilder().build())
-//        verify(outputChannel, times(1)).send(
-//                check {
-//                    assertThat(it).isEqualTo(request)
-//                }
-//        )
-//    }
-//
-//    @Test
-//    fun `when offering a configuration should get a response`()= runBlocking<Unit>{
-//        //setup
-//        val model = mock<ModelService>()
-//        val request = NodeStatusCommandOrResponseDTO.newBuilder().setName("node1").build()
-//        val updateChannel = mock<Channel<NodeStatusCommandOrResponseDTO>>()
-//        val simulation = Simulation(
-//                "node1",
-//                mock(),
-//                update = updateChannel
-//        )
-//
-//        whenever(model.simulations).thenReturn(listOf(simulation))
-//        val apiService = ApiService(model, mock())
-//
-//        //act
-//        val offerResult = apiService.offerConfig(request)
-//
-//
-//        //assert
-//        assertThat(offerResult).isEqualTo(NodeChangeConfirmDTO.newBuilder().build())
-//        verify(updateChannel, times(1)).send(
-//                check {
-//                    assertThat(it).isEqualTo(request)
-//                }
-//        )
-//    }
-//
-//    @Test
-//    fun `when offering an error should get a response`()= runBlocking<Unit>{
-//        //setup
-//        val model = mock<ModelService>()
-//        val request = ErrorResponseDTO.newBuilder().setName("node1").build()
-//        val errorChannel = mock<Channel<ErrorResponseDTO>>()
-//        val simulation = Simulation(
-//                "node1",
-//                mock(),
-//                error = errorChannel
-//        )
-//
-//        whenever(model.simulations).thenReturn(listOf(simulation))
-//        val apiService = ApiService(model, mock())
-//
-//        //act
-//        val offerResult = apiService.offerError(request)
-//
-//
-//        //assert
-//        assertThat(offerResult).isEqualTo(ErrorConfirmDTO.newBuilder().build())
-//        verify(errorChannel, times(1)).send(
-//                check {
-//                    assertThat(it).isEqualTo(request)
-//                }
-//        )
-//    }
+
+
+    @Test
+    fun `when optimizer ask to register a node register`() {
+        //setup
+        val streamObserver = mock<StreamObserver<RequestQueryDTO>>()
+        val name = "TestNode1"
+        val registrationDTO = RequestRegistrationCommandDTO.newBuilder().setName(name).build()
+
+        //act
+        endpoint.register(registrationDTO, streamObserver)
+
+        //assert
+        verify(modelService, times(1)).addSim(
+                check {
+                    assertThat(it.name).isEqualTo(name)
+                    assertThat(it.input).isEqualTo(streamObserver)
+                }
+        )
+    }
+
+    @Test
+    fun `when try register a node that is already registered should call on error with message`() {
+        //setup
+        val name = "Node1"
+        val responseObserver = mock<StreamObserver<RequestQueryDTO>>()
+        whenever(modelService.simulations) doReturn listOf(Simulation(name, responseObserver))
+
+        //act
+        endpoint.register(RequestRegistrationCommandDTO.newBuilder().setName(name).build(), responseObserver)
+
+        //assert
+        verify(modelService, times(1)).addSim(
+                check {
+                    assertThat(it.name).isEqualTo(name)
+                    assertThat(it.input).isEqualTo(responseObserver)
+                }
+        )
+
+        verify(responseObserver, times(1)).onError(
+                check {
+                    assertThat((it as StatusException).status).isEqualTo(Status.ALREADY_EXISTS)
+                }
+        )
+    }
+
+
+    @Test
+    fun `when offering a result should get a response`() = runBlocking {
+        //setup
+        val model = mock<ModelService>()
+        val request = SimulationResponseDTO.newBuilder().setName("node1").build()
+        val outputChannel = mock<Channel<SimulationResponseDTO>>()
+        val simulation = Simulation(
+                "node1",
+                mock(),
+                output = outputChannel
+        )
+
+        whenever(model.simulations).thenReturn(listOf(simulation))
+        val apiService = ApiService(model, mock())
+
+        //act
+        val offerResult = apiService.offerResult(request)
+
+
+        //assert
+        assertThat(offerResult).isEqualTo(SimulationResultConfirmDTO.newBuilder().build())
+        verify(outputChannel, times(1)).send(
+                check {
+                    assertThat(it).isEqualTo(request)
+                }
+        )
+    }
+
+    @Test
+    fun `when offering a configuration should get a response`()= runBlocking<Unit>{
+        //setup
+        val model = mock<ModelService>()
+        val request = NodeStatusCommandOrResponseDTO.newBuilder().setName("node1").build()
+        val updateChannel = mock<Channel<NodeStatusCommandOrResponseDTO>>()
+        val simulation = Simulation(
+                "node1",
+                mock(),
+                update = updateChannel
+        )
+
+        whenever(model.simulations).thenReturn(listOf(simulation))
+        val apiService = ApiService(model, mock())
+
+        //act
+        val offerResult = apiService.offerConfig(request)
+
+
+        //assert
+        assertThat(offerResult).isEqualTo(NodeChangeConfirmDTO.newBuilder().build())
+        verify(updateChannel, times(1)).send(
+                check {
+                    assertThat(it).isEqualTo(request)
+                }
+        )
+    }
+
+    @Test
+    fun `when offering an error should get a response`()= runBlocking<Unit>{
+        //setup
+        val model = mock<ModelService>()
+        val request = ErrorResponseDTO.newBuilder().setName("node1").build()
+        val errorChannel = mock<Channel<ErrorResponseDTO>>()
+        val simulation = Simulation(
+                "node1",
+                mock(),
+                error = errorChannel
+        )
+
+        whenever(model.simulations).thenReturn(listOf(simulation))
+        val apiService = ApiService(model, mock())
+
+        //act
+        val offerResult = apiService.offerError(request)
+
+
+        //assert
+        assertThat(offerResult).isEqualTo(ErrorConfirmDTO.newBuilder().build())
+        verify(errorChannel, times(1)).send(
+                check {
+                    assertThat(it).isEqualTo(request)
+                }
+        )
+    }
 }
 
 fun buildNodeStatusCommandDTO(name: String, inputs: List<String>, outputs: List<String>): NodeStatusCommandOrResponseDTO {

@@ -557,7 +557,7 @@ class SystemTest {
                 }
         ))
 
-        awaitOnEvent<NewResultEvent> { stateMachine.forceStop() }
+        awaitOnEvent<RunStoppedEvent> { stateMachine.forceStop() }
 
         //assert
         val runIdString = feedAndBuildResponseList.first().startRequest.runID
@@ -574,9 +574,9 @@ class SystemTest {
         assertThat(logger.log.toDebugString()).containsOnlyOnce("""
             |Optimizer Event > ${StopRequestedEvent(id = UUID.fromString(runIdString))}
             |Optimizer Event > ${ForceStopRequestedEvent(id = UUID.fromString(runIdString))}
-            |Optimizer Event > ${PluginUnRegisteredEvent(name = "N3")}
             |Optimizer Event > ${NewResultEvent(result = Terminated(name = "N3", inputs = expectedInputs, message = "Evaluation is terminated during evaluation"))}
             |Optimizer Event > ${BasicStatusUpdateEvent(message = "Evaluation finished.")}
+            |Optimizer Event > ${RunStoppedEvent(id = UUID.fromString(runIdString))}
         """.trimMargin())
     }
 
@@ -608,7 +608,7 @@ class SystemTest {
                 }
         ))
 
-        awaitOnEvent<NewResultEvent> { stateMachine.forceStop() }
+        awaitOnEvent<RunStoppedEvent> { stateMachine.forceStop() }
 
         //assert
         val runID1 = feedAndBuildResponseList.first().startRequest.runID
@@ -629,12 +629,12 @@ class SystemTest {
             |Optimizer Event > ${BasicStatusUpdateEvent(message = "Timed out, Canceling...")}
             |Optimizer Event > ${StopRequestedEvent(id = UUID.fromString(runID1))}
             |Optimizer Event > ${ForceStopRequestedEvent(id = UUID.fromString(runID1))}
-            |Optimizer Event > ${PluginUnRegisteredEvent(name = "N3")}
             |Optimizer > Cancellation Terminated, Cause:
             |Force-stopped
             |Optimizer Event > ${BasicStatusUpdateEvent(message = "Cancel finished. [${CancelResult.CancelTerminated(name = "N3", exception = "Cancellation is terminated")}]")}
             |Optimizer Event > ${NewResultEvent(result = TimeOut(name = "N3", inputs = expectedInputs))}
             |Optimizer Event > ${BasicStatusUpdateEvent(message = "Evaluation finished.")}
+            |Optimizer Event > ${RunStoppedEvent(id = UUID.fromString(runID1))}
         """.trimMargin())
     }
 

@@ -77,7 +77,6 @@ class RunStateMachine {
         return true
     }
 
-
     suspend fun start(modelService: ModelService){
         if (!canStart(modelService)) return
         states.send(StartPending)

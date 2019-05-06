@@ -120,7 +120,6 @@ class EvaluationEngine(
                     }
                 }
                 forceStopSignal.completableDeferred.onAwait {
-                    modelService.closeSim(simulation.name)
                     EvaluationResult.Terminated(simulation.name, inputVector, "Evaluation is terminated during evaluation")
                 }
             }
@@ -143,7 +142,6 @@ class EvaluationEngine(
             simulation.output.onReceive { CancelResult.Canceled(it.name) }
             simulation.error.onReceive { CancelResult.CancelFailed(it.name, it.exception) }
             forceStopSignal.completableDeferred.onAwait {
-                modelService.closeSim(simulation.name)
                 CancelResult.CancelTerminated(simulation.name, "Cancellation is terminated")
             }
         }

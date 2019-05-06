@@ -85,7 +85,13 @@ class OptimizerService(
                 }
                 ForceStopPending -> {
                     when (newState) {
-                        Idle -> onToIdle(newState, currentResource)
+                        Idle -> {
+                            onToIdle(newState, currentResource)
+                            //TODO force stop clean up
+                            //idea 1: Close channel, abandon the plugin.
+                            //idea 2: Notify plugin Forcestop
+                        }
+
                         StartPending, Running, PausePending, Paused, StopPending, ForceStopPending -> TODO()
                     }
                 }
@@ -164,27 +170,42 @@ class OptimizerService(
 
                 select<Unit>{
                     currentIteration.evaluationEnds.onReceive{}
-                    runResources.forceStops.onReceive{}
+                    runResources.forceStops.onReceive{
+                        forceStopSignals.forEach {
+                            it.completableDeferred.complete(Unit)
+                            currentIteration.evaluationEnds.receive()
+                        }
+                    }
                 }
                 if (stateMachine.currentState == PausePending) {
                     stateMachine.states.send(Paused)
                     select<Unit> {
                         runResources.resumes.onReceive{}
-                        runResources.forceStops.onReceive{}
+                        runResources.forceStops.onReceive{
+                            forceStopSignals.forEach {
+                                it.completableDeferred.complete(Unit)
+                                currentIteration.evaluationEnds.receive()
+                            }
+                        }
                     }
                     if (stateMachine.currentState == StopPending || stateMachine.currentState == ForceStopPending) {
                         stateMachine.states.send(Idle)
                     }
                 }
                 else if (stateMachine.currentState == ForceStopPending){
-                    forceStopSignals.forEach { it.completableDeferred.complete(Unit) }
+                    stateMachine.states.send(Idle)
                 }
             }
             currentIteration.evaluations.close()
             forceStopSignals.clear()
             select<Unit>{
                 currentRun.iterationEnds.onReceive{}
-                runResources.forceStops.onReceive{}
+                runResources.forceStops.onReceive{
+                    forceStopSignals.forEach {
+                        it.completableDeferred.complete(Unit)
+                        currentRun.iterationEnds.receive()
+                    }
+                }
             }
             if (stateMachine.currentState == StopPending || stateMachine.currentState == ForceStopPending) {
                 stateMachine.states.send(Idle)

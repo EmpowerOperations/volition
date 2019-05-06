@@ -162,34 +162,29 @@ class OptimizerService(
                         )
                 )
 
-                //we are blocking on evaluation, remove this we need a newer evaluation block, so this can consider as the implementation for sequential evaluation
-                // when considering parallel, we need a list of channel/deffered to block at the end, figuring out dependency, put a worker pool limit
                 select<Unit>{
-                    currentIteration.evaluationEnds.onReceive{println("Evaluation finished")}
-                    runResources.forceStops.onReceive{println("Force stop triggered")}
+                    currentIteration.evaluationEnds.onReceive{}
+                    runResources.forceStops.onReceive{}
                 }
-
                 if (stateMachine.currentState == PausePending) {
                     stateMachine.states.send(Paused)
                     select<Unit> {
-                        runResources.resumes.onReceive
-                        runResources.forceStops.onReceive
+                        runResources.resumes.onReceive{}
+                        runResources.forceStops.onReceive{}
                     }
                     if (stateMachine.currentState == StopPending || stateMachine.currentState == ForceStopPending) {
                         stateMachine.states.send(Idle)
                     }
                 }
                 else if (stateMachine.currentState == ForceStopPending){
-                    for(signal in forceStopSignals){
-                        signal.completableDeferred.complete(Unit)
-                    }
+                    forceStopSignals.forEach { it.completableDeferred.complete(Unit) }
                 }
             }
             currentIteration.evaluations.close()
             forceStopSignals.clear()
             select<Unit>{
-                currentRun.iterationEnds.onReceive{println("Evaluation finished")}
-                runResources.forceStops.onReceive{println("Force stop triggered")}
+                currentRun.iterationEnds.onReceive{}
+                runResources.forceStops.onReceive{}
             }
             if (stateMachine.currentState == StopPending || stateMachine.currentState == ForceStopPending) {
                 stateMachine.states.send(Idle)

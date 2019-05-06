@@ -7,14 +7,13 @@ import com.empowerops.volition.ref_oasis.model.EvaluationResult.*
 import com.empowerops.volition.ref_oasis.optimizer.*
 import com.empowerops.volition.ref_oasis.plugin.PluginService
 import com.google.common.eventbus.EventBus
+import com.google.common.eventbus.Subscribe
 import com.nhaarman.mockitokotlin2.*
 import io.grpc.StatusRuntimeException
 import io.grpc.stub.StreamObserver
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.SendChannel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -27,13 +26,12 @@ class SystemTest {
     private lateinit var modelService: ModelService
     private lateinit var optimizerService: OptimizerService
     private lateinit var stateMachine: RunStateMachine
+    private lateinit var eventBus: EventBus
 
     private val unregisterDTO = RequestUnRegistrationRequestDTO.newBuilder().setName("N1").build()
     private val registerDTO = RequestRegistrationCommandDTO.newBuilder().setName("N1").build()
     private val registerDTO2 = RequestRegistrationCommandDTO.newBuilder().setName("N2").build()
-    val testSimulation = buildSim("N1", listOf("x1", "x2"), listOf("f1", "f2"))
     val testStatusRequest = buildNodeStatusCommandDTO("N1", listOf("x1", "x2"), listOf("f1", "f2"))
-    val testSimulation2 = buildSim("N1", listOf("x1", "x2", "x3"), listOf("f1"))
     val testStatusRequest2 = buildNodeStatusCommandDTO("N1", listOf("x1", "x2", "x3"), listOf("f1"))
     val testStatusRequest3 = buildNodeStatusCommandDTO("N3", listOf("x1", "x2", "x3"), listOf("f1", "f2"))
 
@@ -52,7 +50,7 @@ class SystemTest {
     }
 
     private suspend fun create(): OptimizerEndpoint {
-        val eventBus = EventBus()
+        eventBus = EventBus()
         logger = ConsoleOutput(eventBus)
         modelService = ModelService(eventBus, false)
         val pluginService = PluginService(modelService, logger, eventBus)
@@ -198,7 +196,7 @@ class SystemTest {
     }
 
     @Test
-    @Disabled("Not implmented")
+    @Disabled("Not implemented")
     fun `rename non existing node`() {
         //deny
     }
@@ -239,7 +237,7 @@ class SystemTest {
 
         //assert
         verify(responseObserver, times(1)).onNext(check {
-            assertThat(it.message).isEqualTo(buildAutoSetupMessage(testSimulation, true))
+            assertThat(it.message).isEqualTo(buildAutoSetupMessage(buildSim("N1", listOf("x1", "x2"), listOf("f1", "f2")), true))
         })
         assertThat(logger.log.toDebugString()).isEqualTo("""
             |Optimizer Event > ${PluginRegisteredEvent(name = "N1")}
@@ -267,7 +265,7 @@ class SystemTest {
 
         //assert
         verify(responseObserver, times(1)).onNext(check {
-            assertThat(it.message).isEqualTo(buildSimulationUpdateMessage(testSimulation, true))
+            assertThat(it.message).isEqualTo(buildSimulationUpdateMessage(buildSim("N1", listOf("x1", "x2"), listOf("f1", "f2")), true))
         })
         assertThat(logger.log.toDebugString()).isEqualTo("""
             |Optimizer Event > ${PluginRegisteredEvent(name = "N1")}
@@ -288,7 +286,7 @@ class SystemTest {
 
         //assert
         verify(responseObserver, times(1)).onNext(check {
-            assertThat(it.message).isEqualTo(buildSimulationUpdateMessage(testSimulation2, true))
+            assertThat(it.message).isEqualTo(buildSimulationUpdateMessage(buildSim("N1", listOf("x1", "x2", "x3"), listOf("f1")), true))
         })
         assertThat(logger.log.toDebugString()).isEqualTo("""
             |Optimizer Event > ${PluginRegisteredEvent(name = "N1")}
@@ -300,7 +298,6 @@ class SystemTest {
         """.trimMargin())
     }
 
-
     val startRequest = StartOptimizationCommandDTO.newBuilder().setName("N3").build()
     val resultResponse = SimulationResponseDTO.newBuilder().setName("N3").build()
     val errorResponse = ErrorResponseDTO.newBuilder().setName("N3").setMessage("Test error").setException("Test exception").build()
@@ -310,7 +307,7 @@ class SystemTest {
     /**
      * Execution: Start/ Stop
      */
-    @Test @Disabled
+    @Test
     fun `when do a full run loop and stop after 2nd iteration finished`() = runBlocking<Unit> {
         //setup
         val endpoint = create()
@@ -329,9 +326,11 @@ class SystemTest {
                 { endpoint.offerSimulationResult(resultResponse, mock()) },
                 { endpoint.offerSimulationResult(resultResponse, mock()) },
                 { endpoint.stopOptimization(stopRequest, mock()) },
-                { endpoint.offerSimulationResult(resultResponse, mock()) },
+                { runBlocking{awaitOnEvent<RunStoppedEvent> {endpoint.offerSimulationResult(resultResponse, mock())}} },
                 { }
         ))
+
+
 
         val runIDString = feedAndBuildResponseList.first().startRequest.runID
         val runID = UUID.fromString(runIDString)
@@ -419,8 +418,8 @@ class SystemTest {
 
         assertThat(logger.log.toDebugString()).containsOnlyOnce("""
             |Optimizer Event > ${BasicStatusUpdateEvent(message = "Evaluating: N3 (1/1)")}
-            |Optimizer Event > ${BasicStatusUpdateEvent(message = "Evaluation finished.")}
             |Optimizer Event > ${NewResultEvent(result = Failed(name = "N3", inputs = expectedInputs, exception = "Test exception"))}
+            |Optimizer Event > ${BasicStatusUpdateEvent(message = "Evaluation finished.")}
         """.trimMargin())
     }
 
@@ -444,7 +443,10 @@ class SystemTest {
         val feedAndBuildResponseList: List<RequestQueryDTO> = channel.feedAndBuildResponseList(listOf(
                 { /**Start notice: do nothing or ready up*/ },
                 { /**First evaluation, do nothing until timed out*/ },
-                { /**Cancel request*/ endpoint.offerSimulationResult(resultResponse, mock()) },
+                {
+                    /**Cancel request*/
+                    endpoint.offerSimulationResult(resultResponse, mock())
+                },
                 {}
         ))
 
@@ -474,8 +476,8 @@ class SystemTest {
             |Optimizer Event > ${BasicStatusUpdateEvent(message = "Timed out, Canceling...")}
             |Optimizer > Evaluation Canceled
             |Optimizer Event > ${BasicStatusUpdateEvent(message = "Cancel finished. [Canceled(name=N3)]")}
-            |Optimizer Event > ${BasicStatusUpdateEvent(message = "Evaluation finished.")}
             |Optimizer Event > ${NewResultEvent(result = TimeOut(name = "N3", inputs = expectedInputs))}
+            |Optimizer Event > ${BasicStatusUpdateEvent(message = "Evaluation finished.")}
         """.trimMargin())
     }
 
@@ -499,7 +501,10 @@ class SystemTest {
         val feedAndBuildResponseList: List<RequestQueryDTO> = channel.feedAndBuildResponseList(listOf(
                 { /**Start notice: do nothing or ready up*/ },
                 { /**First evaluation, do nothing until timed out*/ },
-                { /**Cancel request*/ endpoint.offerErrorResult(errorResponse, mock()) }
+                {
+                    /**Cancel request*/
+                    endpoint.offerErrorResult(errorResponse, mock())
+                }
         ))
 
         //assert
@@ -523,8 +528,8 @@ class SystemTest {
             |Optimizer > Cancellation Failed, Cause:
             |Test exception
             |Optimizer Event > ${BasicStatusUpdateEvent(message = "Cancel finished. [${CancelResult.CancelFailed(name = "N3", exception = "Test exception")}]")}
-            |Optimizer Event > ${BasicStatusUpdateEvent(message = "Evaluation finished.")}
             |Optimizer Event > ${NewResultEvent(result = TimeOut(name = "N3", inputs = expectedInputs))}
+            |Optimizer Event > ${BasicStatusUpdateEvent(message = "Evaluation finished.")}
         """.trimMargin())
     }
 
@@ -546,12 +551,13 @@ class SystemTest {
         //act
         val feedAndBuildResponseList: List<RequestQueryDTO> = channel.feedAndBuildResponseList(listOf(
                 { /**Start notice: do nothing or ready up*/ },
-                { /**First evaluation*/ endpoint.stopOptimization(stopRequest, mock()) }
+                {
+                    /**First evaluation*/
+                    runBlocking { awaitOnEvent<StopRequestedEvent> { endpoint.stopOptimization(stopRequest, mock()) } }
+                }
         ))
 
-        delay(30)
-        stateMachine.forceStop()
-        delay(30)
+        awaitOnEvent<NewResultEvent> { stateMachine.forceStop() }
 
         //assert
         val runIdString = feedAndBuildResponseList.first().startRequest.runID
@@ -565,9 +571,13 @@ class SystemTest {
                 ).build()
         ))
 
-        assertThat(logger.log.toDebugString()).containsOnlyOnce(
-                "Optimizer Event > ${NewResultEvent(result = Terminated(name = "N3", inputs = expectedInputs, message = "Evaluation is terminated during evaluation"))}"
-        )
+        assertThat(logger.log.toDebugString()).containsOnlyOnce("""
+            |Optimizer Event > ${StopRequestedEvent(id = UUID.fromString(runIdString))}
+            |Optimizer Event > ${ForceStopRequestedEvent(id = UUID.fromString(runIdString))}
+            |Optimizer Event > ${PluginUnRegisteredEvent(name = "N3")}
+            |Optimizer Event > ${NewResultEvent(result = Terminated(name = "N3", inputs = expectedInputs, message = "Evaluation is terminated during evaluation"))}
+            |Optimizer Event > ${BasicStatusUpdateEvent(message = "Evaluation finished.")}
+        """.trimMargin())
     }
 
     @Test
@@ -592,10 +602,13 @@ class SystemTest {
                 { /**First evaluation, do nothing until timed out*/ },
                 {
                     /**Cancel request*/
-                    endpoint.stopOptimization(stopRequest, mock())
-                    runBlocking { stateMachine.forceStop() }
+                    runBlocking {
+                        awaitOnEvent<StopRequestedEvent> { endpoint.stopOptimization(stopRequest, mock()) }
+                    }
                 }
         ))
+
+        awaitOnEvent<NewResultEvent> { stateMachine.forceStop() }
 
         //assert
         val runID1 = feedAndBuildResponseList.first().startRequest.runID
@@ -613,10 +626,30 @@ class SystemTest {
         ))
 
         assertThat(logger.log.toDebugString()).containsOnlyOnce("""
+            |Optimizer Event > ${BasicStatusUpdateEvent(message = "Timed out, Canceling...")}
+            |Optimizer Event > ${StopRequestedEvent(id = UUID.fromString(runID1))}
+            |Optimizer Event > ${ForceStopRequestedEvent(id = UUID.fromString(runID1))}
+            |Optimizer Event > ${PluginUnRegisteredEvent(name = "N3")}
             |Optimizer > Cancellation Terminated, Cause:
             |Force-stopped
             |Optimizer Event > ${BasicStatusUpdateEvent(message = "Cancel finished. [${CancelResult.CancelTerminated(name = "N3", exception = "Cancellation is terminated")}]")}
+            |Optimizer Event > ${NewResultEvent(result = TimeOut(name = "N3", inputs = expectedInputs))}
+            |Optimizer Event > ${BasicStatusUpdateEvent(message = "Evaluation finished.")}
         """.trimMargin())
+    }
+
+    private suspend inline fun <reified T : Event> awaitOnEvent(action: () -> Any? = {}) {
+        val deferred = CompletableDeferred<Unit>()
+        eventBus.register(object {
+            @Subscribe
+            fun onReceive(event: T) {
+                if (event !is T) return
+                deferred.complete(Unit)
+                eventBus.unregister(this)
+            }
+        })
+        action()
+        deferred.await()
     }
 
     @Test

@@ -53,6 +53,7 @@ class EvaluationEngine(
                     eventBus.post(BasicStatusUpdateEvent("Evaluating: ${request.proxy.name} ($pluginNumber/${modelService.proxies.size})"))
                     val result = results.receive()
                     modelService.addNewResult(run.runID, result)
+                    eventBus.post(BasicStatusUpdateEvent("Evaluation finished."))
                     iteration.evaluationEnds.send(Unit)
                     pluginNumber++
                 }
@@ -90,8 +91,6 @@ class EvaluationEngine(
                     logger.log(cancelMessage, "Optimizer")
                     eventBus.post(BasicStatusUpdateEvent("Cancel finished. [$cancelResult]"))
                 }
-
-                eventBus.post(BasicStatusUpdateEvent("Evaluation finished."))
                 results.send(simResult)
             }
         }

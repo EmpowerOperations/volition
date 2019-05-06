@@ -47,7 +47,7 @@ class Optimizer : Application() {
     fun setupService() {
         modelService = DataModelService(eventBus)
         endpoint = OptimizerEndpoint(modelService, eventBus)
-        Security.insertProviderAt(Conscrypt.newProvider(), 1);
+        Security.insertProviderAt(Conscrypt.newProvider(), 1)
 
 //        val providers = Security.getProviders()
 //        var x = KeyStore.getInstance("Conscrypt")
@@ -65,11 +65,11 @@ class Optimizer : Application() {
         // 1. call it to generate a cert
         // 2. point at that cert here.
 
-        val caPathRoot = "C:/Users/Geoff/Desktop"
+        val caPathRoot = "C:\\Users\\Geoff\\Code\\volition\\sslcerts"
 
         server = ServerBuilder
                 .forPort(5550)
-//                .useTransportSecurity(File("$caPathRoot/certificate.crt"), File("$caPathRoot/privatekey.key"))
+                .useTransportSecurity(File("$caPathRoot/server.crt"), File("$caPathRoot/server.pem"))
                 .addService(ServerInterceptors.intercept(endpoint, LoggingInterceptor(System.out)))
                 .build()
 

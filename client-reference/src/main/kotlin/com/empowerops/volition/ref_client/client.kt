@@ -3,15 +3,20 @@ package com.empowerops.volition.ref_client
 import com.empowerops.volition.dto.*
 import com.google.protobuf.DoubleValue
 import io.grpc.ManagedChannelBuilder
+import io.grpc.netty.shaded.io.grpc.netty.GrpcSslContexts
+import io.grpc.netty.shaded.io.grpc.netty.NettyChannelBuilder
 import io.grpc.stub.StreamObserver
 import javafx.application.Application
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.value.ObservableBooleanValue
 import kotlinx.coroutines.*
 import kotlinx.coroutines.javafx.JavaFx
+import org.conscrypt.Conscrypt
 import tornadofx.*
+import java.io.File
+import java.security.Security
 
-fun Fmain(args: Array<String>){
+fun main(args: Array<String>){
     Application.launch(SimulatorApp::class.java)
 }
 
@@ -31,12 +36,16 @@ object Client {
     // of course, the `register` stream will be terminated...
     // yeah, any open streams will have `onError` called when one side disconnects.
     private val service: OptimizerGrpc.OptimizerStub = run {
-        val channel = ManagedChannelBuilder
-                .forAddress("localhost", 5550)
-                .usePlaintext()
+        Security.insertProviderAt(Conscrypt.newProvider(), 1)
+
+        val sslContext = GrpcSslContexts.forClient()
+                .trustManager(File("C:/Users/Geoff/Code/volition/sslcerts/ca.crt"))
                 .build()
 
-        val another = OptimizerGrpc.newBlockingStub(channel)
+        val channel = NettyChannelBuilder
+                .forAddress("localhost", 5550)
+                .sslContext(sslContext)
+                .build()
 
         OptimizerGrpc.newStub(channel)
     }

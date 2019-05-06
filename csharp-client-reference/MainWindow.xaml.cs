@@ -42,16 +42,11 @@ namespace EmpowerOps.Volition.RefClient
 //                KeyCertificatePair x = new KeyCertificatePair();
                 
                 //https://grpc.io/docs/quickstart/csharp.html#update-the-client
-                var certText = File.ReadAllText("C:/Users/Geoff/Desktop/certificate.crt");
+//                var certText = File.ReadAllText("C:/Users/Geoff/Code/volition/sslcerts/ca.crt");
 //                var selfSignedCert = new SslCredentials(certText);
                 var selfSignedCert = ChannelCredentials.Insecure;
 
-                var options = new List<ChannelOption>
-                {
-                    new ChannelOption(ChannelOptions.SslTargetNameOverride, Environment.MachineName)
-                };
-                
-                _channel = new Channel("127.0.0.1", 5550, selfSignedCert, options);
+                _channel = new Channel("127.0.0.1", 5550, selfSignedCert);
                 _client = new Optimizer.OptimizerClient(_channel);
                 InitializeComponent();
                 

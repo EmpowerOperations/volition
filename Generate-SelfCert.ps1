@@ -1,8 +1,8 @@
 ﻿
 Param(
     $OutputCerts = "./sslcerts",
-    $ServerCN = "localhost",
-    $ClientCN = "localhost"
+    $ServerCN = "127.0.0.1",
+    $ClientCN = "127.0.0.1"
 )
 
 Get-Command "openssl" -ErrorAction Stop
@@ -31,21 +31,15 @@ echo "Self-signed server certificate:"
 # Generates server.crt which is the certChainFile for the server
 openssl x509 -req -days 365 -in server.csr -CA ca.crt -CAkey ca.key -set_serial 01 -out server.crt
 
-echo "Remove passphrase from server key:"
-openssl rsa -in server.key -out server.key
-
 echo "Generate client key"
 openssl genrsa -out client.key 4096
 
 echo "Generate client signing request:"
-openssl req -new -key client.key -out client.csr -subj "/CN=${CLIENT_CN}"
+openssl req -new -key client.key -out client.csr -subj "/CN=$ServerCN"
 
 echo "Self-signed client certificate:"
 # Generates client.crt which is the clientCertChainFile for the client (need for mutual TLS only)
 openssl x509 -req -days 365 -in client.csr -CA ca.crt -CAkey ca.key -set_serial 01 -out client.crt
-
-echo "Remove passphrase from client key:"
-openssl rsa -passin pass:1111 -in client.key -out client.key
 
 echo "Converting the private keys to X.509:"
 # Generates client.pem which is the clientPrivateKeyFile for the Client (needed for mutual TLS only)

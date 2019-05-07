@@ -15,6 +15,7 @@ import org.conscrypt.Conscrypt
 import tornadofx.*
 import java.io.File
 import java.security.Security
+import javax.net.ssl.HttpsURLConnection
 
 fun main(args: Array<String>){
     Application.launch(SimulatorApp::class.java)
@@ -38,12 +39,17 @@ object Client {
     private val service: OptimizerGrpc.OptimizerStub = run {
         Security.insertProviderAt(Conscrypt.newProvider(), 1)
 
+        HttpsURLConnection.setDefaultHostnameVerifier { hostname, sslSession ->
+            //TODO: we should verify that we're in a localhost mode
+            hostname == "127.0.0.1"
+        }
+
         val sslContext = GrpcSslContexts.forClient()
                 .trustManager(File("C:/Users/Geoff/Code/volition/sslcerts/ca.crt"))
                 .build()
 
         val channel = NettyChannelBuilder
-                .forAddress("localhost", 5550)
+                .forAddress("127.0.0.1", 5550)
                 .sslContext(sslContext)
                 .build()
 

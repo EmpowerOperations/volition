@@ -2,6 +2,7 @@ package com.empowerops.volition.ref_oasis.front_end
 
 import com.empowerops.volition.ref_oasis.model.ModelService
 import com.empowerops.volition.ref_oasis.optimizer.RunStateMachine
+import com.empowerops.volition.ref_oasis.optimizer.StateService
 import com.google.common.eventbus.EventBus
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
@@ -9,7 +10,7 @@ import javafx.scene.Parent
 class OptimizerGUIRootController(
         modelService: ModelService,
         eventBus: EventBus,
-        stateMachine: RunStateMachine) {
+        stateService: StateService) {
     val root: Parent
 
     init {
@@ -19,6 +20,6 @@ class OptimizerGUIRootController(
 
         val controller = fxmlLoader.getController<OptimizerController>()
         val connectionView = ConnectionView(modelService, eventBus)
-        controller.attachToModel(modelService, eventBus, connectionView.root, stateMachine)
+        controller.attachToModel(modelService, eventBus, connectionView.root, stateService)
     }
 }

@@ -2,7 +2,6 @@ package com.empowerops.volition.ref_oasis.optimizer
 
 import com.empowerops.volition.dto.*
 import com.empowerops.volition.ref_oasis.model.*
-import com.empowerops.volition.ref_oasis.toUUIDOrNull
 import io.grpc.Status
 import io.grpc.StatusException
 import io.grpc.stub.StreamObserver
@@ -31,7 +30,7 @@ interface IApiService {
 }
 
 class ApiService(private val modelService: ModelService,
-                 private val stateMachine: RunStateMachine) : IApiService {
+                 private val stateService: StateService) : IApiService {
 
     override fun register(request: RequestRegistrationCommandDTO, responseObserver: StreamObserver<RequestQueryDTO>) {
         modelService.addSim(Simulation(request.name, responseObserver)).let { added ->
@@ -73,7 +72,7 @@ class ApiService(private val modelService: ModelService,
     }
 
     override fun requestStop(request: StopOptimizationCommandDTO): StopOptimizationResponseDTO {
-        return if(stateMachine.canStop()){
+        return if(stateService.canStop()){
             StopOptimizationResponseDTO.newBuilder().setRunID(request.id).build()
         }
         else{
@@ -82,7 +81,7 @@ class ApiService(private val modelService: ModelService,
     }
 
     override suspend fun stop(){
-        stateMachine.stop()
+        stateService.stop()
     }
 
     override fun resultRequest(request: ResultRequestDTO): ResultResponseDTO = ResultResponseDTO.newBuilder().apply {
@@ -102,7 +101,7 @@ class ApiService(private val modelService: ModelService,
     override fun requestStart(
             request: StartOptimizationCommandDTO
     ): StartOptimizationResponseDTO = StartOptimizationResponseDTO.newBuilder().apply {
-        val canStart = stateMachine.canStart(modelService)
+        val canStart = stateService.canStart(modelService)
         var issues = modelService.findIssues()
         if (!canStart) issues += Issue("Optimization are not able to start")
         message = buildStartIssuesMessage(issues)
@@ -111,7 +110,7 @@ class ApiService(private val modelService: ModelService,
 
     override fun start() {
         GlobalScope.launch {
-            stateMachine.start(modelService)
+            stateService.start(modelService)
         }
     }
 

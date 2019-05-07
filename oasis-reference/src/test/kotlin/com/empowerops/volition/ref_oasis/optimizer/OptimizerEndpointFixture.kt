@@ -1,7 +1,10 @@
 package com.empowerops.volition.ref_oasis.optimizer
 
 import com.empowerops.volition.dto.*
-import com.empowerops.volition.ref_oasis.model.*
+import com.empowerops.volition.ref_oasis.model.Input
+import com.empowerops.volition.ref_oasis.model.ModelService
+import com.empowerops.volition.ref_oasis.model.Output
+import com.empowerops.volition.ref_oasis.model.Simulation
 import com.nhaarman.mockitokotlin2.*
 import io.grpc.Status
 import io.grpc.StatusException
@@ -10,14 +13,10 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestFactory
-import java.time.Duration
-import java.util.*
 
 class OptimizerEndpointFixture {
-    private lateinit var runStateMachine: RunStateMachine
+    private lateinit var stateService: StateService
     private lateinit var modelService: ModelService
     private lateinit var endpoint: ApiService
 
@@ -42,9 +41,9 @@ class OptimizerEndpointFixture {
 
     @BeforeEach
     fun setup() {
-        runStateMachine = mock()
+        stateService = mock()
         modelService = mock()
-        endpoint = ApiService(modelService, runStateMachine)
+        endpoint = ApiService(modelService, stateService)
     }
 
 //    @TestFactory

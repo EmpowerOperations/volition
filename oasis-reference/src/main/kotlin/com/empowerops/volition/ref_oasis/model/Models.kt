@@ -48,12 +48,6 @@ sealed class EvaluationResult(
             val exception: String
     ) : EvaluationResult(name, inputs)
 
-    data class Error(
-            override val name: String,
-            override val inputs: Map<String, Double>,
-            val exception: String
-    ) : EvaluationResult(name, inputs)
-
     data class Terminated(
             override val name: String,
             override val inputs: Map<String, Double>,

@@ -2,7 +2,6 @@ package com.empowerops.volition.ref_oasis.front_end
 
 import com.empowerops.volition.dto.LoggingInterceptor
 import com.empowerops.volition.ref_oasis.model.ModelService
-import com.empowerops.volition.ref_oasis.model.RunResources
 import com.empowerops.volition.ref_oasis.optimizer.*
 import com.empowerops.volition.ref_oasis.plugin.PluginService
 import com.google.common.eventbus.EventBus
@@ -13,8 +12,8 @@ import javafx.application.Application
 import javafx.application.Platform
 import javafx.scene.Scene
 import javafx.stage.Stage
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
+import kotlinx.coroutines.javafx.JavaFx
 import picocli.CommandLine
 import picocli.CommandLine.Command
 import picocli.CommandLine.Option
@@ -74,6 +73,7 @@ class Optimizer {
     private lateinit var evaluationEngine: IEvaluationEngine
     private lateinit var inputGenerator: InputGenerator
     private lateinit var stateMachine: RunStateMachine
+    private lateinit var stateService: StateService
 
 
     private val eventBus: EventBus = EventBus()
@@ -88,45 +88,47 @@ class Optimizer {
     @Option(names = ["-o", "--overwrite"], description = ["Enable register overwrite when duplication happens"])
     var overwrite: Boolean = false
 
-    private fun setup() {
+    private suspend fun setup()  = coroutineScope{
         modelService = ModelService(eventBus, overwrite)
         pluginService = PluginService(modelService, logger, eventBus)
-        stateMachine = RunStateMachine()
         evaluationEngine = EvaluationEngine(modelService, eventBus, logger)
         inputGenerator = RandomNumberOptimizer()
+        stateMachine = RunStateMachine()
+
         optimizerService = OptimizerService(
                 eventBus,
                 modelService,
                 inputGenerator,
                 pluginService,
-                stateMachine,
-                evaluationEngine
+                evaluationEngine,
+                stateMachine
         )
-        apiService = ApiService(modelService, stateMachine)
+        stateService =  StateService(eventBus, modelService, stateMachine, optimizerService)
+        apiService = ApiService(modelService, stateService)
         optimizerEndpoint = OptimizerEndpoint(apiService, modelService)
         server = NettyServerBuilder.forPort(port).addService(ServerInterceptors.intercept(optimizerEndpoint, LoggingInterceptor(logger))).build()
     }
 
-    fun start(primaryStage: Stage) = runBlocking {
+    fun start(primaryStage: Stage) = GlobalScope.launch(Dispatchers.JavaFx) {
         setup()
         try {
             logger.log("Server started at: localhost:$port", "Optimizer")
             server.start()
         } catch (e: IOException) {
             logger.log("Error encountered when try to start the optimizer server.", "Optimizer")
-            return@runBlocking
+            return@launch
         }
 
         if (headless) {
             //TODO splash screen etc.
         } else {
-            val optimizerGUI = OptimizerGUIRootController(modelService, eventBus, stateMachine)
+            val optimizerGUI = OptimizerGUIRootController(modelService, eventBus, stateService)
             primaryStage.title = "Volition Reference Optimizer"
             primaryStage.scene = Scene(optimizerGUI.root)
             primaryStage.show()
         }
 
-        stateMachine.initService(optimizerService)
+        stateService.processState()
     }
 
     fun stop() {

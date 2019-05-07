@@ -26,7 +26,6 @@ import kotlinx.coroutines.launch
 import tornadofx.*
 import java.lang.IllegalStateException
 import java.time.Duration
-import java.util.*
 
 class OptimizerController {
     /**
@@ -79,7 +78,7 @@ class OptimizerController {
     private lateinit var modelService: ModelService
     private lateinit var inputRoot: TreeItem<Parameter>
     private lateinit var outputRoot: TreeItem<Parameter>
-    private lateinit var runStateMachine: RunStateMachine
+    private lateinit var stateService: StateService
 
     enum class Type {
         Input, Output, Root
@@ -173,7 +172,6 @@ class OptimizerController {
         is EvaluationResult.Success -> "Success"
         is EvaluationResult.TimeOut -> "Timeout"
         is EvaluationResult.Failed -> "Failed"
-        is EvaluationResult.Error -> "Error"
         is EvaluationResult.Terminated -> "Terminated"
     }
 
@@ -181,7 +179,6 @@ class OptimizerController {
         is EvaluationResult.Success -> result.toString()
         is EvaluationResult.TimeOut -> "Timed out: N/A"
         is EvaluationResult.Failed -> "Evaluation Failed: \n$exception"
-        is EvaluationResult.Error -> "Error:\n$exception"
         is EvaluationResult.Terminated -> "Stopped by request"
     }
 
@@ -241,21 +238,21 @@ class OptimizerController {
             modelService: ModelService,
             eventBus: EventBus,
             connectionView: ListView<String>,
-            stateMachine: RunStateMachine) {
+            stateService: StateService) {
         this.modelService = modelService
-        this.runStateMachine = stateMachine
+        this.stateService = stateService
         eventBus.register(this)
         connectionListContainer.children.add(connectionView)
         showNode(null)
-        rebindViewToState(runStateMachine.currentState)
+        rebindViewToState(this.stateService.currentState)
     }
 
     @FXML fun startStopClicked() = GlobalScope.launch(Dispatchers.JavaFx) {
-        when (runStateMachine.currentState){
+        when (stateService.currentState){
             State.Idle -> {
-                val canStart = runStateMachine.canStart(modelService)
+                val canStart = stateService.canStart(modelService)
                 if(canStart){
-                    runStateMachine.start(modelService)
+                    stateService.start(modelService)
                 }
                 else{
                     val alert = Alert(Alert.AlertType.ERROR)
@@ -265,16 +262,16 @@ class OptimizerController {
                     alert.showAndWait()
                 }
             }
-            State.Running, State.PausePending, State.Paused -> runStateMachine.stop()
-            State.StopPending -> runStateMachine.forceStop()
-            else -> throw IllegalStateException("Start/Stop Button is not an actionable state. Current State:${runStateMachine.currentState}")
+            State.Running, State.PausePending, State.Paused -> stateService.stop()
+            State.StopPending -> stateService.forceStop()
+            else -> throw IllegalStateException("Start/Stop Button is not an actionable state. Current State:${stateService.currentState}")
         }
     }
 
     @FXML fun pauseResumeRun() = GlobalScope.launch(Dispatchers.JavaFx) {
-        when (runStateMachine.currentState){
-            State.Running -> runStateMachine.pause()
-            State.Paused -> runStateMachine.resume()
+        when (stateService.currentState){
+            State.Running -> stateService.pause()
+            State.Paused -> stateService.resume()
             else -> throw IllegalStateException("Pause/Resume Button is not an actionable state. Current State:${startButton.text}")
         }
     }
@@ -333,7 +330,7 @@ class OptimizerController {
 
     @Subscribe
     fun onStateChangedAsync(event : StatusUpdateEvent) = GlobalScope.launch(Dispatchers.JavaFx){
-        rebindViewToState(runStateMachine.currentState)
+        rebindViewToState(stateService.currentState)
     }
 
     private fun rebindViewToState(currentState: State) {

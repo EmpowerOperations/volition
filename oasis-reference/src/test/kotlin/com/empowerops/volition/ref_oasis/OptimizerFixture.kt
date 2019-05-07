@@ -1,11 +1,11 @@
 package com.empowerops.volition.ref_oasis
 
-import com.empowerops.volition.dto.OASISQueryDTO
-import com.empowerops.volition.dto.RegistrationCommandDTO
+import com.empowerops.volition.dto.RequestQueryDTO
+import com.empowerops.volition.dto.RequestRegistrationCommandDTO
 import com.google.common.eventbus.EventBus
 import com.nhaarman.mockitokotlin2.*
 import io.grpc.stub.StreamObserver
-import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 internal class OptimizerFixture {
@@ -13,20 +13,24 @@ internal class OptimizerFixture {
     fun `when optimizer ask to register a node register`() {
         //setup
         val eventBus = mock<EventBus>()
-        val modelService = mock<DataModelService>()
-        val fakeStreamObserver = mock<StreamObserver<OASISQueryDTO>>()
+        val apiService = mock<ApiService>()
+        val fakeStreamObserver = mock<StreamObserver<RequestQueryDTO>>()
 
-        val registrationDTO = RegistrationCommandDTO.newBuilder().setName("TestNode1").build()
-        val optimizerEndpoint = OptimizerEndpoint(modelService, eventBus)
+        val registrationDTO = RequestRegistrationCommandDTO.newBuilder().setName("TestNode1").build()
+        val optimizerEndpoint = OptimizerEndpoint(apiService)
 
         //act
-        optimizerEndpoint.register(registrationDTO, fakeStreamObserver)
+        optimizerEndpoint.registerRequest(registrationDTO, fakeStreamObserver)
 
         //verify
         verify(eventBus, times(1)).post(any<StatusUpdateEvent>())
-        verify(modelService, times(1)).addNewSim(check {
-            Assertions.assertEquals(it.name, "TestNode1")
-            Assertions.assertEquals(it.input, fakeStreamObserver)
-        })
+        verify(apiService, times(1)).register(
+                check {
+                    assertEquals(registrationDTO, it)
+                },
+                check {
+                    assertEquals(fakeStreamObserver, it)
+                }
+        )
     }
 }

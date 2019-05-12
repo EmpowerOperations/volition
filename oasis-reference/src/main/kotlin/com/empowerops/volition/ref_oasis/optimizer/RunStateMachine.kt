@@ -16,9 +16,12 @@ sealed class State {
     object ForceStopPending : State()
 }
 
+interface StateMachineControl{
+    suspend fun start()
+    suspend fun stop()
+}
 
-
-class RunStateMachine {
+class RunStateMachine(val modelService: ModelService) : StateMachineControl {
     var currentState: State = Idle
         private set
     val states : Channel<State> = Channel()
@@ -47,7 +50,7 @@ class RunStateMachine {
 
     private fun canTransferTo(newState: State): Boolean = newState in stateTable.getValue(currentState)
 
-    fun canStart(modelService: ModelService): Boolean {
+    fun canStart(): Boolean {
         if (modelService.findIssues().isNotEmpty()) return false
         if (currentState != Idle) return false
         if (!canTransferTo(StartPending)) return false
@@ -77,13 +80,13 @@ class RunStateMachine {
         return true
     }
 
-    suspend fun start(modelService: ModelService){
-        if (!canStart(modelService)) return
+    override suspend fun start(){
+        if (!canStart()) return
         states.send(StartPending)
         runResources.send(RunResources(UUID.randomUUID()))
     }
 
-    suspend fun stop() {
+    override suspend fun stop() {
         if (!canStop()) return
         states.send(StopPending)
     }

@@ -11,6 +11,7 @@ import kotlinx.coroutines.launch
 
 class OptimizerEndpoint(
         private val apiService: IApiService,
+        private val startStopper: IStaterStopper,
         private val modelService: ModelService
 ) : OptimizerGrpc.OptimizerImplBase() {
 
@@ -62,10 +63,12 @@ class OptimizerEndpoint(
             responseObserver: StreamObserver<StartOptimizationResponseDTO>
     ) = responseObserver.consumeThen({
         checkThenRun(modelService.simulations.hasName(request.name)) {
-            apiService.requestStart(request)
+            startStopper.requestStart(request)
         }
     }) { response ->
-        if (response.acknowledged) apiService.start()
+        GlobalScope.launch {
+            if (response.acknowledged) startStopper.start()
+        }
     }
 
     override fun stopOptimization(
@@ -73,11 +76,11 @@ class OptimizerEndpoint(
             responseObserver: StreamObserver<StopOptimizationResponseDTO>
     ) = responseObserver.consumeThen({
         checkThenRun(modelService.simulations.hasName(request.name)) {
-            apiService.requestStop(request)
+            startStopper.requestStop(request)
         }
     }) { response ->
         GlobalScope.launch {
-            if (response.responseCase == StopOptimizationResponseDTO.ResponseCase.RUNID) apiService.stop()
+            if (response.responseCase == StopOptimizationResponseDTO.ResponseCase.RUNID) startStopper.stop()
         }
     }
 

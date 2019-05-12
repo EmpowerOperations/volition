@@ -54,9 +54,9 @@ class SystemTest {
         logger = ConsoleOutput(eventBus)
         modelService = ModelService(eventBus, false)
         val pluginService = PluginService(modelService, logger, eventBus)
-        val evaluationEngine = EvaluationEngine(modelService, eventBus, logger)
+        val evaluationEngine = EvaluationEngine(eventBus, logger)
         val fixValueOptimizer = FixValueOptimizer(5.0)
-        stateMachine = RunStateMachine()
+        stateMachine = RunStateMachine(modelService)
         optimizerService = OptimizerService(
                 eventBus,
                 modelService,

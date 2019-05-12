@@ -1,20 +1,13 @@
 package com.empowerops.volition.ref_oasis.optimizer
 
 import com.empowerops.volition.ref_oasis.model.*
-import com.empowerops.volition.ref_oasis.model.Helpers.Companion.NullUUID
 import com.empowerops.volition.ref_oasis.optimizer.State.*
 import com.empowerops.volition.ref_oasis.plugin.PluginService
 import com.google.common.eventbus.EventBus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.map
-import kotlinx.coroutines.channels.toList
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.selects.SelectClause1
 import kotlinx.coroutines.selects.select
-import java.util.*
 
 class OptimizerService(
         private val eventBus: EventBus,
@@ -25,7 +18,7 @@ class OptimizerService(
         private val evaluationEngine: IEvaluationEngine
 ) {
     suspend fun startProcess() = GlobalScope.launch {
-        var currentResource : RunResources? = null
+        var currentResource: RunResources? = null
         for (newState in stateMachine.states) {
             when (stateMachine.currentState) {
                 Idle -> {
@@ -34,7 +27,7 @@ class OptimizerService(
                             stateMachine.transferTo(newState)
                             currentResource = stateMachine.runResources.receive()
                             pluginService.notifyStart(currentResource.runID)
-                            launch { evaluationEngine.handle(currentResource.runs) }
+                            launch { evaluationEngine.handleRun(currentResource.runs) }
                             eventBus.post(StartRequestedEvent(currentResource.runID))
                             launch { stateMachine.states.send(Running) }
                         }
@@ -100,46 +93,46 @@ class OptimizerService(
     }
 
     private suspend fun CoroutineScope.onRunning(newState: State, runResources: RunResources?) {
-        require(runResources!=null)
+        require(runResources != null)
         stateMachine.transferTo(newState)
         runT(runResources)
         eventBus.post(RunStartedEvent(runResources.runID))
     }
 
     private fun onPausePending(newState: State, runResources: RunResources?) {
-        require(runResources!=null)
+        require(runResources != null)
         stateMachine.transferTo(newState)
         eventBus.post(PausedRequestedEvent(runResources.runID))
     }
 
     private fun onPaused(newState: State, runResources: RunResources?) {
-        require(runResources!=null)
+        require(runResources != null)
         stateMachine.transferTo(newState)
         eventBus.post(PausedEvent(runResources.runID))
     }
 
     private fun onStopPending(newState: State, runResources: RunResources?) {
-        require(runResources!=null)
+        require(runResources != null)
         stateMachine.transferTo(newState)
         eventBus.post(StopRequestedEvent(runResources.runID))
     }
 
     private suspend fun onUnpause(newState: State, runResources: RunResources?) {
-        require(runResources!=null)
+        require(runResources != null)
         stateMachine.transferTo(newState)
         runResources.resumes.send(Unit)
         eventBus.post(RunResumedEvent(runResources.runID))
     }
 
     private suspend fun onForceStopPending(newState: State, runResources: RunResources?) {
-        require(runResources!=null)
+        require(runResources != null)
         eventBus.post(ForceStopRequestedEvent(runResources.runID))
         stateMachine.transferTo(newState)
         runResources.forceStops.send(Unit)
     }
 
     private fun onToIdle(newState: State, runResources: RunResources?) {
-        require(runResources!=null)
+        require(runResources != null)
         stateMachine.transferTo(newState)
         eventBus.post(RunStoppedEvent(runResources.runID))
         pluginService.notifyStop(runResources.runID)
@@ -147,63 +140,69 @@ class OptimizerService(
     }
 
     suspend fun CoroutineScope.runT(runResources: RunResources?) = launch {
-        require(runResources!=null)
-        val currentRun = Run(runResources.runID)
+        require(runResources != null)
+        val currentRun = Run(runResources.runID, 1)
         val forceStopSignals = mutableListOf<ForceStopSignal>()
         runResources.runs.send(currentRun)
         while (stateMachine.currentState == Running) {
             var iterationCount = 1
             val currentIteration = Iteration(iterationCount)
             currentRun.iterations.send(currentIteration)
-            for (proxy in modelService.proxies) {
+            for ((index, proxy) in modelService.proxies.withIndex()) {
                 val inputVector = inputGenerator.generateInputs(proxy.inputs)
                 val forceStopSignal = ForceStopSignal(proxy.name)
                 forceStopSignals += forceStopSignal
                 currentIteration.evaluations.send(
                         EvaluationRequest(
-                                inputVector,
                                 proxy,
                                 modelService.simulations.getValue(proxy.name),
+                                inputVector,
                                 forceStopSignal
                         )
                 )
-
-                select<Unit>{
-                    currentIteration.evaluationEnds.onReceive{}
-                    runResources.forceStops.onReceive{
+                eventBus.post(BasicStatusUpdateEvent("Evaluating: ${proxy.name} ($index/${modelService.proxies.size})"))
+                select<Unit> {
+                    currentIteration.evaluationResult.onReceive { result ->
+                        eventBus.post(BasicStatusUpdateEvent("Evaluation finished."))
+                        modelService.addNewResult(runResources.runID, result)
+                    }
+                    runResources.forceStops.onReceive {
                         forceStopSignals.forEach {
-                            it.completableDeferred.complete(Unit)
-                            currentIteration.evaluationEnds.receive()
+                            it.forceStopped.complete(Unit)
+                            val result = currentIteration.evaluationResult.receive()
+                            modelService.addNewResult(runResources.runID, result)
                         }
                     }
                 }
                 if (stateMachine.currentState == PausePending) {
                     stateMachine.states.send(Paused)
                     select<Unit> {
-                        runResources.resumes.onReceive{}
-                        runResources.forceStops.onReceive{
+                        runResources.resumes.onReceive {}
+                        runResources.forceStops.onReceive {
                             forceStopSignals.forEach {
-                                it.completableDeferred.complete(Unit)
-                                currentIteration.evaluationEnds.receive()
+                                it.forceStopped.complete(Unit)
+                                val result = currentIteration.evaluationResult.receive()
+                                modelService.addNewResult(runResources.runID, result)
                             }
                         }
                     }
                     if (stateMachine.currentState == StopPending || stateMachine.currentState == ForceStopPending) {
                         stateMachine.states.send(Idle)
                     }
-                }
-                else if (stateMachine.currentState == ForceStopPending){
+                } else if (stateMachine.currentState == ForceStopPending) {
                     stateMachine.states.send(Idle)
                 }
             }
             currentIteration.evaluations.close()
             forceStopSignals.clear()
-            select<Unit>{
-                currentRun.iterationEnds.onReceive{}
-                runResources.forceStops.onReceive{
+            select<Unit> {
+                currentRun.iterationResults.onReceive {
+                    //NOOP, we are not grouping iteration in the model service yet
+                }
+                runResources.forceStops.onReceive {
                     forceStopSignals.forEach {
-                        it.completableDeferred.complete(Unit)
-                        currentRun.iterationEnds.receive()
+                        it.forceStopped.complete(Unit)
+                        currentRun.iterationResults.receive()
                     }
                 }
             }

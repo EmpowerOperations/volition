@@ -255,7 +255,7 @@ class OptimizerController {
             State.Idle -> {
                 val canStart = runStateMachine.canStart(modelService)
                 if(canStart){
-                    runStateMachine.start(modelService)
+                    runStateMachine.start()
                 }
                 else{
                     val alert = Alert(Alert.AlertType.ERROR)

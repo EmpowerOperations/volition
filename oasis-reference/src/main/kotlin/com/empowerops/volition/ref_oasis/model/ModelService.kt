@@ -1,8 +1,11 @@
 package com.empowerops.volition.ref_oasis.model
 
 import com.empowerops.volition.dto.NodeStatusCommandOrResponseDTO
+import com.empowerops.volition.dto.RunResult
 import com.google.common.annotations.VisibleForTesting
 import com.google.common.eventbus.EventBus
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
 import java.time.Duration
 import java.util.*
 
@@ -10,16 +13,25 @@ interface IssueFinder{
     fun findIssues() : List<Issue>
 }
 
+data class RunResults(
+        val uuid : UUID,
+        val evaluationResults: Channel<EvaluationResult> = Channel(UNLIMITED)
+)
+
 class ModelService(private val eventBus: EventBus, private val overwriteMode : Boolean) : IssueFinder {
     var simulations: List<Simulation> = emptyList()
         internal set
+
     var proxies: List<Proxy> = emptyList()
         private set
+
     @VisibleForTesting
     var resultList : Map<UUID, List<EvaluationResult>> = emptyMap()
         internal set
+
     var messageList : List<Message> = emptyList()
         private set
+
     @VisibleForTesting val updateTimeout = Duration.ofSeconds(5).toMillis()
 
     /**

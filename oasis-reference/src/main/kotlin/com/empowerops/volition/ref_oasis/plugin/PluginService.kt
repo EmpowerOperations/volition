@@ -6,8 +6,9 @@ import com.empowerops.volition.ref_oasis.front_end.ConsoleOutput
 import com.empowerops.volition.ref_oasis.model.*
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
-import javafx.application.Application.launch
-import kotlinx.coroutines.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.selects.select
 import org.funktionale.either.Either
 import java.util.*

@@ -21,17 +21,48 @@ interface IApiService {
     fun sendMessage(request: MessageCommandDTO): MessageResponseDTO
     fun updateNode(request: NodeStatusCommandOrResponseDTO): NodeChangeConfirmDTO
     fun resultRequest(request: ResultRequestDTO): ResultResponseDTO
-    fun requestStop(request: StopOptimizationCommandDTO): StopOptimizationResponseDTO
-    fun requestStart(request: StartOptimizationCommandDTO): StartOptimizationResponseDTO
     fun updateConfiguration(request: ConfigurationCommandDTO): ConfigurationResponseDTO
     fun autoConfigure(request: NodeStatusCommandOrResponseDTO): NodeChangeConfirmDTO
     fun changeNodeName(request: NodeNameChangeCommandDTO): NodeNameChangeResponseDTO
-    suspend fun stop()
-    fun start()
 }
 
-class ApiService(private val modelService: ModelService,
-                 private val stateMachine: RunStateMachine) : IApiService {
+interface IStaterStopper{
+    fun requestStop(request: StopOptimizationCommandDTO): StopOptimizationResponseDTO
+    fun requestStart(request: StartOptimizationCommandDTO): StartOptimizationResponseDTO
+    suspend fun stop()
+    suspend fun start()
+}
+
+class StarterStopper(private val stateMachine: RunStateMachine, private val modelService: ModelService) : IStaterStopper{
+    override fun requestStart(
+            request: StartOptimizationCommandDTO
+    ): StartOptimizationResponseDTO = StartOptimizationResponseDTO.newBuilder().apply {
+        val canStart = stateMachine.canStart()
+        var issues = modelService.findIssues()
+        if (!canStart) issues += Issue("Optimization are not able to start")
+        message = buildStartIssuesMessage(issues)
+        acknowledged = issues.isEmpty()
+    }.build()
+
+    override suspend fun start() {
+        stateMachine.start()
+    }
+
+    override fun requestStop(request: StopOptimizationCommandDTO): StopOptimizationResponseDTO {
+        return if(stateMachine.canStop()){
+            StopOptimizationResponseDTO.newBuilder().setRunID(request.id).build()
+        }
+        else{
+            StopOptimizationResponseDTO.newBuilder().setMessage(buildStopMessage()).build()
+        }
+    }
+
+    override suspend fun stop(){
+        stateMachine.stop()
+    }
+}
+
+class ApiService(private val modelService: ModelService) : IApiService {
 
     override fun register(request: RequestRegistrationCommandDTO, responseObserver: StreamObserver<RequestQueryDTO>) {
         modelService.addSim(Simulation(request.name, responseObserver)).let { added ->
@@ -72,19 +103,6 @@ class ApiService(private val modelService: ModelService,
         return NodeChangeConfirmDTO.newBuilder().setMessage(buildSimulationUpdateMessage(simulation, result)).build()
     }
 
-    override fun requestStop(request: StopOptimizationCommandDTO): StopOptimizationResponseDTO {
-        return if(stateMachine.canStop()){
-            StopOptimizationResponseDTO.newBuilder().setRunID(request.id).build()
-        }
-        else{
-            StopOptimizationResponseDTO.newBuilder().setMessage(buildStopMessage()).build()
-        }
-    }
-
-    override suspend fun stop(){
-        stateMachine.stop()
-    }
-
     override fun resultRequest(request: ResultRequestDTO): ResultResponseDTO = ResultResponseDTO.newBuilder().apply {
         when (val list = modelService.resultList[UUID.fromString(request.runID)]) {
             null -> message = buildRunNotFoundMessage(request.runID)
@@ -98,22 +116,6 @@ class ApiService(private val modelService: ModelService,
             }.build()
         }
     }.build()
-
-    override fun requestStart(
-            request: StartOptimizationCommandDTO
-    ): StartOptimizationResponseDTO = StartOptimizationResponseDTO.newBuilder().apply {
-        val canStart = stateMachine.canStart(modelService)
-        var issues = modelService.findIssues()
-        if (!canStart) issues += Issue("Optimization are not able to start")
-        message = buildStartIssuesMessage(issues)
-        acknowledged = issues.isEmpty()
-    }.build()
-
-    override fun start() {
-        GlobalScope.launch {
-            stateMachine.start(modelService)
-        }
-    }
 
     override fun updateConfiguration(request: ConfigurationCommandDTO): ConfigurationResponseDTO =
             modelService.setTimeout(request.name, ofMillis(request.config.timeout)).let { setupResult ->

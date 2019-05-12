@@ -19,6 +19,7 @@ import picocli.CommandLine
 import picocli.CommandLine.Command
 import picocli.CommandLine.Option
 import java.io.IOException
+import java.util.concurrent.Callable as Callable1
 
 /**
  * TODO: Add a main not using javafx for headless
@@ -46,7 +47,7 @@ class OptimizerStarter : Application() {
                     commandLine.printVersionHelp(System.out)
                     Platform.exit()
                 }
-                else -> optimizer.start(primaryStage) //question: how should we handle close when in server mode
+                else -> optimizer.start(primaryStage) //question: how should we handleRun close when in server mode
             }
         } catch (e: CommandLine.ParameterException) {
             System.err.println(e.message)
@@ -74,6 +75,7 @@ class Optimizer {
     private lateinit var evaluationEngine: IEvaluationEngine
     private lateinit var inputGenerator: InputGenerator
     private lateinit var stateMachine: RunStateMachine
+    private lateinit var starterStopper: IStaterStopper
 
 
     private val eventBus: EventBus = EventBus()
@@ -91,8 +93,8 @@ class Optimizer {
     private fun setup() {
         modelService = ModelService(eventBus, overwrite)
         pluginService = PluginService(modelService, logger, eventBus)
-        stateMachine = RunStateMachine()
-        evaluationEngine = EvaluationEngine(modelService, eventBus, logger)
+        stateMachine = RunStateMachine(modelService)
+        evaluationEngine = EvaluationEngine(eventBus, logger)
         inputGenerator = RandomNumberOptimizer()
         optimizerService = OptimizerService(
                 eventBus,
@@ -102,8 +104,9 @@ class Optimizer {
                 stateMachine,
                 evaluationEngine
         )
-        apiService = ApiService(modelService, stateMachine)
-        optimizerEndpoint = OptimizerEndpoint(apiService, modelService)
+        starterStopper = StarterStopper( stateMachine , modelService)
+        apiService = ApiService(modelService)
+        optimizerEndpoint = OptimizerEndpoint(apiService, starterStopper, modelService)
         server = NettyServerBuilder.forPort(port).addService(ServerInterceptors.intercept(optimizerEndpoint, LoggingInterceptor(logger))).build()
     }
 

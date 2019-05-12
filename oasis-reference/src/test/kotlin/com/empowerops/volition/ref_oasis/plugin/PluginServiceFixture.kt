@@ -190,12 +190,12 @@
 //    }
 //
 //    @Test
-//    fun `when notifying start but failed should handle the error`() {
+//    fun `when notifying start but failed should handleRun the error`() {
 //
 //    }
 //
 //    @Test
-//    fun `when notifying stop but failed should handle the error`() {
+//    fun `when notifying stop but failed should handleRun the error`() {
 //
 //    }
 //
@@ -313,7 +313,7 @@
 //
 //        //act
 //        val deferredResult = service.evaluateAsync(Proxy("Node1"), inputVector, forceStopSignal)
-//        forceStopSignal.completableDeferred.complete(Unit)
+//        forceStopSignal.forceStopped.complete(Unit)
 //        val result = deferredResult.await()
 //
 //        //assert
@@ -393,7 +393,7 @@
 //        //act
 //        val forceStopSignal = ForceStopSignal("Node1")
 //        val deferredResult = service.cancelCurrentEvaluationAsync(Proxy("Node1"), forceStopSignal)
-//        forceStopSignal.completableDeferred.complete(Unit)
+//        forceStopSignal.forceStopped.complete(Unit)
 //        val result = deferredResult.await()
 //
 //        //verify

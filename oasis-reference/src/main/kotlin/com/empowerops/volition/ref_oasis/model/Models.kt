@@ -61,8 +61,6 @@ sealed class EvaluationResult(
     ): EvaluationResult(name, inputs)
 }
 
-
-
 sealed class CancelResult {
     data class Canceled(val name: String) : CancelResult()
     data class CancelFailed(val name: String, val exception: String) : CancelResult()
@@ -92,7 +90,7 @@ data class Simulation(
 
 data class ForceStopSignal(
         override val name: String,
-        val completableDeferred : CompletableDeferred<Unit> = CompletableDeferred()
+        val forceStopped : CompletableDeferred<Unit> = CompletableDeferred()
 ): Nameable
 
 data class Proxy(
@@ -103,12 +101,5 @@ data class Proxy(
 ) : Nameable
 
 data class Issue(val message: String)
-
-
-class Helpers{
-    companion object {
-        val NullUUID = UUID(0,0)
-    }
-}
 
 

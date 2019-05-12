@@ -19,14 +19,11 @@ import javafx.scene.input.KeyCode
 import javafx.scene.layout.AnchorPane
 import javafx.scene.layout.VBox
 import javafx.util.converter.DoubleStringConverter
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.*
 import kotlinx.coroutines.javafx.JavaFx
-import kotlinx.coroutines.launch
 import tornadofx.*
 import java.lang.IllegalStateException
 import java.time.Duration
-import java.util.*
 
 class OptimizerController {
     /**
@@ -253,16 +250,19 @@ class OptimizerController {
     @FXML fun startStopClicked() = GlobalScope.launch(Dispatchers.JavaFx) {
         when (runStateMachine.currentState){
             State.Idle -> {
-                val canStart = runStateMachine.canStart(modelService)
-                if(canStart){
-                    runStateMachine.start()
-                }
-                else{
-                    val alert = Alert(Alert.AlertType.ERROR)
-                    alert.title = "Error"
-                    alert.headerText = "Can not start"
-                    alert.contentText = buildStartIssuesMessage(modelService.findIssues())
-                    alert.showAndWait()
+                val startResult = CompletableDeferred<RunStateMachine.StartResult>()
+                runStateMachine.start(startResult)
+                when(startResult.await()){
+                    is RunStateMachine.StartResult.Success -> {
+                        //NOOP
+                    }
+                    is RunStateMachine.StartResult.Failed -> {
+                        val alert = Alert(Alert.AlertType.ERROR)
+                        alert.title = "Error"
+                        alert.headerText = "Can not start"
+                        alert.contentText = buildStartIssuesMessage(modelService.findIssues())
+                        alert.showAndWait()
+                    }
                 }
             }
             State.Running, State.PausePending, State.Paused -> runStateMachine.stop()

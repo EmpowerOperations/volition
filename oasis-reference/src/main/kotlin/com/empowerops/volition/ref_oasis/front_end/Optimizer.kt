@@ -2,7 +2,6 @@ package com.empowerops.volition.ref_oasis.front_end
 
 import com.empowerops.volition.dto.LoggingInterceptor
 import com.empowerops.volition.ref_oasis.model.ModelService
-import com.empowerops.volition.ref_oasis.model.RunResources
 import com.empowerops.volition.ref_oasis.optimizer.*
 import com.empowerops.volition.ref_oasis.plugin.PluginService
 import com.google.common.eventbus.EventBus
@@ -13,7 +12,6 @@ import javafx.application.Application
 import javafx.application.Platform
 import javafx.scene.Scene
 import javafx.stage.Stage
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.runBlocking
 import picocli.CommandLine
 import picocli.CommandLine.Command
@@ -104,7 +102,7 @@ class Optimizer {
                 stateMachine,
                 evaluationEngine
         )
-        starterStopper = StarterStopper( stateMachine , modelService)
+        starterStopper = StarterStopper(stateMachine)
         apiService = ApiService(modelService)
         optimizerEndpoint = OptimizerEndpoint(apiService, starterStopper, modelService)
         server = NettyServerBuilder.forPort(port).addService(ServerInterceptors.intercept(optimizerEndpoint, LoggingInterceptor(logger))).build()

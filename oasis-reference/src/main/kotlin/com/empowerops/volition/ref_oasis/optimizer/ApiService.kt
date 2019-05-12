@@ -2,12 +2,10 @@ package com.empowerops.volition.ref_oasis.optimizer
 
 import com.empowerops.volition.dto.*
 import com.empowerops.volition.ref_oasis.model.*
-import com.empowerops.volition.ref_oasis.toUUIDOrNull
 import io.grpc.Status
 import io.grpc.StatusException
 import io.grpc.stub.StreamObserver
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.CompletableDeferred
 import java.time.Duration
 import java.time.Duration.*
 import java.util.*
@@ -27,38 +25,30 @@ interface IApiService {
 }
 
 interface IStaterStopper{
-    fun requestStop(request: StopOptimizationCommandDTO): StopOptimizationResponseDTO
-    fun requestStart(request: StartOptimizationCommandDTO): StartOptimizationResponseDTO
-    suspend fun stop()
-    suspend fun start()
+    suspend fun stop(request: StopOptimizationCommandDTO): StopOptimizationResponseDTO
+    suspend fun start(request: StartOptimizationCommandDTO): StartOptimizationResponseDTO
 }
 
-class StarterStopper(private val stateMachine: RunStateMachine, private val modelService: ModelService) : IStaterStopper{
-    override fun requestStart(
-            request: StartOptimizationCommandDTO
-    ): StartOptimizationResponseDTO = StartOptimizationResponseDTO.newBuilder().apply {
-        val canStart = stateMachine.canStart()
-        var issues = modelService.findIssues()
-        if (!canStart) issues += Issue("Optimization are not able to start")
-        message = buildStartIssuesMessage(issues)
-        acknowledged = issues.isEmpty()
-    }.build()
-
-    override suspend fun start() {
-        stateMachine.start()
+class StarterStopper(private val stateMachine: RunStateMachine) : IStaterStopper{
+    override suspend fun start(request: StartOptimizationCommandDTO) : StartOptimizationResponseDTO {
+        val result = CompletableDeferred<RunStateMachine.StartResult>()
+        stateMachine.start(result)
+        val results: RunStateMachine.StartResult = result.await()
+        return StartOptimizationResponseDTO.newBuilder().apply {
+            when(results){
+                is RunStateMachine.StartResult.Success ->  runID = results.runID.toString()
+                is RunStateMachine.StartResult.Failed -> issues =  buildStartIssuesMessage(results.issues)
+            }
+        }.build()
     }
 
-    override fun requestStop(request: StopOptimizationCommandDTO): StopOptimizationResponseDTO {
-        return if(stateMachine.canStop()){
+    override suspend fun stop(request: StopOptimizationCommandDTO) : StopOptimizationResponseDTO{
+        return if(stateMachine.stop()){
             StopOptimizationResponseDTO.newBuilder().setRunID(request.id).build()
         }
         else{
             StopOptimizationResponseDTO.newBuilder().setMessage(buildStopMessage()).build()
         }
-    }
-
-    override suspend fun stop(){
-        stateMachine.stop()
     }
 }
 

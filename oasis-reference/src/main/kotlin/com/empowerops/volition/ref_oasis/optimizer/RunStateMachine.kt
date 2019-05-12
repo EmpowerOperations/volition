@@ -1,9 +1,13 @@
 package com.empowerops.volition.ref_oasis.optimizer
 
+import com.empowerops.volition.ref_oasis.model.Issue
 import com.empowerops.volition.ref_oasis.model.ModelService
 import com.empowerops.volition.ref_oasis.model.RunResources
 import com.empowerops.volition.ref_oasis.optimizer.State.*
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.coroutineScope
 import java.util.*
 
 sealed class State {
@@ -17,8 +21,8 @@ sealed class State {
 }
 
 interface StateMachineControl{
-    suspend fun start()
-    suspend fun stop()
+    suspend fun start(completableDeferred: CompletableDeferred<RunStateMachine.StartResult>)
+    suspend fun stop(): Boolean
 }
 
 class RunStateMachine(val modelService: ModelService) : StateMachineControl {
@@ -80,15 +84,26 @@ class RunStateMachine(val modelService: ModelService) : StateMachineControl {
         return true
     }
 
-    override suspend fun start(){
-        if (!canStart()) return
-        states.send(StartPending)
-        runResources.send(RunResources(UUID.randomUUID()))
+    sealed class StartResult {
+        data class Success(val runID : UUID) : StartResult()
+        data class Failed(val issues : List<Issue>) : StartResult()
     }
 
-    override suspend fun stop() {
-        if (!canStop()) return
+    override suspend fun start(result : CompletableDeferred<StartResult>) {
+        if (!canStart()) {
+            result.complete(StartResult.Failed(modelService.findIssues()))
+        }
+
+        states.send(StartPending)
+        val runID = UUID.randomUUID()
+        result.complete(StartResult.Success(runID))
+        runResources.send(RunResources(runID))
+    }
+
+    override suspend fun stop() : Boolean {
+        if (!canStop()) return false
         states.send(StopPending)
+        return true
     }
 
     suspend fun pause() {

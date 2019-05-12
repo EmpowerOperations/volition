@@ -162,9 +162,12 @@ message RequestQueryDTO {
 message StartOptimizationCommandDTO {
     string name = 1;
 }
+
 message StartOptimizationResponseDTO {
-    string message = 1;
-    bool acknowledged = 2;
+    oneof response{
+        string issues = 1;
+        string runID = 2;
+    }
 }
 
 //stopOptimization

@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import picocli.CommandLine
 import picocli.CommandLine.*
+import java.util.*
 
 fun main(args: Array<String>) {
     run<Runnable>(OptimizationActor(), *args)
@@ -49,17 +50,17 @@ class OptimizationActor : Runnable{
     }
 }
 
-
-
 class SimpleStarterStopper(val evaluationEngine : EvaluationEngine, val modelService: ModelService) : IStaterStopper{
-    val result : MutableList<RunConfiguration.SingleSimluationConfiguraion> = mutableListOf()
-    override fun requestStop(request: StopOptimizationCommandDTO): StopOptimizationResponseDTO {
+    val result : MutableMap<UUID, RunConfiguration.SingleSimluationConfiguraion> = mutableMapOf()
+    override suspend fun stop(request: StopOptimizationCommandDTO): StopOptimizationResponseDTO {
         //DO stop via signal
-        result.singleOrNull{it.proxy.name == request.name}?.stopRequested?.complete(Unit)
+        val fromString = UUID.fromString(request.id)
+        require(fromString in result.keys)
+        result.getValue(fromString).stopRequested.complete(Unit)
         return StopOptimizationResponseDTO.newBuilder().setMessage("").build()
     }
 
-    override fun requestStart(request: StartOptimizationCommandDTO): StartOptimizationResponseDTO {
+    override suspend fun start(request: StartOptimizationCommandDTO): StartOptimizationResponseDTO {
         //TODO start a new runner
         val configuration = RunConfiguration.SingleSimluationConfiguraion(
                 simulation =  modelService.simulations.getValue(request.name),
@@ -67,17 +68,10 @@ class SimpleStarterStopper(val evaluationEngine : EvaluationEngine, val modelSer
                 run =  1,
                 iteration = 15
         )
-        result += configuration
+
         GlobalScope.launch{Runner(evaluationEngine).run(configuration)}
-        return StartOptimizationResponseDTO.newBuilder().setAcknowledged(true).build()
+        val randomUUID = UUID.randomUUID()
+        result += randomUUID to configuration
+        return StartOptimizationResponseDTO.newBuilder().setRunID(randomUUID.toString()).build()
     }
-
-    override suspend fun stop() {
-       //NOOP
-    }
-
-    override suspend fun start() {
-       //NOOP
-    }
-
 }

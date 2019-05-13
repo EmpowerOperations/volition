@@ -160,10 +160,9 @@ class OptimizerService(
                                 forceStopSignal
                         )
                 )
-                eventBus.post(BasicStatusUpdateEvent("Evaluating: ${proxy.name} ($index/${modelService.proxies.size})"))
+                eventBus.post(BasicStatusUpdateEvent("Evaluating: ${proxy.name} (${index+1}/${modelService.proxies.size})"))
                 select<Unit> {
                     currentIteration.evaluationResult.onReceive { result ->
-                        eventBus.post(BasicStatusUpdateEvent("Evaluation finished."))
                         modelService.addNewResult(runResources.runID, result)
                     }
                     runResources.forceStops.onReceive {
@@ -174,6 +173,7 @@ class OptimizerService(
                         }
                     }
                 }
+                eventBus.post(BasicStatusUpdateEvent("Evaluation finished."))
                 if (stateMachine.currentState == PausePending) {
                     stateMachine.states.send(Paused)
                     select<Unit> {

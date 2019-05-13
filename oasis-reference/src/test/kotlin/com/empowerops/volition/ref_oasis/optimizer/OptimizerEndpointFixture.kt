@@ -44,7 +44,7 @@ class OptimizerEndpointFixture {
     fun setup() {
         runStateMachine = mock()
         modelService = mock()
-        endpoint = ApiService(modelService, runStateMachine)
+        endpoint = ApiService(modelService)
     }
 
 //    @TestFactory
@@ -239,7 +239,7 @@ class OptimizerEndpointFixture {
         )
 
         whenever(model.simulations).thenReturn(listOf(simulation))
-        val apiService = ApiService(model, mock())
+        val apiService = ApiService(model)
 
         //act
         val offerResult = apiService.offerResult(request)
@@ -267,7 +267,7 @@ class OptimizerEndpointFixture {
         )
 
         whenever(model.simulations).thenReturn(listOf(simulation))
-        val apiService = ApiService(model, mock())
+        val apiService = ApiService(model)
 
         //act
         val offerResult = apiService.offerConfig(request)
@@ -295,7 +295,7 @@ class OptimizerEndpointFixture {
         )
 
         whenever(model.simulations).thenReturn(listOf(simulation))
-        val apiService = ApiService(model, mock())
+        val apiService = ApiService(model)
 
         //act
         val offerResult = apiService.offerError(request)

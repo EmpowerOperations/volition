@@ -26,6 +26,7 @@ class SystemTest {
     private lateinit var modelService: ModelService
     private lateinit var optimizerService: OptimizerService
     private lateinit var stateMachine: RunStateMachine
+    private lateinit var starterStopper: StarterStopper
     private lateinit var eventBus: EventBus
 
     private val unregisterDTO = RequestUnRegistrationRequestDTO.newBuilder().setName("N1").build()
@@ -57,6 +58,7 @@ class SystemTest {
         val evaluationEngine = EvaluationEngine(eventBus, logger)
         val fixValueOptimizer = FixValueOptimizer(5.0)
         stateMachine = RunStateMachine(modelService)
+        starterStopper = StarterStopper(stateMachine)
         optimizerService = OptimizerService(
                 eventBus,
                 modelService,
@@ -65,11 +67,11 @@ class SystemTest {
                 stateMachine,
                 evaluationEngine
         )
-        val apiService = ApiService(modelService, stateMachine)
+        val apiService = ApiService(modelService)
         runBlocking {
             stateMachine.initService(optimizerService)
         }
-        return OptimizerEndpoint(apiService, modelService)
+        return OptimizerEndpoint(apiService, starterStopper, modelService)
     }
 
     private fun List<Message>.toDebugString(): String = this.joinToString(separator = "\n") { with(it) { "$sender > $message" } }
@@ -326,10 +328,9 @@ class SystemTest {
                 { endpoint.offerSimulationResult(resultResponse, mock()) },
                 { endpoint.offerSimulationResult(resultResponse, mock()) },
                 { endpoint.stopOptimization(stopRequest, mock()) },
-                { runBlocking{awaitOnEvent<RunStoppedEvent> {endpoint.offerSimulationResult(resultResponse, mock())}} },
+                { runBlocking { awaitOnEvent<RunStoppedEvent> { endpoint.offerSimulationResult(resultResponse, mock()) } } },
                 { }
         ))
-
 
 
         val runIDString = feedAndBuildResponseList.first().startRequest.runID
@@ -672,11 +673,10 @@ class SystemTest {
 
         //assert
         verify(responseObserver, times(1)).onNext(check {
-            assertThat(it.acknowledged).isFalse()
-            assertThat(it.message).isEqualTo("Optimization cannot start: " +
+            assertThat(it.issues).isEqualTo("Optimization cannot start: " +
                     "${Issue(message = "No proxy setup")}, " +
-                    "${Issue(message = "Not used Simulation: Simulation \"N3\" are not used in any proxy setup")}, " +
-                    "${Issue(message = "Optimization are not able to start")}")
+                    "${Issue(message = "Not used Simulation: Simulation \"N3\" are not used in any proxy setup")}"
+            )
         })
     }
 }

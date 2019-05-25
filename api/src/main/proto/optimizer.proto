@@ -7,6 +7,7 @@ option csharp_namespace = "EmpowerOps.Volition.DTO";
 
 package empowerops.volition.api;
 
+import "google/protobuf/duration.proto";
 import "google/protobuf/wrappers.proto";
 
 service Optimizer {
@@ -96,7 +97,7 @@ message ConfigurationCommandDTO {
     string name = 1;
     Config config = 2;
     message Config{
-        int64 timeout = 2;
+        google.protobuf.Duration timeout = 2;
     }
 }
 
@@ -161,6 +162,14 @@ message RequestQueryDTO {
 //startOptimization
 message StartOptimizationCommandDTO {
     string name = 1;
+    RunConfiguration runConfig = 2;
+}
+
+message RunConfiguration {
+    uint32 runNumber = 1;
+    google.protobuf.Duration runTime = 2;
+    uint32 iterationNumber = 3;
+    double targetValue = 4;
 }
 
 message StartOptimizationResponseDTO {

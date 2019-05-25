@@ -43,7 +43,7 @@ data class Run(
 )
 
 sealed class RunConfiguration {
-    data class SingleSimluationConfiguraion(
+    data class SingleSimulationConfiguration(
             val simulation: Simulation,
             val proxy : Proxy,
             val run : Int? = null,

@@ -4,16 +4,16 @@ import com.empowerops.volition.dto.*
 import com.empowerops.volition.ref_oasis.model.ModelService
 import com.empowerops.volition.ref_oasis.model.getValue
 import com.empowerops.volition.ref_oasis.optimizer.*
-import com.empowerops.volition.ref_oasis.optimzier_cloud.Runner
+import com.empowerops.volition.ref_oasis.optimizer.RunConfiguration
+import com.empowerops.volition.ref_oasis.optimzier_basic.Runner
 import com.google.common.eventbus.EventBus
 import io.grpc.ServerInterceptors
 import io.grpc.netty.shaded.io.grpc.netty.NettyServerBuilder
-import io.grpc.stub.StreamObserver
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import picocli.CommandLine
 import picocli.CommandLine.*
+import java.time.Duration
 import java.util.*
 
 fun main(args: Array<String>) {
@@ -50,8 +50,12 @@ class OptimizationActor : Runnable{
     }
 }
 
-class SimpleStarterStopper(val evaluationEngine : EvaluationEngine, val modelService: ModelService) : IStaterStopper{
-    val result : MutableMap<UUID, RunConfiguration.SingleSimluationConfiguraion> = mutableMapOf()
+class SimpleStarterStopper(
+        private val evaluationEngine : EvaluationEngine,
+        val modelService: ModelService
+) : IStaterStopper{
+    val result : MutableMap<UUID, RunConfiguration.SingleSimulationConfiguration> = mutableMapOf()
+
     override suspend fun stop(request: StopOptimizationCommandDTO): StopOptimizationResponseDTO {
         //DO stop via signal
         val fromString = UUID.fromString(request.id)
@@ -62,11 +66,13 @@ class SimpleStarterStopper(val evaluationEngine : EvaluationEngine, val modelSer
 
     override suspend fun start(request: StartOptimizationCommandDTO): StartOptimizationResponseDTO {
         //TODO start a new runner
-        val configuration = RunConfiguration.SingleSimluationConfiguraion(
+        val configuration = RunConfiguration.SingleSimulationConfiguration(
                 simulation =  modelService.simulations.getValue(request.name),
                 proxy =   modelService.proxies.getValue(request.name),
-                run =  1,
-                iteration = 15
+                run =  request.runConfig.runNumber,
+                runTime =  ofSecondOrNull(request.runConfig.runTime.seconds), // is this type safe, what happen when null or non given, how json duration is treated
+                iteration =  request.runConfig.iterationNumber,
+                target =  request.runConfig.targetValue
         )
 
         GlobalScope.launch{Runner(evaluationEngine).run(configuration)}
@@ -75,3 +81,5 @@ class SimpleStarterStopper(val evaluationEngine : EvaluationEngine, val modelSer
         return StartOptimizationResponseDTO.newBuilder().setRunID(randomUUID.toString()).build()
     }
 }
+
+fun ofSecondOrNull(second: Long?) : Duration? = second?.let { Duration.ofSeconds(it) }

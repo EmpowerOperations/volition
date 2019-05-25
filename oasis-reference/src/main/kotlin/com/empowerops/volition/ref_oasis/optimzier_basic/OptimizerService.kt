@@ -1,4 +1,4 @@
-package com.empowerops.volition.ref_oasis.optimzier_cloud
+package com.empowerops.volition.ref_oasis.optimzier_basic
 
 import com.empowerops.volition.ref_oasis.model.EvaluationResult
 import com.empowerops.volition.ref_oasis.model.ForceStopSignal
@@ -28,9 +28,9 @@ data class Optimizer(val problemDefinition: RunConfiguration){
 }
 
 /**
- * Scalable configuration, stateless, in and out
- * Most basic runner, no state, no UI
- * Issues start, force stop, with configuraion
+ * The goal for this is explore a simpler run request
+ * - this is no extra control on start stop because there is no state and I want to explore the cancellation with coroutine cancel for stop
+ * - more api looking for start option will be added late (TODO)
  */
 class Runner(val evaluationEngine : EvaluationEngine){
     suspend fun run(job : RunConfiguration) = coroutineScope{
@@ -43,7 +43,7 @@ class Runner(val evaluationEngine : EvaluationEngine){
             results: Channel<EvaluationResult>
     ) = launch {
         when (configuration) {
-            is RunConfiguration.SingleSimluationConfiguraion -> {
+            is RunConfiguration.SingleSimulationConfiguration -> {
                 launch { evaluationEngine.handleEvaluation(requests, results) }
                 startRun(configuration, requests, results)
             }
@@ -51,7 +51,7 @@ class Runner(val evaluationEngine : EvaluationEngine){
     }
 
     private fun CoroutineScope.startRun(
-            configuration: RunConfiguration.SingleSimluationConfiguraion,
+            configuration: RunConfiguration.SingleSimulationConfiguration,
             requests: SendChannel<EvaluationRequest>,
             results: ReceiveChannel<EvaluationResult>
     ) = launch {

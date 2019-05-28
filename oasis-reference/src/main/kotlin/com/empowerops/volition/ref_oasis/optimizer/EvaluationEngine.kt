@@ -50,8 +50,7 @@ sealed class RunConfiguration {
             val iteration: Int? = null,
             val target: Double? = null,
             val runTime: Duration? = null,
-            val results: SendChannel<EvaluationResult> = Channel(UNLIMITED),
-            val stopRequested: CompletableDeferred<Unit> = CompletableDeferred()
+            val results: SendChannel<EvaluationResult> = Channel(UNLIMITED)
     ) : RunConfiguration()
 }
 

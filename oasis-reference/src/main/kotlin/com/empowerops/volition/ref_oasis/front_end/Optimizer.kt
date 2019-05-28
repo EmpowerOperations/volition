@@ -73,7 +73,7 @@ class Optimizer {
     private lateinit var evaluationEngine: IEvaluationEngine
     private lateinit var inputGenerator: InputGenerator
     private lateinit var stateMachine: RunStateMachine
-    private lateinit var starterStopper: IStaterStopper
+    private lateinit var starterStopper: IRunBehavior
 
 
     private val eventBus: EventBus = EventBus()

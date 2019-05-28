@@ -6,12 +6,10 @@ import com.empowerops.volition.ref_oasis.model.hasName
 import io.grpc.Status
 import io.grpc.StatusRuntimeException
 import io.grpc.stub.StreamObserver
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 class OptimizerEndpoint(
         private val apiService: IApiService,
-        private val startStopper: IStaterStopper,
+        private val runner: IRunBehavior,
         private val modelService: ModelService
 ) : OptimizerGrpc.OptimizerImplBase() {
 
@@ -63,7 +61,7 @@ class OptimizerEndpoint(
             responseObserver: StreamObserver<StartOptimizationResponseDTO>
     ) = responseObserver.consumeAsync {
         checkThenRun(modelService.simulations.hasName(request.name)) {
-            startStopper.start(request)
+            runner.start(request)
         }
     }
 
@@ -72,7 +70,7 @@ class OptimizerEndpoint(
             responseObserver: StreamObserver<StopOptimizationResponseDTO>
     ) = responseObserver.consumeAsync {
         checkThenRun(modelService.simulations.hasName(request.name)) {
-            startStopper.stop(request)
+            runner.stop(request)
         }
     }
 

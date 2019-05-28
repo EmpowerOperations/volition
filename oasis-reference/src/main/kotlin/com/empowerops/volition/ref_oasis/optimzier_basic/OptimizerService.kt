@@ -17,7 +17,7 @@ import kotlin.random.Random
 typealias DesignPoint = Map<String, Double>
 
 data class Optimizer(val problemDefinition: RunConfiguration){
-    val points: MutableList<DesignPoint> = mutableListOf()
+    private val points: MutableList<DesignPoint> = mutableListOf()
 
     fun addOutput(designInput: DesignPoint, designOutput: DesignPoint){
         points += (designInput + designOutput)
@@ -30,9 +30,8 @@ data class Optimizer(val problemDefinition: RunConfiguration){
 /**
  * The goal for this is explore a simpler run request
  * - this is no extra control on start stop because there is no state and I want to explore the cancellation with coroutine cancel for stop
- * - more api looking for start option will be added late (TODO)
  */
-class Runner(val evaluationEngine : EvaluationEngine){
+class Runner(private val evaluationEngine : EvaluationEngine){
     suspend fun run(job : RunConfiguration) = coroutineScope{
         driveRun(job, Channel(), Channel())
     }

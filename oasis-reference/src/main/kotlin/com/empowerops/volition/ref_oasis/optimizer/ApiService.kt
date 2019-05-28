@@ -24,12 +24,12 @@ interface IApiService {
     fun changeNodeName(request: NodeNameChangeCommandDTO): NodeNameChangeResponseDTO
 }
 
-interface IStaterStopper{
+interface IRunBehavior{
     suspend fun stop(request: StopOptimizationCommandDTO): StopOptimizationResponseDTO
     suspend fun start(request: StartOptimizationCommandDTO): StartOptimizationResponseDTO
 }
 
-class StarterStopper(private val stateMachine: RunStateMachine) : IStaterStopper{
+class StarterStopper(private val stateMachine: RunStateMachine) : IRunBehavior{
     override suspend fun start(request: StartOptimizationCommandDTO) : StartOptimizationResponseDTO {
         val result = CompletableDeferred<RunStateMachine.StartResult>()
         stateMachine.start(result)
@@ -108,10 +108,10 @@ class ApiService(private val modelService: ModelService) : IApiService {
     }.build()
 
     override fun updateConfiguration(request: ConfigurationCommandDTO): ConfigurationResponseDTO =
-            modelService.setTimeout(request.name, ofMillis(request.config.timeout)).let { setupResult ->
+            modelService.setTimeout(request.name, ofSeconds(request.config.timeout.seconds)).let { setupResult ->
                 ConfigurationResponseDTO.newBuilder().apply {
                     updated = setupResult
-                    message = buildUpdateMessage(request.name, ofMillis(request.config.timeout), setupResult)
+                    message = buildUpdateMessage(request.name, ofSeconds(request.config.timeout.seconds), setupResult)
                 }
             }.build()
 
@@ -142,7 +142,7 @@ internal fun buildRunNotFoundMessage(runID: String)
         = "Requested run ID $runID is not available"
 internal fun buildAutoSetupMessage(newNode: Simulation, updated: Boolean)
         = "Auto setup ${if (updated) "Succeed" else "Failed"} with inputs: ${newNode.inputs} outputs: ${newNode.outputs}"
-internal fun buildUpdateMessage(name: String, timeOut: Duration, updated: Boolean)
+internal fun buildUpdateMessage(name: String, timeOut: Duration?, updated: Boolean)
         = "Configuration update ${if (updated) "succeed with timeout: ${timeOut}ms" else "failed, there is no existing setup named $name."}"
 internal fun buildSimulationUpdateMessage(newNode: Simulation, updated: Boolean)
         = "Simulation updated ${if (updated) "succeed" else "failed"} with inputs: ${newNode.inputs} outputs: ${newNode.outputs}"

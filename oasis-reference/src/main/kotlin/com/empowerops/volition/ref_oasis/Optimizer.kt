@@ -7,7 +7,9 @@ import io.grpc.ServerBuilder
 import io.grpc.ServerInterceptors
 import io.grpc.netty.shaded.io.grpc.netty.GrpcSslContexts
 import io.grpc.netty.shaded.io.grpc.netty.NettyChannelBuilder
+import io.grpc.netty.shaded.io.grpc.netty.NettyServerBuilder
 import io.grpc.netty.shaded.io.netty.handler.ssl.SslContextBuilder
+import io.grpc.netty.shaded.io.netty.handler.ssl.SslProvider
 import javafx.application.Application
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
@@ -15,6 +17,7 @@ import javafx.scene.Scene
 import javafx.stage.Stage
 import org.conscrypt.Conscrypt
 import java.io.File
+import java.net.InetSocketAddress
 import java.security.KeyStore
 import java.security.Security
 import javax.net.ssl.KeyManagerFactory
@@ -24,7 +27,6 @@ fun main(args: Array<String>) {
 }
 
 class Optimizer : Application() {
-    lateinit var server: Server
     lateinit var endpoint: OptimizerEndpoint
     lateinit var modelService: DataModelService
     val eventBus: EventBus = EventBus()
@@ -38,15 +40,16 @@ class Optimizer : Application() {
         primaryStage.scene = Scene(root)
         primaryStage.show()
 
+        modelService = DataModelService(eventBus)
+        endpoint = OptimizerEndpoint(modelService, eventBus)
         setupService()
+
         val connectionView = ConnectionView(modelService, endpoint, eventBus)
 
         controller.setData(modelService, endpoint, eventBus, connectionView.root)
     }
 
     fun setupService() {
-        modelService = DataModelService(eventBus)
-        endpoint = OptimizerEndpoint(modelService, eventBus)
         Security.insertProviderAt(Conscrypt.newProvider(), 1)
 
 //        val providers = Security.getProviders()
@@ -67,13 +70,22 @@ class Optimizer : Application() {
 
         val caPathRoot = "C:\\Users\\Geoff\\Code\\volition\\sslcerts"
 
-        server = ServerBuilder
+        val server = ServerBuilder
                 .forPort(5550)
                 .useTransportSecurity(File("$caPathRoot/server.crt"), File("$caPathRoot/server.pem"))
                 .addService(ServerInterceptors.intercept(endpoint, LoggingInterceptor(System.out)))
                 .build()
 
 //        var another = NettyChannelBuilder.forAddress("127.0.0.1", 5550).build()
+
+//        val server = NettyServerBuilder.forAddress(InetSocketAddress("127.0.0.1", 5550))
+//                .addService(endpoint)
+//                .sslContext(
+//                        SslContextBuilder.forServer(File("$caPathRoot/server.crt"), File("$caPathRoot/server.pem"))
+//                                .let { GrpcSslContexts.configure(it, SslProvider.OPENSSL) }
+//                                .build()
+//                )
+//                .build()
 
         server.start()
     }

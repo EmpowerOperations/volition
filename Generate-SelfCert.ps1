@@ -6,6 +6,8 @@ Param(
 )
 
 Get-Command "openssl" -ErrorAction Stop
+# you can get this from choco with
+# choco install openssl-light
 
 # openSSL uses std-err like many unix apps as an INFO channel, 
 # so tell powershell to interpret that output as such. 
@@ -30,6 +32,8 @@ openssl req -new -key server.key -out server.csr -subj "/CN=$ServerCN"
 echo "Self-signed server certificate:"
 # Generates server.crt which is the certChainFile for the server
 openssl x509 -req -days 365 -in server.csr -CA ca.crt -CAkey ca.key -set_serial 01 -out server.crt
+
+
 
 echo "Generate client key"
 openssl genrsa -out client.key 4096

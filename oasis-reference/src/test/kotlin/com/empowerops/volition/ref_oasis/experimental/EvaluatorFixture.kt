@@ -2,9 +2,11 @@ package com.empowerops.volition.ref_oasis.experimental
 
 import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import kotlin.system.measureTimeMillis
 
+@Disabled("flapper")
 class EvaluatorFixture{
     //This should be excluded from this branch or put into language fixture with much simpler implementation
     @Test

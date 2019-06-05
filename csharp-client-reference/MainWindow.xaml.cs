@@ -66,14 +66,18 @@ namespace EmpowerOps.Volition.RefClient
                 {
                     Name = _name
                 });
-                if (startResponse.Acknowledged)
+                switch (startResponse.ResponseCase)
                 {
-                    Log($"{_serverPrefix} Start Reqeust received - awating run ID");
-                }
-                else
-                {
-                    MessageBox.Show($"Optimizer can not start the run. {Environment.NewLine}Issues: {startResponse.Message}");
-                    Log($"{_serverPrefix} {startResponse.Message}");
+                    case StartOptimizationResponseDTO.ResponseOneofCase.RunID:
+                        Log($"{_serverPrefix} Start Reqeust received, running {startResponse.RunID}");                        
+                        break;
+                    case StartOptimizationResponseDTO.ResponseOneofCase.Issues:
+                        MessageBox.Show($"Optimizer can not start the run. {Environment.NewLine}Issues: {startResponse.Issues}");
+                        Log($"{_serverPrefix} {startResponse.Issues}");
+                        break;
+                    case StartOptimizationResponseDTO.ResponseOneofCase.None:
+                    default: 
+                        throw new NotImplementedException($"unknown response {startResponse.ResponseCase}");
                 }
             }
             catch (RpcException exception)
@@ -111,11 +115,10 @@ namespace EmpowerOps.Volition.RefClient
                 Name = _name,
                 Config = new ConfigurationCommandDTO.Types.Config
                 {
-                    Timeout = timeout
+                    Timeout = Google.Protobuf.WellKnownTypes.Duration.FromTimeSpan(TimeSpan.FromMilliseconds(timeout)) 
                 }
             });
             Log($"{_serverPrefix} {configurationResponseDto.Message}");
-
         }
 
         private void ClearTimeout_Click(object sender, RoutedEventArgs e)
@@ -126,7 +129,7 @@ namespace EmpowerOps.Volition.RefClient
                 Name = _name,
                 Config = new ConfigurationCommandDTO.Types.Config
                 {
-                    Timeout = 0
+                    Timeout = Google.Protobuf.WellKnownTypes.Duration.FromTimeSpan(TimeSpan.Zero)
                 }
             });
             MessageBox.Show("Timeout cleared");

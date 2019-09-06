@@ -6,10 +6,11 @@ import com.google.common.eventbus.EventBus
 import com.nhaarman.mockitokotlin2.*
 import io.grpc.stub.StreamObserver
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
-internal class OptimizerFixture {
-    @Test
+class OptimizerFixture {
+    @Test @Disabled("pending proper testing regime from geoff!")
     fun `when optimizer ask to register a node register`() {
         //setup
         val eventBus = mock<EventBus>()

@@ -12,12 +12,12 @@ To use the volition API, two components must be run:
 
 ![architecture overview](docs/architecture-overview.jpg)
 
-The Volition API is rooted in the `optimizer.grpc` document that is used to generate Python, C#, and Java code for use in the Python, .net, and jvm runtime environments respectively. This means that to build a component against this API from source, the following steps must be performed:
+The Volition API is rooted in the `optimizer.grpc` document that is used to generate Python, C#, Java and cross-platform C++ code for use in the Python, .net, jvm, and llvm/mscrt runtime environments respectively. This means that to build a component against this API from source, the following steps must be performed:
 
-> Python support is planned, but not yet supported. 
+> Python and C++ support is planned, but not yet built.
 
-1. use `optimizer.grpc` to generate the appropriate language code (C# for .net, java for jvm) 
-2. download and assemble the runtime dependencies of that generate code (namely, `protobuf.dll/.jar`, `grpc.dll/.jar`)
+1. use `optimizer.grpc` to generate the appropriate language code (C# for .net, java for jvm, etc) 
+2. download and assemble the runtime dependencies of that generate code (namely, `protobuf.dll/.jar`, `grpc.dll/.jar`, etc)
 3. compile the generated code to an output binary (`EmpowerOps.Volition.Api.dll` or `volition-api.jar`)
 4. add that output binary to be a dependency of the plugin you wish to build
 5. compile your simulator client to a runnable form (eg `csharp-client-reference` to `EmpowerOps.Volition.RefClient.exe` in `csharp-client-reference\bin\Debug`)
@@ -33,6 +33,7 @@ To start building a simulator client to OASIS you will want to refer to one of t
 
 type | language-env | Folder | Artifact 
 --- | --- | --- | --- 
+api | any C++ | **TBD** | **TBD**
 api | .net | `/api/build/dotnet-bin` | `EmpowerOps.Volition.Api.dll`
 api | jvm | `/api/build/libs` | `volition-api-0.1.jar`
 api | python | `/api` **TBD** | **TBD** `optimizer-reference.pylib`
@@ -48,50 +49,13 @@ You can download a copy of prebuilt reference binaries from the [releases](https
 
 **TBD: links to published nuget/maven/pip packages**
 
-## Build the Volition API ## 
+## Running Volition ##
 
-To build the API binaries yourself: 
-
-1. run `gradlew assemble`
-
-   This will generate C# and Java code in `api\build\generated\source\proto\main`
-  
-   It will also compile the java code to generate `volition-api-0.1.jar` in `api\build\libs. This will be used by the optimizer-server.
-   
-   > unfortunately this step will not generate `EmpowerOps.Volition.API.dll` because of a technical limitation of gradle: It currently does not support C#. Thus we must manually open visual studio to generate it ourselves.   
-   
-2. run _Visual Studio_, open `volition.sln`,   
-
-   Note this solution contains both the simulator-client "ClientRef" and Volition API "Api" projects. 
-   
-3. Build `EmpowerOps.Volition.Api`
-
-   this will generate the `EmpowerOps.Volitiion.API.dll` .net assembly in `api\build\dotnet-bin\`. The other files in that folder are windows and linux runtime dependencies. These will be used by the simulator-client. 
-
-### Build the reference client ###
-
-Once you have the API binaries built you can build and run a reference simulator client
-
-1. run _Visual Studio_, open `volition.sln`
-
-2. Build `EmpowerOps.Volition.ClientRef`
-
-   this will generate a runnable executable `EmpowerOps.Volition.RefClient.exe` in `csharp-client-reference\bin\Debug`
-
-
-### Build the reference optimizer ###
-
-Once you have the API binaries built you can also build and run the reference optimizer server:
-
-1. run `gradlew assemble`
-
-   this will generate `oasis-reference-0.1.jar` in `oasis-reference\build\libs`
-
-2. run `oasis-reference/ref-opt.exe`, which will in turn load and run the newly reference optimizer
+Please take a look at the [Releases](https://github.com/EmpowerOperations/volition/releases) for reference binaries. You can also see the steps below to build the reference binaries. 
 
 ### Running an optimization with the reference client ###
 
-Once you have built and run the reference simulator client and reference optimizer server you should see two windows: 
+Once you have run the reference simulator client and reference optimizer server you should see two windows: 
 
 ![ref-opt and ref-client side-by-side](docs/ref-optimizer-and-ref-client.png?raw=true)
 
@@ -126,6 +90,64 @@ You should see something similar to below.
 ![running reference optimization](docs/running-reference-optimization.png?raw=true)
 
 This demonstrates the reference client and reference optimizer performing an optimization of the reference simulator client over the volution API for two variables and one objective. 
+
+### Running an optimization with OASIS ###
+
+_Please note that volition is not supported in OASIS until OASIS 2020_
+
+Running an Optimization with OASIS instead of the reference optimizer is very similar:
+
+1. run both the client and OASIS. You can view the status of existing plugins through the 'plugins' menu.
+2. Add an input variable. 
+   - Note that here only minimal optimization metadata (bounds) is requested. If using OASIS in a mode other than the GUI mode, all optimization metadata must be collected by the client. 
+3. Add an output variable.
+4. Press "AutoSetup". to "push" your current configuration to OASIS.
+5. In OASIS, you will see a confirmation screen. In a non-GUI mode this screen will not appear.
+6. Press "Start Optimization" in the client or "Optimize" in OASIS.
+
+![Reference Client steps 1 through 5](docs/ref-client-things-to-click.png)
+![OASIS with one connection showing steps 1 and 5](docs/OASIS-alpha-running-volition-server.png)
+
+## Build the Volition API ## 
+
+To build the API binaries yourself: 
+
+1. run `gradlew assemble`
+
+   This will generate C# and Java code in `api\build\generated\source\proto\main`
+  
+   It will also compile the java code to generate `volition-api-0.1.jar` in `api\build\libs. This will be used by the optimizer-server.
+   
+   > unfortunately this step will not generate `EmpowerOps.Volition.API.dll` because of a technical limitation of gradle: It currently does not support C#. Thus we must manually open visual studio to generate it ourselves.   
+   
+2. run _Visual Studio_, open `volition.sln`,   
+
+   Note this solution contains both the simulator-client "ClientRef" and Volition API "Api" projects. 
+   
+3. Build `EmpowerOps.Volition.Api`
+
+   this will generate the `EmpowerOps.Volitiion.API.dll` .net assembly in `api\build\dotnet-bin\`. The other files in that folder are windows and linux runtime dependencies. These will be used by the simulator-client. 
+
+### Building the reference client ###
+
+Once you have the API binaries built you can build and run a reference simulator client
+
+1. run _Visual Studio_, open `volition.sln`
+
+2. Build `EmpowerOps.Volition.ClientRef`
+
+   this will generate a runnable executable `EmpowerOps.Volition.RefClient.exe` in `csharp-client-reference\bin\Debug`
+
+
+### Building the reference optimizer ###
+
+Once you have the API binaries built you can also build and run the reference optimizer server:
+
+1. run `gradlew assemble`
+
+   this will generate `oasis-reference-0.1.jar` in `oasis-reference\build\libs`
+
+2. run `oasis-reference/ref-opt.exe`, which will in turn load and run the newly reference optimizer
 
 ---
 

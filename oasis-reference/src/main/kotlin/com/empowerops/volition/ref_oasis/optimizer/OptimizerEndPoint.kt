@@ -5,7 +5,7 @@ import io.grpc.stub.StreamObserver
 import kotlinx.coroutines.GlobalScope
 
 class OptimizerEndpoint(
-        private val apiService: ApiService
+        private val apiService: ApiService2
 ) : OptimizerGrpc.OptimizerImplBase() {
 
     val scope = GlobalScope //TODO
@@ -109,5 +109,12 @@ class OptimizerEndpoint(
         TODO("apiService.updateProblemDefinition(request)")
     }
 
+
+}
+
+class ApiService2 {
+    fun register(request: RegistrationCommandDTO, responseObserver: StreamObserver<OptimizerGeneratedQueryDTO>) {
+
+    }
 
 }

@@ -1,6 +1,7 @@
 package com.empowerops.volition.ref_oasis.optimizer
 
 import com.empowerops.volition.dto.Logger
+import com.empowerops.volition.dto.OptimizerGeneratedQueryDTO
 import com.empowerops.volition.dto.RequestQueryDTO
 import com.empowerops.volition.ref_oasis.model.*
 import com.google.common.eventbus.EventBus
@@ -118,8 +119,8 @@ class EvaluationEngine(
             inputVector: Map<String, Double>,
             forceStopSignal: ForceStopSignal
     ): Deferred<EvaluationResult> = async{
-        val message = RequestQueryDTO.newBuilder().setEvaluationRequest(
-                RequestQueryDTO.SimulationEvaluationRequest
+        val message = OptimizerGeneratedQueryDTO.newBuilder().setEvaluationRequest(
+                OptimizerGeneratedQueryDTO.SimulationEvaluationRequest
                         .newBuilder()
                         .setName(simulation.name)
                         .putAllInputVector(inputVector)
@@ -151,7 +152,7 @@ class EvaluationEngine(
     private fun CoroutineScope.cancelCurrentEvaluationAsync(
             simulation: Simulation,
             forceStopSignal: ForceStopSignal) = async {
-        val message = RequestQueryDTO.newBuilder().setCancelRequest(RequestQueryDTO.SimulationCancelRequest.newBuilder().setName(simulation.name)).build()
+        val message = OptimizerGeneratedQueryDTO.newBuilder().setCancelRequest(OptimizerGeneratedQueryDTO.SimulationCancelRequest.newBuilder().setName(simulation.name)).build()
         simulation.input.onNext(message)
         return@async select<CancelResult> {
             simulation.output.onReceive { CancelResult.Canceled(it.name) }

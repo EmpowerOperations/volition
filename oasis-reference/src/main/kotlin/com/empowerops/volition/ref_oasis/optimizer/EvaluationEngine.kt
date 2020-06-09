@@ -14,11 +14,6 @@ import kotlinx.coroutines.selects.select
 import java.time.Duration
 import java.util.*
 
-interface IEvaluationEngine {
-    suspend fun handleRun(runs: ReceiveChannel<Run>)
-    suspend fun handleEvaluation(requests: ReceiveChannel<EvaluationRequest>, results: SendChannel<EvaluationResult>): Job
-}
-
 data class EvaluationRequest(
         val proxy: Proxy,
         val simulation: Simulation,
@@ -57,9 +52,9 @@ sealed class RunConfiguration {
 class EvaluationEngine(
         private val eventBus: EventBus,
         private val logger: Logger
-) : IEvaluationEngine {
+) {
 
-    override suspend fun handleRun(runs: ReceiveChannel<Run>) = coroutineScope {
+    suspend fun handleRun(runs: ReceiveChannel<Run>) = coroutineScope {
         for (run in runs) {
             for (iteration in run.iterations) {
                 val requests = Channel<EvaluationRequest>()
@@ -78,7 +73,7 @@ class EvaluationEngine(
         }
     }
 
-    override suspend fun handleEvaluation(
+    suspend fun handleEvaluation(
             requests: ReceiveChannel<EvaluationRequest>,
             results: SendChannel<EvaluationResult>
     ) = coroutineScope {

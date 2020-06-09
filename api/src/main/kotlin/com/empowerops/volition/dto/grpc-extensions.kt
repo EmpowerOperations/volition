@@ -39,39 +39,16 @@ suspend fun <T, R> wrapToSuspend(call: (T, StreamObserver<R>) -> Unit, outboundM
     }
 }
 
-fun <T> StreamObserver<T>.consume(block: () -> T) {
-    try {
-        val result = block()
-        onNext(result)
-        onCompleted()
-    } catch (ex: Exception) {
-        onError(ex)
-        throw ex
-    }
-}
-
-inline fun <T> StreamObserver<T>.consumeThen(block : () -> T, block2:(T) -> Unit) {
-    try {
-        val result = block()
-        onNext(result)
-        block2(result)
-        onCompleted()
-    } catch (ex: Exception) {
-        onError(ex)
-        throw ex
-    }
-}
-
-fun <T> StreamObserver<T>.consumeAsync(message: Message? = null, block: suspend () -> T) {
+fun <T> CoroutineScope.consumeSingleAsync(streamObserver: StreamObserver<T>, message: Message? = null, block: suspend () -> T) {
     val sourceEx = Exception("error caused while processing $message")
      GlobalScope.launch {
         try {
             val result = block()
-            onNext(result)
-            onCompleted()
+            streamObserver.onNext(result)
+            streamObserver.onCompleted()
         } catch(ex: Exception){
             generateSequence<Throwable>(ex) { ex.cause }.last().initCause(sourceEx)
-            onError(ex)
+            streamObserver.onError(ex)
             throw ex
         }
     }

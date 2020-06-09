@@ -1,139 +1,113 @@
 package com.empowerops.volition.ref_oasis.optimizer
 
 import com.empowerops.volition.dto.*
-import com.empowerops.volition.ref_oasis.model.ModelService
-import com.empowerops.volition.ref_oasis.model.hasName
-import io.grpc.Status
-import io.grpc.StatusRuntimeException
 import io.grpc.stub.StreamObserver
+import kotlinx.coroutines.GlobalScope
 
 class OptimizerEndpoint(
-        private val apiService: IApiService,
-        private val runner: IRunBehavior,
-        private val modelService: ModelService
+        private val apiService: ApiService
 ) : OptimizerGrpc.OptimizerImplBase() {
 
-    override fun changeNodeName(
-            request: NodeNameChangeCommandDTO,
-            responseObserver: StreamObserver<NodeNameChangeResponseDTO>
-    ) = responseObserver.consume {
-        checkThenRun(modelService.simulations.hasName(request.oldName)) {
-            apiService.changeNodeName(request)
-        }
-    }
+    val scope = GlobalScope //TODO
 
-    override fun autoConfigure(
-            request: NodeStatusCommandOrResponseDTO,
-            responseObserver: StreamObserver<NodeChangeConfirmDTO>
-    ) = responseObserver.consume {
-        checkThenRun(modelService.simulations.hasName(request.name)) {
-            apiService.autoConfigure(request)
-        }
-    }
-
-    override fun updateConfiguration(
-            request: ConfigurationCommandDTO,
-            responseObserver: StreamObserver<ConfigurationResponseDTO>
-    ) = responseObserver.consume {
-        checkThenRun(modelService.simulations.hasName(request.name)) {
-            apiService.updateConfiguration(request)
-        }
-    }
-
-    override fun requestRunResult(
-            request: ResultRequestDTO,
-            responseObserver: StreamObserver<ResultResponseDTO>
-    ) = responseObserver.consume {
-        checkThenRun(modelService.simulations.hasName(request.name)) {
-            apiService.resultRequest(request)
-        }
-    }
-
-    override fun registerRequest(
-            request: RequestRegistrationCommandDTO,
-            responseObserver: StreamObserver<RequestQueryDTO>
+    override fun register(
+            request: RegistrationCommandDTO,
+            responseObserver: StreamObserver<OptimizerGeneratedQueryDTO>
     ) {
-            apiService.register(request, responseObserver)
+        apiService.register(request, responseObserver)
     }
 
-    override fun startOptimization(
-            request: StartOptimizationCommandDTO,
-            responseObserver: StreamObserver<StartOptimizationResponseDTO>
-    ) = responseObserver.consumeAsync {
-        checkThenRun(modelService.simulations.hasName(request.name)) {
-            runner.start(request)
-        }
+    override fun unregister(
+            request: UnregistrationCommandDTO,
+            responseObserver: StreamObserver<UnregistrationConfirmDTO>
+    ) = scope.consumeSingleAsync(responseObserver) {
+        apiService.unregister(request)
     }
 
-    override fun stopOptimization(
-            request: StopOptimizationCommandDTO,
-            responseObserver: StreamObserver<StopOptimizationResponseDTO>
-    ) = responseObserver.consumeAsync {
-        checkThenRun(modelService.simulations.hasName(request.name)) {
-            runner.stop(request)
-        }
-    }
-
-    override fun updateNode(
-            request: NodeStatusCommandOrResponseDTO,
+    override fun offerSimulationConfig(
+            request: NodeStatusResponseDTO,
             responseObserver: StreamObserver<NodeChangeConfirmDTO>
-    ) = responseObserver.consume {
-        checkThenRun(modelService.simulations.hasName(request.name)) {
-            apiService.updateNode(request)
-        }
-    }
-
-    override fun sendMessage(
-            request: MessageCommandDTO,
-            responseObserver: StreamObserver<MessageResponseDTO>
-    ) = responseObserver.consume {
-        checkThenRun(modelService.simulations.hasName(request.name)) {
-            apiService.sendMessage(request)
-        }
-    }
-
-    override fun unregisterRequest(
-            request: RequestUnRegistrationRequestDTO,
-            responseObserver: StreamObserver<UnRegistrationResponseDTO>
-    ) = responseObserver.consume {
-        checkThenRun(modelService.simulations.hasName(request.name)) {
-            apiService.unregister(request)
-        }
+    ) = scope.consumeSingleAsync(responseObserver) {
+        apiService.offerConfig(request)
     }
 
     override fun offerSimulationResult(
             request: SimulationResponseDTO,
             responseObserver: StreamObserver<SimulationResultConfirmDTO>
-    ) = responseObserver.consumeAsync {
-        checkThenRun(modelService.simulations.hasName(request.name)) {
-            apiService.offerResult(request)
-        }
+    ) = scope.consumeSingleAsync(responseObserver) {
+        apiService.offerResult(request)
     }
 
     override fun offerErrorResult(
             request: ErrorResponseDTO,
             responseObserver: StreamObserver<ErrorConfirmDTO>
-    ) = responseObserver.consumeAsync {
-        checkThenRun(modelService.simulations.hasName(request.name)) {
-            apiService.offerError(request)
-        }
+    ) = scope.consumeSingleAsync(responseObserver) {
+        apiService.offerError(request)
     }
 
-    override fun offerSimulationConfig(
-            request: NodeStatusCommandOrResponseDTO,
+    override fun offerEvaluationStatusMessage(
+            request: MessageCommandDTO,
+            responseObserver: StreamObserver<MessageResponseDTO>
+    ) = scope.consumeSingleAsync(responseObserver) {
+        apiService.sendMessage(request)
+    }
+
+
+    override fun startOptimization(
+            request: StartOptimizationCommandDTO,
+            responseObserver: StreamObserver<StartOptimizationConfirmDTO>
+    ) = scope.consumeSingleAsync(responseObserver) {
+        apiService.start(request)
+    }
+
+    override fun stopOptimization(
+            request: StopOptimizationCommandDTO,
+            responseObserver: StreamObserver<StopOptimizationConfirmDTO>
+    ) = scope.consumeSingleAsync(responseObserver) {
+        apiService.stop(request)
+    }
+
+    override fun requestRunResult(
+            request: OptimizationResultsQueryDTO,
+            responseObserver: StreamObserver<OptimizationResultsResponseDTO>
+    ) = scope.consumeSingleAsync(responseObserver){
+        apiService.runResults(request)
+    }
+
+    override fun requestIssues(
+            request: IssuesQueryDTO,
+            responseObserver: StreamObserver<IssuesResponseDTO>
+    ) = scope.consumeSingleAsync(responseObserver){
+        TODO("apiService.requestIssues()")
+    }
+
+    override fun requestEvaluationNode(
+            request: NodeStatusQueryDTO,
+            responseObserver: StreamObserver<NodeStatusResponseDTO>
+    ) = scope.consumeSingleAsync(responseObserver){
+        TODO("apiService.requestEvaluationNode(request)")
+    }
+
+    override fun updateEvaluationNode(
+            request: NodeChangeCommandDTO,
             responseObserver: StreamObserver<NodeChangeConfirmDTO>
-    ) = responseObserver.consumeAsync {
-        checkThenRun(modelService.simulations.hasName(request.name)) {
-            apiService.offerConfig(request)
-        }
+    ) = scope.consumeSingleAsync(responseObserver){
+        TODO("apiService.updateEvaluationNode(request)")
     }
 
-    private inline fun <V> checkThenRun(hasPermission: Boolean, action: () -> V): V {
-        if (hasPermission) {
-            return action()
-        } else {
-            throw StatusRuntimeException(Status.PERMISSION_DENIED)
-        }
+    override fun requestProblemDefinition(
+            request: ProblemDefinitionQueryDTO,
+            responseObserver: StreamObserver<ProblemDefinitionResponseDTO>
+    ) = scope.consumeSingleAsync(responseObserver){
+        TODO("apiService.requestProblemDefinition(request)")
     }
+
+    override fun updateProblemDefinition(
+            request: ProblemDefinitionUpdateCommandDTO,
+            responseObserver: StreamObserver<ProblemDefinitionConfirmDTO>
+    ) = scope.consumeSingleAsync(responseObserver){
+        TODO("apiService.updateProblemDefinition(request)")
+    }
+
 
 }

@@ -70,10 +70,9 @@ class Optimizer {
     private lateinit var pluginService: PluginService
     private lateinit var server: Server
     private lateinit var apiService: ApiService
-    private lateinit var evaluationEngine: IEvaluationEngine
+    private lateinit var evaluationEngine: EvaluationEngine
     private lateinit var inputGenerator: InputGenerator
     private lateinit var stateMachine: RunStateMachine
-    private lateinit var starterStopper: IRunBehavior
 
 
     private val eventBus: EventBus = EventBus()
@@ -102,9 +101,8 @@ class Optimizer {
                 stateMachine,
                 evaluationEngine
         )
-        starterStopper = StarterStopper(stateMachine)
-        apiService = ApiService(modelService)
-        optimizerEndpoint = OptimizerEndpoint(apiService, starterStopper, modelService)
+        apiService = ApiService(modelService, stateMachine)
+        optimizerEndpoint = OptimizerEndpoint(apiService)
         server = NettyServerBuilder.forPort(port).addService(ServerInterceptors.intercept(optimizerEndpoint, LoggingInterceptor(logger))).build()
     }
 

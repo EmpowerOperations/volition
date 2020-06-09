@@ -10,112 +10,88 @@ package empowerops.volition.api;
 import "google/protobuf/duration.proto";
 import "google/protobuf/wrappers.proto";
 
+// some notes on naming scheme:
+// "...CommandDTO" ->   a request to statefully change the configuration of the optimizer;          a "setX"
+// "...ConfirmDTO" ->   the result of a Command, often indicates success or failure of the command; result from "setX"
+// "...QueryDTO" ->     a request for a ref-transparent ("getter") information.
+//                      Results are sent via the in the "offer..." rpc methods;                     a "getX"
+// "...ResponseDTO" ->  a result from a QueryDTO, sometimes passed from optimizer to simulator
+//                      sometimes passed in the other direction;                                    result from "getX"
+
 service Optimizer {
 
-    //some design considerations:
-    // 1. this is a peer'd relationship, *not* a client-server relationship.
-    //    (because either end point, OASIS or the plugin, may decide to issue a command or ask a query)
-
-    // attempt 1:
-    // so: one solution is to simply use grpc BIDI streams.
-    //    ie: rpc doEverything(stream clientRequestsAndResponses) returns (stream oasisRequestsAndResponses)
-    //    the problem: this gets into some real nasty stateful multiplexing. When you read a message you would have to
-    //    determine if its a query or a response, and, if its a response, find the context of the code that submitted the query.
-    //    this happens in a full-multiplex environment where OASIS would make no gaurentees
-    //    that the next message you recieve after submitting a query is the answer to your query
-    //    (it would be race-condition-hell to do otherwise)
-    //    so, a client would, have to decode a message to discover "oh this is a response to the 'XYZquery'
-    //    I submitted earlier, then it would have to find any necessary state associated with that query
-    //    (typically stack variables, but here this wouild likely push callers into state machines to keep that info)
-    //    restore that state (ie back to useful stack variables), then continue their business logic.
-    //    this will be bug ridden.
-
-    // attempt 2:
-    // so another solution: single-stream OASIS *queries*, but offer discrete end-points for responses,
-    //    and discrete endpoints for the plugins on queries
-    //    ie:
-    //      rpc register(RegistrationRequestDTO) returns (stream OASISQueryDTO) {}
-    //      rpc offerRespondToOASISQueryABC(ABCResponseDTO) returns (ABCConfirmationDTO) {}
-    //      rpc offerResponseToOASISQueryXYZ(XYZResponseDTO) returns (XYZConfirmationDTO) {}
-    //      rpc askOASISAQuestion(1234QueryDTO) returns (1234ResponseDTO) {}
-    //      rpc tellOASISToDoASDF(ASDFCommandDTO) returns (ASDFResponseDTO) {}
-    //
-    // [attempt 2.1]
-    //    this implies 4 types of messages:
-    //      CommandDTO
-    //      QueryDTO
-    //      ResponseDTO
-    //      ConfirmDTO
-
-    //attempt 3:
-    // TBD. What are the nasty points? is there an implied grammar that we can simplify? What about testing?
-    // regarding "query" vs "command", when we ask a plugin to evaluate something, we **want** it to be
-    // ref-transparent (IE a query), but cheap-o implementations of the plugin arent going to do that,
-    // they're going to forget to clean up their mesh or restore the model to a pre-simulation state,
-    // potentially allowing pollution across simulation calls. Can the API address that?
-    // Is there any way we can make it really clear, outside of documentation, that plugins should revert themselves
-    // before cleaning-up?
-    //    hows this: we create an OASIS command "CreateRestorePointCommand"
-    //    then, during optimization runs, we submit "RestoreToPointCommand's" before each "EvaluationQuery"
-    //    this would mean that users would have to explicitly decode "RestoreToCommand's" to do nothing.
-    //    note: it also requires the black-boxes to become stateful in that there is no realistic expectation
-    //    that the response to a "CreateRestorePoint" could contain any useful information about the current
-    //    state of the simulation software, it would only be a name.
-
-    // attempt 4: what about trying to keep streams limited to optimization?
-    //    ie:
-    //      rpc register(RegistrationRequestDTO) returns (stream OASISQueryDTO) {}
-    //      rpc startOptimization(OptimizationStartCommandDTO) returns (OptimizationStartResponseDTO) {}
-    //      rpc connectToOptimization(OptimizationResponseDTO) returns (stream NodeWorkRequestDTO) {}
-
-    // attempt 4.1: nullability in proto3 is a mess!
-    //   https://github.com/protocolbuffers/protobuf/issues/1606
-
     // entry-point, returns stream of OASIS queries/commands
-    rpc registerRequest (RequestRegistrationCommandDTO) returns (stream RequestQueryDTO) {}
-    rpc unregisterRequest (RequestUnRegistrationRequestDTO) returns (UnRegistrationResponseDTO) {}
-
-    // commands/queries to OASIS
-    rpc startOptimization (StartOptimizationCommandDTO) returns (StartOptimizationResponseDTO) {}
-    rpc stopOptimization (StopOptimizationCommandDTO) returns (StopOptimizationResponseDTO) {}
+    rpc register (RegistrationCommandDTO) returns (stream OptimizerGeneratedQueryDTO) {}
+    rpc unregister (UnregistrationCommandDTO) returns (UnregistrationConfirmDTO) {}
 
     // responses to OASIS supplied queries
+    rpc offerSimulationConfig (NodeStatusResponseDTO) returns (NodeChangeConfirmDTO) {}
     rpc offerSimulationResult (SimulationResponseDTO) returns (SimulationResultConfirmDTO) {}
-    rpc offerSimulationConfig (NodeStatusCommandOrResponseDTO) returns (NodeChangeConfirmDTO) {}
     rpc offerErrorResult (ErrorResponseDTO) returns (ErrorConfirmDTO) {}
+    rpc offerEvaluationStatusMessage (MessageCommandDTO) returns (MessageResponseDTO) {}
 
-    rpc sendMessage (MessageCommandDTO) returns (MessageResponseDTO) {}
-    rpc updateNode (NodeStatusCommandOrResponseDTO) returns (NodeChangeConfirmDTO) {}
-    rpc autoConfigure (NodeStatusCommandOrResponseDTO) returns (NodeChangeConfirmDTO) {}
-    rpc changeNodeName (NodeNameChangeCommandDTO) returns (NodeNameChangeResponseDTO) {}
+    // commands/queries to OASIS
+    rpc startOptimization (StartOptimizationCommandDTO) returns (StartOptimizationConfirmDTO) {}
+    rpc stopOptimization (StopOptimizationCommandDTO) returns (StopOptimizationConfirmDTO) {}
+    rpc requestRunResult (OptimizationResultsQueryDTO) returns (OptimizationResultsResponseDTO) {}
+    rpc requestIssues (IssuesQueryDTO) returns (IssuesResponseDTO) {}
 
-    rpc updateConfiguration(ConfigurationCommandDTO) returns (ConfigurationResponseDTO) {}
-    rpc requestRunResult(ResultRequestDTO) returns (ResultResponseDTO) {}
+    // register user nodes in optimization
+    rpc requestEvaluationNode (NodeStatusQueryDTO) returns (NodeStatusResponseDTO) {}
+    rpc updateEvaluationNode (NodeChangeCommandDTO) returns (NodeChangeConfirmDTO) {}
+
+    rpc requestProblemDefinition (ProblemDefinitionQueryDTO) returns (ProblemDefinitionResponseDTO) {}
+    rpc updateProblemDefinition (ProblemDefinitionUpdateCommandDTO) returns (ProblemDefinitionConfirmDTO) {}
 }
 
-message ConfigurationCommandDTO {
-    string name = 1;
-    Config config = 2;
-    message Config{
-        google.protobuf.Duration timeout = 2;
+//issues
+message IssuesQueryDTO {}
+message IssuesResponseDTO {
+    repeated string issues = 1;
+}
+
+// problem definition
+message ProblemDefinitionQueryDTO {}
+message ProblemDefinitionResponseDTO {
+    repeated PrototypeInputParameter inputs = 1;
+    repeated PrototypeOutputParameter outputs = 2;
+
+    repeated BabelConstraint constraints = 3;
+    repeated BabelScalar objectives = 4;
+    repeated BabelScalar intermediates = 5;
+}
+message ProblemDefinitionUpdateCommandDTO {
+    oneof change {
+        CompleteProblemDefinition completeUpdatedDefinition = 1;
+        BabelConstraint upsertConstraint = 2;
+        BabelScalar upsertIntermediate = 3;
+        BabelScalar upsertObjective = 4;
+        PrototypeInputParameter upsertVariable = 5;
+        PrototypeOutputParameter upsertOutput = 6;
+    }
+
+    message CompleteProblemDefinition {
+        repeated PrototypeInputParameter inputs = 1;
+        repeated PrototypeOutputParameter outputs = 2;
+
+        repeated BabelConstraint constraints = 3;
+        repeated BabelScalar objectives = 4;
+        repeated BabelScalar intermediates = 5;
     }
 }
-
-message ConfigurationResponseDTO {
-    bool updated = 1;
-    string message =2;
+message ProblemDefinitionConfirmDTO {
+    //note: cant include issues here since it might involve slow file-IO.
 }
 
-//register
-message RequestRegistrationCommandDTO {
+message RegistrationCommandDTO {
     string name = 1;
 }
 
-message RequestUnRegistrationRequestDTO {
+message UnregistrationCommandDTO {
     string name = 1;
 }
 
-message UnRegistrationResponseDTO {
+message UnregistrationConfirmDTO {
     string message = 1;
 }
 
@@ -126,7 +102,7 @@ message MessageCommandDTO {
 
 message MessageResponseDTO {}
 
-message RequestQueryDTO {
+message OptimizerGeneratedQueryDTO {
     oneof request {
         SimulationEvaluationRequest evaluationRequest = 1;
         NodeStatusUpdateRequest nodeStatusRequest = 2;
@@ -161,18 +137,17 @@ message RequestQueryDTO {
 
 //startOptimization
 message StartOptimizationCommandDTO {
-    string name = 1;
     RunConfiguration runConfig = 2;
 }
 
 message RunConfiguration {
-    uint32 runNumber = 1;
+//    uint32 runNumber = 1; //TBD: is there a point in exposing multiple runs from the API?
     google.protobuf.Duration runTime = 2;
-    uint32 iterationNumber = 3;
-    double targetValue = 4;
+    google.protobuf.UInt32Value iterationCount = 3;
+    google.protobuf.DoubleValue targetObjectiveValue = 4;
 }
 
-message StartOptimizationResponseDTO {
+message StartOptimizationConfirmDTO {
     oneof response{
         string issues = 1;
         string runID = 2;
@@ -185,7 +160,7 @@ message StopOptimizationCommandDTO {
     string id = 2;
 }
 
-message StopOptimizationResponseDTO {
+message StopOptimizationConfirmDTO {
     oneof response{
         string message = 1;
         string runID = 2;
@@ -193,12 +168,12 @@ message StopOptimizationResponseDTO {
 }
 
 //request result
-message ResultRequestDTO {
+message OptimizationResultsQueryDTO {
     string name = 1;
     string runID = 2;
 }
 
-message ResultResponseDTO {
+message OptimizationResultsResponseDTO {
     oneof response {
         string message = 1;
         RunResult RunResult = 2;
@@ -212,11 +187,12 @@ message RunResult{
 }
 
 message Design {
+    // TODO this has significant duplication of data,
+    // we should ditch this type in favor of a list of column names and a double grid
     map<string, double> input = 1;
     map<string, double> output = 2;
 }
 
-//updateNode
 message SimulationResultConfirmDTO {}
 message SimulationResponseDTO {
     string name = 1;
@@ -229,43 +205,75 @@ message ErrorResponseDTO {
     string exception = 3;
 }
 
-//changeNodeName
-message NodeNameChangeCommandDTO {
-    string oldName = 1;
-    string newName = 2;
+//register user nodes
+message NodeStatusQueryDTO {
+    string name = 1;
 }
-message NodeNameChangeResponseDTO {
-    bool changed = 1;
-    string message = 2;
+message NodeChangeCommandDTO {
+    string name = 1;
+    string description = 6;
+
+    //optionals
+    google.protobuf.StringValue newName = 9;
+
+    oneof variableMapping {
+        bool autoImport = 10;
+        VariableMapping mappingTable = 11;
+    }
+
+    repeated PrototypeInputParameter inputs = 2;
+    repeated PrototypeOutputParameter outputs = 3;
 }
 
 //offerNodeUpdate
-message NodeStatusCommandOrResponseDTO {
+message NodeStatusResponseDTO {
     string name = 1;
-
     string description = 6;
+
+    oneof variableMapping {
+        bool autoImport = 10;
+        VariableMapping mappingTable = 11;
+    }
+
     repeated PrototypeInputParameter inputs = 2;
     repeated PrototypeOutputParameter outputs = 3;
-
-    message PrototypeInputParameter {
-        string name = 1;
-
-        //optional values
-        double lowerBound = 2;
-        double upperBound = 3;
-        double currentValue = 4;
-    }
-
-    message PrototypeOutputParameter {
-        string name = 1;
-
-        //optional values
-        oneof currentValue {
-            double value = 2;
-        }
-    }
 }
 
 message NodeChangeConfirmDTO {
     string message = 1;
+}
+
+
+// helpers
+message PrototypeInputParameter {
+    string name = 1;
+
+    //optional values
+    google.protobuf.DoubleValue lowerBound = 2;
+    google.protobuf.DoubleValue upperBound = 3;
+    google.protobuf.DoubleValue currentValue = 4;
+}
+message PrototypeOutputParameter {
+    string name = 1;
+    enum type {
+        SCALAR = 0;
+        CONSTRAINT = 1;
+    }
+
+    //optional values
+    oneof currentValue {
+        double value = 2;
+    }
+}
+message VariableMapping {
+    map<string, string> inputs = 1;
+    map<string, string> outputs = 2;
+}
+message BabelConstraint {
+    string outputName = 1;
+    string booleanExpression = 2;
+}
+message BabelScalar {
+    string outputName = 1;
+    string scalarExpression = 2;
 }

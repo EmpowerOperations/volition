@@ -15,7 +15,7 @@ class OptimizerService(
         private val inputGenerator: InputGenerator,
         private val pluginService: PluginService,
         private val stateMachine: RunStateMachine,
-        private val evaluationEngine: IEvaluationEngine
+        private val evaluationEngine: EvaluationEngine
 ) {
     suspend fun startProcess() = GlobalScope.launch {
         var currentResource: RunResources? = null

@@ -25,6 +25,9 @@ interface StateMachineControl{
     suspend fun stop(): Boolean
 }
 
+// todo ho man, this is not a good hting. OASIS has this for legacy.
+// But literally this is exactly what coroutines were designed to _avoid_
+// replace this with an interactive in-flight coroutine
 class RunStateMachine(val modelService: ModelService) : StateMachineControl {
     var currentState: State = Idle
         private set

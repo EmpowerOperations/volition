@@ -10,31 +10,16 @@ import java.time.Duration
 import java.time.Duration.*
 import java.util.*
 
-interface IApiService {
-    suspend fun offerResult(request: SimulationResponseDTO): SimulationResultConfirmDTO
-    suspend fun offerConfig(request: NodeStatusCommandOrResponseDTO): NodeChangeConfirmDTO
-    suspend fun offerError(request: ErrorResponseDTO): ErrorConfirmDTO
-    fun register(request: RequestRegistrationCommandDTO, responseObserver: StreamObserver<RequestQueryDTO>)
-    fun unregister(request: RequestUnRegistrationRequestDTO): UnRegistrationResponseDTO
-    fun sendMessage(request: MessageCommandDTO): MessageResponseDTO
-    fun updateNode(request: NodeStatusCommandOrResponseDTO): NodeChangeConfirmDTO
-    fun resultRequest(request: ResultRequestDTO): ResultResponseDTO
-    fun updateConfiguration(request: ConfigurationCommandDTO): ConfigurationResponseDTO
-    fun autoConfigure(request: NodeStatusCommandOrResponseDTO): NodeChangeConfirmDTO
-    fun changeNodeName(request: NodeNameChangeCommandDTO): NodeNameChangeResponseDTO
-}
+class ApiService(
+        private val modelService: ModelService,
+        private val stateMachine: RunStateMachine,
+) {
 
-interface IRunBehavior{
-    suspend fun stop(request: StopOptimizationCommandDTO): StopOptimizationResponseDTO
-    suspend fun start(request: StartOptimizationCommandDTO): StartOptimizationResponseDTO
-}
-
-class StarterStopper(private val stateMachine: RunStateMachine) : IRunBehavior{
-    override suspend fun start(request: StartOptimizationCommandDTO) : StartOptimizationResponseDTO {
+    suspend fun start(request: StartOptimizationCommandDTO) : StartOptimizationConfirmDTO {
         val result = CompletableDeferred<RunStateMachine.StartResult>()
         stateMachine.start(result)
         val results: RunStateMachine.StartResult = result.await()
-        return StartOptimizationResponseDTO.newBuilder().apply {
+        return StartOptimizationConfirmDTO.newBuilder().apply {
             when(results){
                 is RunStateMachine.StartResult.Success ->  runID = results.runID.toString()
                 is RunStateMachine.StartResult.Failed -> issues =  buildStartIssuesMessage(results.issues)
@@ -42,94 +27,86 @@ class StarterStopper(private val stateMachine: RunStateMachine) : IRunBehavior{
         }.build()
     }
 
-    override suspend fun stop(request: StopOptimizationCommandDTO) : StopOptimizationResponseDTO{
-        return if(stateMachine.stop()){
-            StopOptimizationResponseDTO.newBuilder().setRunID(request.id).build()
-        }
-        else{
-            StopOptimizationResponseDTO.newBuilder().setMessage(buildStopMessage()).build()
-        }
-    }
-}
-
-class ApiService(private val modelService: ModelService) : IApiService {
-
-    override fun register(request: RequestRegistrationCommandDTO, responseObserver: StreamObserver<RequestQueryDTO>) {
-        modelService.addSim(Simulation(request.name, responseObserver)).let { added ->
-            if (!added) responseObserver.onError(StatusException(Status.ALREADY_EXISTS))
-        }
+    suspend fun stop(request: StopOptimizationCommandDTO) : StopOptimizationConfirmDTO{
+//        return if(stateMachine.stop()){
+//            StopOptimizationResponseDTO.newBuilder().setRunID(request.id).build()
+//        }
+//        else{
+//            StopOptimizationResponseDTO.newBuilder().setMessage(buildStopMessage()).build()
+//        }
+        TODO()
     }
 
-    override suspend fun offerResult(request: SimulationResponseDTO): SimulationResultConfirmDTO {
-        require(modelService.simulations.hasName(request.name)){"Simulation/output channel doesn't exit"}
-        modelService.simulations.getValue(request.name).output.send(request)
-        return SimulationResultConfirmDTO.newBuilder().build()
-    }
+//    fun register(request: RequestRegistrationCommandDTO, responseObserver: StreamObserver<RequestQueryDTO>) {
+//        modelService.addSim(Simulation(request.name, responseObserver)).let { added ->
+//            if (!added) responseObserver.onError(StatusException(Status.ALREADY_EXISTS))
+//        }
+//    }
+//
+//    suspend fun offerResult(request: SimulationResponseDTO): SimulationResultConfirmDTO {
+//        require(modelService.simulations.hasName(request.name)){"Simulation/output channel doesn't exit"}
+//        modelService.simulations.getValue(request.name).output.send(request)
+//        return SimulationResultConfirmDTO.newBuilder().build()
+//    }
+//
+//    suspend fun offerConfig(request: NodeStatusCommandOrResponseDTO): NodeChangeConfirmDTO {
+//        require(modelService.simulations.hasName(request.name)){"Simulation/update channel doesn't exit"}
+//        modelService.simulations.getValue(request.name).update.send(request)
+//        return NodeChangeConfirmDTO.newBuilder().build()
+//    }
+//
+//    suspend fun offerError(request: ErrorResponseDTO): ErrorConfirmDTO {
+//        require(modelService.simulations.hasName(request.name)){"Simulation/error channel doesn't exit"}
+//        modelService.simulations.getValue(request.name).error.send(request)
+//        return ErrorConfirmDTO.newBuilder().build()
+//    }
+//
+//    fun unregister(request: UnregistrationCommandDTO): UnregistrationConfirmDTO {
+//        val unregistered = modelService.closeSim(request.name)
+//        return UnregistrationConfirmDTO.newBuilder().setMessage(buildUnregisterMessage(unregistered)).build()
+//    }
+//
+//    fun sendMessage(request: MessageCommandDTO): MessageResponseDTO {
+//        modelService.addNewMessage(Message(request.name, request.message))
+//        return MessageResponseDTO.newBuilder().build()
+//    }
+//
+//    fun updateNode(request: NodeStatusCommandOrResponseDTO): NodeChangeConfirmDTO {
+//        val (result, simulation) = modelService.updateSimAndConfiguration(request)
+//        return NodeChangeConfirmDTO.newBuilder().setMessage(buildSimulationUpdateMessage(simulation, result)).build()
+//    }
+//
+//    fun runResults(request: ResultRequestDTO): ResultResponseDTO {
+//        return ResultResponseDTO.newBuilder().apply {
+//            when (val list = modelService.resultList[UUID.fromString(request.runID)]) {
+//                null -> message = buildRunNotFoundMessage(request.runID)
+//                else -> runResult = runResultBuilder.apply {
+//                    addAllPoint(list.map {
+//                        Design.newBuilder().apply {
+//                            putAllInput(it.inputs)
+//                            putAllOutput(it.result)
+//                        }.build()
+//                    })
+//                }.build()
+//            }
+//        }.build()
+//    }
 
-    override suspend fun offerConfig(request: NodeStatusCommandOrResponseDTO): NodeChangeConfirmDTO {
-        require(modelService.simulations.hasName(request.name)){"Simulation/update channel doesn't exit"}
-        modelService.simulations.getValue(request.name).update.send(request)
-        return NodeChangeConfirmDTO.newBuilder().build()
-    }
-
-    override suspend fun offerError(request: ErrorResponseDTO): ErrorConfirmDTO {
-        require(modelService.simulations.hasName(request.name)){"Simulation/error channel doesn't exit"}
-        modelService.simulations.getValue(request.name).error.send(request)
-        return ErrorConfirmDTO.newBuilder().build()
-    }
-
-    override fun unregister(request: RequestUnRegistrationRequestDTO): UnRegistrationResponseDTO {
-        val unregistered = modelService.closeSim(request.name)
-        return UnRegistrationResponseDTO.newBuilder().setMessage(buildUnregisterMessage(unregistered)).build()
-    }
-
-    override fun sendMessage(request: MessageCommandDTO): MessageResponseDTO {
-        modelService.addNewMessage(Message(request.name, request.message))
-        return MessageResponseDTO.newBuilder().build()
-    }
-
-    override fun updateNode(request: NodeStatusCommandOrResponseDTO): NodeChangeConfirmDTO {
-        val (result, simulation) = modelService.updateSimAndConfiguration(request)
-        return NodeChangeConfirmDTO.newBuilder().setMessage(buildSimulationUpdateMessage(simulation, result)).build()
-    }
-
-    override fun resultRequest(request: ResultRequestDTO): ResultResponseDTO = ResultResponseDTO.newBuilder().apply {
-        when (val list = modelService.resultList[UUID.fromString(request.runID)]) {
-            null -> message = buildRunNotFoundMessage(request.runID)
-            else -> runResult = runResultBuilder.apply {
-                addAllPoint(list.map {
-                    Design.newBuilder().apply {
-                        putAllInput(it.inputs)
-                        putAllOutput(it.result)
-                    }.build()
-                })
-            }.build()
-        }
-    }.build()
-
-    override fun updateConfiguration(request: ConfigurationCommandDTO): ConfigurationResponseDTO =
-            modelService.setTimeout(request.name, ofSeconds(request.config.timeout.seconds)).let { setupResult ->
-                ConfigurationResponseDTO.newBuilder().apply {
-                    updated = setupResult
-                    message = buildUpdateMessage(request.name, ofSeconds(request.config.timeout.seconds), setupResult)
-                }
-            }.build()
-
-    override fun autoConfigure(request: NodeStatusCommandOrResponseDTO): NodeChangeConfirmDTO =
-            modelService.autoSetup(request).let { (result, simulation) ->
-                NodeChangeConfirmDTO.newBuilder().apply {
-                    message = buildAutoSetupMessage(simulation, result)
-                }
-            }.build()
-
-
-    override fun changeNodeName(request: NodeNameChangeCommandDTO): NodeNameChangeResponseDTO =
-            modelService.renameSim(newName = request.newName, oldName = request.oldName).let { renamed ->
-                NodeNameChangeResponseDTO.newBuilder().apply {
-                    changed = renamed
-                    message = buildNameChangeMessage(renamed, request.oldName, request.newName)
-                }
-            }.build()
+//    override fun updateConfiguration(request: ConfigurationCommandDTO): ConfigurationResponseDTO =
+//            modelService.setTimeout(request.name, ofSeconds(request.config.timeout.seconds)).let { setupResult ->
+//                ConfigurationResponseDTO.newBuilder().apply {
+//                    updated = setupResult
+//                    message = buildUpdateMessage(request.name, ofSeconds(request.config.timeout.seconds), setupResult)
+//                }
+//            }.build()
+//
+//    override fun autoConfigure(request: NodeStatusCommandOrResponseDTO): NodeChangeConfirmDTO =
+//            modelService.autoSetup(request).let { (result, simulation) ->
+//                NodeChangeConfirmDTO.newBuilder().apply {
+//                    message = buildAutoSetupMessage(simulation, result)
+//                }
+//            }.build()
+//
 }
 
 internal fun buildNameChangeMessage(changed: Boolean, oldName: String, newName: String)

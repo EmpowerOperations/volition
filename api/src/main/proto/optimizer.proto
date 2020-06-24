@@ -28,7 +28,7 @@ service Optimizer {
     rpc offerSimulationConfig (NodeStatusResponseDTO) returns (NodeChangeConfirmDTO) {}
     rpc offerSimulationResult (SimulationResponseDTO) returns (SimulationResultConfirmDTO) {}
     rpc offerErrorResult (ErrorResponseDTO) returns (ErrorConfirmDTO) {}
-    rpc offerEvaluationStatusMessage (MessageCommandDTO) returns (MessageResponseDTO) {}
+    rpc offerEvaluationStatusMessage (MessageCommandDTO) returns (MessageConfirmDTO) {}
 
     // commands/queries to OASIS
     rpc startOptimization (StartOptimizationCommandDTO) returns (StartOptimizationConfirmDTO) {}
@@ -38,7 +38,7 @@ service Optimizer {
 
     // register user nodes in optimization
     rpc requestEvaluationNode (NodeStatusQueryDTO) returns (NodeStatusResponseDTO) {}
-    rpc updateEvaluationNode (NodeChangeCommandDTO) returns (NodeChangeConfirmDTO) {}
+    rpc upsertEvaluationNode (NodeChangeCommandDTO) returns (NodeChangeConfirmDTO) {}
 
     rpc requestProblemDefinition (ProblemDefinitionQueryDTO) returns (ProblemDefinitionResponseDTO) {}
     rpc updateProblemDefinition (ProblemDefinitionUpdateCommandDTO) returns (ProblemDefinitionConfirmDTO) {}
@@ -100,15 +100,15 @@ message MessageCommandDTO {
     string message = 2;
 }
 
-message MessageResponseDTO {}
+message MessageConfirmDTO {}
 
 message OptimizerGeneratedQueryDTO {
     oneof request {
         SimulationEvaluationRequest evaluationRequest = 1;
         NodeStatusUpdateRequest nodeStatusRequest = 2;
         SimulationCancelRequest cancelRequest = 3;
-        SimulationStartedRequest startRequest = 4;
-        SimulationStoppedRequest stopRequest = 5;
+
+        ReadyNotification readyNotification = 4;
     }
 
     message SimulationEvaluationRequest {
@@ -124,15 +124,7 @@ message OptimizerGeneratedQueryDTO {
         string name = 1;
     }
 
-    message SimulationStartedRequest {
-        string name = 1;
-        string runID = 2;
-    }
-
-    message SimulationStoppedRequest {
-        string name = 1;
-        string runID = 2;
-    }
+    message ReadyNotification {}
 }
 
 //startOptimization
@@ -182,15 +174,18 @@ message OptimizationResultsResponseDTO {
 
 message RunResult{
     string runID = 1;
-    repeated Design point = 2;
-    repeated Design optimum = 3; //Best value for single run and pareto frontier for multiple objective
+
+    repeated string inputColumns = 7;
+    repeated string outputColumns = 8;
+
+    repeated DesignRow points = 9;
+    repeated DesignRow frontier = 10; //Best value for single run and pareto frontier for multiple objective
 }
 
-message Design {
-    // TODO this has significant duplication of data,
-    // we should ditch this type in favor of a list of column names and a double grid
-    map<string, double> input = 1;
-    map<string, double> output = 2;
+message DesignRow {
+    repeated double inputs = 1; //invariant := inputs.length == [parent].inputColumns.length
+    repeated double outputs = 2; //invariant := outputs.length == [parent].outputColumns.length
+    bool isFeasible = 3; // invariant := outputs.sublist(constraints).any { it > 0.0 }
 }
 
 message SimulationResultConfirmDTO {}

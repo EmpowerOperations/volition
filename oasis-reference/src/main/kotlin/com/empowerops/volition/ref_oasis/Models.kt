@@ -1,12 +1,7 @@
-package com.empowerops.volition.ref_oasis.model
+package com.empowerops.volition.ref_oasis
 
-import com.empowerops.volition.dto.*
-import io.grpc.stub.StreamObserver
-import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.channels.Channel
 import java.time.Duration
 import java.time.LocalDateTime
-import java.util.*
 import java.util.logging.Level
 
 data class Input(
@@ -18,6 +13,7 @@ data class Input(
 
 data class Output(
         val name: String
+        // TBD: current value?
 )
 
 data class Message(
@@ -30,7 +26,8 @@ data class Message(
 sealed class EvaluationResult(
         open val name: String,
         open val inputs: Map<String, Double> = emptyMap(),
-        open val result: Map<String, Double> = emptyMap()) {
+        open val result: Map<String, Double> = emptyMap()
+) {
     data class Success(
             override val name: String,
             override val inputs: Map<String, Double>,
@@ -61,12 +58,6 @@ sealed class EvaluationResult(
     ): EvaluationResult(name, inputs)
 }
 
-sealed class CancelResult {
-    data class Canceled(val name: String) : CancelResult()
-    data class CancelFailed(val name: String, val exception: String) : CancelResult()
-    data class CancelTerminated(val name: String, val exception: String) : CancelResult()
-}
-
 interface Nameable {
     val name: String
 }
@@ -79,19 +70,10 @@ fun <T : Nameable> List<T>.getNames(): List<String> = map { it.name }
 
 data class Simulation(
         override val name: String,
-        val input: StreamObserver<RequestQueryDTO>,
         val inputs: List<Input> = emptyList(),
         val outputs: List<Output> = emptyList(),
-        val description: String= "",
-        val output: Channel<SimulationResponseDTO> = Channel(Channel.RENDEZVOUS),
-        val update: Channel<NodeStatusCommandOrResponseDTO> = Channel(Channel.RENDEZVOUS),
-        val error: Channel<ErrorResponseDTO> = Channel(Channel.RENDEZVOUS)
+        val description: String= ""
 ) : Nameable
-
-data class ForceStopSignal(
-        override val name: String,
-        val forceStopped : CompletableDeferred<Unit> = CompletableDeferred()
-): Nameable
 
 data class Proxy(
         override val name: String,

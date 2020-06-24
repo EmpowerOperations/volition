@@ -41,14 +41,14 @@ suspend fun <T, R> wrapToSuspend(call: (T, StreamObserver<R>) -> Unit, outboundM
 
 fun <T> CoroutineScope.consumeSingleAsync(streamObserver: StreamObserver<T>, message: Message? = null, block: suspend () -> T) {
     val sourceEx = Exception("error caused while processing $message")
-     GlobalScope.launch {
+    launch {
         try {
             val result = block()
             streamObserver.onNext(result)
             streamObserver.onCompleted()
-        } catch(ex: Exception){
-            generateSequence<Throwable>(ex) { ex.cause }.last().initCause(sourceEx)
-            streamObserver.onError(ex)
+        } catch(ex: Throwable){
+            sourceEx.initCause(ex)
+            streamObserver.onError(sourceEx)
             throw ex
         }
     }

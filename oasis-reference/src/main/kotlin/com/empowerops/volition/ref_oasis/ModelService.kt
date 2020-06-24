@@ -1,7 +1,5 @@
-package com.empowerops.volition.ref_oasis.model
+package com.empowerops.volition.ref_oasis
 
-import com.empowerops.volition.dto.NodeStatusCommandOrResponseDTO
-import com.empowerops.volition.dto.RunResult
 import com.google.common.annotations.VisibleForTesting
 import com.google.common.eventbus.EventBus
 import kotlinx.coroutines.channels.Channel
@@ -13,9 +11,18 @@ interface IssueFinder{
     fun findIssues() : List<Issue>
 }
 
-data class RunResults(
+class RunResult(
         val uuid : UUID,
-        val evaluationResults: Channel<EvaluationResult> = Channel(UNLIMITED)
+        val inputs: List<String>,
+        val outputs: List<String>,
+        val resultMessage: String,
+        val points: List<ExpensivePointRow>,
+        val frontier: List<ExpensivePointRow>
+)
+data class ExpensivePointRow(
+        val inputs: List<Double>,
+        val outputs: List<Double>,
+        val isFeasible: Boolean
 )
 
 class ModelService(private val eventBus: EventBus, private val overwriteMode : Boolean) : IssueFinder {
@@ -83,12 +90,8 @@ class ModelService(private val eventBus: EventBus, private val overwriteMode : B
      * This will also set the StreamObserver of request to completed so the holder of that should get notified
      */
     fun closeSim(name: String) : Boolean{
-        val sim = simulations.getNamed(name) ?: return false
-        try {
-            sim.input.onCompleted()
-        } finally {
-            return removeSim(name)
-        }
+        if(simulations.getNamed(name) == null) return false
+        return removeSim(name)
     }
 
     /**
@@ -112,11 +115,11 @@ class ModelService(private val eventBus: EventBus, private val overwriteMode : B
         return true
     }
 
-    fun updateSimAndConfiguration(statusDTO: NodeStatusCommandOrResponseDTO) : Pair<Boolean, Simulation>{
-        val newSim = statusDTO.generateUpdatedSimulation()
-        val setupResult = updateSimAndConfiguration(newSim)
-        return Pair(setupResult, newSim)
-    }
+//    fun updateSimAndConfiguration(statusDTO: NodeStatusCommandOrResponseDTO) : Pair<Boolean, Simulation>{
+//        val newSim = statusDTO.generateUpdatedSimulation()
+//        val setupResult = updateSimAndConfiguration(newSim)
+//        return Pair(setupResult, newSim)
+//    }
 
     /**
      * Automatically add the configuration base on existing simulation
@@ -136,20 +139,20 @@ class ModelService(private val eventBus: EventBus, private val overwriteMode : B
         return result
     }
 
-    fun autoSetup(statusDTO : NodeStatusCommandOrResponseDTO) : Pair<Boolean, Simulation> {
-        val newSim = statusDTO.generateUpdatedSimulation()
-        val setupResult = autoSetup(newSim)
-        return Pair(setupResult, newSim)
-    }
-
-    private fun NodeStatusCommandOrResponseDTO.generateUpdatedSimulation(): Simulation {
-        return simulations.single { it.name == name }.copy(
-                name = name,
-                inputs = inputsList.map { Input(it.name, it.lowerBound, it.upperBound, it.currentValue) },
-                outputs = outputsList.map { Output(it.name) },
-                description = description
-        )
-    }
+//    fun autoSetup(statusDTO : NodeStatusCommandOrResponseDTO) : Pair<Boolean, Simulation> {
+//        val newSim = statusDTO.generateUpdatedSimulation()
+//        val setupResult = autoSetup(newSim)
+//        return Pair(setupResult, newSim)
+//    }
+//
+//    private fun NodeStatusCommandOrResponseDTO.generateUpdatedSimulation(): Simulation {
+//        return simulations.single { it.name == name }.copy(
+//                name = name,
+//                inputs = inputsList.map { Input(it.name, it.lowerBound, it.upperBound, it.currentValue) },
+//                outputs = outputsList.map { Output(it.name) },
+//                description = description
+//        )
+//    }
 
     /**
      * Add a new configuration base on exist simulation name

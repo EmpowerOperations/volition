@@ -1,9 +1,10 @@
 package com.empowerops.volition.ref_oasis.front_end
 
 import com.empowerops.volition.dto.LoggingInterceptor
-import com.empowerops.volition.ref_oasis.model.ModelService
-import com.empowerops.volition.ref_oasis.optimizer.*
-import com.empowerops.volition.ref_oasis.plugin.PluginService
+import com.empowerops.volition.ref_oasis.Optimizer
+import com.empowerops.volition.ref_oasis.OptimizerEndpoint
+import com.empowerops.volition.ref_oasis.RandomNumberOptimizer
+import com.empowerops.volition.ref_oasis.ModelService
 import com.google.common.eventbus.EventBus
 import io.grpc.Server
 import io.grpc.ServerInterceptors
@@ -17,7 +18,6 @@ import picocli.CommandLine
 import picocli.CommandLine.Command
 import picocli.CommandLine.Option
 import java.io.IOException
-import java.util.concurrent.Callable as Callable1
 
 /**
  * TODO: Add a main not using javafx for headless
@@ -30,7 +30,7 @@ fun main(args: Array<String>) {
 }
 
 class OptimizerStarter : Application() {
-    private val optimizer = Optimizer()
+    private val optimizer = OptimizerGUI()
 
     override fun start(primaryStage: Stage) {
         val commandLine = CommandLine(optimizer)
@@ -59,21 +59,17 @@ class OptimizerStarter : Application() {
     }
 }
 
-@Command(name = "Optimizer",
+@Command(
+        name = "Optimizer",
         mixinStandardHelpOptions = true,
         version = ["Reference version: 1.0", "Volition API version: 1.0"],
-        description = ["Reference optimizer using Volition API"])
-class Optimizer {
+        description = ["Reference optimizer using Volition API"]
+)
+class OptimizerGUI {
     private lateinit var optimizerEndpoint: OptimizerEndpoint
     private lateinit var modelService: ModelService
-    private lateinit var optimizerService: OptimizerService
-    private lateinit var pluginService: PluginService
     private lateinit var server: Server
-    private lateinit var apiService: ApiService
-    private lateinit var evaluationEngine: EvaluationEngine
-    private lateinit var inputGenerator: InputGenerator
-    private lateinit var stateMachine: RunStateMachine
-
+    private lateinit var inputGenerator: Optimizer
 
     private val eventBus: EventBus = EventBus()
     private val logger: ConsoleOutput = ConsoleOutput(eventBus)
@@ -89,20 +85,8 @@ class Optimizer {
 
     private fun setup() {
         modelService = ModelService(eventBus, overwrite)
-        pluginService = PluginService(modelService, logger, eventBus)
-        stateMachine = RunStateMachine(modelService)
-        evaluationEngine = EvaluationEngine(eventBus, logger)
         inputGenerator = RandomNumberOptimizer()
-        optimizerService = OptimizerService(
-                eventBus,
-                modelService,
-                inputGenerator,
-                pluginService,
-                stateMachine,
-                evaluationEngine
-        )
-        apiService = ApiService(modelService, stateMachine)
-        optimizerEndpoint = OptimizerEndpoint(apiService)
+        optimizerEndpoint = OptimizerEndpoint(TODO(), TODO())
         server = NettyServerBuilder.forPort(port).addService(ServerInterceptors.intercept(optimizerEndpoint, LoggingInterceptor(logger))).build()
     }
 
@@ -119,13 +103,11 @@ class Optimizer {
         if (headless) {
             //TODO splash screen etc.
         } else {
-            val optimizerGUI = OptimizerGUIRootController(modelService, eventBus, stateMachine)
+            val optimizerGUI = OptimizerGUIRootController(modelService, eventBus)
             primaryStage.title = "Volition Reference Optimizer"
             primaryStage.scene = Scene(optimizerGUI.root)
             primaryStage.show()
         }
-
-        stateMachine.initService(optimizerService)
     }
 
     fun stop() {

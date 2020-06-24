@@ -1,6 +1,6 @@
 package com.empowerops.volition.ref_oasis.front_end
 
-import com.empowerops.volition.ref_oasis.model.*
+import com.empowerops.volition.ref_oasis.*
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import javafx.collections.FXCollections
@@ -14,8 +14,8 @@ import tornadofx.*
 
 class ConnectionView(
         val model: ModelService,
-        val eventBus: EventBus) : View("My View") {
-
+        val eventBus: EventBus
+) : View("My View") {
 
     private val regList: ObservableList<String> = FXCollections.observableArrayList()
 

@@ -1,4 +1,4 @@
-package com.empowerops.volition.ref_oasis.model
+package com.empowerops.volition.ref_oasis
 
 import java.util.*
 

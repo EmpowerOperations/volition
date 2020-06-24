@@ -1,9 +1,6 @@
 package com.empowerops.volition.ref_oasis.front_end
 
-import com.empowerops.volition.ref_oasis.front_end.OptimizerController.ButtonState.*
-import com.empowerops.volition.ref_oasis.model.*
-import com.empowerops.volition.ref_oasis.optimizer.*
-import com.empowerops.volition.ref_oasis.optimizer.buildStartIssuesMessage
+import com.empowerops.volition.ref_oasis.*
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import com.sun.javafx.binding.StringConstant
@@ -22,7 +19,6 @@ import javafx.util.converter.DoubleStringConverter
 import kotlinx.coroutines.*
 import kotlinx.coroutines.javafx.JavaFx
 import tornadofx.*
-import java.lang.IllegalStateException
 import java.time.Duration
 
 class OptimizerController {
@@ -76,7 +72,6 @@ class OptimizerController {
     private lateinit var modelService: ModelService
     private lateinit var inputRoot: TreeItem<Parameter>
     private lateinit var outputRoot: TreeItem<Parameter>
-    private lateinit var runStateMachine: RunStateMachine
 
     enum class Type {
         Input, Output, Root
@@ -237,46 +232,46 @@ class OptimizerController {
     fun attachToModel(
             modelService: ModelService,
             eventBus: EventBus,
-            connectionView: ListView<String>,
-            stateMachine: RunStateMachine) {
+            connectionView: ListView<String>
+    ) {
         this.modelService = modelService
-        this.runStateMachine = stateMachine
         eventBus.register(this)
-        connectionListContainer.children.add(connectionView)
+        connectionListContainer.children += connectionView
         showNode(null)
-        rebindViewToState(runStateMachine.currentState)
+        rebindViewToState(TODO())
     }
 
     @FXML fun startStopClicked() = GlobalScope.launch(Dispatchers.JavaFx) {
-        when (runStateMachine.currentState){
-            State.Idle -> {
-                val startResult = CompletableDeferred<RunStateMachine.StartResult>()
-                runStateMachine.start(startResult)
-                when(startResult.await()){
-                    is RunStateMachine.StartResult.Success -> {
-                        //NOOP
-                    }
-                    is RunStateMachine.StartResult.Failed -> {
-                        val alert = Alert(Alert.AlertType.ERROR)
-                        alert.title = "Error"
-                        alert.headerText = "Can not start"
-                        alert.contentText = buildStartIssuesMessage(modelService.findIssues())
-                        alert.showAndWait()
-                    }
-                }
-            }
-            State.Running, State.PausePending, State.Paused -> runStateMachine.stop()
-            State.StopPending -> runStateMachine.forceStop()
-            else -> throw IllegalStateException("Start/Stop Button is not an actionable state. Current State:${runStateMachine.currentState}")
-        }
+        TODO()
+//        when (runStateMachine.currentState){
+//            State.Idle -> {
+//                val startResult = CompletableDeferred<RunStateMachine.StartResult>()
+//                runStateMachine.start(startResult)
+//                when(startResult.await()){
+//                    is RunStateMachine.StartResult.Success -> {
+//                        //NOOP
+//                    }
+//                    is RunStateMachine.StartResult.Failed -> {
+//                        val alert = Alert(Alert.AlertType.ERROR)
+//                        alert.title = "Error"
+//                        alert.headerText = "Can not start"
+//                        alert.contentText = buildStartIssuesMessage(modelService.findIssues())
+//                        alert.showAndWait()
+//                    }
+//                }
+//            }
+//            State.Running, State.PausePending, State.Paused -> runStateMachine.stop()
+//            State.StopPending -> runStateMachine.forceStop()
+//            else -> throw IllegalStateException("Start/Stop Button is not an actionable state. Current State:${runStateMachine.currentState}")
+//        }
     }
 
     @FXML fun pauseResumeRun() = GlobalScope.launch(Dispatchers.JavaFx) {
-        when (runStateMachine.currentState){
-            State.Running -> runStateMachine.pause()
-            State.Paused -> runStateMachine.resume()
-            else -> throw IllegalStateException("Pause/Resume Button is not an actionable state. Current State:${startButton.text}")
-        }
+//        when (runStateMachine.currentState){
+//            State.Running -> runStateMachine.pause()
+//            State.Paused -> runStateMachine.resume()
+//            else -> throw IllegalStateException("Pause/Resume Button is not an actionable state. Current State:${startButton.text}")
+//        }
     }
 
     @FXML fun removeSelectedSetup() = GlobalScope.launch {
@@ -333,24 +328,25 @@ class OptimizerController {
 
     @Subscribe
     fun onStateChangedAsync(event : StatusUpdateEvent) = GlobalScope.launch(Dispatchers.JavaFx){
-        rebindViewToState(runStateMachine.currentState)
+//        rebindViewToState(runStateMachine.currentState)
     }
 
     private fun rebindViewToState(currentState: State) {
-        val buttonState = when (currentState) {
-            State.Idle -> Idle
-            State.StartPending -> Starting
-            State.Running -> Running
-            State.PausePending -> Pausing
-            State.Paused -> Paused
-            State.StopPending -> Stopping
-            State.ForceStopPending -> ForceStopping
-        }
-
-        startButton.text = buttonState.start
-        startButton.isDisable = buttonState.startDisabled
-        pauseButton.text = buttonState.pause
-        pauseButton.isDisable = buttonState.pauseDisabled
+        TODO()
+//        val buttonState = when (currentState) {
+//            State.Idle -> Idle
+//            State.StartPending -> Starting
+//            State.Running -> Running
+//            State.PausePending -> Pausing
+//            State.Paused -> Paused
+//            State.StopPending -> Stopping
+//            State.ForceStopPending -> ForceStopping
+//        }
+//
+//        startButton.text = buttonState.start
+//        startButton.isDisable = buttonState.startDisabled
+//        pauseButton.text = buttonState.pause
+//        pauseButton.isDisable = buttonState.pauseDisabled
     }
 
     enum class ButtonState(

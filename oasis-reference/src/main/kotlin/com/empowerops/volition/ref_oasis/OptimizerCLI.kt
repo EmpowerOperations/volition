@@ -9,14 +9,10 @@ import kotlinx.coroutines.*
 import picocli.CommandLine.*
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
-import java.lang.Appendable
-import java.lang.Runnable
-import java.lang.StringBuilder
 import java.nio.charset.StandardCharsets
 import java.util.concurrent.Callable
 import java.util.jar.Manifest
 import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.EmptyCoroutineContext
 
 suspend fun main(args: Array<String>) = mainAsync(args)?.join()
 
@@ -50,7 +46,7 @@ class OptimizerCLI : Callable<Job> {
     private val scope: CoroutineScope = OptimizerCLICoroutineScope()
 
     private val job = scope.launch(start = CoroutineStart.LAZY) {
-        val modelService = ModelService(eventBus, overwrite)
+        val modelService = ModelService(eventBus)
         val optimizerEndpoint = OptimizerEndpoint(
                 ConfigurationActorFactory(this@launch, modelService),
                 OptimizationActorFactory(this@launch, RandomNumberOptimizer(), modelService, eventBus)

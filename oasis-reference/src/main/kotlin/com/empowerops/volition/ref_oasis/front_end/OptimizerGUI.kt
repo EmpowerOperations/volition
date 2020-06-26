@@ -84,7 +84,7 @@ class OptimizerGUI {
     var overwrite: Boolean = false
 
     private fun setup() {
-        modelService = ModelService(eventBus, overwrite)
+        modelService = ModelService(eventBus)
         inputGenerator = RandomNumberOptimizer()
         optimizerEndpoint = OptimizerEndpoint(TODO(), TODO())
         server = NettyServerBuilder.forPort(port).addService(ServerInterceptors.intercept(optimizerEndpoint, LoggingInterceptor(logger))).build()

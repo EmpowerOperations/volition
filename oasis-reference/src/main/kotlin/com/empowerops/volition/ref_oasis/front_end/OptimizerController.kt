@@ -77,7 +77,7 @@ class OptimizerController {
         Input, Output, Root
     }
 
-    private fun buildTree(config: Proxy?): TreeItem<Parameter> {
+    private fun buildTree(config: Simulation?): TreeItem<Parameter> {
         val root = TreeItem<Parameter>(Parameter("root", Type.Root))
         inputRoot = TreeItem(Parameter("Inputs", Type.Root))
         outputRoot = TreeItem(Parameter("Outputs", Type.Root))
@@ -118,9 +118,10 @@ class OptimizerController {
         nodesList.selectionModel.selectedItemProperty().addListener { src, oldV, newV -> showNode(newV) }
 
         timeOutTextField.setOnKeyPressed { event ->
+            val simulation = modelService.findSimulationName(nodesList.selectedItem!!)
             if (event.code == KeyCode.ESCAPE) {
                 //discard
-                timeOutTextField.text = modelService.proxies.single { it.name == nodesList.selectedItem!! }.timeOut!!.toMillis().toString()
+                timeOutTextField.text = simulation!!.timeOut?.toMillis()?.toString() ?: ""
                 view.requestFocus()
             } else if (event.code == KeyCode.ENTER) {
                 //commit
@@ -128,18 +129,25 @@ class OptimizerController {
                 if (duration == null) {
                     timeOutTextField.text = ""
                 } else {
-                    modelService.setTimeout(nodesList.selectedItem, Duration.ofMillis(duration))
+                    modelService.updateSimulation(nodesList.selectedItem!!) { sim -> sim.copy(
+                            timeOut = Duration.ofMillis(duration)
+                    )}
                 }
                 view.requestFocus()
             }
         }
 
         useTimeout.setOnAction {
+            val selectedItem = nodesList.selectedItem!!
             if (useTimeout.isSelected) {
-                modelService.setTimeout(nodesList.selectedItem, Duration.ZERO)
+                modelService.updateSimulation(selectedItem) { sim -> sim.copy(
+                        timeOut = Duration.ZERO
+                )}
                 timeOutTextField.text = "0"
             } else {
-                modelService.setTimeout(nodesList.selectedItem, null)
+                modelService.updateSimulation(selectedItem) { sim -> sim.copy(
+                        timeOut = null
+                )}
                 timeOutTextField.text = ""
             }
         }
@@ -196,27 +204,32 @@ class OptimizerController {
 
     private fun generateAndUpdateNewProxy(): Boolean {
         val selectedItem = nodesList.selectionModel.selectedItem
+
         if (selectedItem == null) {
             return false
-        } else {
-            val proxy = modelService.proxies.single { it.name == selectedItem }
-            val rebuildInputList: List<Input> = inputRoot.children.map {
-                val parameter = it.value
-                Input(parameter.name, parameter.lowerBound
-                        ?: Double.NaN, parameter.upperBound ?: Double.NaN, 0.0)
-            }
-            val newProxy = proxy.copy(inputs = rebuildInputList)
-            modelService.updateConfiguration(newProxy)
+        }
+        else {
+            modelService.updateSimulation(selectedItem){ sim -> sim.copy(
+                inputs = inputRoot.children.map { uiParam ->
+                    Input(
+                            uiParam.value.name,
+                            uiParam.value.lowerBound ?: Double.NaN,
+                            uiParam.value.upperBound ?: Double.NaN,
+                            0.0
+                    )
+                }
+            )}
+
             return true
         }
     }
 
     private fun showNode(newV: String?) {
         selectedNodeInfoBox.isDisable = newV == null
-        displayConfiguration(modelService.proxies.singleOrNull { it.name == newV })
+        if(newV != null) displayConfiguration(modelService.findSimulationName(newV))
     }
 
-    private fun displayConfiguration(proxy: Proxy?) {
+    private fun displayConfiguration(proxy: Simulation?) {
         descriptionLabel.text = proxy?.name
         paramTreeView.root = buildTree(proxy)
         paramTreeView.isShowRoot = false
@@ -276,7 +289,7 @@ class OptimizerController {
 
     @FXML fun removeSelectedSetup() = GlobalScope.launch {
         val selectedItem = nodesList.selectedItem
-        if (selectedItem != null) modelService.removeConfiguration(selectedItem)
+        if (selectedItem != null) modelService.removeSim(selectedItem)
     }
 
     @Subscribe
@@ -292,28 +305,6 @@ class OptimizerController {
     @Subscribe
     fun onNewMessageAsync(event: NewMessageEvent) = GlobalScope.launch(Dispatchers.JavaFx) {
         messageList.add(event.message)
-    }
-
-    @Subscribe
-    fun whenProxyAddedAsync(event: ProxyAddedEvent) = GlobalScope.launch(Dispatchers.JavaFx) {
-        list.add(event.name)
-    }
-
-    @Subscribe
-    fun whenProxyRemovedAsync(event: ProxyRemovedEvent) = GlobalScope.launch(Dispatchers.JavaFx) {
-        list.remove(event.name)
-    }
-
-    @Subscribe
-    fun whenProxyRenamedAsync(event: ProxyRenamedEvent) = GlobalScope.launch(Dispatchers.JavaFx) {
-        list.remove(event.oldName)
-        list.add(event.newName)
-    }
-
-    @Subscribe
-    fun whenProxyUpdatedAsync(event: ProxyUpdatedEvent) = GlobalScope.launch(Dispatchers.JavaFx) {
-        nodesList.refresh()
-        showNode(nodesList.selectedItem)
     }
 
     @Subscribe

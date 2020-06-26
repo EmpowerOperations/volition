@@ -66,6 +66,10 @@ class Tests {
         val changeRequest = NodeChangeCommandDTO.newBuilder()
                 .setName("asdf")
                 .setAutoImport(true)
+                .setMappingTable(VariableMapping.newBuilder()
+                        .putInputs("x1", "x1")
+                        .putOutputs("f1", "f1")
+                )
                 .addInputs(PrototypeInputParameter.newBuilder()
                         .setName("x1")
                         .setLowerBound(DoubleValue.of(1.0))
@@ -79,15 +83,17 @@ class Tests {
                 .build()
 
         val response = doSingle(service::upsertEvaluationNode, changeRequest)
-        val x = 4;
 
         // assert
         val check = doSingle(service::requestEvaluationNode, NodeStatusQueryDTO.newBuilder().setName("asdf").build())
-        val y = 5;
 
-        assertThat(check).isEqualTo(NodeChangeCommandDTO.newBuilder()
+        assertThat(check).isEqualTo(NodeStatusResponseDTO.newBuilder()
                 .setName("asdf")
                 .setAutoImport(true)
+                .setMappingTable(VariableMapping.newBuilder()
+                        .putInputs("x1", "x1")
+                        .putOutputs("f1", "f1")
+                )
                 .addInputs(PrototypeInputParameter.newBuilder()
                         .setName("x1")
                         .setLowerBound(DoubleValue.of(1.0))

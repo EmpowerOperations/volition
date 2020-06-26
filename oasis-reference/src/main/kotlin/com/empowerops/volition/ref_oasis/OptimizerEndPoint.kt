@@ -8,6 +8,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.channels.actor
 import java.lang.Exception
+import java.time.Duration
 import java.util.*
 import java.util.logging.Level
 import java.util.logging.Logger
@@ -36,6 +37,9 @@ sealed class SimulationProvidedMessage {
 
     data class SimulationConfiguration(val sim: Simulation): SimulationProvidedMessage()
 }
+
+typealias ParameterName = String
+
 sealed class ConfigurationMessage {
 
     data class RunRequest(val id: String): UnaryRequestResponseConfigurationMessage<RunResult>()
@@ -43,12 +47,15 @@ sealed class ConfigurationMessage {
             val name: String,
             val inputs: List<Input>,
             val outputs: List<Output>,
-            val autoImport: Boolean
+            val autoImport: Boolean,
+            val timeOut: Duration,
+            val inputMapping: Map<String, ParameterName>,
+            val outputMapping: Map<ParameterName, String>
     ): ConfigurationMessage()
 
     data class GetNode(
             val name: String
-    ): UnaryRequestResponseConfigurationMessage<Simulation>()
+    ): UnaryRequestResponseConfigurationMessage<Simulation?>()
 }
 
 abstract class UnaryRequestResponseConfigurationMessage<T>: ConfigurationMessage(), ResponseNeeded<T> {
@@ -85,7 +92,11 @@ class ConfigurationActorFactory(
                             message.name,
                             message.inputs,
                             message.outputs,
-                            "description of ${message.name}"
+                            "description of ${message.name}",
+                            message.timeOut,
+                            message.autoImport,
+                            message.inputMapping,
+                            message.outputMapping
                     )
 
                     model.addSim(simulation)
@@ -98,7 +109,7 @@ class ConfigurationActorFactory(
                     Unit
                 }
                 is ConfigurationMessage.GetNode -> {
-                    val singleSimulation = model.simulations.single()
+                    val singleSimulation = model.findSimulationName(message.name)
 
                     message.respondWith(singleSimulation)
                 }
@@ -301,9 +312,9 @@ class OptimizerEndpoint(
                 request.inputsList.map { inputDTO ->
                     Input(
                             inputDTO.name,
-                            inputDTO.takeIf { it.hasLowerBound() }?.lowerBound?.value ?: Double.NaN,
-                            inputDTO.takeIf { it.hasUpperBound() }?.upperBound?.value ?: Double.NaN,
-                            inputDTO.takeIf { it.hasCurrentValue() }?.currentValue?.value ?: Double.NaN
+                            lowerBound = inputDTO.takeIf { it.hasLowerBound() }?.lowerBound?.value ?: Double.NaN,
+                            upperBound = inputDTO.takeIf { it.hasUpperBound() }?.upperBound?.value ?: Double.NaN,
+                            currentValue = inputDTO.takeIf { it.hasCurrentValue() }?.currentValue?.value ?: Double.NaN
                     )
                 },
                 request.outputsList.map { Output(it.name) }
@@ -437,21 +448,32 @@ class OptimizerEndpoint(
         state.configurationActor.send(message)
         val result = message.response.await()
 
-        NodeStatusResponseDTO.newBuilder()
-                .setName(result.name)
-                .addAllInputs(result.inputs.map { input ->
-                    PrototypeInputParameter.newBuilder()
-                            .setName(input.name)
-                            .apply { if( ! input.lowerBound.isNaN()) setLowerBound(DoubleValue.of(input.lowerBound)) }
-                            .apply { if( ! input.upperBound.isNaN()) setUpperBound(DoubleValue.of(input.upperBound)) }
+        if(result == null){
+            NodeStatusResponseDTO.newBuilder().build()
+        }
+        else {
+            NodeStatusResponseDTO.newBuilder()
+                    .setName(result.name)
+                    .addAllInputs(result.inputs.map { input ->
+                        PrototypeInputParameter.newBuilder()
+                                .setName(input.name)
+                                .apply { if (!input.lowerBound.isNaN()) setLowerBound(DoubleValue.of(input.lowerBound)) }
+                                .apply { if (!input.upperBound.isNaN()) setUpperBound(DoubleValue.of(input.upperBound)) }
+                                .build()
+                    })
+                    .addAllOutputs(result.outputs.map { output ->
+                        PrototypeOutputParameter.newBuilder()
+                                .setName(output.name)
+                                .build()
+                    })
+                    .apply { if(result.autoImport) setAutoImport(result.autoImport) }
+                    .setMappingTable(VariableMapping.newBuilder()
+                            .putAllInputs(result.inputMapping)
+                            .putAllOutputs(result.outputMapping)
                             .build()
-                })
-                .addAllOutputs(result.outputs.map { output ->
-                    PrototypeOutputParameter.newBuilder()
-                            .setName(output.name)
-                            .build()
-                })
-                .build()
+                    )
+                    .build()
+        }
     }
 
     override fun upsertEvaluationNode(
@@ -471,7 +493,10 @@ class OptimizerEndpoint(
                     )
                 },
                 request.outputsList.map { outputDTO -> Output(outputDTO.name) },
-                request.autoImport
+                request.autoImport,
+                Duration.ofSeconds(request.timeOut.seconds) + Duration.ofNanos(request.timeOut.nanos.toLong()),
+                request.mappingTable.inputsMap,
+                request.mappingTable.outputsMap
         )
 
         state.configurationActor.send(message)

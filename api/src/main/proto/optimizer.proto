@@ -208,13 +208,11 @@ message NodeChangeCommandDTO {
     string name = 1;
     string description = 6;
 
-    //optionals
     google.protobuf.StringValue newName = 9;
 
-    oneof variableMapping {
-        bool autoImport = 10;
-        VariableMapping mappingTable = 11;
-    }
+    bool autoImport = 10;
+    VariableMapping mappingTable = 11;
+    google.protobuf.Duration timeOut = 12;
 
     repeated PrototypeInputParameter inputs = 2;
     repeated PrototypeOutputParameter outputs = 3;
@@ -225,10 +223,8 @@ message NodeStatusResponseDTO {
     string name = 1;
     string description = 6;
 
-    oneof variableMapping {
-        bool autoImport = 10;
-        VariableMapping mappingTable = 11;
-    }
+    bool autoImport = 10;
+    VariableMapping mappingTable = 11;
 
     repeated PrototypeInputParameter inputs = 2;
     repeated PrototypeOutputParameter outputs = 3;

@@ -10,7 +10,6 @@ interface Optimizer {
 class RandomNumberOptimizer : Optimizer {
 
     override fun addCompleteDesign(expensivePoint: Map<String, Double>) {
-        TODO("Not yet implemented")
     }
 
     override fun generateInputs(inputs: List<Input>): Map<String, Double> = inputs.associate {

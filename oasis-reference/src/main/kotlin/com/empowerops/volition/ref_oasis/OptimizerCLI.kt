@@ -51,9 +51,24 @@ class OptimizerCLI : Callable<Job> {
                 ConfigurationActorFactory(this@launch, modelService),
                 OptimizationActorFactory(this@launch, RandomNumberOptimizer(), modelService, eventBus)
         )
-        val server = NettyServerBuilder.forPort(port).addService(ServerInterceptors.intercept(optimizerEndpoint, LoggingInterceptor(logger))).build()
-        server.start()
-        server.awaitTermination()
+        val server = NettyServerBuilder
+                .forPort(port)
+                .addService(ServerInterceptors.intercept(optimizerEndpoint, LoggingInterceptor(logger)))
+                .build()
+
+        try {
+            // TBD: I'm not sure why I cant simply use coroutineScope {} here,
+            // the key that im looking for is that if this job is cancelled
+            // I want the finally block to be triggered,
+            // but if I use coroutineScope {}, when this job is cancelled, it doesnt throw,
+            // it seems to be waiting for awaitTermination()
+            async(Dispatchers.IO) { server.start().awaitTermination() }.await()
+        }
+        finally {
+            server.shutdownNow()
+            server.awaitTermination()
+            val x = 4;
+        }
     }
 
     override fun call(): Job = job.also { it.start() }

@@ -192,6 +192,9 @@ class OptimizationActorFactory(
                 }
             }
         }
+        catch(ex: Throwable){
+            throw ex;
+        }
         finally {
             eventBus.post(RunStoppedEvent(runID))
         }
@@ -252,36 +255,37 @@ class OptimizerEndpoint(
     // returns a SendChannel<POJO> that wraps a StreamObserver<DTO>,
     // doing context-free conversions from data-classes to DTOs.
     private fun makeActorConvertingOptimizerRequestMessagesToDTOs(responseObserver: StreamObserver<OptimizerGeneratedQueryDTO>) = scope.actor<OptimizerRequestMessage> {
-        for (message in channel) try {
-            val wrapper = OptimizerGeneratedQueryDTO.newBuilder()
+        try {
+            for (message in channel) {
+                val wrapper = OptimizerGeneratedQueryDTO.newBuilder()
 
-            val dc = when (message) {
-                is OptimizerRequestMessage.NodeStatusUpdateRequest -> {
-                    wrapper.nodeStatusRequestBuilder.apply {
-                        name = message.name
+                val dc = when (message) {
+                    is OptimizerRequestMessage.NodeStatusUpdateRequest -> {
+                        wrapper.nodeStatusRequestBuilder.apply {
+                            name = message.name
+                        }
+                    }
+                    is OptimizerRequestMessage.SimulationEvaluationRequest -> {
+                        wrapper.evaluationRequestBuilder.apply {
+                            name = message.name
+                            putAllInputVector(message.inputVector)
+                        }
+                    }
+                    is OptimizerRequestMessage.SimulationCancelRequest -> {
+                        wrapper.cancelRequestBuilder.apply {
+                            name = message.name
+                        }
                     }
                 }
-                is OptimizerRequestMessage.SimulationEvaluationRequest -> {
-                    wrapper.evaluationRequestBuilder.apply {
-                        name = message.name
-                        putAllInputVector(message.inputVector)
-                    }
-                }
-                is OptimizerRequestMessage.SimulationCancelRequest -> {
-                    wrapper.cancelRequestBuilder.apply {
-                        name = message.name
-                    }
-                }
+
+                responseObserver.onNext(wrapper.build())
             }
 
-            responseObserver.onNext(wrapper.build())
+            responseObserver.onCompleted()
         }
         catch(ex: Throwable){
-            logger.log(Level.SEVERE, "unexpected error in converting $message", ex)
+            logger.log(Level.SEVERE, "unexpected error sending message to client via registration channel", ex)
             responseObserver.onError(ex)
-        }
-        finally {
-            responseObserver.onCompleted()
         }
     }
 
@@ -354,6 +358,7 @@ class OptimizerEndpoint(
             responseObserver: StreamObserver<MessageConfirmDTO>
     ) = scope.consumeSingleAsync(responseObserver) {
 
+        fail; //this is happening after the optimization ends...
         val state = checkIs<State.Optimizing>(state)
 
         val element = SimulationProvidedMessage.Message(request.name, request.message)
@@ -384,13 +389,14 @@ class OptimizerEndpoint(
             request: StopOptimizationCommandDTO,
             responseObserver: StreamObserver<StopOptimizationConfirmDTO>
     ) = scope.consumeSingleAsync(responseObserver) {
-        val state = state
+        var state = state
 
         check(state is State.Optimizing)
 
         state.optimizationActor.close()
         (state.optimizationActor as Job).join()
 
+        state = this.state
         check(state is State.Configuring)
 
         StopOptimizationConfirmDTO.newBuilder().build()

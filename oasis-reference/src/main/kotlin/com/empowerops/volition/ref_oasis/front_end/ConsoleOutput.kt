@@ -34,7 +34,7 @@ class ConsoleOutput(eventBus: EventBus) : Logger {
     fun onEvent(event : StatusUpdateEvent){
         val message = Message("Optimizer Event", event.toString(), Level.INFO)
         log += message
-        val logMessage = "[${LocalDateTime.now()}] > ${event.status}"
+        val logMessage = "[${LocalDateTime.now()}] Event > ${event.status}"
         System.out.println(logMessage)
     }
 }

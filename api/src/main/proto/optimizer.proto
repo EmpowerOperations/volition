@@ -129,14 +129,9 @@ message OptimizerGeneratedQueryDTO {
 
 //startOptimization
 message StartOptimizationCommandDTO {
-    RunConfiguration runConfig = 2;
-}
-
-message RunConfiguration {
-//    uint32 runNumber = 1; //TBD: is there a point in exposing multiple runs from the API?
-    google.protobuf.Duration runTime = 2;
-    google.protobuf.UInt32Value iterationCount = 3;
-    google.protobuf.DoubleValue targetObjectiveValue = 4;
+    google.protobuf.Duration runTime = 3;
+    google.protobuf.UInt32Value iterationCount = 4;
+    google.protobuf.DoubleValue targetObjectiveValue = 5;
 }
 
 message StartOptimizationConfirmDTO {
@@ -168,7 +163,7 @@ message OptimizationResultsQueryDTO {
 message OptimizationResultsResponseDTO {
     oneof response {
         string message = 1;
-        RunResult RunResult = 2;
+        RunResult result = 2;
     }
 }
 

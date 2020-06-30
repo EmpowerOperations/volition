@@ -1,13 +1,11 @@
 package com.empowerops.volition.ref_oasis
 
 import com.empowerops.volition.dto.*
-import com.google.common.eventbus.EventBus
 import com.google.protobuf.DoubleValue
 import io.grpc.stub.StreamObserver
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.channels.actor
-import java.lang.Exception
 import java.time.Duration
 import java.util.*
 import java.util.logging.Level
@@ -20,186 +18,7 @@ interface ResponseNeeded<in T>: AutoCloseable {
     override fun close() //resume any waiters regardless of whether respondWith was called
 }
 
-sealed class SimulationProvidedMessage {
-    data class EvaluationResult(
-            val outputVector: Map<String, Double>
-    ): SimulationProvidedMessage()
-
-    data class ErrorResponse(
-            val name: String,
-            val message: String
-    ) : SimulationProvidedMessage()
-
-    data class Message(
-            val name: String,
-            val message: String
-    ) : SimulationProvidedMessage()
-
-    data class SimulationConfiguration(val sim: Simulation): SimulationProvidedMessage()
-}
-
 typealias ParameterName = String
-
-sealed class ConfigurationMessage {
-
-    data class RunRequest(val id: String): UnaryRequestResponseConfigurationMessage<RunResult>()
-    data class UpsertNode(
-            val name: String,
-            val inputs: List<Input>,
-            val outputs: List<Output>,
-            val autoImport: Boolean,
-            val timeOut: Duration,
-            val inputMapping: Map<String, ParameterName>,
-            val outputMapping: Map<ParameterName, String>
-    ): ConfigurationMessage()
-
-    data class GetNode(
-            val name: String
-    ): UnaryRequestResponseConfigurationMessage<Simulation?>()
-}
-
-abstract class UnaryRequestResponseConfigurationMessage<T>: ConfigurationMessage(), ResponseNeeded<T> {
-    val response: CompletableDeferred<T> = CompletableDeferred()
-    final override fun respondWith(value: T) { response.complete(value) }
-    final override fun failedWith(ex: Throwable) { response.completeExceptionally(ex) }
-    final override fun close() {
-        response.completeExceptionally(NoSuchElementException("internal error: no result provided by service to $this"))
-    }
-}
-
-sealed class OptimizerRequestMessage {
-
-    data class NodeStatusUpdateRequest(val name: String): OptimizerRequestMessage()
-    data class SimulationEvaluationRequest(val name: String, val inputVector: Map<String, Double>): OptimizerRequestMessage()
-    data class SimulationCancelRequest(val name: String): OptimizerRequestMessage()
-}
-
-typealias ConfigurationActor = SendChannel<ConfigurationMessage>
-
-class ConfigurationActorFactory(
-        val scope: CoroutineScope,
-        val model: ModelService
-){
-    fun make(): ConfigurationActor = scope.actor<ConfigurationMessage> {
-
-        for(message in channel) try {
-            println("config actor receieved $message!")
-
-            val result = when(message){
-                is ConfigurationMessage.RunRequest -> TODO()
-                is ConfigurationMessage.UpsertNode -> {
-                    val simulation = Simulation(
-                            message.name,
-                            message.inputs,
-                            message.outputs,
-                            "description of ${message.name}",
-                            message.timeOut,
-                            message.autoImport,
-                            message.inputMapping,
-                            message.outputMapping
-                    )
-
-                    model.addSim(simulation)
-
-                    if(message.autoImport){
-                        val setupSuccess = model.autoSetup(simulation)
-                        require(setupSuccess)
-                    }
-
-                    Unit
-                }
-                is ConfigurationMessage.GetNode -> {
-                    val singleSimulation = model.findSimulationName(message.name)
-
-                    message.respondWith(singleSimulation)
-                }
-                is UnaryRequestResponseConfigurationMessage<*> -> TODO()
-            }
-        }
-        catch(ex: Throwable){
-            if(message is ResponseNeeded<*>){
-                message.failedWith(ex)
-            }
-        }
-        finally {
-            if(message is ResponseNeeded<*>){
-                message.close()
-            }
-        }
-    }
-}
-
-typealias OptimizationActor = SendChannel<SimulationProvidedMessage>
-
-class OptimizationActorFactory(
-        val scope: CoroutineScope,
-        val optimizer: Optimizer,
-        val model: ModelService,
-        val eventBus: EventBus
-) {
-
-    private val logger = Logger.getLogger(OptimizationActorFactory::class.qualifiedName)
-
-    fun make(output: SendChannel<OptimizerRequestMessage>): OptimizationActor = scope.actor<SimulationProvidedMessage>() {
-
-        val sim = model.simulations.single()
-
-        output.send(OptimizerRequestMessage.NodeStatusUpdateRequest(sim.name))
-        val config = channel.receive() as? SimulationProvidedMessage.SimulationConfiguration
-
-        require(config is SimulationProvidedMessage.SimulationConfiguration) { "expected SimulationConfiguration, but received $config" }
-        require(config.sim.name == sim.name) { "at optimization start, config=$config, expected config=$sim" }
-        require(config.sim.inputs == sim.inputs) { "at optimization start, config=$config, expected config=$sim" }
-        require(config.sim.outputs == sim.outputs) { "at optimization start, config=$config, expected config=$sim" }
-
-        val runID = UUID.randomUUID()
-        try {
-            eventBus.post(RunStartedEvent(runID))
-            while (isActive) { //stopOptimization maps to cancellation, to stop an optimization, cancel this actor
-
-                val inputVector = optimizer.generateInputs(sim.inputs)
-
-                try {
-                    output.send(OptimizerRequestMessage.SimulationEvaluationRequest(sim.name, inputVector))
-
-                    var response = channel.receive()
-
-                    //read out any status messages
-                    while (response is SimulationProvidedMessage.Message) {
-                        eventBus.post(NewMessageEvent(Message(response.name, response.message)))
-                        response = channel.receive()
-                    }
-
-                    //read the response
-                    when (response) {
-                        is SimulationProvidedMessage.EvaluationResult -> {
-                            eventBus.post(NewResultEvent(EvaluationResult.Success(sim.name, inputVector, response.outputVector)))
-                            optimizer.addCompleteDesign(inputVector + response.outputVector)
-                        }
-                        is SimulationProvidedMessage.ErrorResponse -> {
-                            eventBus.post(NewResultEvent(EvaluationResult.Error(sim.name, inputVector, response.message)))
-                            // we dont update the optimizer state when the evaluation encounters an error
-                            // -- this is approximately true for both this implementation and Empower commercial optimizers
-                        }
-                        is SimulationProvidedMessage.SimulationConfiguration -> TODO()
-                        is SimulationProvidedMessage.Message -> TODO()
-                    } as Any
-                } catch (ex: CancellationException) {
-                    if (!isActive) output.send(OptimizerRequestMessage.SimulationCancelRequest(sim.name))
-                    else logger.warning("$this is cancelled but still active?")
-
-                    throw ex
-                }
-            }
-        }
-        catch(ex: Throwable){
-            throw ex;
-        }
-        finally {
-            eventBus.post(RunStoppedEvent(runID))
-        }
-    }
-}
 
 sealed class State {
     object Idle: State() {}
@@ -254,7 +73,7 @@ class OptimizerEndpoint(
 
     // returns a SendChannel<POJO> that wraps a StreamObserver<DTO>,
     // doing context-free conversions from data-classes to DTOs.
-    private fun makeActorConvertingOptimizerRequestMessagesToDTOs(responseObserver: StreamObserver<OptimizerGeneratedQueryDTO>) = scope.actor<OptimizerRequestMessage> {
+    private fun makeActorConvertingOptimizerRequestMessagesToDTOs(responseObserver: StreamObserver<OptimizerGeneratedQueryDTO>) = scope.actor<OptimizerRequestMessage>(Dispatchers.Unconfined) {
         try {
             for (message in channel) {
                 val wrapper = OptimizerGeneratedQueryDTO.newBuilder()
@@ -292,7 +111,7 @@ class OptimizerEndpoint(
     override fun unregister(
             request: UnregistrationCommandDTO,
             responseObserver: StreamObserver<UnregistrationConfirmDTO>
-    ) = scope.consumeSingleAsync(responseObserver) {
+    ) = scope.consumeSingleAsync(responseObserver, request) {
 
         val state = checkIs<State.Configuring>(state)
 
@@ -307,7 +126,7 @@ class OptimizerEndpoint(
     override fun offerSimulationConfig(
             request: NodeStatusResponseDTO,
             responseObserver: StreamObserver<NodeChangeConfirmDTO>
-    ) = scope.consumeSingleAsync(responseObserver) {
+    ) = scope.consumeSingleAsync(responseObserver, request) {
 
         val state = checkIs<State.Optimizing>(state)
 
@@ -331,7 +150,7 @@ class OptimizerEndpoint(
     override fun offerSimulationResult(
             request: SimulationResponseDTO,
             responseObserver: StreamObserver<SimulationResultConfirmDTO>
-    ) = scope.consumeSingleAsync(responseObserver) {
+    ) = scope.consumeSingleAsync(responseObserver, request) {
 
         val state = checkIs<State.Optimizing>(state)
 
@@ -344,11 +163,19 @@ class OptimizerEndpoint(
     override fun offerErrorResult(
             request: ErrorResponseDTO,
             responseObserver: StreamObserver<ErrorConfirmDTO>
-    ) = scope.consumeSingleAsync(responseObserver) {
+    ) = scope.consumeSingleAsync(responseObserver, request) {
         val state = checkIs<State.Optimizing>(state)
 
         val element = SimulationProvidedMessage.ErrorResponse(request.name, request.message)
         state.optimizationActor.send(element)
+        fail; //ook, so the problem appears to be back-pressure.
+        // calling 'offer' here under the debugger returns false.
+        // 'send' throws 'channel closed exception'.
+        // but looking at it under the debugger, it says active. Its mailbox is full (read: size=1)
+        // so my guess is this:
+        // the actor is busy. When its finished it will close. Thus the 'send' call here queues,
+        // but it terminates after the previous message, resulting in a channel closed exception.
+        // tl;dr, you called this too late. What do i want to do?
 
         ErrorConfirmDTO.newBuilder().build()
     }
@@ -356,9 +183,8 @@ class OptimizerEndpoint(
     override fun offerEvaluationStatusMessage(
             request: MessageCommandDTO,
             responseObserver: StreamObserver<MessageConfirmDTO>
-    ) = scope.consumeSingleAsync(responseObserver) {
+    ) = scope.consumeSingleAsync(responseObserver, request) {
 
-        fail; //this is happening after the optimization ends...
         val state = checkIs<State.Optimizing>(state)
 
         val element = SimulationProvidedMessage.Message(request.name, request.message)
@@ -371,16 +197,17 @@ class OptimizerEndpoint(
     override fun startOptimization(
             request: StartOptimizationCommandDTO,
             responseObserver: StreamObserver<StartOptimizationConfirmDTO>
-    ) = scope.consumeSingleAsync(responseObserver) {
+    ) = scope.consumeSingleAsync(responseObserver, request) {
 
         val configuringState = checkIs<State.Configuring>(state)
         val optimizationActor = optimizationActorFactory.make(configuringState.outboundOptimizerQueries)
-        this.state = State.Optimizing(optimizationActor, configuringState)
 
         optimizationActor.invokeOnClose {
             val optimizingState = checkIs<State.Optimizing>(state)
             this.state = optimizingState.previous
         }
+
+        this.state = State.Optimizing(optimizationActor, configuringState)
 
         StartOptimizationConfirmDTO.newBuilder().build()
     }
@@ -388,36 +215,40 @@ class OptimizerEndpoint(
     override fun stopOptimization(
             request: StopOptimizationCommandDTO,
             responseObserver: StreamObserver<StopOptimizationConfirmDTO>
-    ) = scope.consumeSingleAsync(responseObserver) {
+    ) = scope.consumeSingleAsync(responseObserver, request) {
         var state = state
 
         check(state is State.Optimizing)
 
-        state.optimizationActor.close()
+        val message = SimulationProvidedMessage.StopOptimization()
+        state.optimizationActor.send(message)
         (state.optimizationActor as Job).join()
 
         state = this.state
         check(state is State.Configuring)
 
-        StopOptimizationConfirmDTO.newBuilder().build()
+        StopOptimizationConfirmDTO.newBuilder()
+                .setMessage("OK")
+                .setRunID(message.runID.await().toString())
+                .build()
     }
 
     override fun requestRunResult(
             request: OptimizationResultsQueryDTO,
             responseObserver: StreamObserver<OptimizationResultsResponseDTO>
-    ) = scope.consumeSingleAsync(responseObserver){
+    ) = scope.consumeSingleAsync(responseObserver, request){
         val state = state
 
         check(state is State.Configuring)
 
-        val message = ConfigurationMessage.RunRequest(request.runID)
+        val message = ConfigurationMessage.RunRequest(UUID.fromString(request.runID))
         state.configurationActor.send(message)
 
         val result = message.response.await()
 
         OptimizationResultsResponseDTO.newBuilder()
                 .setMessage(result.resultMessage)
-                .setRunResult(com.empowerops.volition.dto.RunResult.newBuilder()
+                .setResult(com.empowerops.volition.dto.RunResult.newBuilder()
                         .setRunID(result.uuid.toString())
                         .addAllInputColumns(result.inputs)
                         .addAllOutputColumns(result.outputs)
@@ -440,14 +271,14 @@ class OptimizerEndpoint(
     override fun requestIssues(
             request: IssuesQueryDTO,
             responseObserver: StreamObserver<IssuesResponseDTO>
-    ) = scope.consumeSingleAsync(responseObserver){
+    ) = scope.consumeSingleAsync(responseObserver, request){
         TODO("apiService.requestIssues()")
     }
 
     override fun requestEvaluationNode(
             request: NodeStatusQueryDTO,
             responseObserver: StreamObserver<NodeStatusResponseDTO>
-    ) = scope.consumeSingleAsync(responseObserver){
+    ) = scope.consumeSingleAsync(responseObserver, request){
         val state = checkIs<State.Configuring>(state)
 
         val message = ConfigurationMessage.GetNode(request.name)
@@ -485,7 +316,7 @@ class OptimizerEndpoint(
     override fun upsertEvaluationNode(
             request: NodeChangeCommandDTO,
             responseObserver: StreamObserver<NodeChangeConfirmDTO>
-    ) = scope.consumeSingleAsync(responseObserver){
+    ) = scope.consumeSingleAsync(responseObserver, request){
         val state = checkIs<State.Configuring>(state)
 
         val message = ConfigurationMessage.UpsertNode(
@@ -513,14 +344,14 @@ class OptimizerEndpoint(
     override fun requestProblemDefinition(
             request: ProblemDefinitionQueryDTO,
             responseObserver: StreamObserver<ProblemDefinitionResponseDTO>
-    ) = scope.consumeSingleAsync(responseObserver){
+    ) = scope.consumeSingleAsync(responseObserver, request){
         TODO("apiService.requestProblemDefinition(request)")
     }
 
     override fun updateProblemDefinition(
             request: ProblemDefinitionUpdateCommandDTO,
             responseObserver: StreamObserver<ProblemDefinitionConfirmDTO>
-    ) = scope.consumeSingleAsync(responseObserver){
+    ) = scope.consumeSingleAsync(responseObserver, request){
         TODO("apiService.updateProblemDefinition(request)")
     }
 

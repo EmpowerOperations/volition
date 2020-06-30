@@ -39,17 +39,18 @@ suspend fun <T, R> wrapToSuspend(call: (T, StreamObserver<R>) -> Unit, outboundM
     }
 }
 
-fun <T> CoroutineScope.consumeSingleAsync(streamObserver: StreamObserver<T>, message: Message? = null, block: suspend () -> T) {
-    val sourceEx = Exception("error caused while processing $message")
+fun <T> CoroutineScope.consumeSingleAsync(streamObserver: StreamObserver<T>, message: Message, block: suspend () -> T) {
+    val sourceEx = Exception("server error while processing request=${message.toString().trim()}")
     launch {
         try {
             val result = block()
             streamObserver.onNext(result)
             streamObserver.onCompleted()
-        } catch(ex: Throwable){
+        }
+        catch(ex: Throwable){
             sourceEx.initCause(ex)
             streamObserver.onError(sourceEx)
-            throw ex
+            throw sourceEx
         }
     }
 }
@@ -71,7 +72,7 @@ class LoggingInterceptor(val logger: Logger): ServerInterceptor {
 
         val outboundInterceptor = object: ForwardingServerCall.SimpleForwardingServerCall<T, R>(call){
 
-            private val name: String = when(type){
+            private val direction: String = when(type){
                 MethodDescriptor.MethodType.UNARY -> "OUTBOUND"
                 MethodDescriptor.MethodType.CLIENT_STREAMING -> "OUTBOUND"
                 MethodDescriptor.MethodType.SERVER_STREAMING -> "OUTBOUND-ITEM"
@@ -81,9 +82,10 @@ class LoggingInterceptor(val logger: Logger): ServerInterceptor {
             }
 
             override fun sendMessage(message: R) {
-                val messageString = message.toString().let { if(it.isBlank()) "[empty message]" else "\n$it"}
+                val messageType = (message ?: Any())::class.simpleName
+                val messageString = message.toString().let { if(it.isBlank()) "[empty $messageType]" else "\n$it"}
 
-                logger.log("$name: $fullMethodName $messageString", "API")
+                logger.log("$fullMethodName $messageString".trim(), "API $direction")
                 super.sendMessage(message)
             }
         }
@@ -93,13 +95,14 @@ class LoggingInterceptor(val logger: Logger): ServerInterceptor {
         val inboundInterceptor = object: ForwardingServerCallListener.SimpleForwardingServerCallListener<T>(actual) {
             override fun onComplete() {
                 if( ! type.serverSendsOneMessage()){
-                    logger.log("$fullMethodName", "API CLOSED")
+                    logger.log("$fullMethodName".trim(), "API CLOSED")
                 }
                 actual.onComplete()
             }
             override fun onMessage(message: T) {
-                val messageString = message.toString().let { if(it.isBlank()) "[empty message]" else "\n$it" }
-                logger.log("$fullMethodName $messageString", "API INBOUND")
+                val messageType = (message ?: Any())::class.simpleName
+                val messageString = message.toString().let { if(it.isBlank()) "[empty $messageType]" else "\n$it" }
+                logger.log("$fullMethodName $messageString".trim(), "API INBOUND")
                 actual.onMessage(message)
             }
         }

@@ -24,6 +24,17 @@ data class ExpensivePointRow(
         val outputs: List<Double>,
         val isFeasible: Boolean
 )
+fun ExpensivePointRow.dominates(right: ExpensivePointRow): Boolean {
+    val left = this
+    if(left === right) return false
+
+    for(index in outputs.indices){
+        if(left.outputs[index] < right.outputs[index]){
+            return false
+        }
+    }
+    return true
+}
 
 data class Input(
         val name: String,
@@ -96,27 +107,38 @@ data class Issue(val message: String)
 
 class ModelService(private val eventBus: EventBus) : IssueFinder {
 
-    private val inputs: Set<Input> = linkedSetOf()
-    private val outputs: Set<Output> = linkedSetOf()
+    private val _inputs: MutableSet<Input> = linkedSetOf<Input>()
+    private val _outputs: MutableSet<Output> = linkedSetOf<Output>()
 
-
+    private val runs: MutableMap<UUID, RunResult> = linkedMapOf()
 
     val simulations: MutableList<Simulation> = arrayListOf()
 
     @VisibleForTesting
     private var resultList : Map<UUID, List<EvaluationResult>> = emptyMap()
 
+    val inputs: Set<Input> get() = _inputs.toSet()
+    val outputs: Set<Output> get() = _outputs.toSet()
+
     fun addSim(simulation: Simulation) {
         simulations += simulation
+
+        require(simulation.autoImport)
+        _inputs += simulation.inputs
+        _outputs += simulation.outputs
     }
 
     fun removeSim(name: String) {
         simulations.removeIf { it.name == name }
+        TODO()
     }
 
     fun updateSimAndConfiguration(newSim: Simulation) : Boolean {
         TODO()
     }
+
+    fun getResult(id: UUID): RunResult = runs.getValue(id)
+    fun setResult(id: UUID, result: RunResult) { runs[id] = result }
 
     fun autoSetup(newSim: Simulation) : Boolean {
 

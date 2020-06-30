@@ -1,6 +1,8 @@
 package com.empowerops.volition.ref_oasis
 
 import com.empowerops.volition.dto.*
+import com.empowerops.volition.dto.SimulationNodeChangeCommandDTO.ChangeCase
+import com.empowerops.volition.dto.SimulationNodeChangeCommandDTO.CompleteSimulationNode.MappingCase
 import com.google.protobuf.DoubleValue
 import io.grpc.stub.StreamObserver
 import kotlinx.coroutines.*
@@ -10,7 +12,6 @@ import java.time.Duration
 import java.util.*
 import java.util.logging.Level
 import java.util.logging.Logger
-import kotlin.NoSuchElementException
 
 interface ResponseNeeded<in T>: AutoCloseable {
     fun respondWith(value: T)
@@ -124,8 +125,8 @@ class OptimizerEndpoint(
     }
 
     override fun offerSimulationConfig(
-            request: NodeStatusResponseDTO,
-            responseObserver: StreamObserver<NodeChangeConfirmDTO>
+            request: SimulationNodeResponseDTO,
+            responseObserver: StreamObserver<SimulationNodeUpsertConfirmDTO>
     ) = scope.consumeSingleAsync(responseObserver, request) {
 
         val state = checkIs<State.Optimizing>(state)
@@ -144,7 +145,7 @@ class OptimizerEndpoint(
         ))
         state.optimizationActor.send(message)
 
-        NodeChangeConfirmDTO.newBuilder().build()
+        SimulationNodeUpsertConfirmDTO.newBuilder().build()
     }
 
     override fun offerSimulationResult(
@@ -168,14 +169,6 @@ class OptimizerEndpoint(
 
         val element = SimulationProvidedMessage.ErrorResponse(request.name, request.message)
         state.optimizationActor.send(element)
-        fail; //ook, so the problem appears to be back-pressure.
-        // calling 'offer' here under the debugger returns false.
-        // 'send' throws 'channel closed exception'.
-        // but looking at it under the debugger, it says active. Its mailbox is full (read: size=1)
-        // so my guess is this:
-        // the actor is busy. When its finished it will close. Thus the 'send' call here queues,
-        // but it terminates after the previous message, resulting in a channel closed exception.
-        // tl;dr, you called this too late. What do i want to do?
 
         ErrorConfirmDTO.newBuilder().build()
     }
@@ -275,9 +268,9 @@ class OptimizerEndpoint(
         TODO("apiService.requestIssues()")
     }
 
-    override fun requestEvaluationNode(
-            request: NodeStatusQueryDTO,
-            responseObserver: StreamObserver<NodeStatusResponseDTO>
+    override fun requestSimulationNode(
+            request: SimulationNodeStatusQueryDTO,
+            responseObserver: StreamObserver<SimulationNodeResponseDTO>
     ) = scope.consumeSingleAsync(responseObserver, request){
         val state = checkIs<State.Configuring>(state)
 
@@ -286,10 +279,10 @@ class OptimizerEndpoint(
         val result = message.response.await()
 
         if(result == null){
-            NodeStatusResponseDTO.newBuilder().build()
+            SimulationNodeResponseDTO.newBuilder().build()
         }
         else {
-            NodeStatusResponseDTO.newBuilder()
+            SimulationNodeResponseDTO.newBuilder()
                     .setName(result.name)
                     .addAllInputs(result.inputs.map { input ->
                         PrototypeInputParameter.newBuilder()
@@ -313,32 +306,79 @@ class OptimizerEndpoint(
         }
     }
 
-    override fun upsertEvaluationNode(
-            request: NodeChangeCommandDTO,
-            responseObserver: StreamObserver<NodeChangeConfirmDTO>
+    override fun upsertSimulationNode(
+            request: SimulationNodeChangeCommandDTO,
+            responseObserver: StreamObserver<SimulationNodeUpsertConfirmDTO>
     ) = scope.consumeSingleAsync(responseObserver, request){
         val state = checkIs<State.Configuring>(state)
 
+        val rawInputsOrNull = when(request.changeCase) {
+            ChangeCase.NEW_INPUTS -> request.newInputs.valuesList
+            ChangeCase.NEW_NODE -> request.newNode.inputsList
+            else -> null
+        }
+        val inputs = rawInputsOrNull?.map { inputDTO -> Input(
+                name = inputDTO.name,
+                lowerBound = inputDTO.takeIf { it.hasLowerBound() }?.lowerBound?.value ?: Double.NaN,
+                upperBound = inputDTO.takeIf { it.hasUpperBound() }?.upperBound?.value ?: Double.NaN,
+                currentValue = inputDTO.takeIf { it.hasCurrentValue() }?.currentValue?.value ?: Double.NaN
+        )}
+
+        val rawOutputsOrNull = when(request.changeCase) {
+            ChangeCase.NEW_OUTPUTS -> request.newOutputs.valuesList
+            ChangeCase.NEW_NODE -> request.newNode.outputsList
+            else -> null
+        }
+
+        val outputs = rawOutputsOrNull?.map { outputDTO -> Output(
+                name = outputDTO.name
+        )}
+
+        val autoImportOrNull = when(request.changeCase){
+            ChangeCase.NEW_AUTO_IMPORT -> request.newAutoImport
+            ChangeCase.NEW_NODE -> request.newNode.autoImport
+            else -> null
+        }
+
+        val timeOutOrNull = when(request.changeCase){
+            ChangeCase.NEW_TIME_OUT -> request.newTimeOut
+            ChangeCase.NEW_NODE -> request.newNode.timeout
+            else -> null
+        }
+
+        val inputsMapOrNull = when(request.changeCase){
+            ChangeCase.NEW_MAPPING_TABLE -> request.newMappingTable.inputsMap
+            ChangeCase.NEW_NODE -> when(request.newNode.mappingCase!!){
+                MappingCase.AUTOIMPORT -> null
+                MappingCase.MAPPINGTABLE -> request.newNode.mappingTable.inputsMap
+                MappingCase.MAPPING_NOT_SET -> null
+            }
+            else -> null
+        }
+        val outputsMapOrNull = when(request.changeCase){
+            ChangeCase.NEW_MAPPING_TABLE -> request.newMappingTable.outputsMap
+            ChangeCase.NEW_NODE -> when(request.newNode.mappingCase!!){
+                MappingCase.AUTOIMPORT -> null
+                MappingCase.MAPPINGTABLE -> request.newNode.mappingTable.outputsMap
+                MappingCase.MAPPING_NOT_SET -> null
+            }
+            else -> null
+        }
+
         val message = ConfigurationMessage.UpsertNode(
                 request.name,
-                request.inputsList.map { inputDTO ->
-                    Input(
-                            name = inputDTO.name,
-                            lowerBound = inputDTO.takeIf { it.hasLowerBound() }?.lowerBound?.value ?: Double.NaN,
-                            upperBound = inputDTO.takeIf { it.hasUpperBound() }?.upperBound?.value ?: Double.NaN,
-                            currentValue = inputDTO.takeIf { it.hasCurrentValue() }?.currentValue?.value ?: Double.NaN
-                    )
-                },
-                request.outputsList.map { outputDTO -> Output(outputDTO.name) },
-                request.autoImport,
-                Duration.ofSeconds(request.timeOut.seconds) + Duration.ofNanos(request.timeOut.nanos.toLong()),
-                request.mappingTable.inputsMap,
-                request.mappingTable.outputsMap
+                if(request.changeCase == ChangeCase.NEW_NAME) request.newName else null,
+                inputs,
+                outputs,
+                autoImportOrNull,
+                timeOutOrNull?.let { Duration.ofSeconds(it.seconds) + Duration.ofNanos(it.nanos.toLong()) },
+                inputsMapOrNull,
+                outputsMapOrNull
         )
 
         state.configurationActor.send(message)
 
-        NodeChangeConfirmDTO.newBuilder().setMessage("OK").build()
+        SimulationNodeUpsertConfirmDTO.newBuilder().setMessage("OK").build()
     }
 
     override fun requestProblemDefinition(

@@ -2,6 +2,7 @@ package com.empowerops.volition.ref_oasis
 
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.channels.actor
 import java.time.Duration
@@ -13,12 +14,13 @@ sealed class ConfigurationMessage {
     data class RunRequest(val id: UUID): UnaryRequestResponseConfigurationMessage<RunResult>()
     data class UpsertNode(
             val name: String,
-            val inputs: List<Input>,
-            val outputs: List<Output>,
-            val autoImport: Boolean,
-            val timeOut: Duration,
-            val inputMapping: Map<String, ParameterName>,
-            val outputMapping: Map<ParameterName, String>
+            val newName: String?,
+            val inputs: List<Input>?,
+            val outputs: List<Output>?,
+            val autoImport: Boolean?,
+            val timeOut: Duration?,
+            val inputMapping: Map<String, ParameterName>?,
+            val outputMapping: Map<ParameterName, String>?
     ): ConfigurationMessage()
 
     data class GetNode(
@@ -40,7 +42,7 @@ class ConfigurationActorFactory(
         val scope: CoroutineScope,
         val model: ModelService
 ){
-    fun make(): ConfigurationActor = scope.actor<ConfigurationMessage> {
+    fun make(): ConfigurationActor = scope.actor<ConfigurationMessage>(Dispatchers.Unconfined) {
 
         for(message in channel) try {
             println("config actor receieved $message!")
@@ -52,22 +54,32 @@ class ConfigurationActorFactory(
                     message.respondWith(result)
                 }
                 is ConfigurationMessage.UpsertNode -> {
-                    val simulation = Simulation(
-                            message.name,
-                            message.inputs,
-                            message.outputs,
-                            "description of ${message.name}",
-                            message.timeOut,
-                            message.autoImport,
-                            message.inputMapping,
-                            message.outputMapping
+
+                    val previousSimulation = model.findSimulationName(message.name)
+                            ?: Simulation(message.newName ?: message.name)
+
+                    val newSimulation = previousSimulation.copy(
+                            inputs = message.inputs ?: previousSimulation.inputs,
+                            outputs = message.outputs ?: previousSimulation.outputs,
+                            timeOut = message.timeOut ?: previousSimulation.timeOut,
+                            autoImport = message.autoImport ?: previousSimulation.autoImport,
+                            inputMapping = message.inputMapping ?: previousSimulation.inputMapping,
+                            outputMapping = message.outputMapping ?: previousSimulation.outputMapping
                     )
 
-                    model.addSim(simulation)
+                    // TODO the responsibilities of model vs this object are not simple,
+                    // and we havent gotten into eventing yet.
+                    // model service should expose convienience mutator functions,
+                    // but the events should be posted here.
 
-                    if(message.autoImport){
-                        val setupSuccess = model.autoSetup(simulation)
-                        require(setupSuccess)
+                    if(newSimulation != previousSimulation){
+                        model.removeSim(previousSimulation.name)
+                        model.addSim(newSimulation)
+                    }
+
+                    if(message.autoImport == true){
+                        val importedSuccessfully = model.autoImport(newSimulation)
+                        require(importedSuccessfully)
                     }
 
                     Unit

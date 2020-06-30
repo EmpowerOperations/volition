@@ -94,7 +94,6 @@ data class Simulation(
         val name: String,
         val inputs: List<Input> = emptyList(),
         val outputs: List<Output> = emptyList(),
-        val description: String= "",
         val timeOut: Duration? = null,
         val autoImport: Boolean = true,
         val inputMapping: Map<String, ParameterName> = emptyMap(),
@@ -102,8 +101,6 @@ data class Simulation(
 )
 
 data class Issue(val message: String)
-
-
 
 class ModelService(private val eventBus: EventBus) : IssueFinder {
 
@@ -130,7 +127,6 @@ class ModelService(private val eventBus: EventBus) : IssueFinder {
 
     fun removeSim(name: String) {
         simulations.removeIf { it.name == name }
-        TODO()
     }
 
     fun updateSimAndConfiguration(newSim: Simulation) : Boolean {
@@ -140,11 +136,20 @@ class ModelService(private val eventBus: EventBus) : IssueFinder {
     fun getResult(id: UUID): RunResult = runs.getValue(id)
     fun setResult(id: UUID, result: RunResult) { runs[id] = result }
 
-    fun autoSetup(newSim: Simulation) : Boolean {
+    fun autoImport(newSim: Simulation) : Boolean {
 
         if(newSim !in simulations) return false
 
-        TODO()
+        //TODO: update to supprot multiple simulations
+        _inputs += newSim.inputs
+        _outputs += newSim.outputs
+
+        updateSimulation(newSim.name){ oldSim -> oldSim.copy(
+                inputMapping = newSim.inputs.associate { it.name to it.name },
+                outputMapping = newSim.outputs.associate { it.name to it.name }
+        )}
+
+        return true;
     }
 
      override fun findIssues(): List<Issue> {

@@ -11,12 +11,12 @@ import "google/protobuf/duration.proto";
 import "google/protobuf/wrappers.proto";
 
 // some notes on naming scheme:
-// "...CommandDTO" ->   a request to statefully change the configuration of the optimizer;          a "setX"
-// "...ConfirmDTO" ->   the result of a Command, often indicates success or failure of the command; result from "setX"
 // "...QueryDTO" ->     a request for a ref-transparent ("getter") information.
 //                      Results are sent via the in the "offer..." rpc methods;                     a "getX"
 // "...ResponseDTO" ->  a result from a QueryDTO, sometimes passed from optimizer to simulator
 //                      sometimes passed in the other direction;                                    result from "getX"
+// "...CommandDTO" ->   a request to statefully change the configuration of the optimizer;          a "setX"
+// "...ConfirmDTO" ->   the result of a Command, often indicates success or failure of the command; result from "setX"
 
 service Optimizer {
 
@@ -25,7 +25,7 @@ service Optimizer {
     rpc unregister (UnregistrationCommandDTO) returns (UnregistrationConfirmDTO) {}
 
     // responses to OASIS supplied queries
-    rpc offerSimulationConfig (NodeStatusResponseDTO) returns (NodeChangeConfirmDTO) {}
+    rpc offerSimulationConfig (SimulationNodeResponseDTO) returns (SimulationNodeUpsertConfirmDTO) {}
     rpc offerSimulationResult (SimulationResponseDTO) returns (SimulationResultConfirmDTO) {}
     rpc offerErrorResult (ErrorResponseDTO) returns (ErrorConfirmDTO) {}
     rpc offerEvaluationStatusMessage (MessageCommandDTO) returns (MessageConfirmDTO) {}
@@ -37,8 +37,8 @@ service Optimizer {
     rpc requestIssues (IssuesQueryDTO) returns (IssuesResponseDTO) {}
 
     // register user nodes in optimization
-    rpc requestEvaluationNode (NodeStatusQueryDTO) returns (NodeStatusResponseDTO) {}
-    rpc upsertEvaluationNode (NodeChangeCommandDTO) returns (NodeChangeConfirmDTO) {}
+    rpc requestSimulationNode (SimulationNodeStatusQueryDTO) returns (SimulationNodeResponseDTO) {}
+    rpc upsertSimulationNode (SimulationNodeChangeCommandDTO) returns (SimulationNodeUpsertConfirmDTO) {}
 
     rpc requestProblemDefinition (ProblemDefinitionQueryDTO) returns (ProblemDefinitionResponseDTO) {}
     rpc updateProblemDefinition (ProblemDefinitionUpdateCommandDTO) returns (ProblemDefinitionConfirmDTO) {}
@@ -113,7 +113,7 @@ message OptimizerGeneratedQueryDTO {
 
     message SimulationEvaluationRequest {
           string name = 1;
-          map<string, double> inputVector = 2;
+          map<string, double> input_vector = 2;
     }
 
     message NodeStatusUpdateRequest {
@@ -137,27 +137,27 @@ message StartOptimizationCommandDTO {
 message StartOptimizationConfirmDTO {
     oneof response{
         string issues = 1;
-        string runID = 2;
+        string run_ID = 2;
     }
 }
 
 //stopOptimization
 message StopOptimizationCommandDTO {
     string name = 1;
-    string id = 2;
+    string run_ID = 2;
 }
 
 message StopOptimizationConfirmDTO {
     oneof response{
         string message = 1;
-        string runID = 2;
+        string run_ID = 2;
     }
 }
 
 //request result
 message OptimizationResultsQueryDTO {
     string name = 1;
-    string runID = 2;
+    string run_ID = 2;
 }
 
 message OptimizationResultsResponseDTO {
@@ -170,8 +170,8 @@ message OptimizationResultsResponseDTO {
 message RunResult{
     string runID = 1;
 
-    repeated string inputColumns = 7;
-    repeated string outputColumns = 8;
+    repeated string input_columns = 7;
+    repeated string output_columns = 8;
 
     repeated DesignRow points = 9;
     repeated DesignRow frontier = 10; //Best value for single run and pareto frontier for multiple objective
@@ -180,7 +180,7 @@ message RunResult{
 message DesignRow {
     repeated double inputs = 1; //invariant := inputs.length == [parent].inputColumns.length
     repeated double outputs = 2; //invariant := outputs.length == [parent].outputColumns.length
-    bool isFeasible = 3; // invariant := outputs.sublist(constraints).any { it > 0.0 }
+    bool is_feasible = 3; // invariant := outputs.sublist(constraints).any { it > 0.0 }
 }
 
 message SimulationResultConfirmDTO {}
@@ -196,25 +196,37 @@ message ErrorResponseDTO {
 }
 
 //register user nodes
-message NodeStatusQueryDTO {
+message SimulationNodeStatusQueryDTO {
     string name = 1;
 }
-message NodeChangeCommandDTO {
+message SimulationNodeChangeCommandDTO {
+
     string name = 1;
-    string description = 6;
 
-    google.protobuf.StringValue newName = 9;
+    oneof change {
+        string new_name = 9;
+        bool new_auto_import = 10;
+        VariableMapping new_mapping_table = 11;
+        google.protobuf.Duration new_time_out = 12;
+        PrototypeInputParameters new_inputs = 2;
+        PrototypeOutputParameters new_outputs = 3;
 
-    bool autoImport = 10;
-    VariableMapping mappingTable = 11;
-    google.protobuf.Duration timeOut = 12;
+        CompleteSimulationNode new_node = 14;
+    }
 
-    repeated PrototypeInputParameter inputs = 2;
-    repeated PrototypeOutputParameter outputs = 3;
+    message CompleteSimulationNode {
+        oneof mapping {
+            bool autoImport = 1;
+            VariableMapping mappingTable = 2;
+        }
+        google.protobuf.Duration timeout = 3;
+        repeated PrototypeInputParameter inputs = 4;
+        repeated PrototypeOutputParameter outputs = 5;
+    }
 }
 
 //offerNodeUpdate
-message NodeStatusResponseDTO {
+message SimulationNodeResponseDTO {
     string name = 1;
     string description = 6;
 
@@ -225,12 +237,15 @@ message NodeStatusResponseDTO {
     repeated PrototypeOutputParameter outputs = 3;
 }
 
-message NodeChangeConfirmDTO {
+message SimulationNodeUpsertConfirmDTO {
     string message = 1;
 }
 
 
 // helpers
+message PrototypeInputParameters {
+    repeated PrototypeInputParameter values = 1;
+}
 message PrototypeInputParameter {
     string name = 1;
 
@@ -238,6 +253,9 @@ message PrototypeInputParameter {
     google.protobuf.DoubleValue lowerBound = 2;
     google.protobuf.DoubleValue upperBound = 3;
     google.protobuf.DoubleValue currentValue = 4;
+}
+message PrototypeOutputParameters {
+    repeated PrototypeOutputParameter values = 1;
 }
 message PrototypeOutputParameter {
     string name = 1;
@@ -252,7 +270,9 @@ message PrototypeOutputParameter {
     }
 }
 message VariableMapping {
+    // key:optimization-var-name TO value:simulation-param-name
     map<string, string> inputs = 1;
+    // key:simulation-output-name TO value:optimization-var-name
     map<string, string> outputs = 2;
 }
 message BabelConstraint {

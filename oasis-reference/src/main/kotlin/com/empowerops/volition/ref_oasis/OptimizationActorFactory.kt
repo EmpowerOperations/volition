@@ -4,6 +4,7 @@ import com.google.common.eventbus.EventBus
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.isActive
@@ -50,7 +51,7 @@ class OptimizationActorFactory(
 
     private val logger = Logger.getLogger(OptimizationActorFactory::class.qualifiedName)
 
-    fun make(output: SendChannel<OptimizerRequestMessage>): OptimizationActor = scope.actor<SimulationProvidedMessage>() {
+    fun make(output: SendChannel<OptimizerRequestMessage>): OptimizationActor = scope.actor {
 
         val sim = model.simulations.single()
 
@@ -116,11 +117,12 @@ class OptimizationActorFactory(
                         is SimulationProvidedMessage.Message -> TODO("$response")
                         is SimulationProvidedMessage.StopOptimization -> {
                             result = response.runID
-                            break@optimizing
                         }
                     } as Any
-                } catch (ex: CancellationException) {
-                    if (!isActive) output.send(OptimizerRequestMessage.SimulationCancelRequest(sim.name))
+
+                }
+                catch (ex: CancellationException) {
+                    if (!isActive) output.offer(OptimizerRequestMessage.SimulationCancelRequest(sim.name))
                     else logger.warning("$this is cancelled but still active?")
 
                     throw ex

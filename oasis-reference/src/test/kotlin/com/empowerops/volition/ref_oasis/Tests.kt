@@ -60,12 +60,10 @@ class Tests {
         service.register(RegistrationCommandDTO.newBuilder().setName("asdf").build(), object: StreamObserver<OptimizerGeneratedQueryDTO>{
             val parentJob = coroutineContext[Job]!!
             override fun onNext(value: OptimizerGeneratedQueryDTO) = cancelOnException {
-                TODO()
                 if(value.hasReadyNotification()) {
                     readyBlocker.complete(Unit)
                     return@cancelOnException
                 }
-                TODO()
             }
 
             override fun onError(t: Throwable) {
@@ -77,36 +75,35 @@ class Tests {
         })
         readyBlocker.await()
 
-        val changeRequest = NodeChangeCommandDTO.newBuilder()
+        val changeRequest = SimulationNodeChangeCommandDTO.newBuilder()
                 .setName("asdf")
-                .setAutoImport(true)
-                .setMappingTable(VariableMapping.newBuilder()
-                        .putInputs("x1", "x1")
-                        .putOutputs("f1", "f1")
-                )
-                .addInputs(PrototypeInputParameter.newBuilder()
-                        .setName("x1")
-                        .setLowerBound(DoubleValue.of(1.0))
-                        .setUpperBound(DoubleValue.of(5.0))
-                        .build()
-                )
-                .addOutputs(PrototypeOutputParameter.newBuilder()
-                        .setName("f1")
-                        .build()
+                .setNewNode(SimulationNodeChangeCommandDTO.CompleteSimulationNode.newBuilder()
+                        .setAutoImport(true)
+                        .addInputs(PrototypeInputParameter.newBuilder()
+                                .setName("x1")
+                                .setLowerBound(DoubleValue.of(1.0))
+                                .setUpperBound(DoubleValue.of(5.0))
+                                .build()
+                        )
+                        .addOutputs(PrototypeOutputParameter.newBuilder()
+                                .setName("f1")
+                                .build()
+                        )
                 )
                 .build()
 
-        val response = doSingle(service::upsertEvaluationNode, changeRequest)
+        val response = doSingle(service::upsertSimulationNode, changeRequest)
 
         // assert
-        val check = doSingle(service::requestEvaluationNode, NodeStatusQueryDTO.newBuilder().setName("asdf").build())
+        val check = doSingle(service::requestSimulationNode, SimulationNodeStatusQueryDTO.newBuilder().setName("asdf").build())
 
-        assertThat(check).isEqualTo(NodeStatusResponseDTO.newBuilder()
+        assertThat(check).isEqualTo(SimulationNodeResponseDTO.newBuilder()
                 .setName("asdf")
                 .setAutoImport(true)
                 .setMappingTable(VariableMapping.newBuilder()
                         .putInputs("x1", "x1")
                         .putOutputs("f1", "f1")
+                        .build()
                 )
                 .addInputs(PrototypeInputParameter.newBuilder()
                         .setName("x1")
@@ -141,13 +138,13 @@ class Tests {
 
                     when {
                         optimizerRequest.hasEvaluationRequest() -> {
-                            val inputVector = optimizerRequest.evaluationRequest!!.inputVectorMap.toMap()
-                            doSingle(service::offerEvaluationStatusMessage)(MessageCommandDTO.newBuilder().setMessage(
-                                    "evaluating $inputVector!"
-                            ).build())
-                            val result = inputVector.values.sumByDouble { it }
-
                             if(iterationNo <= 5) {
+                                val inputVector = optimizerRequest.evaluationRequest!!.inputVectorMap.toMap()
+                                doSingle(service::offerEvaluationStatusMessage)(MessageCommandDTO.newBuilder().setMessage(
+                                        "evaluating $inputVector!"
+                                ).build())
+                                val result = inputVector.values.sumByDouble { it }
+
                                 val response = SimulationResponseDTO.newBuilder()
                                         .setName("asdf")
                                         .putAllOutputVector(mapOf("f1" to result))
@@ -165,7 +162,7 @@ class Tests {
                             iterationNo += 1;
                         }
                         optimizerRequest.hasNodeStatusRequest() -> {
-                            doSingle(service::offerSimulationConfig)(NodeStatusResponseDTO.newBuilder()
+                            doSingle(service::offerSimulationConfig)(SimulationNodeResponseDTO.newBuilder()
                                     .setName("asdf")
                                     .setAutoImport(true)
                                     .addInputs(PrototypeInputParameter.newBuilder()
@@ -201,26 +198,24 @@ class Tests {
         })
         readyBlocker.await()
 
-        val changeRequest = NodeChangeCommandDTO.newBuilder()
+        val changeRequest = SimulationNodeChangeCommandDTO.newBuilder()
                 .setName("asdf")
-                .setAutoImport(true)
-                .setMappingTable(VariableMapping.newBuilder()
-                        .putInputs("x1", "x1")
-                        .putOutputs("f1", "f1")
-                )
-                .addInputs(PrototypeInputParameter.newBuilder()
-                        .setName("x1")
-                        .setLowerBound(DoubleValue.of(1.0))
-                        .setUpperBound(DoubleValue.of(5.0))
-                        .build()
-                )
-                .addOutputs(PrototypeOutputParameter.newBuilder()
-                        .setName("f1")
-                        .build()
+                .setNewNode(SimulationNodeChangeCommandDTO.CompleteSimulationNode.newBuilder()
+                        .setAutoImport(true)
+                        .addInputs(PrototypeInputParameter.newBuilder()
+                                .setName("x1")
+                                .setLowerBound(DoubleValue.of(1.0))
+                                .setUpperBound(DoubleValue.of(5.0))
+                                .build()
+                        )
+                        .addOutputs(PrototypeOutputParameter.newBuilder()
+                                .setName("f1")
+                                .build()
+                        )
                 )
                 .build()
 
-        doSingle(service::upsertEvaluationNode)(changeRequest)
+        doSingle(service::upsertSimulationNode)(changeRequest)
 
         //act
         doSingle(service::startOptimization)(StartOptimizationCommandDTO.newBuilder().build())

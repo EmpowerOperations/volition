@@ -33,7 +33,7 @@ class ConnectionView(
                 hbox {
                     label("Description: ")
                     textflow {
-                        text(node?.description)
+                        text("TODO")
                     }
                 }
                 hbox {

@@ -62,7 +62,7 @@ class OptimizerEndpoint(
 
             responseObserver.onNext(
                     OptimizerGeneratedQueryDTO.newBuilder()
-                            .setReadyNotification(OptimizerGeneratedQueryDTO.ReadyNotification.newBuilder().build())
+                            .setRegistrationConfirmed(OptimizerGeneratedQueryDTO.RegistrationConfirm.newBuilder().build())
                             .build()
             )
         }
@@ -79,22 +79,36 @@ class OptimizerEndpoint(
             for (message in channel) {
                 val wrapper = OptimizerGeneratedQueryDTO.newBuilder()
 
+                //dont like this pattern.
                 val dc = when (message) {
                     is OptimizerRequestMessage.NodeStatusUpdateRequest -> {
-                        wrapper.nodeStatusRequestBuilder.apply {
-                            name = message.name
-                        }
+                        wrapper.setNodeStatusRequest(OptimizerGeneratedQueryDTO.NodeStatusUpdateRequest.newBuilder()
+                                .setName(message.name)
+                                .build()
+                        )
                     }
                     is OptimizerRequestMessage.SimulationEvaluationRequest -> {
-                        wrapper.evaluationRequestBuilder.apply {
-                            name = message.name
-                            putAllInputVector(message.inputVector)
-                        }
+                        wrapper.setEvaluationRequest(OptimizerGeneratedQueryDTO.SimulationEvaluationRequest.newBuilder()
+                                .setName(message.name)
+                                .putAllInputVector(message.inputVector)
+                                .build()
+                        )
                     }
                     is OptimizerRequestMessage.SimulationCancelRequest -> {
-                        wrapper.cancelRequestBuilder.apply {
-                            name = message.name
-                        }
+                        wrapper.setCancelRequest(OptimizerGeneratedQueryDTO.SimulationCancelRequest.newBuilder()
+                                .setName(message.name)
+                                .build()
+                        )
+                    }
+                    is OptimizerRequestMessage.RunStartedNotification -> {
+                        wrapper.setOptimizationStartedNotification(OptimizerGeneratedQueryDTO.OptimizationStartedNotification.newBuilder()
+                                .build()
+                        )
+                    }
+                    is OptimizerRequestMessage.RunFinishedNotification -> {
+                        wrapper.setOptimizationFinishedNotification(OptimizerGeneratedQueryDTO.OptimizationFinishedNotification.newBuilder()
+                                .build()
+                        )
                     }
                 }
 

@@ -104,11 +104,13 @@ message MessageConfirmDTO {}
 
 message OptimizerGeneratedQueryDTO {
     oneof request {
-        SimulationEvaluationRequest evaluationRequest = 1;
-        NodeStatusUpdateRequest nodeStatusRequest = 2;
-        SimulationCancelRequest cancelRequest = 3;
+        SimulationEvaluationRequest evaluation_Request = 1;
+        NodeStatusUpdateRequest node_status_Request = 2;
+        SimulationCancelRequest cancel_request = 3;
 
-        ReadyNotification readyNotification = 4;
+        RegistrationConfirm registration_confirmed = 4;
+        OptimizationStartedNotification optimization_started_notification = 5;
+        OptimizationFinishedNotification optimization_finished_notification = 6;
     }
 
     message SimulationEvaluationRequest {
@@ -124,7 +126,9 @@ message OptimizerGeneratedQueryDTO {
         string name = 1;
     }
 
-    message ReadyNotification {}
+    message RegistrationConfirm {}
+    message OptimizationStartedNotification {}
+    message OptimizationFinishedNotification {}
 }
 
 //startOptimization

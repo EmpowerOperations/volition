@@ -4,7 +4,6 @@ import com.google.common.eventbus.EventBus
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.isActive
@@ -16,6 +15,9 @@ sealed class OptimizerRequestMessage {
     data class NodeStatusUpdateRequest(val name: String): OptimizerRequestMessage()
     data class SimulationEvaluationRequest(val name: String, val inputVector: Map<String, Double>): OptimizerRequestMessage()
     data class SimulationCancelRequest(val name: String): OptimizerRequestMessage()
+
+    data class RunStartedNotification(val name: String, val runID: UUID): OptimizerRequestMessage()
+    data class RunFinishedNotification(val name: String, val runID: UUID): OptimizerRequestMessage()
 }
 
 sealed class SimulationProvidedMessage {
@@ -64,27 +66,57 @@ class OptimizationActorFactory(
         require(config.sim.outputs == sim.outputs) { "at optimization start, config=$config, expected config=$sim" }
 
         val runID = UUID.randomUUID()
+        var stopRequest: SimulationProvidedMessage.StopOptimization? = null
+
         try {
+            output.send(OptimizerRequestMessage.RunStartedNotification(sim.name, runID))
             eventBus.post(RunStartedEvent(runID))
 
             val completedDesigns = ArrayList<ExpensivePointRow>()
             val frontier = ArrayList<ExpensivePointRow>()
-            var result: CompletableDeferred<UUID>? = null
 
-            optimizing@while (isActive) { //stopOptimization maps to cancellation, to stop an optimization, cancel this actor
+            optimizing@while (isActive && stopRequest == null) {
 
-                val inputVector = optimizer.generateInputs(sim.inputs)
+                var response: SimulationProvidedMessage? = null
+
+                // before we start an iteration, poll (check without blocking) our message box
+                // for a stop-optimization request.
+                response = channel.poll()
+                if(response is SimulationProvidedMessage.StopOptimization){
+                    stopRequest = response
+                    break@optimizing
+                }
 
                 try {
+                    // otherwise start a simulation evaluation
+                    val inputVector = optimizer.generateInputs(sim.inputs)
                     output.send(OptimizerRequestMessage.SimulationEvaluationRequest(sim.name, inputVector))
 
-                    var response = channel.receive()
-
-                    //read out any status messages
-                    while (response is SimulationProvidedMessage.Message) {
-                        eventBus.post(NewMessageEvent(Message(response.name, response.message)))
+                    // read out any status messages
+                    // these are messages that relate to but do not complete
+                    // the simulation request we just made.
+                    preamble@while(isActive) {
                         response = channel.receive()
+                        when(response){
+                            is SimulationProvidedMessage.Message -> {
+                                eventBus.post(NewMessageEvent(Message(response.name, response.message)))
+                            }
+                            is SimulationProvidedMessage.StopOptimization -> {
+
+                                // if we get a stop request now, cancel the existing simulation request
+                                // **BUT DO NOT STOP OPTIMIZATION** until the simulation evaluation completes
+                                // (below, with either an ErrorResponse or a EvaluationResult)
+                                eventBus.post(StopRequestedEvent(runID))
+                                output.send(OptimizerRequestMessage.SimulationCancelRequest(sim.name))
+                                stopRequest = response
+                            }
+                            else -> {
+                                break@preamble
+                            }
+                        }
                     }
+
+                    check(response != null)
 
                     //read the response
                     when (response) {
@@ -111,15 +143,10 @@ class OptimizationActorFactory(
                             // we dont update the optimizer state when the evaluation encounters an error
                             // -- this is approximately true for both this implementation and Empower commercial optimizers
                         }
-                        is SimulationProvidedMessage.SimulationConfiguration -> {
-                            TODO("$response")
-                        }
-                        is SimulationProvidedMessage.Message -> TODO("$response")
-                        is SimulationProvidedMessage.StopOptimization -> {
-                            result = response.runID
-                        }
+                        is SimulationProvidedMessage.SimulationConfiguration,
+                        is SimulationProvidedMessage.Message,
+                        is SimulationProvidedMessage.StopOptimization -> TODO("$response")
                     } as Any
-
                 }
                 catch (ex: CancellationException) {
                     if (!isActive) output.offer(OptimizerRequestMessage.SimulationCancelRequest(sim.name))
@@ -128,6 +155,8 @@ class OptimizationActorFactory(
                     throw ex
                 }
             }
+
+            check(stopRequest != null)
 
             val runResult = RunResult(
                     runID,
@@ -139,10 +168,10 @@ class OptimizationActorFactory(
             )
 
             model.setResult(runID, runResult)
-            result!!.complete(runID)
-
+            stopRequest.runID.complete(runID)
         }
         finally {
+            output.send(OptimizerRequestMessage.RunFinishedNotification(sim.name, runID))
             eventBus.post(RunStoppedEvent(runID))
         }
     }

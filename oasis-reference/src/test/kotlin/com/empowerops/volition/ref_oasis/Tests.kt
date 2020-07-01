@@ -21,16 +21,6 @@ class Tests {
         System.setProperty("com.empowerops.volition.ref_oasis.useConsoleAlt", "true")
     }
 
-    @Test fun `when running with --version should print version`() = runBlocking<Unit> {
-        main(arrayOf("--version"))
-
-        val str = consoleAltBytes.toString("utf-8")
-
-        assertThat(str.trim()).isEqualTo("""
-            Volition API 0.9.0
-        """.trimIndent().replace("\n", System.lineSeparator()))
-    }
-
     private lateinit var server: Job
     private lateinit var service: OptimizerGrpc.OptimizerStub
 
@@ -53,14 +43,29 @@ class Tests {
         val y = 4;
     }
 
-    @Test fun `when configuring simple optimization should do simple things`() = runBlocking<Unit> {
+
+    //this was the very first sanity test I added.
+    @Test fun `when running with --version should print version`() = runBlocking<Unit> {
+        main(arrayOf("--version"))
+
+        val str = consoleAltBytes.toString("utf-8")
+
+        assertThat(str.trim()).isEqualTo("""
+            Volition API 0.9.0
+        """.trimIndent().replace("\n", System.lineSeparator()))
+    }
+
+    // this is a very basic test, that simply sets up a simulation node,
+    // and then checks that the simulation node exists
+    // akin to calling volitionApi.setConfiguration("A"), check(volitionApi.getConfiguration() == "A")
+    @Test fun `when configuring simple optimization should correctly save and expose that configuration`() = runBlocking<Unit> {
 
         //act
         val readyBlocker = CompletableDeferred<Unit>()
         service.register(RegistrationCommandDTO.newBuilder().setName("asdf").build(), object: StreamObserver<OptimizerGeneratedQueryDTO>{
             val parentJob = coroutineContext[Job]!!
             override fun onNext(value: OptimizerGeneratedQueryDTO) = cancelOnException {
-                if(value.hasReadyNotification()) {
+                if(value.hasRegistrationConfirmed()) {
                     readyBlocker.complete(Unit)
                     return@cancelOnException
                 }
@@ -71,9 +76,9 @@ class Tests {
                 parentJob.cancel()
             }
 
-            override fun onCompleted() { }
+            override fun onCompleted() { parentJob.cancel() }
         })
-        readyBlocker.await()
+        readyBlocker.await() //waits for registration call to complete
 
         val changeRequest = SimulationNodeChangeCommandDTO.newBuilder()
                 .setName("asdf")
@@ -131,7 +136,7 @@ class Tests {
 
             override fun onNext(optimizerRequest: OptimizerGeneratedQueryDTO) = cancelOnException {
                 runBlocking<Unit> {
-                    if(optimizerRequest.hasReadyNotification()) {
+                    if(optimizerRequest.hasRegistrationConfirmed()) {
                         readyBlocker.complete(Unit)
                         return@runBlocking
                     }

@@ -8,6 +8,7 @@ import io.grpc.stub.StreamObserver
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.channels.actor
+import java.lang.RuntimeException
 import java.time.Duration
 import java.util.*
 import java.util.logging.Level
@@ -76,10 +77,9 @@ class OptimizerEndpoint(
     // doing context-free conversions from data-classes to DTOs.
     private fun makeActorConvertingOptimizerRequestMessagesToDTOs(responseObserver: StreamObserver<OptimizerGeneratedQueryDTO>) = scope.actor<OptimizerRequestMessage>(Dispatchers.Unconfined) {
         try {
-            for (message in channel) {
+            for (message in channel) try {
                 val wrapper = OptimizerGeneratedQueryDTO.newBuilder()
 
-                //dont like this pattern.
                 val dc = when (message) {
                     is OptimizerRequestMessage.NodeStatusUpdateRequest -> {
                         wrapper.setNodeStatusRequest(OptimizerGeneratedQueryDTO.NodeStatusUpdateRequest.newBuilder()
@@ -114,11 +114,15 @@ class OptimizerEndpoint(
 
                 responseObserver.onNext(wrapper.build())
             }
+            catch(ex: Exception){
+                throw RuntimeException("error while converting message=$message", ex)
+            }
 
+            //NOT in a finally block! grpc expects EITHER an 'onError' OR an 'onComplete' call, NOT BOTH!!
             responseObserver.onCompleted()
         }
         catch(ex: Throwable){
-            logger.log(Level.SEVERE, "unexpected error sending message to client via registration channel", ex)
+            logger.log(Level.SEVERE, "unexpected error in conversion actor", ex)
             responseObserver.onError(ex)
         }
     }
@@ -130,8 +134,13 @@ class OptimizerEndpoint(
 
         val state = checkIs<State.Configuring>(state)
 
-        val wasClosed = state.configurationActor.close()
-        check(wasClosed) { "channel already closed" }
+        val configurationClosed = state.configurationActor.close()
+        (state.configurationActor as Job).join()
+        check(configurationClosed) { "channel already closed" }
+
+        val registrationClosed = state.outboundOptimizerQueries.close()
+        (state.outboundOptimizerQueries as Job).join()
+        check(registrationClosed) { "registration channel already closed" }
 
         this.state = state.previous
 
@@ -406,10 +415,16 @@ class OptimizerEndpoint(
             request: ProblemDefinitionUpdateCommandDTO,
             responseObserver: StreamObserver<ProblemDefinitionConfirmDTO>
     ) = scope.consumeSingleAsync(responseObserver, request){
-        TODO("apiService.updateProblemDefinition(request)")
+        val state = checkIs<State.Configuring>(state)
+
+        val
+
+        state.configurationActor.send(ConfigurationMessage.UpdateProblemDef(
+                request.inputs
+        ))
+
+        ProblemDefinitionConfirmDTO.newBuilder().build()
     }
-
-
 }
 
 private inline fun <reified T> checkIs(instance: Any): T {

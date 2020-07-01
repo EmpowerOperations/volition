@@ -29,7 +29,7 @@ fun ExpensivePointRow.dominates(right: ExpensivePointRow): Boolean {
     if(left === right) return false
 
     for(index in outputs.indices){
-        if(left.outputs[index] < right.outputs[index]){
+        if(left.outputs[index] > right.outputs[index]){
             return false
         }
     }

@@ -104,8 +104,8 @@ message MessageConfirmDTO {}
 
 message OptimizerGeneratedQueryDTO {
     oneof request {
-        SimulationEvaluationRequest evaluation_Request = 1;
-        NodeStatusUpdateRequest node_status_Request = 2;
+        SimulationEvaluationRequest evaluation_request = 1;
+        NodeStatusUpdateRequest node_status_request = 2;
         SimulationCancelRequest cancel_request = 3;
 
         RegistrationConfirm registration_confirmed = 4;

@@ -26,6 +26,14 @@ sealed class ConfigurationMessage {
     data class GetNode(
             val name: String
     ): UnaryRequestResponseConfigurationMessage<Simulation?>()
+
+    data class UpdateProblemDef(
+            val inputs: List<String>?,
+            val outputs: List<String>?,
+            val constraints: List<String>?,
+            val intermediates: List<String>?,
+            val objectives: List<String>?
+    ): ConfigurationMessage()
 }
 abstract class UnaryRequestResponseConfigurationMessage<T>: ConfigurationMessage(), ResponseNeeded<T> {
     val response: CompletableDeferred<T> = CompletableDeferred()
@@ -88,6 +96,9 @@ class ConfigurationActorFactory(
                     val singleSimulation = model.findSimulationName(message.name)
 
                     message.respondWith(singleSimulation)
+                }
+                is ConfigurationMessage.UpdateProblemDef -> {
+
                 }
                 is UnaryRequestResponseConfigurationMessage<*> -> TODO()
             }

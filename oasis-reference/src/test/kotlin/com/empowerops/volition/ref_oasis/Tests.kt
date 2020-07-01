@@ -56,80 +56,6 @@ class Tests {
         """.trimIndent().replace("\n", System.lineSeparator()))
     }
 
-    // this is a very basic test, that simply sets up a simulation node,
-    // and then checks that the simulation node exists
-    // akin to calling volitionApi.setConfiguration("A"), check(volitionApi.getConfiguration() == "A")
-    @Test fun `when configuring simple optimization should correctly save and expose that configuration`() = runBlocking<Unit> {
-
-        //act
-        val readyBlocker = CompletableDeferred<Unit>()
-        service.register(RegistrationCommandDTO.newBuilder().setName("asdf").build(), object: StreamObserver<OptimizerGeneratedQueryDTO>{
-            val parentJob = coroutineContext[Job]!!
-            override fun onNext(value: OptimizerGeneratedQueryDTO) = cancelOnException {
-                if(value.hasRegistrationConfirmed()) {
-                    readyBlocker.complete(Unit)
-                    return@cancelOnException
-                }
-            }
-
-            override fun onError(t: Throwable) {
-                t.printStackTrace()
-                parentJob.cancel()
-            }
-
-            override fun onCompleted() {
-                println("registration of asdf completed!")
-            }
-        })
-        readyBlocker.await() //waits for registration call to complete
-
-        val changeRequest = SimulationNodeChangeCommandDTO.newBuilder()
-                .setName("asdf")
-                .setNewNode(SimulationNodeChangeCommandDTO.CompleteSimulationNode.newBuilder()
-                        .setAutoImport(true)
-                        .addInputs(PrototypeInputParameter.newBuilder()
-                                .setName("x1")
-                                .setLowerBound(DoubleValue.of(1.0))
-                                .setUpperBound(DoubleValue.of(5.0))
-                                .build()
-                        )
-                        .addOutputs(PrototypeOutputParameter.newBuilder()
-                                .setName("f1")
-                                .build()
-                        )
-                )
-                .build()
-
-        val response = sendAndAwaitResponse(service::upsertSimulationNode)(changeRequest)
-
-        // assert
-        val check = sendAndAwaitResponse(service::requestSimulationNode, SimulationNodeStatusQueryDTO.newBuilder().setName("asdf").build())
-
-        assertThat(check).isEqualTo(SimulationNodeResponseDTO.newBuilder()
-                .setName("asdf")
-                .setAutoImport(true)
-                .setMappingTable(VariableMapping.newBuilder()
-                        .putInputs("x1", "x1")
-                        .putOutputs("f1", "f1")
-                        .build()
-                )
-                .addInputs(PrototypeInputParameter.newBuilder()
-                        .setName("x1")
-                        .setLowerBound(DoubleValue.of(1.0))
-                        .setUpperBound(DoubleValue.of(5.0))
-                        .build()
-                )
-                .addOutputs(PrototypeOutputParameter.newBuilder()
-                        .setName("f1")
-                        .build()
-                )
-                .build()
-        )
-
-        //teardown
-        sendAndAwaitResponse(service::unregister)(UnregistrationCommandDTO.newBuilder().setName("asdf").build())
-    }
-
     @Test fun `when running a single var single simulation optimization should optimize normally`() = runBlocking<Unit> {
         //act
         val readyBlocker = CompletableDeferred<Unit>()
@@ -146,13 +72,13 @@ class Tests {
                         RequestCase.EVALUATION_REQUEST -> {
                             if(iterationNo <= 5) {
                                 val inputVector = optimizerRequest.evaluationRequest!!.inputVectorMap.toMap()
-                                sendAndAwaitResponse(service::offerEvaluationStatusMessage)(MessageCommandDTO.newBuilder().setMessage(
+                                sendAndAwaitResponse(service::offerEvaluationStatusMessage)(StatusMessageCommandDTO.newBuilder().setMessage(
                                         "evaluating $inputVector!"
                                 ).build())
 
                                 val result = inputVector.values.sumByDouble { it } / 2.0
 
-                                val response = SimulationResponseDTO.newBuilder()
+                                val response = SimulationEvaluationCompletedResponseDTO.newBuilder()
                                         .setName("asdf")
                                         .putAllOutputVector(mapOf("f1" to result))
                                         .build()
@@ -163,30 +89,12 @@ class Tests {
                                 fifthIteration.complete(Unit)
                             }
                             else if (iterationNo >= 5){
-                                val response = ErrorResponseDTO.newBuilder().setMessage("already evaluated 5 iterations!").build()
+                                val response = SimulationEvaluationErrorResponseDTO.newBuilder()
+                                        .setMessage("already evaluated 5 iterations!")
+                                        .build()
                                 sendAndAwaitResponse(service::offerErrorResult)(response)
                             }
                             iterationNo += 1
-
-                            Unit
-                        }
-                        RequestCase.NODE_STATUS_REQUEST -> {
-                            val response = SimulationNodeResponseDTO.newBuilder()
-                                    .setName("asdf")
-                                    .setAutoImport(true)
-                                    .addInputs(PrototypeInputParameter.newBuilder()
-                                            .setName("x1")
-                                            .setLowerBound(DoubleValue.of(1.0))
-                                            .setUpperBound(DoubleValue.of(5.0))
-                                            .build()
-                                    )
-                                    .addOutputs(PrototypeOutputParameter.newBuilder()
-                                            .setName("f1")
-                                            .build()
-                                    )
-                                    .build()
-
-                            sendAndAwaitResponse(service::offerSimulationConfig)(response)
 
                             Unit
                         }
@@ -219,35 +127,38 @@ class Tests {
         })
         readyBlocker.await()
 
-        val changeRequest = SimulationNodeChangeCommandDTO.newBuilder()
-                .setName("asdf")
-                .setNewNode(SimulationNodeChangeCommandDTO.CompleteSimulationNode.newBuilder()
-                        .setAutoImport(true)
+
+        val startOptimizationRequest = StartOptimizationCommandDTO.newBuilder()
+                .setProblemDefinition(StartOptimizationCommandDTO.ProblemDefinition.newBuilder()
                         .addInputs(PrototypeInputParameter.newBuilder()
                                 .setName("x1")
                                 .setLowerBound(DoubleValue.of(1.0))
                                 .setUpperBound(DoubleValue.of(5.0))
                                 .build()
                         )
-                        .addOutputs(PrototypeOutputParameter.newBuilder()
+                        .addObjectives(PrototypeOutputParameter.newBuilder()
                                 .setName("f1")
                                 .build()
                         )
+                        .build()
+                )
+                .addNodes(StartOptimizationCommandDTO.SimulationNode.newBuilder()
+                        .setAutoMap(true)
+                        .addInputs("x1")
+                        .addOutputs("f1")
+                        .build()
                 )
                 .build()
 
-        sendAndAwaitResponse(service::upsertSimulationNode)(changeRequest)
-
         //act
-        sendAndAwaitResponse(service::startOptimization)(StartOptimizationCommandDTO.newBuilder().build())
+
+        sendAndAwaitResponse(service::startOptimization)(startOptimizationRequest)
         fifthIteration.await()
         val run = sendAndAwaitResponse(service::stopOptimization)(StopOptimizationCommandDTO.newBuilder().build())
 
         //assert
-        val responseDTO = sendAndAwaitResponse(service::requestRunResult)(OptimizationResultsQueryDTO.newBuilder().setRunID(run.runID).build())
-        val results = responseDTO.result
+        val results = sendAndAwaitResponse(service::requestRunResult)(OptimizationResultsQueryDTO.newBuilder().setRunID(run.runID).build())
 
-        assertThat(results).isNotNull()
         assertThat(results.pointsList.toList()).hasSize(5)
         assertThat(results.frontierList.toList()).hasSize(1)
         assertThat(results.pointsList.toList()).contains(results.frontierList.single())
@@ -272,13 +183,13 @@ class Tests {
                         RequestCase.EVALUATION_REQUEST -> {
                             if(iterationNo <= 5) {
                                 val inputVector = optimizerRequest.evaluationRequest!!.inputVectorMap.toMap()
-                                sendAndAwaitResponse(service::offerEvaluationStatusMessage)(MessageCommandDTO.newBuilder().setMessage(
+                                sendAndAwaitResponse(service::offerEvaluationStatusMessage)(StatusMessageCommandDTO.newBuilder().setMessage(
                                         "evaluating $inputVector!"
                                 ).build())
 
                                 val result = inputVector.values.sumByDouble { it } / 2.0
 
-                                val response = SimulationResponseDTO.newBuilder()
+                                val response = SimulationEvaluationCompletedResponseDTO.newBuilder()
                                         .setName("asdf")
                                         .putAllOutputVector(mapOf("f1" to result))
                                         .build()
@@ -289,30 +200,10 @@ class Tests {
                                 fifthIteration.complete(Unit)
                             }
                             else if (iterationNo >= 5){
-                                val response = ErrorResponseDTO.newBuilder().setMessage("already evaluated 5 iterations!").build()
+                                val response = SimulationEvaluationErrorResponseDTO.newBuilder().setMessage("already evaluated 5 iterations!").build()
                                 sendAndAwaitResponse(service::offerErrorResult)(response)
                             }
                             iterationNo += 1
-
-                            Unit
-                        }
-                        RequestCase.NODE_STATUS_REQUEST -> {
-                            val response = SimulationNodeResponseDTO.newBuilder()
-                                    .setName("asdf")
-                                    .setAutoImport(true)
-                                    .addInputs(PrototypeInputParameter.newBuilder()
-                                            .setName("x1")
-                                            .setLowerBound(DoubleValue.of(1.0))
-                                            .setUpperBound(DoubleValue.of(5.0))
-                                            .build()
-                                    )
-                                    .addOutputs(PrototypeOutputParameter.newBuilder()
-                                            .setName("f1")
-                                            .build()
-                                    )
-                                    .build()
-
-                            sendAndAwaitResponse(service::offerSimulationConfig)(response)
 
                             Unit
                         }
@@ -323,12 +214,8 @@ class Tests {
                             readyBlocker.complete(Unit)
                             Unit
                         }
-                        RequestCase.OPTIMIZATION_STARTED_NOTIFICATION -> {
-                            Unit // noop,
-                        }
-                        RequestCase.OPTIMIZATION_FINISHED_NOTIFICATION -> {
-                            Unit // noop
-                        }
+                        RequestCase.OPTIMIZATION_STARTED_NOTIFICATION -> Unit // noop
+                        RequestCase.OPTIMIZATION_FINISHED_NOTIFICATION -> Unit // noop
                         RequestCase.REQUEST_NOT_SET -> TODO("unknown request $optimizerRequest")
                     }
                 }
@@ -345,59 +232,60 @@ class Tests {
         })
         readyBlocker.await()
 
-        val changeRequest = SimulationNodeChangeCommandDTO.newBuilder()
-                .setName("asdf")
-                .setNewNode(SimulationNodeChangeCommandDTO.CompleteSimulationNode.newBuilder()
-                        .setAutoImport(true)
-                        .addAllInputs(
-                                listOf(
-                                        PrototypeInputParameter.newBuilder()
-                                                .setName("x1")
-                                                .setLowerBound(DoubleValue.of(1.0))
-                                                .setUpperBound(DoubleValue.of(5.0))
-                                                .build(),
-                                        PrototypeInputParameter.newBuilder()
-                                                .setName("x2")
-                                                .setLowerBound(DoubleValue.of(1.0))
-                                                .setUpperBound(DoubleValue.of(5.0))
-                                                .build()
-                                )
-                        )
-                        .addAllOutputs(
-                                listOf(
-                                        PrototypeOutputParameter.newBuilder()
-                                                .setName("f1")
-                                                .build(),
-                                        PrototypeOutputParameter.newBuilder()
-                                                .setName("c1")
-                                                .build()
-                                )
-                        )
+        val startRequest = StartOptimizationCommandDTO.newBuilder()
+                .setProblemDefinition(StartOptimizationCommandDTO.ProblemDefinition.newBuilder()
+                        .addAllInputs(listOf(
+                                PrototypeInputParameter.newBuilder()
+                                        .setName("x1")
+                                        .setLowerBound(DoubleValue.of(1.0))
+                                        .setUpperBound(DoubleValue.of(5.0))
+                                        .build(),
+                                PrototypeInputParameter.newBuilder()
+                                        .setName("x2")
+                                        .setLowerBound(DoubleValue.of(1.0))
+                                        .setUpperBound(DoubleValue.of(5.0))
+                                        .build()
+                        ))
+                        .addAllObjectives(listOf(
+                                PrototypeOutputParameter.newBuilder()
+                                        .setName("f1")
+                                        .build()
+                        ))
+                        .addConstraints(BabelConstraint.newBuilder()
+                                .setOutputName("c1")
+                                .setBooleanExpression("x1 < x2")
+                                .build())
+                        .build()
+                )
+                .addNodes(StartOptimizationCommandDTO.SimulationNode.newBuilder()
+                        .setAutoMap(true)
+                        .addInputs("x1").addInputs("x2")
+                        .addOutputs("f1")
+                        .build()
                 )
                 .build()
-        sendAndAwaitResponse(service::upsertSimulationNode)(changeRequest)
-
-        val problemDefChangeRequest = ProblemDefinitionUpdateCommandDTO.newBuilder()
-                .setUpsertConstraint(BabelConstraint.newBuilder()
-                        .setOutputName("c1")
-                        .setBooleanExpression("x1 < x2")
-                        .build())
-                .build()
-        sendAndAwaitResponse(service::updateProblemDefinition)(problemDefChangeRequest)
 
         //act
-        sendAndAwaitResponse(service::startOptimization)(StartOptimizationCommandDTO.newBuilder().build())
+        sendAndAwaitResponse(service::startOptimization)(startRequest)
         fifthIteration.await()
-        val run = sendAndAwaitResponse(service::stopOptimization)(StopOptimizationCommandDTO.newBuilder().build())
+        val run = sendAndAwaitResponse(service::stopOptimization)(
+                StopOptimizationCommandDTO.newBuilder().build()
+        )
 
         //assert
-        val responseDTO = sendAndAwaitResponse(service::requestRunResult)(OptimizationResultsQueryDTO.newBuilder().setRunID(run.runID).build())
-        val results = responseDTO.result
+        val results = sendAndAwaitResponse(service::requestRunResult)(OptimizationResultsQueryDTO.newBuilder().setRunID(run.runID).build())
 
         assertThat(results).isNotNull()
         assertThat(results.pointsList.toList()).hasSize(5)
         assertThat(results.frontierList.toList()).hasSize(1)
         assertThat(results.pointsList.toList()).contains(results.frontierList.single())
+
+        //check that the constraint wasnt violated
+        for(point in results.pointsList){
+            assertThat(point.inputsList.first())
+                    .describedAs("the value for x1 in the point $point")
+                    .isLessThan(point.inputsList.last())
+        }
 
         //teardown
         sendAndAwaitResponse(service::unregister)(UnregistrationCommandDTO.newBuilder().setName("asdf").build())

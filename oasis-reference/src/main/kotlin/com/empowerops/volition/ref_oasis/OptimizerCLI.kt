@@ -46,7 +46,7 @@ class OptimizerCLI : Callable<Job> {
     private val scope: CoroutineScope = OptimizerCLICoroutineScope()
 
     private val job = scope.launch(start = CoroutineStart.LAZY) {
-        val modelService = ModelService(eventBus)
+        val modelService = ModelService()
         val optimizerEndpoint = OptimizerEndpoint(
                 ConfigurationActorFactory(this@launch, modelService),
                 OptimizationActorFactory(this@launch, RandomNumberOptimizer(), modelService, eventBus)

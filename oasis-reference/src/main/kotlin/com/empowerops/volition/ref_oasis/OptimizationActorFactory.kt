@@ -1,5 +1,6 @@
 package com.empowerops.volition.ref_oasis
 
+import com.empowerops.babel.BabelExpression
 import com.google.common.eventbus.EventBus
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletableDeferred
@@ -10,9 +11,16 @@ import kotlinx.coroutines.isActive
 import java.util.*
 import java.util.logging.Logger
 
+data class StartOptimizationRequest(
+        val inputs: List<Input>,
+        val intermediates: List<MathExpression>,
+        val constraints: List<MathExpression>,
+        val objectives: List<Output>,
+        val nodes: List<Simulation>
+)
+
 sealed class OptimizerRequestMessage {
 
-    data class NodeStatusUpdateRequest(val name: String): OptimizerRequestMessage()
     data class SimulationEvaluationRequest(val name: String, val inputVector: Map<String, Double>): OptimizerRequestMessage()
     data class SimulationCancelRequest(val name: String): OptimizerRequestMessage()
 
@@ -53,20 +61,11 @@ class OptimizationActorFactory(
 
     private val logger = Logger.getLogger(OptimizationActorFactory::class.qualifiedName)
 
-    fun make(output: SendChannel<OptimizerRequestMessage>): OptimizationActor = scope.actor {
-
-        val sim = model.simulations.single()
-
-        output.send(OptimizerRequestMessage.NodeStatusUpdateRequest(sim.name))
-        val config = channel.receive() as? SimulationProvidedMessage.SimulationConfiguration
-
-        require(config is SimulationProvidedMessage.SimulationConfiguration) { "expected SimulationConfiguration, but received $config" }
-        require(config.sim.name == sim.name) { "at optimization start, config=$config, expected config=$sim" }
-        require(config.sim.inputs == sim.inputs) { "at optimization start, config=$config, expected config=$sim" }
-        require(config.sim.outputs == sim.outputs) { "at optimization start, config=$config, expected config=$sim" }
+    fun make(startOptimization: StartOptimizationRequest, output: SendChannel<OptimizerRequestMessage>): OptimizationActor = scope.actor {
 
         val runID = UUID.randomUUID()
         var stopRequest: SimulationProvidedMessage.StopOptimization? = null
+        val sim = startOptimization.nodes.single()
 
         try {
             output.send(OptimizerRequestMessage.RunStartedNotification(sim.name, runID))
@@ -89,8 +88,9 @@ class OptimizationActorFactory(
 
                 try {
                     // otherwise start a simulation evaluation
-                    val inputVector = optimizer.generateInputs(sim.inputs)
-                    output.send(OptimizerRequestMessage.SimulationEvaluationRequest(sim.name, inputVector))
+                    val inputVector = optimizer.generateInputs(startOptimization.inputs, startOptimization.constraints.map { it.expression })
+
+                    output.send(OptimizerRequestMessage.SimulationEvaluationRequest(sim.name, inputVector.filterKeys { it in sim.inputs }))
 
                     // read out any status messages
                     // these are messages that relate to but do not complete
@@ -124,8 +124,8 @@ class OptimizationActorFactory(
                             eventBus.post(NewResultEvent(EvaluationResult.Success(sim.name, inputVector, response.outputVector)))
 
                             val newPoint = ExpensivePointRow(
-                                    model.inputs.map { inputVector.getValue(it.name) },
-                                    model.outputs.map { response.outputVector.getValue(it.name) },
+                                    startOptimization.inputs.map { inputVector.getValue(it.name) },
+                                    startOptimization.objectives.map { response.outputVector.getValue(it.name) },
                                     true
                             )
                             completedDesigns += newPoint
@@ -160,8 +160,8 @@ class OptimizationActorFactory(
 
             val runResult = RunResult(
                     runID,
-                    sim.inputs.map { it.name },
-                    sim.outputs.map { it.name },
+                    startOptimization.inputs.map { it.name },
+                    startOptimization.objectives.map { it.name },
                     "OK",
                     completedDesigns,
                     frontier

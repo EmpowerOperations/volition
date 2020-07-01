@@ -1,9 +1,8 @@
 package com.empowerops.volition.ref_oasis
 
+import com.empowerops.babel.BabelCompiler
+import com.empowerops.babel.BabelExpression
 import com.empowerops.volition.dto.*
-import com.empowerops.volition.dto.SimulationNodeChangeCommandDTO.ChangeCase
-import com.empowerops.volition.dto.SimulationNodeChangeCommandDTO.CompleteSimulationNode.MappingCase
-import com.google.protobuf.DoubleValue
 import io.grpc.stub.StreamObserver
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.SendChannel
@@ -39,6 +38,7 @@ class OptimizerEndpoint(
         private val optimizationActorFactory: OptimizationActorFactory
 ) : OptimizerGrpc.OptimizerImplBase() {
 
+    val compiler = BabelCompiler()
     val logger = Logger.getLogger(OptimizerEndpoint::class.qualifiedName)
     val scope = GlobalScope //TODO
 
@@ -81,12 +81,6 @@ class OptimizerEndpoint(
                 val wrapper = OptimizerGeneratedQueryDTO.newBuilder()
 
                 val dc = when (message) {
-                    is OptimizerRequestMessage.NodeStatusUpdateRequest -> {
-                        wrapper.setNodeStatusRequest(OptimizerGeneratedQueryDTO.NodeStatusUpdateRequest.newBuilder()
-                                .setName(message.name)
-                                .build()
-                        )
-                    }
                     is OptimizerRequestMessage.SimulationEvaluationRequest -> {
                         wrapper.setEvaluationRequest(OptimizerGeneratedQueryDTO.SimulationEvaluationRequest.newBuilder()
                                 .setName(message.name)
@@ -147,33 +141,9 @@ class OptimizerEndpoint(
         UnregistrationConfirmDTO.newBuilder().build()
     }
 
-    override fun offerSimulationConfig(
-            request: SimulationNodeResponseDTO,
-            responseObserver: StreamObserver<SimulationNodeUpsertConfirmDTO>
-    ) = scope.consumeSingleAsync(responseObserver, request) {
-
-        val state = checkIs<State.Optimizing>(state)
-
-        val message = SimulationProvidedMessage.SimulationConfiguration(Simulation(
-                request.name,
-                request.inputsList.map { inputDTO ->
-                    Input(
-                            inputDTO.name,
-                            lowerBound = inputDTO.takeIf { it.hasLowerBound() }?.lowerBound?.value ?: Double.NaN,
-                            upperBound = inputDTO.takeIf { it.hasUpperBound() }?.upperBound?.value ?: Double.NaN,
-                            currentValue = inputDTO.takeIf { it.hasCurrentValue() }?.currentValue?.value ?: Double.NaN
-                    )
-                },
-                request.outputsList.map { Output(it.name) }
-        ))
-        state.optimizationActor.send(message)
-
-        SimulationNodeUpsertConfirmDTO.newBuilder().build()
-    }
-
     override fun offerSimulationResult(
-            request: SimulationResponseDTO,
-            responseObserver: StreamObserver<SimulationResultConfirmDTO>
+            request: SimulationEvaluationCompletedResponseDTO,
+            responseObserver: StreamObserver<SimulationEvaluationResultConfirmDTO>
     ) = scope.consumeSingleAsync(responseObserver, request) {
 
         val state = checkIs<State.Optimizing>(state)
@@ -181,24 +151,24 @@ class OptimizerEndpoint(
         val message = SimulationProvidedMessage.EvaluationResult(request.outputVectorMap)
         state.optimizationActor.send(message)
 
-        SimulationResultConfirmDTO.newBuilder().build()
+        SimulationEvaluationResultConfirmDTO.newBuilder().build()
     }
 
     override fun offerErrorResult(
-            request: ErrorResponseDTO,
-            responseObserver: StreamObserver<ErrorConfirmDTO>
+            request: SimulationEvaluationErrorResponseDTO,
+            responseObserver: StreamObserver<SimulationEvaluationErrorConfirmDTO>
     ) = scope.consumeSingleAsync(responseObserver, request) {
         val state = checkIs<State.Optimizing>(state)
 
         val element = SimulationProvidedMessage.ErrorResponse(request.name, request.message)
         state.optimizationActor.send(element)
 
-        ErrorConfirmDTO.newBuilder().build()
+        SimulationEvaluationErrorConfirmDTO.newBuilder().build()
     }
 
     override fun offerEvaluationStatusMessage(
-            request: MessageCommandDTO,
-            responseObserver: StreamObserver<MessageConfirmDTO>
+            request: StatusMessageCommandDTO,
+            responseObserver: StreamObserver<StatusMessageConfirmDTO>
     ) = scope.consumeSingleAsync(responseObserver, request) {
 
         val state = checkIs<State.Optimizing>(state)
@@ -206,7 +176,7 @@ class OptimizerEndpoint(
         val element = SimulationProvidedMessage.Message(request.name, request.message)
         state.optimizationActor.send(element)
 
-        MessageConfirmDTO.newBuilder().build()
+        StatusMessageConfirmDTO.newBuilder().build()
     }
 
 
@@ -216,7 +186,56 @@ class OptimizerEndpoint(
     ) = scope.consumeSingleAsync(responseObserver, request) {
 
         val configuringState = checkIs<State.Configuring>(state)
-        val optimizationActor = optimizationActorFactory.make(configuringState.outboundOptimizerQueries)
+        val startMessage = StartOptimizationRequest(
+                inputs = request.problemDefinition.inputsList.map { inputDTO ->
+                    Input(
+                            name = inputDTO.name,
+                            lowerBound = inputDTO.takeIf { it.hasLowerBound() }?.lowerBound?.value ?: Double.NaN,
+                            upperBound = inputDTO.takeIf { it.hasUpperBound() }?.upperBound?.value ?: Double.NaN
+                    )
+                },
+                objectives = request.problemDefinition.objectivesList.map { objectiveDTO ->
+                    Output(name = objectiveDTO.name)
+                },
+                intermediates = request.problemDefinition.intermediatesList.map {
+                    val compiled = compiler.compile(it.scalarExpression) as BabelExpression
+                    require( ! compiled.isBooleanExpression)
+                    MathExpression(it.outputName, compiled)
+                },
+                constraints = request.problemDefinition.constraintsList.map {
+                    val compiled = compiler.compile(it.booleanExpression) as BabelExpression
+                    require(compiled.isBooleanExpression)
+                    MathExpression(it.outputName, compiled)
+                },
+
+                nodes = request.nodesList.map { simDTO ->
+
+                    val timeOut = simDTO
+                            .takeIf { it.hasTimeOut() }
+                            ?.timeOut?.let { Duration.ofSeconds(it.seconds) + Duration.ofNanos(it.nanos.toLong()) }
+
+                    val autoMapping = simDTO
+                            .takeIf { it.mappingCase == StartOptimizationCommandDTO.SimulationNode.MappingCase.AUTO_MAP }
+                            ?.autoMap ?: false
+
+                    val explicitMapping = simDTO
+                            .takeIf { it.mappingCase == StartOptimizationCommandDTO.SimulationNode.MappingCase.MAPPING_TABLE }
+                            ?.mappingTable
+
+                    Simulation(
+                            name = simDTO.name,
+                            inputs = simDTO.inputsList,
+                            outputs = simDTO.outputsList,
+                            timeOut = timeOut,
+                            autoMap = autoMapping,
+                            inputMapping = explicitMapping?.inputsMap,
+                            outputMapping = explicitMapping?.outputsMap
+                    )
+                }
+        )
+        //TODO: this should really be passed to the configuration actor for validation.
+        // If it passes, the configuration actor can produce the optimization
+        val optimizationActor = optimizationActorFactory.make(startMessage, configuringState.outboundOptimizerQueries)
 
         optimizationActor.invokeOnClose {
             val optimizingState = checkIs<State.Optimizing>(state)
@@ -263,168 +282,24 @@ class OptimizerEndpoint(
         val result = message.response.await()
 
         OptimizationResultsResponseDTO.newBuilder()
-                .setMessage(result.resultMessage)
-                .setResult(com.empowerops.volition.dto.RunResult.newBuilder()
-                        .setRunID(result.uuid.toString())
-                        .addAllInputColumns(result.inputs)
-                        .addAllOutputColumns(result.outputs)
-                        .addAllPoints(result.points.map { point -> DesignRow.newBuilder()
-                                .addAllInputs(point.inputs)
-                                .addAllOutputs(point.outputs)
-                                .setIsFeasible(point.isFeasible)
-                                .build()
-                        })
-                        .addAllFrontier(result.frontier.map { frontierPoint -> DesignRow.newBuilder()
-                                .addAllInputs(frontierPoint.inputs)
-                                .addAllOutputs(frontierPoint.outputs)
-                                .setIsFeasible(frontierPoint.isFeasible)
-                                .build()
-                        })
-                )
+                .setRunID(result.uuid.toString())
+                .addAllInputColumns(result.inputs)
+                .addAllOutputColumns(result.outputs)
+                .addAllPoints(result.points.map { point -> DesignRow.newBuilder()
+                        .addAllInputs(point.inputs)
+                        .addAllOutputs(point.outputs)
+                        .setIsFeasible(point.isFeasible)
+                        .build()
+                })
+                .addAllFrontier(result.frontier.map { frontierPoint -> DesignRow.newBuilder()
+                        .addAllInputs(frontierPoint.inputs)
+                        .addAllOutputs(frontierPoint.outputs)
+                        .setIsFeasible(frontierPoint.isFeasible)
+                        .build()
+                })
                 .build()
     }
 
-    override fun requestIssues(
-            request: IssuesQueryDTO,
-            responseObserver: StreamObserver<IssuesResponseDTO>
-    ) = scope.consumeSingleAsync(responseObserver, request){
-        TODO("apiService.requestIssues()")
-    }
-
-    override fun requestSimulationNode(
-            request: SimulationNodeStatusQueryDTO,
-            responseObserver: StreamObserver<SimulationNodeResponseDTO>
-    ) = scope.consumeSingleAsync(responseObserver, request){
-        val state = checkIs<State.Configuring>(state)
-
-        val message = ConfigurationMessage.GetNode(request.name)
-        state.configurationActor.send(message)
-        val result = message.response.await()
-
-        if(result == null){
-            SimulationNodeResponseDTO.newBuilder().build()
-        }
-        else {
-            SimulationNodeResponseDTO.newBuilder()
-                    .setName(result.name)
-                    .addAllInputs(result.inputs.map { input ->
-                        PrototypeInputParameter.newBuilder()
-                                .setName(input.name)
-                                .apply { if (!input.lowerBound.isNaN()) setLowerBound(DoubleValue.of(input.lowerBound)) }
-                                .apply { if (!input.upperBound.isNaN()) setUpperBound(DoubleValue.of(input.upperBound)) }
-                                .build()
-                    })
-                    .addAllOutputs(result.outputs.map { output ->
-                        PrototypeOutputParameter.newBuilder()
-                                .setName(output.name)
-                                .build()
-                    })
-                    .apply { if(result.autoImport) setAutoImport(result.autoImport) }
-                    .setMappingTable(VariableMapping.newBuilder()
-                            .putAllInputs(result.inputMapping)
-                            .putAllOutputs(result.outputMapping)
-                            .build()
-                    )
-                    .build()
-        }
-    }
-
-    override fun upsertSimulationNode(
-            request: SimulationNodeChangeCommandDTO,
-            responseObserver: StreamObserver<SimulationNodeUpsertConfirmDTO>
-    ) = scope.consumeSingleAsync(responseObserver, request){
-        val state = checkIs<State.Configuring>(state)
-
-        val rawInputsOrNull = when(request.changeCase) {
-            ChangeCase.NEW_INPUTS -> request.newInputs.valuesList
-            ChangeCase.NEW_NODE -> request.newNode.inputsList
-            else -> null
-        }
-        val inputs = rawInputsOrNull?.map { inputDTO -> Input(
-                name = inputDTO.name,
-                lowerBound = inputDTO.takeIf { it.hasLowerBound() }?.lowerBound?.value ?: Double.NaN,
-                upperBound = inputDTO.takeIf { it.hasUpperBound() }?.upperBound?.value ?: Double.NaN,
-                currentValue = inputDTO.takeIf { it.hasCurrentValue() }?.currentValue?.value ?: Double.NaN
-        )}
-
-        val rawOutputsOrNull = when(request.changeCase) {
-            ChangeCase.NEW_OUTPUTS -> request.newOutputs.valuesList
-            ChangeCase.NEW_NODE -> request.newNode.outputsList
-            else -> null
-        }
-
-        val outputs = rawOutputsOrNull?.map { outputDTO -> Output(
-                name = outputDTO.name
-        )}
-
-        val autoImportOrNull = when(request.changeCase){
-            ChangeCase.NEW_AUTO_IMPORT -> request.newAutoImport
-            ChangeCase.NEW_NODE -> request.newNode.autoImport
-            else -> null
-        }
-
-        val timeOutOrNull = when(request.changeCase){
-            ChangeCase.NEW_TIME_OUT -> request.newTimeOut
-            ChangeCase.NEW_NODE -> request.newNode.timeout
-            else -> null
-        }
-
-        val inputsMapOrNull = when(request.changeCase){
-            ChangeCase.NEW_MAPPING_TABLE -> request.newMappingTable.inputsMap
-            ChangeCase.NEW_NODE -> when(request.newNode.mappingCase!!){
-                MappingCase.AUTOIMPORT -> null
-                MappingCase.MAPPINGTABLE -> request.newNode.mappingTable.inputsMap
-                MappingCase.MAPPING_NOT_SET -> null
-            }
-            else -> null
-        }
-        val outputsMapOrNull = when(request.changeCase){
-            ChangeCase.NEW_MAPPING_TABLE -> request.newMappingTable.outputsMap
-            ChangeCase.NEW_NODE -> when(request.newNode.mappingCase!!){
-                MappingCase.AUTOIMPORT -> null
-                MappingCase.MAPPINGTABLE -> request.newNode.mappingTable.outputsMap
-                MappingCase.MAPPING_NOT_SET -> null
-            }
-            else -> null
-        }
-
-        val message = ConfigurationMessage.UpsertNode(
-                request.name,
-                if(request.changeCase == ChangeCase.NEW_NAME) request.newName else null,
-                inputs,
-                outputs,
-                autoImportOrNull,
-                timeOutOrNull?.let { Duration.ofSeconds(it.seconds) + Duration.ofNanos(it.nanos.toLong()) },
-                inputsMapOrNull,
-                outputsMapOrNull
-        )
-
-        state.configurationActor.send(message)
-
-        SimulationNodeUpsertConfirmDTO.newBuilder().setMessage("OK").build()
-    }
-
-    override fun requestProblemDefinition(
-            request: ProblemDefinitionQueryDTO,
-            responseObserver: StreamObserver<ProblemDefinitionResponseDTO>
-    ) = scope.consumeSingleAsync(responseObserver, request){
-        TODO("apiService.requestProblemDefinition(request)")
-    }
-
-    override fun updateProblemDefinition(
-            request: ProblemDefinitionUpdateCommandDTO,
-            responseObserver: StreamObserver<ProblemDefinitionConfirmDTO>
-    ) = scope.consumeSingleAsync(responseObserver, request){
-        val state = checkIs<State.Configuring>(state)
-
-        val
-
-        state.configurationActor.send(ConfigurationMessage.UpdateProblemDef(
-                request.inputs
-        ))
-
-        ProblemDefinitionConfirmDTO.newBuilder().build()
-    }
 }
 
 private inline fun <reified T> checkIs(instance: Any): T {

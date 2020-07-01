@@ -84,13 +84,13 @@ class OptimizerController {
         if (config == null) return root
 
         val inputs: List<TreeItem<Parameter>> = config.inputs.map {
-            val value = Parameter(it.name, Type.Input, it.currentValue)
-            value.lowerBound = it.lowerBound
-            value.upperBound = it.upperBound
+            val value = Parameter(it, Type.Input, 0.0)
+//            value.lowerBound = it.lowerBound
+//            value.upperBound = it.upperBound
             TreeItem(value)
         }
         val outputs: List<TreeItem<Parameter>> = config.outputs.map {
-            TreeItem(Parameter(it.name, Type.Input))
+            TreeItem(Parameter(it, Type.Input))
         }
 
         inputRoot.isExpanded = true
@@ -211,12 +211,12 @@ class OptimizerController {
         else {
             modelService.updateSimulation(selectedItem){ sim -> sim.copy(
                 inputs = inputRoot.children.map { uiParam ->
-                    Input(
-                            uiParam.value.name,
-                            uiParam.value.lowerBound ?: Double.NaN,
-                            uiParam.value.upperBound ?: Double.NaN,
-                            0.0
-                    )
+//                    Input(
+//                            uiParam.value.name,
+//                            uiParam.value.lowerBound ?: Double.NaN,
+//                            uiParam.value.upperBound ?: Double.NaN,
+//                    )
+                    uiParam.value.name
                 }
             )}
 

@@ -25,87 +25,27 @@ service Optimizer {
     rpc unregister (UnregistrationCommandDTO) returns (UnregistrationConfirmDTO) {}
 
     // responses to OASIS supplied queries
-    rpc offerSimulationConfig (SimulationNodeResponseDTO) returns (SimulationNodeUpsertConfirmDTO) {}
-    rpc offerSimulationResult (SimulationResponseDTO) returns (SimulationResultConfirmDTO) {}
-    rpc offerErrorResult (ErrorResponseDTO) returns (ErrorConfirmDTO) {}
-    rpc offerEvaluationStatusMessage (MessageCommandDTO) returns (MessageConfirmDTO) {}
+    rpc offerSimulationResult (SimulationEvaluationCompletedResponseDTO) returns (SimulationEvaluationResultConfirmDTO) {}
+    rpc offerErrorResult (SimulationEvaluationErrorResponseDTO) returns (SimulationEvaluationErrorConfirmDTO) {}
+    rpc offerEvaluationStatusMessage (StatusMessageCommandDTO) returns (StatusMessageConfirmDTO) {}
 
     // commands/queries to OASIS
+
+    /*
+     * Starts an optimization of the specified problem definition and simulation nodes
+     */
     rpc startOptimization (StartOptimizationCommandDTO) returns (StartOptimizationConfirmDTO) {}
     rpc stopOptimization (StopOptimizationCommandDTO) returns (StopOptimizationConfirmDTO) {}
     rpc requestRunResult (OptimizationResultsQueryDTO) returns (OptimizationResultsResponseDTO) {}
-    rpc requestIssues (IssuesQueryDTO) returns (IssuesResponseDTO) {}
-
-    // register user nodes in optimization
-    rpc requestSimulationNode (SimulationNodeStatusQueryDTO) returns (SimulationNodeResponseDTO) {}
-    rpc upsertSimulationNode (SimulationNodeChangeCommandDTO) returns (SimulationNodeUpsertConfirmDTO) {}
-
-    rpc requestProblemDefinition (ProblemDefinitionQueryDTO) returns (ProblemDefinitionResponseDTO) {}
-    rpc updateProblemDefinition (ProblemDefinitionUpdateCommandDTO) returns (ProblemDefinitionConfirmDTO) {}
 }
 
-//issues
-message IssuesQueryDTO {}
-message IssuesResponseDTO {
-    repeated string issues = 1;
-}
-
-// problem definition
-message ProblemDefinitionQueryDTO {}
-message ProblemDefinitionResponseDTO {
-    repeated PrototypeInputParameter inputs = 1;
-    repeated PrototypeOutputParameter outputs = 2;
-
-    repeated BabelConstraint constraints = 3;
-    repeated BabelScalar objectives = 4;
-    repeated BabelScalar intermediates = 5;
-}
-message ProblemDefinitionUpdateCommandDTO {
-    oneof change {
-        CompleteProblemDefinition completeUpdatedDefinition = 1;
-        BabelConstraint upsertConstraint = 2;
-        BabelScalar upsertIntermediate = 3;
-        BabelScalar upsertObjective = 4;
-        PrototypeInputParameter upsertVariable = 5;
-        PrototypeOutputParameter upsertOutput = 6;
-    }
-
-    message CompleteProblemDefinition {
-        repeated PrototypeInputParameter inputs = 1;
-        repeated PrototypeOutputParameter outputs = 2;
-
-        repeated BabelConstraint constraints = 3;
-        repeated BabelScalar objectives = 4;
-        repeated BabelScalar intermediates = 5;
-    }
-}
-message ProblemDefinitionConfirmDTO {
-    //note: cant include issues here since it might involve slow file-IO.
-}
-
+// entry-point, returns stream of OASIS queries/commands
 message RegistrationCommandDTO {
     string name = 1;
 }
-
-message UnregistrationCommandDTO {
-    string name = 1;
-}
-
-message UnregistrationConfirmDTO {
-    string message = 1;
-}
-
-message MessageCommandDTO {
-    string name = 1;
-    string message = 2;
-}
-
-message MessageConfirmDTO {}
-
 message OptimizerGeneratedQueryDTO {
     oneof request {
         SimulationEvaluationRequest evaluation_request = 1;
-        NodeStatusUpdateRequest node_status_request = 2;
         SimulationCancelRequest cancel_request = 3;
 
         RegistrationConfirm registration_confirmed = 4;
@@ -114,14 +54,14 @@ message OptimizerGeneratedQueryDTO {
     }
 
     message SimulationEvaluationRequest {
-          string name = 1;
-          map<string, double> input_vector = 2;
-    }
-
-    message NodeStatusUpdateRequest {
         string name = 1;
+        map<string, double> input_vector = 2;
     }
 
+    // optimizer requests that a simulation cancel its current evaluation
+    // note this is a very race-ee message. For your first implementation I suggest
+    // Doing nothing on receiving this message is always legal,
+    // so long as the SimulationEvaluationRequest contract is fulfilled.
     message SimulationCancelRequest {
         string name = 1;
     }
@@ -131,26 +71,82 @@ message OptimizerGeneratedQueryDTO {
     message OptimizationFinishedNotification {}
 }
 
-//startOptimization
-message StartOptimizationCommandDTO {
-    google.protobuf.Duration runTime = 3;
-    google.protobuf.UInt32Value iterationCount = 4;
-    google.protobuf.DoubleValue targetObjectiveValue = 5;
+message UnregistrationCommandDTO {
+    string name = 1;
+}
+message UnregistrationConfirmDTO {
+    string message = 1;
 }
 
+// responses to OASIS supplied queries
+message SimulationEvaluationCompletedResponseDTO {
+    string name = 1;
+    map<string, double> outputVector = 2;
+}
+message SimulationEvaluationResultConfirmDTO {}
+
+message SimulationEvaluationErrorResponseDTO {
+    string name = 1;
+    string message = 2;
+    string exception = 3;
+}
+message SimulationEvaluationErrorConfirmDTO {}
+
+message StatusMessageCommandDTO {
+    string name = 1;
+    string message = 2;
+}
+message StatusMessageConfirmDTO {}
+
+// commands/queries to OASIS
+message StartOptimizationCommandDTO {
+
+    ProblemDefinition problem_definition = 1;
+
+    message ProblemDefinition {
+        repeated PrototypeInputParameter inputs = 1;
+        repeated PrototypeOutputParameter objectives = 2;
+
+        repeated BabelConstraint constraints = 3;
+        repeated BabelScalar intermediates = 5;
+    }
+
+    repeated SimulationNode nodes = 2;
+
+    message SimulationNode {
+
+        string name = 1;
+
+        oneof mapping {
+            bool auto_map = 2;
+            VariableMapping mapping_table = 3;
+        }
+
+        repeated string inputs = 4;
+        repeated string outputs = 5;
+
+        google.protobuf.Duration time_out = 6;
+    }
+
+    google.protobuf.Duration run_time = 11;
+    google.protobuf.UInt32Value iteration_count = 12;
+    google.protobuf.DoubleValue target_objective_value = 13; //note: ignored for multi-objective optimization
+}
 message StartOptimizationConfirmDTO {
-    oneof response{
-        string issues = 1;
+    oneof response {
+        Issues issues = 1;
         string run_ID = 2;
+    }
+
+    message Issues {
+        repeated string issues = 1;
     }
 }
 
-//stopOptimization
 message StopOptimizationCommandDTO {
     string name = 1;
     string run_ID = 2;
 }
-
 message StopOptimizationConfirmDTO {
     oneof response{
         string message = 1;
@@ -158,21 +154,12 @@ message StopOptimizationConfirmDTO {
     }
 }
 
-//request result
 message OptimizationResultsQueryDTO {
     string name = 1;
     string run_ID = 2;
 }
-
 message OptimizationResultsResponseDTO {
-    oneof response {
-        string message = 1;
-        RunResult result = 2;
-    }
-}
-
-message RunResult{
-    string runID = 1;
+    string run_ID = 1;
 
     repeated string input_columns = 7;
     repeated string output_columns = 8;
@@ -181,96 +168,18 @@ message RunResult{
     repeated DesignRow frontier = 10; //Best value for single run and pareto frontier for multiple objective
 }
 
-message DesignRow {
-    repeated double inputs = 1; //invariant := inputs.length == [parent].inputColumns.length
-    repeated double outputs = 2; //invariant := outputs.length == [parent].outputColumns.length
-    bool is_feasible = 3; // invariant := outputs.sublist(constraints).any { it > 0.0 }
-}
-
-message SimulationResultConfirmDTO {}
-message SimulationResponseDTO {
-    string name = 1;
-    map<string, double> outputVector = 2;
-}
-message ErrorConfirmDTO {}
-message ErrorResponseDTO {
-    string name = 1;
-    string message = 2;
-    string exception = 3;
-}
-
-//register user nodes
-message SimulationNodeStatusQueryDTO {
-    string name = 1;
-}
-message SimulationNodeChangeCommandDTO {
-
-    string name = 1;
-
-    oneof change {
-        string new_name = 9;
-        bool new_auto_import = 10;
-        VariableMapping new_mapping_table = 11;
-        google.protobuf.Duration new_time_out = 12;
-        PrototypeInputParameters new_inputs = 2;
-        PrototypeOutputParameters new_outputs = 3;
-
-        CompleteSimulationNode new_node = 14;
-    }
-
-    message CompleteSimulationNode {
-        oneof mapping {
-            bool autoImport = 1;
-            VariableMapping mappingTable = 2;
-        }
-        google.protobuf.Duration timeout = 3;
-        repeated PrototypeInputParameter inputs = 4;
-        repeated PrototypeOutputParameter outputs = 5;
-    }
-}
-
-//offerNodeUpdate
-message SimulationNodeResponseDTO {
-    string name = 1;
-    string description = 6;
-
-    bool autoImport = 10;
-    VariableMapping mappingTable = 11;
-
-    repeated PrototypeInputParameter inputs = 2;
-    repeated PrototypeOutputParameter outputs = 3;
-}
-
-message SimulationNodeUpsertConfirmDTO {
-    string message = 1;
-}
-
-
 // helpers
-message PrototypeInputParameters {
-    repeated PrototypeInputParameter values = 1;
-}
 message PrototypeInputParameter {
     string name = 1;
 
-    //optional values
     google.protobuf.DoubleValue lowerBound = 2;
     google.protobuf.DoubleValue upperBound = 3;
-    google.protobuf.DoubleValue currentValue = 4;
-}
-message PrototypeOutputParameters {
-    repeated PrototypeOutputParameter values = 1;
 }
 message PrototypeOutputParameter {
     string name = 1;
     enum type {
         SCALAR = 0;
         CONSTRAINT = 1;
-    }
-
-    //optional values
-    oneof currentValue {
-        double value = 2;
     }
 }
 message VariableMapping {
@@ -287,3 +196,9 @@ message BabelScalar {
     string outputName = 1;
     string scalarExpression = 2;
 }
+message DesignRow {
+    repeated double inputs = 1; //invariant := inputs.length == [parent].inputColumns.length
+    repeated double outputs = 2; //invariant := outputs.length == [parent].outputColumns.length
+    bool is_feasible = 3; // invariant := outputs.sublist(constraints).any { it > 0.0 }
+}
+message Unit {}

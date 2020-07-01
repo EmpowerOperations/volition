@@ -40,7 +40,7 @@ class ConnectionView(
                     label("Inputs: ")
                     vbox {
                         node?.inputs?.forEach { input ->
-                            add(label("${input.name} [${input.lowerBound}, ${input.upperBound}] "))
+                            add(label("$input "))
                         }
                     }
                 }
@@ -48,7 +48,7 @@ class ConnectionView(
                     label("Outputs: ")
                     vbox {
                         node?.outputs?.forEach { output ->
-                            add(label(output.name))
+                            add(label(output))
                         }
                     }
                 }
@@ -69,7 +69,7 @@ class ConnectionView(
                     button("add setup") {
                         action {
                             val simulation = Simulation(name)
-                            model.addSim(simulation)
+                            TODO("model.addSim(simulation)")
                         }
                     }
                 }

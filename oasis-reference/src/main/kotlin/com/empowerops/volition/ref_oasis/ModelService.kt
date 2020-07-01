@@ -1,7 +1,7 @@
 package com.empowerops.volition.ref_oasis
 
+import com.empowerops.babel.BabelExpression
 import com.google.common.annotations.VisibleForTesting
-import com.google.common.eventbus.EventBus
 import java.time.Duration
 import java.time.LocalDateTime
 import java.util.*
@@ -39,13 +39,17 @@ fun ExpensivePointRow.dominates(right: ExpensivePointRow): Boolean {
 data class Input(
         val name: String,
         val lowerBound: Double,
-        val upperBound: Double,
-        val currentValue: Double
+        val upperBound: Double
 )
 
 data class Output(
         val name: String
         // TBD: current value?
+)
+
+data class MathExpression(
+        val name: String,
+        val expression: BabelExpression
 )
 
 data class Message(
@@ -92,17 +96,17 @@ sealed class EvaluationResult(
 
 data class Simulation(
         val name: String,
-        val inputs: List<Input> = emptyList(),
-        val outputs: List<Output> = emptyList(),
+        val inputs: List<String> = emptyList(),
+        val outputs: List<String> = emptyList(),
         val timeOut: Duration? = null,
-        val autoImport: Boolean = true,
-        val inputMapping: Map<String, ParameterName> = emptyMap(),
-        val outputMapping: Map<ParameterName, String> = emptyMap()
+        val autoMap: Boolean = true,
+        val inputMapping: Map<String, ParameterName>? = null,
+        val outputMapping: Map<ParameterName, String>? = null
 )
 
 data class Issue(val message: String)
 
-class ModelService(private val eventBus: EventBus) : IssueFinder {
+class ModelService() : IssueFinder {
 
     private val _inputs: MutableSet<Input> = linkedSetOf<Input>()
     private val _outputs: MutableSet<Output> = linkedSetOf<Output>()
@@ -114,16 +118,8 @@ class ModelService(private val eventBus: EventBus) : IssueFinder {
     @VisibleForTesting
     private var resultList : Map<UUID, List<EvaluationResult>> = emptyMap()
 
-    val inputs: Set<Input> get() = _inputs.toSet()
-    val outputs: Set<Output> get() = _outputs.toSet()
-
-    fun addSim(simulation: Simulation) {
-        simulations += simulation
-
-        require(simulation.autoImport)
-        _inputs += simulation.inputs
-        _outputs += simulation.outputs
-    }
+//    val inputs: Set<Input> get() = _inputs.toSet()
+//    val outputs: Set<Output> get() = _outputs.toSet()
 
     fun removeSim(name: String) {
         simulations.removeIf { it.name == name }
@@ -136,22 +132,6 @@ class ModelService(private val eventBus: EventBus) : IssueFinder {
     fun getResult(id: UUID): RunResult = runs.getValue(id)
     fun setResult(id: UUID, result: RunResult) { runs[id] = result }
 
-    fun autoImport(newSim: Simulation) : Boolean {
-
-        if(newSim !in simulations) return false
-
-        //TODO: update to supprot multiple simulations
-        _inputs += newSim.inputs
-        _outputs += newSim.outputs
-
-        updateSimulation(newSim.name){ oldSim -> oldSim.copy(
-                inputMapping = newSim.inputs.associate { it.name to it.name },
-                outputMapping = newSim.outputs.associate { it.name to it.name }
-        )}
-
-        return true;
-    }
-
      override fun findIssues(): List<Issue> {
          TODO()
     }
@@ -159,7 +139,7 @@ class ModelService(private val eventBus: EventBus) : IssueFinder {
     fun addNewResult(runID: UUID, result: EvaluationResult) {
         val results = resultList.getOrElse(runID) { emptyList() }
         resultList += runID to results + result
-        eventBus.post(NewResultEvent(result))
+        TODO("eventBus.post(NewResultEvent(result))")
     }
 
     fun findSimulationName(name: String): Simulation? = simulations.singleOrNull { it.name == name }

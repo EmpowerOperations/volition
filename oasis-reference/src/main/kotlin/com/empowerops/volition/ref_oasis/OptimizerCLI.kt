@@ -14,11 +14,11 @@ import java.util.concurrent.Callable
 import java.util.jar.Manifest
 import kotlin.coroutines.CoroutineContext
 
-suspend fun main(args: Array<String>) = mainAsync(args)?.join()
+fun main(args: Array<String>) = runBlocking<Unit> { mainAsync(args)?.join() }
 
 fun mainAsync(args: Array<String>): Job? {
-    val cli = OptimizerCLI()
-    val console: PrintStream = if(System.getProperty("com.empowerops.volition.ref_oasis.useConsoleAlt").toLowerCase() == "true") consoleAlt else System.out
+    val console: PrintStream = if(System.getProperty("com.empowerops.volition.ref_oasis.useConsoleAlt")?.toLowerCase() == "true") consoleAlt else System.out
+    val cli = OptimizerCLI(console)
     val result = call(cli, console, *args)
     return result
 }
@@ -33,7 +33,7 @@ class OptimizerCLICoroutineScope: CoroutineScope {
         versionProvider = MetaINFVersionProvider::class,
         description = ["Reference optimizer using Volition API"]
 )
-class OptimizerCLI : Callable<Job> {
+class OptimizerCLI(val console: PrintStream) : Callable<Job> {
 
     @Option(names = ["-p", "--port"], paramLabel = "PORT", description = ["Run optimizer with specified port, when not specified, port number will default to 5550"])
     var port: Int = 5550
@@ -62,7 +62,11 @@ class OptimizerCLI : Callable<Job> {
             // I want the finally block to be triggered,
             // but if I use coroutineScope {}, when this job is cancelled, it doesnt throw,
             // it seems to be waiting for awaitTermination()
-            async(Dispatchers.IO) { server.start().awaitTermination() }.await()
+            async(Dispatchers.IO) {
+                server.start()
+                console.println("Volition Server running")
+                server.awaitTermination()
+            }.await()
         }
         finally {
             server.shutdownNow()

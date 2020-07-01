@@ -47,7 +47,7 @@ class Tests {
 
     //this was the very first sanity test I added.
     @Test fun `when running with --version should print version`() = runBlocking<Unit> {
-        main(arrayOf("--version"))
+        mainAsync(arrayOf("--version")).join()
 
         val str = consoleAltBytes.toString("utf-8")
 

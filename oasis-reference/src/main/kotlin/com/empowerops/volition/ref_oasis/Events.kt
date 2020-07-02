@@ -1,4 +1,4 @@
-package com.empowerops.volition.ref_oasis.model
+package com.empowerops.volition.ref_oasis
 
 import java.util.*
 
@@ -16,10 +16,6 @@ data class PluginUnRegisteredEvent(val name: String)                    : Optimi
 data class PluginRegisteredEvent(val name: String)                      : OptimizationModelEvent, StatusUpdateEvent("Plugin $name registered")
 data class PluginUpdatedEvent(val name: String)                         : OptimizationModelEvent, StatusUpdateEvent("Plugin $name updated")
 data class PluginRenamedEvent(val oldName: String, val newName: String) : OptimizationModelEvent, StatusUpdateEvent("Plugin $oldName renamed to $newName")
-data class ProxyAddedEvent(val name: String)                            : OptimizationModelEvent, StatusUpdateEvent("Proxy $name added")
-data class ProxyRemovedEvent(val name: String)                          : OptimizationModelEvent, StatusUpdateEvent("Proxy $name removed")
-data class ProxyRenamedEvent(val oldName: String, val newName: String)  : OptimizationModelEvent, StatusUpdateEvent("Proxy $oldName renamed to $newName")
-data class ProxyUpdatedEvent(val name: String)                          : OptimizationModelEvent, StatusUpdateEvent("Proxy $name updated")
 
 data class PausedEvent(val id: UUID)              : StatusUpdateEvent("Run Paused  - ID:$id")
 data class RunStartedEvent(val id: UUID)          : StatusUpdateEvent("Run Started - ID:$id")

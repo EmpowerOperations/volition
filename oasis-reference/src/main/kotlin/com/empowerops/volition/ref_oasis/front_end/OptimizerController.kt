@@ -1,9 +1,6 @@
 package com.empowerops.volition.ref_oasis.front_end
 
-import com.empowerops.volition.ref_oasis.front_end.OptimizerController.ButtonState.*
-import com.empowerops.volition.ref_oasis.model.*
-import com.empowerops.volition.ref_oasis.optimizer.*
-import com.empowerops.volition.ref_oasis.optimizer.buildStartIssuesMessage
+import com.empowerops.volition.ref_oasis.*
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import com.sun.javafx.binding.StringConstant
@@ -22,7 +19,6 @@ import javafx.util.converter.DoubleStringConverter
 import kotlinx.coroutines.*
 import kotlinx.coroutines.javafx.JavaFx
 import tornadofx.*
-import java.lang.IllegalStateException
 import java.time.Duration
 
 class OptimizerController {
@@ -76,26 +72,25 @@ class OptimizerController {
     private lateinit var modelService: ModelService
     private lateinit var inputRoot: TreeItem<Parameter>
     private lateinit var outputRoot: TreeItem<Parameter>
-    private lateinit var runStateMachine: RunStateMachine
 
     enum class Type {
         Input, Output, Root
     }
 
-    private fun buildTree(config: Proxy?): TreeItem<Parameter> {
+    private fun buildTree(config: Simulation?): TreeItem<Parameter> {
         val root = TreeItem<Parameter>(Parameter("root", Type.Root))
         inputRoot = TreeItem(Parameter("Inputs", Type.Root))
         outputRoot = TreeItem(Parameter("Outputs", Type.Root))
         if (config == null) return root
 
         val inputs: List<TreeItem<Parameter>> = config.inputs.map {
-            val value = Parameter(it.name, Type.Input, it.currentValue)
-            value.lowerBound = it.lowerBound
-            value.upperBound = it.upperBound
+            val value = Parameter(it, Type.Input, 0.0)
+//            value.lowerBound = it.lowerBound
+//            value.upperBound = it.upperBound
             TreeItem(value)
         }
         val outputs: List<TreeItem<Parameter>> = config.outputs.map {
-            TreeItem(Parameter(it.name, Type.Input))
+            TreeItem(Parameter(it, Type.Input))
         }
 
         inputRoot.isExpanded = true
@@ -123,9 +118,10 @@ class OptimizerController {
         nodesList.selectionModel.selectedItemProperty().addListener { src, oldV, newV -> showNode(newV) }
 
         timeOutTextField.setOnKeyPressed { event ->
+            val simulation = modelService.findSimulationName(nodesList.selectedItem!!)
             if (event.code == KeyCode.ESCAPE) {
                 //discard
-                timeOutTextField.text = modelService.proxies.single { it.name == nodesList.selectedItem!! }.timeOut!!.toMillis().toString()
+                timeOutTextField.text = simulation!!.timeOut?.toMillis()?.toString() ?: ""
                 view.requestFocus()
             } else if (event.code == KeyCode.ENTER) {
                 //commit
@@ -133,18 +129,25 @@ class OptimizerController {
                 if (duration == null) {
                     timeOutTextField.text = ""
                 } else {
-                    modelService.setTimeout(nodesList.selectedItem, Duration.ofMillis(duration))
+                    modelService.updateSimulation(nodesList.selectedItem!!) { sim -> sim.copy(
+                            timeOut = Duration.ofMillis(duration)
+                    )}
                 }
                 view.requestFocus()
             }
         }
 
         useTimeout.setOnAction {
+            val selectedItem = nodesList.selectedItem!!
             if (useTimeout.isSelected) {
-                modelService.setTimeout(nodesList.selectedItem, Duration.ZERO)
+                modelService.updateSimulation(selectedItem) { sim -> sim.copy(
+                        timeOut = Duration.ZERO
+                )}
                 timeOutTextField.text = "0"
             } else {
-                modelService.setTimeout(nodesList.selectedItem, null)
+                modelService.updateSimulation(selectedItem) { sim -> sim.copy(
+                        timeOut = null
+                )}
                 timeOutTextField.text = ""
             }
         }
@@ -201,27 +204,32 @@ class OptimizerController {
 
     private fun generateAndUpdateNewProxy(): Boolean {
         val selectedItem = nodesList.selectionModel.selectedItem
+
         if (selectedItem == null) {
             return false
-        } else {
-            val proxy = modelService.proxies.single { it.name == selectedItem }
-            val rebuildInputList: List<Input> = inputRoot.children.map {
-                val parameter = it.value
-                Input(parameter.name, parameter.lowerBound
-                        ?: Double.NaN, parameter.upperBound ?: Double.NaN, 0.0)
-            }
-            val newProxy = proxy.copy(inputs = rebuildInputList)
-            modelService.updateConfiguration(newProxy)
+        }
+        else {
+            modelService.updateSimulation(selectedItem){ sim -> sim.copy(
+                inputs = inputRoot.children.map { uiParam ->
+//                    Input(
+//                            uiParam.value.name,
+//                            uiParam.value.lowerBound ?: Double.NaN,
+//                            uiParam.value.upperBound ?: Double.NaN,
+//                    )
+                    uiParam.value.name
+                }
+            )}
+
             return true
         }
     }
 
     private fun showNode(newV: String?) {
         selectedNodeInfoBox.isDisable = newV == null
-        displayConfiguration(modelService.proxies.singleOrNull { it.name == newV })
+        if(newV != null) displayConfiguration(modelService.findSimulationName(newV))
     }
 
-    private fun displayConfiguration(proxy: Proxy?) {
+    private fun displayConfiguration(proxy: Simulation?) {
         descriptionLabel.text = proxy?.name
         paramTreeView.root = buildTree(proxy)
         paramTreeView.isShowRoot = false
@@ -237,51 +245,51 @@ class OptimizerController {
     fun attachToModel(
             modelService: ModelService,
             eventBus: EventBus,
-            connectionView: ListView<String>,
-            stateMachine: RunStateMachine) {
+            connectionView: ListView<String>
+    ) {
         this.modelService = modelService
-        this.runStateMachine = stateMachine
         eventBus.register(this)
-        connectionListContainer.children.add(connectionView)
+        connectionListContainer.children += connectionView
         showNode(null)
-        rebindViewToState(runStateMachine.currentState)
+        rebindViewToState(TODO())
     }
 
     @FXML fun startStopClicked() = GlobalScope.launch(Dispatchers.JavaFx) {
-        when (runStateMachine.currentState){
-            State.Idle -> {
-                val startResult = CompletableDeferred<RunStateMachine.StartResult>()
-                runStateMachine.start(startResult)
-                when(startResult.await()){
-                    is RunStateMachine.StartResult.Success -> {
-                        //NOOP
-                    }
-                    is RunStateMachine.StartResult.Failed -> {
-                        val alert = Alert(Alert.AlertType.ERROR)
-                        alert.title = "Error"
-                        alert.headerText = "Can not start"
-                        alert.contentText = buildStartIssuesMessage(modelService.findIssues())
-                        alert.showAndWait()
-                    }
-                }
-            }
-            State.Running, State.PausePending, State.Paused -> runStateMachine.stop()
-            State.StopPending -> runStateMachine.forceStop()
-            else -> throw IllegalStateException("Start/Stop Button is not an actionable state. Current State:${runStateMachine.currentState}")
-        }
+        TODO()
+//        when (runStateMachine.currentState){
+//            State.Idle -> {
+//                val startResult = CompletableDeferred<RunStateMachine.StartResult>()
+//                runStateMachine.start(startResult)
+//                when(startResult.await()){
+//                    is RunStateMachine.StartResult.Success -> {
+//                        //NOOP
+//                    }
+//                    is RunStateMachine.StartResult.Failed -> {
+//                        val alert = Alert(Alert.AlertType.ERROR)
+//                        alert.title = "Error"
+//                        alert.headerText = "Can not start"
+//                        alert.contentText = buildStartIssuesMessage(modelService.findIssues())
+//                        alert.showAndWait()
+//                    }
+//                }
+//            }
+//            State.Running, State.PausePending, State.Paused -> runStateMachine.stop()
+//            State.StopPending -> runStateMachine.forceStop()
+//            else -> throw IllegalStateException("Start/Stop Button is not an actionable state. Current State:${runStateMachine.currentState}")
+//        }
     }
 
     @FXML fun pauseResumeRun() = GlobalScope.launch(Dispatchers.JavaFx) {
-        when (runStateMachine.currentState){
-            State.Running -> runStateMachine.pause()
-            State.Paused -> runStateMachine.resume()
-            else -> throw IllegalStateException("Pause/Resume Button is not an actionable state. Current State:${startButton.text}")
-        }
+//        when (runStateMachine.currentState){
+//            State.Running -> runStateMachine.pause()
+//            State.Paused -> runStateMachine.resume()
+//            else -> throw IllegalStateException("Pause/Resume Button is not an actionable state. Current State:${startButton.text}")
+//        }
     }
 
     @FXML fun removeSelectedSetup() = GlobalScope.launch {
         val selectedItem = nodesList.selectedItem
-        if (selectedItem != null) modelService.removeConfiguration(selectedItem)
+        if (selectedItem != null) modelService.removeSim(selectedItem)
     }
 
     @Subscribe
@@ -300,28 +308,6 @@ class OptimizerController {
     }
 
     @Subscribe
-    fun whenProxyAddedAsync(event: ProxyAddedEvent) = GlobalScope.launch(Dispatchers.JavaFx) {
-        list.add(event.name)
-    }
-
-    @Subscribe
-    fun whenProxyRemovedAsync(event: ProxyRemovedEvent) = GlobalScope.launch(Dispatchers.JavaFx) {
-        list.remove(event.name)
-    }
-
-    @Subscribe
-    fun whenProxyRenamedAsync(event: ProxyRenamedEvent) = GlobalScope.launch(Dispatchers.JavaFx) {
-        list.remove(event.oldName)
-        list.add(event.newName)
-    }
-
-    @Subscribe
-    fun whenProxyUpdatedAsync(event: ProxyUpdatedEvent) = GlobalScope.launch(Dispatchers.JavaFx) {
-        nodesList.refresh()
-        showNode(nodesList.selectedItem)
-    }
-
-    @Subscribe
     fun whenIssueUpdatedAsync(event: OptimizationModelEvent) = GlobalScope.launch(Dispatchers.JavaFx) {
         val issueList = modelService.findIssues()
         if (issueList.isNotEmpty()) {
@@ -333,24 +319,25 @@ class OptimizerController {
 
     @Subscribe
     fun onStateChangedAsync(event : StatusUpdateEvent) = GlobalScope.launch(Dispatchers.JavaFx){
-        rebindViewToState(runStateMachine.currentState)
+//        rebindViewToState(runStateMachine.currentState)
     }
 
     private fun rebindViewToState(currentState: State) {
-        val buttonState = when (currentState) {
-            State.Idle -> Idle
-            State.StartPending -> Starting
-            State.Running -> Running
-            State.PausePending -> Pausing
-            State.Paused -> Paused
-            State.StopPending -> Stopping
-            State.ForceStopPending -> ForceStopping
-        }
-
-        startButton.text = buttonState.start
-        startButton.isDisable = buttonState.startDisabled
-        pauseButton.text = buttonState.pause
-        pauseButton.isDisable = buttonState.pauseDisabled
+        TODO()
+//        val buttonState = when (currentState) {
+//            State.Idle -> Idle
+//            State.StartPending -> Starting
+//            State.Running -> Running
+//            State.PausePending -> Pausing
+//            State.Paused -> Paused
+//            State.StopPending -> Stopping
+//            State.ForceStopPending -> ForceStopping
+//        }
+//
+//        startButton.text = buttonState.start
+//        startButton.isDisable = buttonState.startDisabled
+//        pauseButton.text = buttonState.pause
+//        pauseButton.isDisable = buttonState.pauseDisabled
     }
 
     enum class ButtonState(

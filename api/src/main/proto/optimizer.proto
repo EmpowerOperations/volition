@@ -10,262 +10,215 @@ package empowerops.volition.api;
 import "google/protobuf/duration.proto";
 import "google/protobuf/wrappers.proto";
 
-service Optimizer {
-
-    //some design considerations:
-    // 1. this is a peer'd relationship, *not* a client-server relationship.
-    //    (because either end point, OASIS or the plugin, may decide to issue a command or ask a query)
-
-    // attempt 1:
-    // so: one solution is to simply use grpc BIDI streams.
-    //    ie: rpc doEverything(stream clientRequestsAndResponses) returns (stream oasisRequestsAndResponses)
-    //    the problem: this gets into some real nasty stateful multiplexing. When you read a message you would have to
-    //    determine if its a query or a response, and, if its a response, find the context of the code that submitted the query.
-    //    this happens in a full-multiplex environment where OASIS would make no gaurentees
-    //    that the next message you recieve after submitting a query is the answer to your query
-    //    (it would be race-condition-hell to do otherwise)
-    //    so, a client would, have to decode a message to discover "oh this is a response to the 'XYZquery'
-    //    I submitted earlier, then it would have to find any necessary state associated with that query
-    //    (typically stack variables, but here this wouild likely push callers into state machines to keep that info)
-    //    restore that state (ie back to useful stack variables), then continue their business logic.
-    //    this will be bug ridden.
-
-    // attempt 2:
-    // so another solution: single-stream OASIS *queries*, but offer discrete end-points for responses,
-    //    and discrete endpoints for the plugins on queries
-    //    ie:
-    //      rpc register(RegistrationRequestDTO) returns (stream OASISQueryDTO) {}
-    //      rpc offerRespondToOASISQueryABC(ABCResponseDTO) returns (ABCConfirmationDTO) {}
-    //      rpc offerResponseToOASISQueryXYZ(XYZResponseDTO) returns (XYZConfirmationDTO) {}
-    //      rpc askOASISAQuestion(1234QueryDTO) returns (1234ResponseDTO) {}
-    //      rpc tellOASISToDoASDF(ASDFCommandDTO) returns (ASDFResponseDTO) {}
+service FederatedOptimizer {
+    // TBD: the key feature this optimizer will export is that it will accept multiple tools registering at once
+    // this was the original goal of the API, and has prooven to be very complex.
+    // the idea is that multiple simulation clients can all access the same optimization at the same time,
+    // meaning an ANSA plugin and a NASTRAN plugin can both talk to the same optimizer,
+    // and each participate in an optimization
     //
-    // [attempt 2.1]
-    //    this implies 4 types of messages:
-    //      CommandDTO
-    //      QueryDTO
-    //      ResponseDTO
-    //      ConfirmDTO
-
-    //attempt 3:
-    // TBD. What are the nasty points? is there an implied grammar that we can simplify? What about testing?
-    // regarding "query" vs "command", when we ask a plugin to evaluate something, we **want** it to be
-    // ref-transparent (IE a query), but cheap-o implementations of the plugin arent going to do that,
-    // they're going to forget to clean up their mesh or restore the model to a pre-simulation state,
-    // potentially allowing pollution across simulation calls. Can the API address that?
-    // Is there any way we can make it really clear, outside of documentation, that plugins should revert themselves
-    // before cleaning-up?
-    //    hows this: we create an OASIS command "CreateRestorePointCommand"
-    //    then, during optimization runs, we submit "RestoreToPointCommand's" before each "EvaluationQuery"
-    //    this would mean that users would have to explicitly decode "RestoreToCommand's" to do nothing.
-    //    note: it also requires the black-boxes to become stateful in that there is no realistic expectation
-    //    that the response to a "CreateRestorePoint" could contain any useful information about the current
-    //    state of the simulation software, it would only be a name.
-
-    // attempt 4: what about trying to keep streams limited to optimization?
-    //    ie:
-    //      rpc register(RegistrationRequestDTO) returns (stream OASISQueryDTO) {}
-    //      rpc startOptimization(OptimizationStartCommandDTO) returns (OptimizationStartResponseDTO) {}
-    //      rpc connectToOptimization(OptimizationResponseDTO) returns (stream NodeWorkRequestDTO) {}
-
-    // attempt 4.1: nullability in proto3 is a mess!
-    //   https://github.com/protocolbuffers/protobuf/issues/1606
-
-    // entry-point, returns stream of OASIS queries/commands
-    rpc registerRequest (RequestRegistrationCommandDTO) returns (stream RequestQueryDTO) {}
-    rpc unregisterRequest (RequestUnRegistrationRequestDTO) returns (UnRegistrationResponseDTO) {}
-
-    // commands/queries to OASIS
-    rpc startOptimization (StartOptimizationCommandDTO) returns (StartOptimizationResponseDTO) {}
-    rpc stopOptimization (StopOptimizationCommandDTO) returns (StopOptimizationResponseDTO) {}
-
-    // responses to OASIS supplied queries
-    rpc offerSimulationResult (SimulationResponseDTO) returns (SimulationResultConfirmDTO) {}
-    rpc offerSimulationConfig (NodeStatusCommandOrResponseDTO) returns (NodeChangeConfirmDTO) {}
-    rpc offerErrorResult (ErrorResponseDTO) returns (ErrorConfirmDTO) {}
-
-    rpc sendMessage (MessageCommandDTO) returns (MessageResponseDTO) {}
-    rpc updateNode (NodeStatusCommandOrResponseDTO) returns (NodeChangeConfirmDTO) {}
-    rpc autoConfigure (NodeStatusCommandOrResponseDTO) returns (NodeChangeConfirmDTO) {}
-    rpc changeNodeName (NodeNameChangeCommandDTO) returns (NodeNameChangeResponseDTO) {}
-
-    rpc updateConfiguration(ConfigurationCommandDTO) returns (ConfigurationResponseDTO) {}
-    rpc requestRunResult(ResultRequestDTO) returns (ResultResponseDTO) {}
+    // unfortunately this necessitates a lot of state-sychronization,
+    // which raises the complexity level by an order of magnitude.
 }
 
-message ConfigurationCommandDTO {
-    string name = 1;
-    Config config = 2;
-    message Config{
-        google.protobuf.Duration timeout = 2;
+// some notes on naming scheme:
+// "...QueryDTO" ->     a request for a ref-transparent ("getter") information.
+//                      Results are sent via the in the "offer..." rpc methods;                     a "getX"
+// "...ResponseDTO" ->  a result from a QueryDTO, sometimes passed from optimizer to simulator
+//                      sometimes passed in the other direction;                                    result from "getX"
+// "...CommandDTO" ->   a request to statefully change the configuration of the optimizer;          a "setX"
+// "...ConfirmDTO" ->   the result of a Command, often indicates success or failure of the command; result from "setX"
+
+service UnaryOptimizer {
+
+    // Starts an optimization of the specified problem definition and simulation nodes,
+    // and returns a stream of evaluation requests and other messages pertaining to the optimization.
+    rpc StartOptimization (StartOptimizationCommandDTO) returns (stream OptimizerGeneratedQueryDTO) {}
+
+    // responses to OASIS supplied queries,
+    // these should be called by the simulator in response to OptimizerGeneratedQueryDTO messages.
+    // namely: every OptimizerGeneratedQueryDTO.SimulationEvaluationRequest must be followed by either
+    // an OfferSimulationResult call, or an OfferErrorResultCall.
+
+    // offers the completed result of the simulation evaluation for the last provided SimulationEvaluationRequest
+    rpc OfferSimulationResult (SimulationEvaluationCompletedResponseDTO) returns (SimulationEvaluationResultConfirmDTO) {}
+
+    // offers an error to describe the completion of the last provided SimulationEvaluationRequest
+    // internally, the optimizer is likely to avoid areas it encounters errors,
+    // the optimizer will not try to evaluate the same point again.
+    rpc OfferErrorResult (SimulationEvaluationErrorResponseDTO) returns (SimulationEvaluationErrorConfirmDTO) {}
+
+    // offers a status update for the current running simulation evaluation.
+    // these messages are important for user experience in that they re-assure the user that the
+    // simulation is still running, and may be used to debug problems.
+    rpc OfferEvaluationStatusMessage (StatusMessageCommandDTO) returns (StatusMessageConfirmDTO) {}
+
+    rpc StopOptimization (StopOptimizationCommandDTO) returns (StopOptimizationConfirmDTO) {}
+    rpc RequestRunResult (OptimizationResultsQueryDTO) returns (OptimizationResultsResponseDTO) {}
+}
+
+message StartOptimizationCommandDTO {
+
+    ProblemDefinition problem_definition = 1;
+
+    message ProblemDefinition {
+        repeated PrototypeInputParameter inputs = 1;
+        repeated PrototypeOutputParameter objectives = 2;
+
+        repeated BabelConstraint constraints = 3;
+        repeated BabelScalar intermediates = 5;
     }
+
+    repeated SimulationNode nodes = 2;
+
+    message SimulationNode {
+
+        string name = 1;
+
+        oneof mapping {
+            bool auto_map = 2;
+            VariableMapping mapping_table = 3;
+        }
+
+        repeated string inputs = 4;
+        repeated string outputs = 5;
+
+        google.protobuf.Duration time_out = 6;
+    }
+
+    google.protobuf.Duration run_time = 11;
+    google.protobuf.UInt32Value iteration_count = 12;
+
+    //note: ignored for multi-objective optimization
+    google.protobuf.DoubleValue target_objective_value = 13;
 }
+message OptimizerGeneratedQueryDTO {
 
-message ConfigurationResponseDTO {
-    bool updated = 1;
-    string message =2;
-}
-
-//register
-message RequestRegistrationCommandDTO {
-    string name = 1;
-}
-
-message RequestUnRegistrationRequestDTO {
-    string name = 1;
-}
-
-message UnRegistrationResponseDTO {
-    string message = 1;
-}
-
-message MessageCommandDTO {
-    string name = 1;
-    string message = 2;
-}
-
-message MessageResponseDTO {}
-
-message RequestQueryDTO {
     oneof request {
-        SimulationEvaluationRequest evaluationRequest = 1;
-        NodeStatusUpdateRequest nodeStatusRequest = 2;
-        SimulationCancelRequest cancelRequest = 3;
-        SimulationStartedRequest startRequest = 4;
-        SimulationStoppedRequest stopRequest = 5;
+
+        SimulationEvaluationRequest evaluation_request = 1;
+        SimulationCancelRequest cancel_request = 3;
+
+        OptimizationStartedNotification optimization_started_notification = 5;
+        OptimizationFinishedNotification optimization_finished_notification = 6;
+
+        OptimizationFailedToStartNotification optimization_not_started_notification = 7;
     }
 
     message SimulationEvaluationRequest {
-          string name = 1;
-          map<string, double> inputVector = 2;
-    }
-
-    message NodeStatusUpdateRequest {
         string name = 1;
+        map<string, double> input_vector = 2;
     }
 
+    // optimizer requests that a simulation cancel its current evaluation
+    // note this is a very race-ee message. For your first implementation I suggest
+    // Doing nothing on receiving this message is always legal,
+    // so long as the SimulationEvaluationRequest contract is fulfilled.
     message SimulationCancelRequest {
         string name = 1;
     }
 
-    message SimulationStartedRequest {
-        string name = 1;
-        string runID = 2;
+    message RegistrationConfirm {}
+    message OptimizationStartedNotification {
+        UUID run_ID = 2;
     }
-
-    message SimulationStoppedRequest {
-        string name = 1;
-        string runID = 2;
+    message OptimizationFinishedNotification {}
+    message OptimizationFailedToStartNotification {
+        repeated string issues = 1;
     }
 }
 
-//startOptimization
-message StartOptimizationCommandDTO {
+// responses to OASIS supplied queries
+message SimulationEvaluationCompletedResponseDTO {
     string name = 1;
-    RunConfiguration runConfig = 2;
+    map<string, double> output_vector = 2;
 }
+message SimulationEvaluationResultConfirmDTO {}
 
-message RunConfiguration {
-    uint32 runNumber = 1;
-    google.protobuf.Duration runTime = 2;
-    uint32 iterationNumber = 3;
-    double targetValue = 4;
-}
-
-message StartOptimizationResponseDTO {
-    oneof response{
-        string issues = 1;
-        string runID = 2;
-    }
-}
-
-//stopOptimization
-message StopOptimizationCommandDTO {
-    string name = 1;
-    string id = 2;
-}
-
-message StopOptimizationResponseDTO {
-    oneof response{
-        string message = 1;
-        string runID = 2;
-    }
-}
-
-//request result
-message ResultRequestDTO {
-    string name = 1;
-    string runID = 2;
-}
-
-message ResultResponseDTO {
-    oneof response {
-        string message = 1;
-        RunResult RunResult = 2;
-    }
-}
-
-message RunResult{
-    string runID = 1;
-    repeated Design point = 2;
-    repeated Design optimum = 3; //Best value for single run and pareto frontier for multiple objective
-}
-
-message Design {
-    map<string, double> input = 1;
-    map<string, double> output = 2;
-}
-
-//updateNode
-message SimulationResultConfirmDTO {}
-message SimulationResponseDTO {
-    string name = 1;
-    map<string, double> outputVector = 2;
-}
-message ErrorConfirmDTO {}
-message ErrorResponseDTO {
+message SimulationEvaluationErrorResponseDTO {
     string name = 1;
     string message = 2;
     string exception = 3;
 }
+message SimulationEvaluationErrorConfirmDTO {}
 
-//changeNodeName
-message NodeNameChangeCommandDTO {
-    string oldName = 1;
-    string newName = 2;
-}
-message NodeNameChangeResponseDTO {
-    bool changed = 1;
+message StatusMessageCommandDTO {
+    string name = 1;
     string message = 2;
 }
+message StatusMessageConfirmDTO {}
 
-//offerNodeUpdate
-message NodeStatusCommandOrResponseDTO {
+message StopOptimizationCommandDTO {
+    string name = 1;
+    UUID run_ID = 2;
+}
+message StopOptimizationConfirmDTO {
+    oneof response{
+        string message = 1;
+        UUID run_ID = 2;
+    }
+}
+
+message OptimizationResultsQueryDTO {
+    string name = 1;
+    UUID run_ID = 2;
+}
+message OptimizationResultsResponseDTO {
+    UUID run_ID = 1;
+
+    repeated string input_columns = 7;
+    repeated string output_columns = 8;
+
+    repeated DesignRow points = 9;
+    repeated DesignRow frontier = 10; //Best value for single run and pareto frontier for multiple objective
+}
+
+// helpers
+message PrototypeInputParameter {
     string name = 1;
 
-    string description = 6;
-    repeated PrototypeInputParameter inputs = 2;
-    repeated PrototypeOutputParameter outputs = 3;
-
-    message PrototypeInputParameter {
-        string name = 1;
-
-        //optional values
-        double lowerBound = 2;
-        double upperBound = 3;
-        double currentValue = 4;
+    oneof domain {
+        Continuous continuous = 4;
+        DiscreteRange discrete_range = 5;
     }
 
-    message PrototypeOutputParameter {
-        string name = 1;
-
-        //optional values
-        oneof currentValue {
-            double value = 2;
-        }
+    message Continuous {
+        double lower_bound = 2;
+        double upper_bound = 3;
+    }
+    message DiscreteRange {
+        double lower_bound = 2;
+        double upper_bound = 3;
+        double step_size = 4;
     }
 }
-
-message NodeChangeConfirmDTO {
-    string message = 1;
+message PrototypeOutputParameter {
+    string name = 1;
+    enum type {
+        SCALAR = 0;
+        CONSTRAINT = 1;
+    }
 }
+message VariableMapping {
+    // key:optimization-var-name TO value:simulation-param-name
+    map<string, string> inputs = 1;
+    // key:simulation-output-name TO value:optimization-var-name
+    map<string, string> outputs = 2;
+}
+message BabelConstraint {
+    string output_name = 1;
+    string boolean_expression = 2;
+}
+message BabelScalar {
+    string output_name = 1;
+    string scalar_expression = 2;
+}
+message DesignRow {
+    repeated double inputs = 1; //invariant := inputs.length == [parent].inputColumns.length
+    repeated double outputs = 2; //invariant := outputs.length == [parent].outputColumns.length
+    bool is_feasible = 3; // invariant := outputs.sublist(constraints).any { it > 0.0 }
+}
+message UUID {
+    string value = 1;
+}
+

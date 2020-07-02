@@ -1,6 +1,6 @@
 package com.empowerops.volition.ref_oasis.front_end
 
-import com.empowerops.volition.ref_oasis.model.*
+import com.empowerops.volition.ref_oasis.*
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import javafx.collections.FXCollections
@@ -14,8 +14,8 @@ import tornadofx.*
 
 class ConnectionView(
         val model: ModelService,
-        val eventBus: EventBus) : View("My View") {
-
+        val eventBus: EventBus
+) : View("My View") {
 
     private val regList: ObservableList<String> = FXCollections.observableArrayList()
 
@@ -23,8 +23,8 @@ class ConnectionView(
         vgrow = Priority.ALWAYS
         //TODO make this good looking item
         isEditable = false
-        cellFormat {name ->
-            val node = model.simulations.getValue(name)
+        cellFormat { name ->
+            val node = model.findSimulationName(name)
             graphic = vbox {
                 hbox {
                     label("Name: ")
@@ -33,22 +33,22 @@ class ConnectionView(
                 hbox {
                     label("Description: ")
                     textflow {
-                        text(node.description)
+                        text("TODO")
                     }
                 }
                 hbox {
                     label("Inputs: ")
                     vbox {
-                        node.inputs.forEach { input ->
-                            add(label("${input.name} [${input.lowerBound}, ${input.upperBound}] "))
+                        node?.inputs?.forEach { input ->
+                            add(label("$input "))
                         }
                     }
                 }
                 hbox {
                     label("Outputs: ")
                     vbox {
-                        node.outputs.forEach { output ->
-                            add(label(output.name))
+                        node?.outputs?.forEach { output ->
+                            add(label(output))
                         }
                     }
                 }
@@ -57,29 +57,19 @@ class ConnectionView(
                     button("refresh") {
                         action {
                             GlobalScope.launch {
-                                model.updateSimulation(name)
+                                eventBus.post(SimulationUpdateRequestedEvent(name))
                             }
                         }
                     }
                     button("delete") {
                         action {
-                            GlobalScope.launch {
-                                model.closeSim(name)
-                            }
+                            model?.removeSim(name)
                         }
                     }
                     button("add setup") {
                         action {
-                            GlobalScope.launch {
-                                model.addAndSyncConfiguration(name)
-                            }
-                        }
-                    }
-                    button("remove setup") {
-                        action {
-                            GlobalScope.launch {
-                                model.removeConfiguration(name)
-                            }
+                            val simulation = Simulation(name)
+                            TODO("model.addSim(simulation)")
                         }
                     }
                 }
@@ -94,31 +84,23 @@ class ConnectionView(
 
     @Subscribe
     fun whenNewNodeRegistered(event : PluginRegisteredEvent){
-        GlobalScope.launch(Dispatchers.JavaFx) {
-            regList.add(event.name)
-        }
+        regList.add(event.name)
     }
 
     @Subscribe
     fun whenNodeUnRegistered(event : PluginUnRegisteredEvent){
-        GlobalScope.launch(Dispatchers.JavaFx) {
-            regList.remove(event.name)
-        }
+        regList.remove(event.name)
     }
 
     @Subscribe
     fun whenNodeUnRegistered(event : PluginRenamedEvent){
-        GlobalScope.launch(Dispatchers.JavaFx) {
-            regList.remove(event.oldName)
-            regList.add(event.newName)
-        }
+        regList.remove(event.oldName)
+        regList.add(event.newName)
     }
 
     @Subscribe
     fun whenNodeRefreshed(event: PluginUpdatedEvent) {
-        GlobalScope.launch(Dispatchers.JavaFx) {
-            root.refresh()
-        }
+        root.refresh()
     }
 
 }

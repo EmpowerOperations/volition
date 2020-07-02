@@ -1,8 +1,8 @@
 package com.empowerops.volition.ref_oasis.front_end
 
 import com.empowerops.volition.dto.Logger
-import com.empowerops.volition.ref_oasis.model.Message
-import com.empowerops.volition.ref_oasis.model.StatusUpdateEvent
+import com.empowerops.volition.ref_oasis.Message
+import com.empowerops.volition.ref_oasis.StatusUpdateEvent
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import kotlinx.coroutines.channels.Channel
@@ -34,7 +34,7 @@ class ConsoleOutput(eventBus: EventBus) : Logger {
     fun onEvent(event : StatusUpdateEvent){
         val message = Message("Optimizer Event", event.toString(), Level.INFO)
         log += message
-        val logMessage = "[${LocalDateTime.now()}] > ${event.status}"
+        val logMessage = "[${LocalDateTime.now()}] Event > ${event.status}"
         System.out.println(logMessage)
     }
 }

@@ -28,7 +28,7 @@ sealed class State {
 
 @Suppress("UsePropertyAccessSyntax") //for idiomatic protobuf use
 class OptimizerEndpoint(
-        private val model: ModelService,
+        private val model: Map<UUID, RunResult>,
         private val optimizationActorFactory: OptimizationActorFactory
 ) : UnaryOptimizerGrpc.UnaryOptimizerImplBase() {
 
@@ -258,7 +258,7 @@ class OptimizerEndpoint(
 
         check(state is State.Idle)
 
-        val result = model.getResult(UUID.fromString(request.runID.value))
+        val result = model.getValue(UUID.fromString(request.runID.value))
 
         OptimizationResultsResponseDTO.newBuilder()
                 .setRunID(result.uuid.toDTO())

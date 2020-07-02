@@ -190,14 +190,6 @@ project('api'){
 
 }
 
-project('client-reference'){
-    dependencies {
-        compile project(":api")
-
-        compile 'io.netty:netty-all:4.1.30.Final'
-        compile 'no.tornado:tornadofx:1.7.17'
-    }
-}
 project('oasis-reference'){
     dependencies {
         compile project(":api")

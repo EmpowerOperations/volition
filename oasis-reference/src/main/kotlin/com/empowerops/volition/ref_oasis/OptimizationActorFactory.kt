@@ -53,7 +53,7 @@ typealias OptimizationActor = SendChannel<SimulationProvidedMessage>
 class OptimizationActorFactory(
         val scope: CoroutineScope,
         val optimizer: Optimizer,
-        val model: ModelService,
+        val model: MutableMap<UUID, RunResult>,
         val eventBus: EventBus
 ) {
 
@@ -181,7 +181,7 @@ class OptimizationActorFactory(
                     frontier
             )
 
-            model.setResult(runID, runResult)
+            model[runID] = runResult
             stopRequest.runID.complete(runID)
         }
         finally {

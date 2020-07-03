@@ -10,7 +10,7 @@ buildscript {
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.+'
-        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.5'
+        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.10'
     }
 }
 
@@ -98,7 +98,7 @@ project('api'){
     protobuf {
 
         protoc {
-            artifact = "com.google.protobuf:protoc:3.5.1-1"
+            artifact = "com.google.protobuf:protoc:3.12.3"
         }
         plugins {
             grpc_java {
@@ -110,6 +110,9 @@ project('api'){
                 //https://github.com/Ullink/gradle-nuget-plugin
                 // --also note, he has an msbuild plugin for gradle
             }
+            grpc_cpp {
+                path = "$projectDir/../grpc_x86-windows/tools/grpc/grpc_cpp_plugin.exe"
+            }
         }
 
         generateProtoTasks {
@@ -117,10 +120,12 @@ project('api'){
                 task.plugins {
                     grpc_java {}
                     grpc_csharp {}
+                    grpc_cpp {}
                 }
                 task.builtins {
                     java { }
                     csharp {}
+                    cpp {}
                 }
             }
         }

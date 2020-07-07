@@ -19,7 +19,7 @@ namespace EmpowerOps.Volition.RefClient
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly Optimizer.OptimizerClient _client;
+        private readonly UnaryOptimizer.UnaryOptimizerClient _client;
         private readonly Channel _channel;
         private AsyncServerStreamingCall<RequestQueryDTO> _requests;
         private ChannelState channelState;
@@ -37,7 +37,7 @@ namespace EmpowerOps.Volition.RefClient
         {
             //https://grpc.io/docs/quickstart/csharp.html#update-the-client
             _channel = new Channel("localhost:5550", ChannelCredentials.Insecure);
-            _client = new Optimizer.OptimizerClient(_channel);
+            _client = new UnaryOptimizer.UnaryOptimizerClient(_channel);
             InitializeComponent();
             UpdateConnectionStatus();
             UpdateButton();
@@ -62,7 +62,7 @@ namespace EmpowerOps.Volition.RefClient
             Log($"{_commandPrefix} Start Requested");
             try
             {
-                var startResponse = await _client.startOptimizationAsync(new StartOptimizationCommandDTO
+                var startResponse = await _client.StartOptimization(new StartOptimizationCommandDTO
                 {
                     Name = _name
                 });
@@ -82,7 +82,7 @@ namespace EmpowerOps.Volition.RefClient
             }
             catch (RpcException exception)
             {
-                Log($"{_serverPrefix} Error invoke {nameof(_client.startOptimizationAsync)} Exception: {exception.Status}");
+                Log($"{_serverPrefix} Error invoke {nameof(_client.StartOptimization)} Exception: {exception.Status}");
             }
 
         }
@@ -110,7 +110,7 @@ namespace EmpowerOps.Volition.RefClient
         private async void ApplyTimeout(int timeout)
         {
             Log($"{_commandPrefix} Try to apply timeout {timeout}");
-            var configurationResponseDto = await _client.updateConfigurationAsync(new ConfigurationCommandDTO
+            var configurationResponseDto = await _client.UpdateConfigurationAsync(new ConfigurationCommandDTO
             {
                 Name = _name,
                 Config = new ConfigurationCommandDTO.Types.Config
@@ -143,7 +143,7 @@ namespace EmpowerOps.Volition.RefClient
                 return;
             }
             Log($"{_commandPrefix} Request Stop - ID:{_activeRunID}");
-            var stopOptimizationResponseDto = _client.stopOptimization(new StopOptimizationCommandDTO()
+            var stopOptimizationResponseDto = _client.StopOptimization(new StopOptimizationCommandDTO()
             {
                 Name = _name,
                 Id = _activeRunID.ToString()

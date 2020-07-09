@@ -83,7 +83,7 @@
     <Compile Include="build\generated\source\proto\main\csharp\Optimizer.cs" />
     <Compile Include="build\generated\source\proto\main\grpc_csharp\OptimizerGrpc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="src\main\csharp\Empty.cs" />
+    <Compile Include="src\main\csharp\Extensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

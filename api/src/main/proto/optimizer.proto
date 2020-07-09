@@ -29,38 +29,67 @@ service FederatedOptimizer {
 // "...CommandDTO" ->   a request to statefully change the configuration of the optimizer;          a "setX"
 // "...ConfirmDTO" ->   the result of a Command, often indicates success or failure of the command; result from "setX"
 
+// An optimizer that is started and stopped by a single client.
 service UnaryOptimizer {
 
     // Starts an optimization of the specified problem definition and simulation nodes,
     // and returns a stream of evaluation requests and other messages pertaining to the optimization.
+    // If the specified start request contains error, a stream is returned that contains a single message
+    // with a textual list of problems that prevented the run from starting. 
+    //
+    // If the optimization is started successfully,
+    // the messages returned by the stream will be as follows:
+    // OptimizationStartedNotification
+    // SimulationEvaluationRequest
+    // possibly: SimulationCancelRequest -- if the simulation takes too long or the optimization is stopped. 
+    // SimulationEvaluationRequest
+    // ... repeated until convergence criteria is met
+    // OptimizationFinishedNotification
+    // [stream completed]
+    // 
+    // Uf the optimization cannot be started:
+    // OptimizationFailedToStartNotification -- will contain a list of issues indicating why the optimization was not started.
+    // [stream completed]
     rpc StartOptimization (StartOptimizationCommandDTO) returns (stream OptimizerGeneratedQueryDTO) {}
 
-    // responses to OASIS supplied queries,
+    // Responses to OASIS supplied queries,
     // these should be called by the simulator in response to OptimizerGeneratedQueryDTO messages.
     // namely: every OptimizerGeneratedQueryDTO.SimulationEvaluationRequest must be followed by either
     // an OfferSimulationResult call, or an OfferErrorResultCall.
-
-    // offers the completed result of the simulation evaluation for the last provided SimulationEvaluationRequest
+    //
+    // Offers the completed result of the simulation evaluation for the last provided SimulationEvaluationRequest
     rpc OfferSimulationResult (SimulationEvaluationCompletedResponseDTO) returns (SimulationEvaluationResultConfirmDTO) {}
 
-    // offers an error to describe the completion of the last provided SimulationEvaluationRequest
+    // Offers an error to describe the completion of the last provided SimulationEvaluationRequest
     // internally, the optimizer is likely to avoid areas it encounters errors,
     // the optimizer will not try to evaluate the same point again.
     rpc OfferErrorResult (SimulationEvaluationErrorResponseDTO) returns (SimulationEvaluationErrorConfirmDTO) {}
 
-    // offers a status update for the current running simulation evaluation.
+    // Offers a status update for the current running simulation evaluation.
     // these messages are important for user experience in that they re-assure the user that the
     // simulation is still running, and may be used to debug problems.
     rpc OfferEvaluationStatusMessage (StatusMessageCommandDTO) returns (StatusMessageConfirmDTO) {}
-
+    
+    // Stops a running optimization asynchronously.
+    // this method will likely send a SimulationCancelRequest to any running simulation
+    // it will return immediately, but the results from the simulation will not be available 
+    // until an OptimizationFinishedNotification is sent through the StartOptimization stream.
     rpc StopOptimization (StopOptimizationCommandDTO) returns (StopOptimizationConfirmDTO) {}
+    
+    // Gets the results from a completed optimization 
+    // (that is, an optimization for which a OptimizationFinishedNotification has been sent)
     rpc RequestRunResult (OptimizationResultsQueryDTO) returns (OptimizationResultsResponseDTO) {}
 }
 
+// A request to start an optimization and the associated information necessary 
+// to start an optimization. 
 message StartOptimizationCommandDTO {
 
+    // The optimization configuration, including the variables the optimizer
+    // will generate values for as well as the objective(s) that must be optimized for.
+    // Optionally, any intermediate transforms and constraints that must be solved are included here. 
     ProblemDefinition problem_definition = 1;
-
+    
     message ProblemDefinition {
         repeated PrototypeInputParameter inputs = 1;
         repeated PrototypeOutputParameter objectives = 2;
@@ -69,12 +98,14 @@ message StartOptimizationCommandDTO {
         repeated BabelScalar intermediates = 5;
     }
 
+    // The set of simulations that must be performed for any one design to be completely evaluated.
     repeated SimulationNode nodes = 2;
 
     message SimulationNode {
 
         string name = 1;
 
+        // The strategy used to map optimization generated input variables to the simulation 
         oneof mapping {
             bool auto_map = 2;
             VariableMapping mapping_table = 3;
@@ -92,8 +123,12 @@ message StartOptimizationCommandDTO {
     //note: ignored for multi-objective optimization
     google.protobuf.DoubleValue target_objective_value = 13;
 }
-message OptimizerGeneratedQueryDTO {
 
+// a request from the optimizer service to the simulator client, sent via 
+// the stream created from the StartOptimization call.
+// only one request is made per message sent.
+message OptimizerGeneratedQueryDTO {
+    
     oneof request {
 
         SimulationEvaluationRequest evaluation_request = 1;
@@ -105,12 +140,18 @@ message OptimizerGeneratedQueryDTO {
         OptimizationFailedToStartNotification optimization_not_started_notification = 7;
     }
 
+    // optimizer requests that the simulation client start an evaluation 
+    // with the provided values. 
     message SimulationEvaluationRequest {
         string name = 1;
         map<string, double> input_vector = 2;
     }
 
-    // optimizer requests that a simulation cancel its current evaluation
+    // optimizer service requests that a simulation client cancel its current evaluation
+    // this message will only be sent after a SimulationEvaluationRequest message
+    // but before the optimizer service receives a completion message
+    // (either SimulationEvaluationCompletedResponseDTO or SimulationEvaluationErrorResponseDTO)
+    // 
     // note this is a very race-ee message. For your first implementation I suggest
     // Doing nothing on receiving this message is always legal,
     // so long as the SimulationEvaluationRequest contract is fulfilled.
@@ -118,20 +159,41 @@ message OptimizerGeneratedQueryDTO {
         string name = 1;
     }
 
-    message RegistrationConfirm {}
+    // optimizer service notifies that it did not find any issues with the specified 
+    // start optimization request and that an optimization run has started.
+    // included is the run ID for that optimization run which can be used after completion to obtain the results.
     message OptimizationStartedNotification {
         UUID run_ID = 2;
     }
+    
+    // optimizer service notifies that it has finished an optimization run 
+    // because a convergence criteria was met 
+    // or because an abort_optimization flag was set on an evaluation response
+    // or because the StopOptimization
     message OptimizationFinishedNotification {}
+    
+    // Response to start optimization indicating that the optimization
+    // was not started for the reasons included here
     message OptimizationFailedToStartNotification {
         repeated string issues = 1;
     }
 }
 
 // responses to OASIS supplied queries
+
+// Messaged produced by the client simulator in response
+// to the optimizer service requestin an evaluation, 
+// indicating the successful completion of a client evaluation. 
 message SimulationEvaluationCompletedResponseDTO {
+
+    // the name of the simulator client as set in the 
     string name = 1;
+    
+    // the results of the client evaluation 
     map<string, double> output_vector = 2;
+    
+    // indicates that the optimizer should not issue another evaluation request after this one
+    bool abort_optimization = 3;
 }
 message SimulationEvaluationResultConfirmDTO {}
 
@@ -139,6 +201,7 @@ message SimulationEvaluationErrorResponseDTO {
     string name = 1;
     string message = 2;
     string exception = 3;
+    bool abort_optimization = 4;
 }
 message SimulationEvaluationErrorConfirmDTO {}
 
@@ -163,45 +226,95 @@ message OptimizationResultsQueryDTO {
     string name = 1;
     UUID run_ID = 2;
 }
+// the results of an optimization run
 message OptimizationResultsResponseDTO {
     UUID run_ID = 1;
 
+    // the names of the input columns as specified in the problem definition,
+    // matching the order of the inputs specified in the points and frontier rows.
     repeated string input_columns = 7;
+    
+    // the names of the output columns as specified in the problem definition, 
+    // matching the order of the outputs specified in the points and frontier rows. 
     repeated string output_columns = 8;
 
+    // the optimization matrix, including all input variables, all output variables, and meta-data.
     repeated DesignRow points = 9;
-    repeated DesignRow frontier = 10; //Best value for single run and pareto frontier for multiple objective
+    
+    // the best point(s) discovered in the optimization run.
+    //
+    // for single objective optimizations this set will always be size one.
+    // for constrained optimizations, this set will contain only feasible values if any are available,
+    // otherwise it will contain the best infeasible designs. 
+    repeated DesignRow frontier = 10; 
 }
 
-// helpers
+// A definition of a variable to be generated for by the optimizer.
 message PrototypeInputParameter {
+    
+    // the variable name used in optimization
+    // this name must not contain spaces or special characters
+    // examples of legal names: x1, x_1, some_var. 
+    // They may also contain unicode characters, eg 测试
+    // illegal names: x*1, names with spaces. 
     string name = 1;
 
+    // the type of input variable.
+    // Indicates what values would be legal for the input variable.
     oneof domain {
         Continuous continuous = 4;
         DiscreteRange discrete_range = 5;
     }
 
+    // A real (floating-point) value that can exist in the range [lower_bound .. upper_bound]
     message Continuous {
         double lower_bound = 2;
         double upper_bound = 3;
     }
+    // a discerete value in [lower_bound .. upper_bound] that adheres to "lower_bound + (K * step_size)"
+    // where K is some integer constant.  
     message DiscreteRange {
         double lower_bound = 2;
         double upper_bound = 3;
         double step_size = 4;
     }
 }
+// A definition of an output that participates in an optimization.
 message PrototypeOutputParameter {
     string name = 1;
-    enum type {
-        SCALAR = 0;
-        CONSTRAINT = 1;
-    }
 }
+
+// the explicit mapping of optimization input variables to simulation input parameters
+// and simulation output parameters to optimization output variables (objectives and intermediates)
+//
+// The purpose of the variable mapping is to insulate the optimziers strict naming conventions 
+// from simulation clients such that clients may have any naming scheme they wish.
+// If a simulation client uses the same strict convention as the optimizer, 
+// auto-variable-mapping via the AutoMap property may be used to indicate "match by approximate name",
+// where the optimizer service will simply assume simulation parameters match optimization variables.
+//
+// some examples:
+// inputs:
+//   "x1": "x1"
+//   "x2": "input two"
+//   "x3": "SIM_PARAM*54"
+// outputs:
+//   "f1": "f1"
+//   "AN_OUT 2": "f2"
+//   "SIM_OUT*THREE": "f3"
 message VariableMapping {
+    
+    // A strategy to map from optimization variable names to simulation input names.
+    // This table is used to map from optimization variables, which must adhere to a strict naming scheme, 
+    // to simulation input parameter names, which can be anything.
+    //
     // key:optimization-var-name TO value:simulation-param-name
     map<string, string> inputs = 1;
+    
+    // A strategy to map from simulation outputs to optimization outputs
+    // This table is used to map from simulation output parameter names, which can be anything, 
+    // to optimization output variables, which must adhere to a strict naming scheme. 
+    // 
     // key:simulation-output-name TO value:optimization-var-name
     map<string, string> outputs = 2;
 }
@@ -221,4 +334,3 @@ message DesignRow {
 message UUID {
     string value = 1;
 }
-

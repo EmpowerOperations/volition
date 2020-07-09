@@ -3,9 +3,12 @@ package com.empowerops.volition.ref_oasis
 import com.empowerops.babel.BabelCompiler
 import com.empowerops.babel.BabelExpression
 import com.empowerops.volition.dto.*
+import io.grpc.Status
+import io.grpc.stub.ServerCallStreamObserver
 import com.empowerops.volition.dto.UUID as UUIDDto
 import io.grpc.stub.StreamObserver
 import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.channels.actor
 import java.lang.RuntimeException
 import java.time.Duration
@@ -42,64 +45,72 @@ class OptimizerEndpoint(
     // doing context-free conversions from data-classes to DTOs.
     private fun makeActorConvertingOptimizerRequestMessagesToDTOs(
             responseObserver: StreamObserver<OptimizerGeneratedQueryDTO>
-    ) = scope.actor<OptimizerRequestMessage>(Dispatchers.Unconfined) {
-        // note: this actor is unconfined for stack-trace convenience,
-        // and because it does context free conversions (which dont require any thread confinement)
+    ): SendChannel<OptimizerRequestMessage> {
 
-        fail; //this code should detect when the streamObserver goes unresponsive.
-        // but im not sure what the API for that is.
-        // TODO: read more here: https://groups.google.com/forum/#!topic/grpc-io/C9rTVKZqqp0
+        val actor = scope.actor<OptimizerRequestMessage>(Dispatchers.Unconfined + SupervisorJob(), start = CoroutineStart.LAZY) {
 
-        try {
-            for (message in channel) try {
-                val wrapper = OptimizerGeneratedQueryDTO.newBuilder()
+            try {
+                for (message in channel) try {
+                    val wrapper = OptimizerGeneratedQueryDTO.newBuilder()
 
-                val dto = when(message) {
-                    is OptimizerRequestMessage.SimulationEvaluationRequest -> {
-                        wrapper.setEvaluationRequest(OptimizerGeneratedQueryDTO.SimulationEvaluationRequest.newBuilder()
-                                .setName(message.name)
-                                .putAllInputVector(message.inputVector)
-                                .build()
-                        )
-                    }
-                    is OptimizerRequestMessage.SimulationCancelRequest -> {
-                        wrapper.setCancelRequest(OptimizerGeneratedQueryDTO.SimulationCancelRequest.newBuilder()
-                                .setName(message.name)
-                                .build()
-                        )
-                    }
-                    is OptimizerRequestMessage.RunStartedNotification -> {
-                        wrapper.setOptimizationStartedNotification(OptimizerGeneratedQueryDTO.OptimizationStartedNotification.newBuilder()
-                                .setRunID(message.runID.toDTO())
-                                .build()
-                        )
-                    }
-                    is OptimizerRequestMessage.RunFinishedNotification -> {
-                        wrapper.setOptimizationFinishedNotification(OptimizerGeneratedQueryDTO.OptimizationFinishedNotification.newBuilder()
-                                .build()
-                        )
-                    }
-                    is OptimizerRequestMessage.RunNotStartedNotification -> {
-                        wrapper.setOptimizationNotStartedNotification(OptimizerGeneratedQueryDTO.OptimizationFailedToStartNotification.newBuilder()
-                                .addAllIssues(message.issues)
-                                .build()
-                        )
-                    }
-                }.build()
+                    val dto = when(message) {
+                        is OptimizerRequestMessage.SimulationEvaluationRequest -> {
+                            wrapper.setEvaluationRequest(OptimizerGeneratedQueryDTO.SimulationEvaluationRequest.newBuilder()
+                                    .setName(message.name)
+                                    .putAllInputVector(message.inputVector)
+                                    .build()
+                            )
+                        }
+                        is OptimizerRequestMessage.SimulationCancelRequest -> {
+                            wrapper.setCancelRequest(OptimizerGeneratedQueryDTO.SimulationCancelRequest.newBuilder()
+                                    .setName(message.name)
+                                    .build()
+                            )
+                        }
+                        is OptimizerRequestMessage.RunStartedNotification -> {
+                            wrapper.setOptimizationStartedNotification(OptimizerGeneratedQueryDTO.OptimizationStartedNotification.newBuilder()
+                                    .setRunID(message.runID.toDTO())
+                                    .build()
+                            )
+                        }
+                        is OptimizerRequestMessage.RunFinishedNotification -> {
+                            wrapper.setOptimizationFinishedNotification(OptimizerGeneratedQueryDTO.OptimizationFinishedNotification.newBuilder()
+                                    .build()
+                            )
+                        }
+                        is OptimizerRequestMessage.RunNotStartedNotification -> {
+                            wrapper.setOptimizationNotStartedNotification(OptimizerGeneratedQueryDTO.OptimizationFailedToStartNotification.newBuilder()
+                                    .addAllIssues(message.issues)
+                                    .build()
+                            )
+                        }
+                    }.build()
 
-                responseObserver.onNext(dto)
+                    responseObserver.onNext(dto)
+                } catch(ex: Exception){
+                    throw RuntimeException("error while converting message=$message", ex)
+                }
+
+                //NOT in a finally block! grpc expects EITHER an 'onError' OR an 'onComplete' call, NOT BOTH!!
+                responseObserver.onCompleted()
+            } catch(ex: Throwable){
+                logger.log(Level.SEVERE, "unexpected error in conversion actor", ex)
+                responseObserver.onError(ex)
             }
-            catch(ex: Exception){
-                throw RuntimeException("error while converting message=$message", ex)
-            }
+        }
 
-            //NOT in a finally block! grpc expects EITHER an 'onError' OR an 'onComplete' call, NOT BOTH!!
-            responseObserver.onCompleted()
+        val observer = responseObserver as? ServerCallStreamObserver
+        if(observer == null) {
+            logger.warning("stream isnt ServerCallStreamObserver => wont know if client disconnects")
         }
-        catch(ex: Throwable){
-            logger.log(Level.SEVERE, "unexpected error in conversion actor", ex)
-            responseObserver.onError(ex)
+        else observer.setOnCancelHandler {
+            actor.close(Status.CANCELLED
+                    .withDescription("client cancelled start-optimization stream")
+                    .asRuntimeException()
+            )
         }
+
+        return actor
     }
 
     override fun offerSimulationResult(
@@ -144,10 +155,13 @@ class OptimizerEndpoint(
     override fun startOptimization(
             request: StartOptimizationCommandDTO,
             responseObserver: StreamObserver<OptimizerGeneratedQueryDTO>
-    ): Unit { scope.launch {
+    ): Unit {
+
+        val outputAdaptor = try { makeActorConvertingOptimizerRequestMessagesToDTOs(responseObserver) }
+                catch(ex: RuntimeException){responseObserver.onError(ex); throw ex }
+
         try {
             val idleState = checkIs<State.Idle>(state)
-            val outputAdaptor = makeActorConvertingOptimizerRequestMessagesToDTOs(responseObserver)
 
             val optimizationActor = optimizationActorFactory.make(outputAdaptor)
 
@@ -155,6 +169,17 @@ class OptimizerEndpoint(
                 outputAdaptor.close()
                 val optimizingState = checkIs<State.Optimizing>(state)
                 state = optimizingState.previous
+            }
+
+            outputAdaptor.invokeOnClose { closingEx ->
+                if( ! optimizationActor.isClosedForSend && closingEx is io.grpc.StatusRuntimeException) {
+                    // this is invoked when the client abrutply disconnects (think crash)
+                    // the problem there is that the output closes before the actor finishes,
+                    // so we just cancel the actor.
+
+                    fail //TODO: somehow this is triggering JVM shutdown
+                    optimizationActor.close(RuntimeException(closingEx))
+                }
             }
 
             state = State.Optimizing(optimizationActor, idleState)
@@ -225,13 +250,13 @@ class OptimizerEndpoint(
                     }
             )
 
-            optimizationActor.send(startMessage)
+            runBlocking<Unit> { optimizationActor.send(startMessage) }
         }
         catch(ex: Throwable) {
             logger.log(Level.SEVERE, "internal error starting optimization", ex)
             responseObserver.onError(ex)
         }
-    }}
+    }
 
     override fun stopOptimization(
             request: StopOptimizationCommandDTO,

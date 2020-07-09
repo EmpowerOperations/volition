@@ -5,6 +5,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.channels.actor
 import java.util.*
+import java.util.logging.Level
 import java.util.logging.Logger
 
 sealed class OptimizerRequestMessage {
@@ -64,7 +65,6 @@ class OptimizationActorFactory(
         var stopRequest: SimulationProvidedMessage.StopOptimization? = null
         val startMessage = channel.receive() as SimulationProvidedMessage.StartOptimizationRequest
         val sim = startMessage.nodes.single()
-
 
         val issues = ArrayList<String>()
         if(startMessage.objectives.isEmpty()){
@@ -184,9 +184,15 @@ class OptimizationActorFactory(
             model[runID] = runResult
             stopRequest.runID.complete(runID)
         }
+        catch(ex: Throwable){
+            throw ex;
+        }
         finally {
-            output.send(OptimizerRequestMessage.RunFinishedNotification(sim.name, runID))
             eventBus.post(RunStoppedEvent(runID))
+            try { output.send(OptimizerRequestMessage.RunFinishedNotification(sim.name, runID)) }
+                    catch(ex: Exception) { logger.log(Level.WARNING, "failed to send run finished notification to client", ex) }
+
+            val x = 4;
         }
     }
 }

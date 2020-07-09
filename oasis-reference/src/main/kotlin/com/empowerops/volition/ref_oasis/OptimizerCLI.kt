@@ -11,6 +11,7 @@ import java.io.PrintStream
 import java.nio.charset.StandardCharsets
 import java.util.*
 import java.util.concurrent.Callable
+import java.util.concurrent.TimeUnit
 import java.util.jar.Manifest
 import kotlin.collections.LinkedHashMap
 import kotlin.coroutines.CoroutineContext
@@ -25,7 +26,7 @@ fun mainAsync(args: Array<String>): Job? {
 }
 
 class OptimizerCLICoroutineScope: CoroutineScope {
-    override val coroutineContext: CoroutineContext get() = Dispatchers.IO + SupervisorJob()
+    override val coroutineContext = Dispatchers.IO + SupervisorJob()
 }
 
 @Command(
@@ -52,6 +53,7 @@ class OptimizerCLI(val console: PrintStream) : Callable<Job> {
         )
         val server = NettyServerBuilder
                 .forPort(port)
+                .keepAliveTime(12, TimeUnit.HOURS)
                 .addService(ServerInterceptors.intercept(optimizerEndpoint, LoggingInterceptor(logger)))
                 .build()
 

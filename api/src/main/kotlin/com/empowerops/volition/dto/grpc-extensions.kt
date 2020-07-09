@@ -12,33 +12,6 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
-fun <R, T> wrapToServerSideChannel(call: (T, StreamObserver<R>) -> Unit, outboundMessage: T): ReceiveChannel<R> {
-
-    val result = Channel<R>(UNLIMITED)
-
-    call(outboundMessage, object: StreamObserver<R>{
-        override fun onNext(value: R) { result.offer(value) }
-        override fun onError(t: Throwable) { result.close(t) }
-        override fun onCompleted() { result.close() }
-    })
-
-    //TODO: what about cancellation?
-    return result
-}
-
-suspend fun <T, R> wrapToSuspend(call: (T, StreamObserver<R>) -> Unit, outboundMessage: T): R {
-    return suspendCoroutine { continuation ->
-        val resultHandler = object : StreamObserver<R> {
-            override fun onNext(value: R) = continuation.resume(value)
-            override fun onError(t: Throwable) = continuation.resumeWithException(t)
-            override fun onCompleted() {  }
-        }
-
-        call(outboundMessage, resultHandler)
-        COROUTINE_SUSPENDED
-    }
-}
-
 fun <T> CoroutineScope.consumeSingleAsync(streamObserver: StreamObserver<T>, message: Message, block: suspend () -> T) {
     val sourceEx = Exception("server error while processing request=${message.toString().trim()}")
     launch {

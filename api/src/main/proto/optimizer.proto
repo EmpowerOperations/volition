@@ -216,10 +216,7 @@ message StopOptimizationCommandDTO {
     UUID run_ID = 2;
 }
 message StopOptimizationConfirmDTO {
-    oneof response{
-        string message = 1;
-        UUID run_ID = 2;
-    }
+    UUID run_ID = 2;
 }
 
 message OptimizationResultsQueryDTO {

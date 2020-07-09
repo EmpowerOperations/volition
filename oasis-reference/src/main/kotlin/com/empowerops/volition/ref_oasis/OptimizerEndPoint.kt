@@ -46,6 +46,10 @@ class OptimizerEndpoint(
         // note: this actor is unconfined for stack-trace convenience,
         // and because it does context free conversions (which dont require any thread confinement)
 
+        fail; //this code should detect when the streamObserver goes unresponsive.
+        // but im not sure what the API for that is.
+        // TODO: read more here: https://groups.google.com/forum/#!topic/grpc-io/C9rTVKZqqp0
+
         try {
             for (message in channel) try {
                 val wrapper = OptimizerGeneratedQueryDTO.newBuilder()
@@ -245,7 +249,6 @@ class OptimizerEndpoint(
         check(state is State.Idle)
 
         StopOptimizationConfirmDTO.newBuilder()
-                .setMessage("OK")
                 .setRunID(message.runID.await().toDTO())
                 .build()
     }

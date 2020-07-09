@@ -166,15 +166,8 @@ namespace EmpowerOps.Volition.RefClient
                 Name = _name,
                 RunID = _activeRunId.toUuidDto()
             });
-            switch (stopOptimizationResponseDto.ResponseCase)
-            {
-                case StopOptimizationConfirmDTO.ResponseOneofCase.Message:
-                    Log($"{_serverPrefix} {stopOptimizationResponseDto.Message}");
-                    break;
-                case StopOptimizationConfirmDTO.ResponseOneofCase.RunID:
-                    Log($"{_serverPrefix} Stop Reqeust received - Stopping RunID:{stopOptimizationResponseDto.RunID}");
-                    break;
-            }
+            
+            Log($"{_serverPrefix} Stop Reqeust received - Stopping RunID:{stopOptimizationResponseDto.RunID}");
             _activeRunId = Guid.Empty;
         }
 

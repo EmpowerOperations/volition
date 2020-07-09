@@ -31,6 +31,7 @@ dependencies {
 def volitionBuildNumber = System.getenv("BUILD_NUMBER") ?: '0'
 def volitionVersion = "0.9.$volitionBuildNumber"
 def volitionName = 'volition-api'
+def GRPC_VERSION = '1.30.2'
 
 allprojects {
 
@@ -54,16 +55,6 @@ subprojects {
     apply plugin: 'kotlin'
 
     sourceCompatibility = 1.8
-
-    dependencies {
-        compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-        compile 'io.grpc:grpc-netty-shaded:1.15.1'
-        compile 'io.grpc:grpc-protobuf:1.15.1'
-        compile 'io.grpc:grpc-stub:1.15.1'
-
-        compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.0.0"
-        compile "org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.0.0"
-    }
 
     compileKotlin {
         kotlinOptions.jvmTarget = "1.8"
@@ -93,6 +84,14 @@ project('api'){
         implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.0.0'
         compile 'javax.annotation:javax.annotation-api:1.3.2'
         compile 'com.google.guava:guava:27.0.1-jre'
+
+        compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+        compile "io.grpc:grpc-netty-shaded:$GRPC_VERSION"
+        compile "io.grpc:grpc-protobuf:$GRPC_VERSION"
+        compile "io.grpc:grpc-stub:$GRPC_VERSION"
+
+        compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.0.0"
+        compile "org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.0.0"
     }
 
     protobuf {
@@ -205,6 +204,14 @@ project('oasis-reference'){
         compile files("babel-0.15.jar")
         implementation 'org.antlr:antlr4-runtime:4.8-1'
         compile group: 'org.jetbrains.kotlinx', name: 'kotlinx-collections-immutable', version: '0.1'
+
+        compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+        compile "io.grpc:grpc-netty-shaded:$GRPC_VERSION"
+        compile "io.grpc:grpc-protobuf:$GRPC_VERSION"
+        compile "io.grpc:grpc-stub:$GRPC_VERSION"
+
+        compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.0.0"
+        compile "org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.0.0"
 
         testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
         testImplementation 'com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0'

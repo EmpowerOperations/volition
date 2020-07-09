@@ -69,6 +69,10 @@ class OptimizerCLI(val console: PrintStream) : Callable<Job> {
                 server.awaitTermination()
             }.await()
         }
+        catch (ex: Throwable){
+            fail; //here, i get an exception "parent job is cancelling", but i dont know why.
+            throw ex;
+        }
         finally {
             server.shutdownNow()
             server.awaitTermination()

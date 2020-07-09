@@ -47,7 +47,7 @@ class OptimizerEndpoint(
             responseObserver: StreamObserver<OptimizerGeneratedQueryDTO>
     ): SendChannel<OptimizerRequestMessage> {
 
-        val actor = scope.actor<OptimizerRequestMessage>(Dispatchers.Unconfined + SupervisorJob(), start = CoroutineStart.LAZY) {
+        val actor = scope.actor<OptimizerRequestMessage>(Dispatchers.Unconfined, start = CoroutineStart.LAZY) {
 
             try {
                 for (message in channel) try {
@@ -176,8 +176,6 @@ class OptimizerEndpoint(
                     // this is invoked when the client abrutply disconnects (think crash)
                     // the problem there is that the output closes before the actor finishes,
                     // so we just cancel the actor.
-
-                    fail //TODO: somehow this is triggering JVM shutdown
                     optimizationActor.close(RuntimeException(closingEx))
                 }
             }

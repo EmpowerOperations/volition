@@ -184,15 +184,14 @@ class OptimizationActorFactory(
             model[runID] = runResult
             stopRequest.runID.complete(runID)
         }
-        catch(ex: Throwable){
-            throw ex;
+        catch(ex: CancellationException){
+            logger.warning("optimization actor was cancelled, and is now quitting.")
+            return@actor
         }
         finally {
             eventBus.post(RunStoppedEvent(runID))
             try { output.send(OptimizerRequestMessage.RunFinishedNotification(sim.name, runID)) }
                     catch(ex: Exception) { logger.log(Level.WARNING, "failed to send run finished notification to client", ex) }
-
-            val x = 4;
         }
     }
 }

@@ -211,7 +211,7 @@ class OptimizerEndpoint(
                     objectives = request.problemDefinition.objectivesList.map { objectiveDTO ->
                         Output(name = objectiveDTO.name)
                     },
-                    intermediates = request.problemDefinition.intermediatesList.map {
+                    outputs = request.problemDefinition.transformsList.map {
                         val compiled = compiler.compile(it.scalarExpression) as BabelExpression
                         require(!compiled.isBooleanExpression)
                         MathExpression(it.outputName, compiled)

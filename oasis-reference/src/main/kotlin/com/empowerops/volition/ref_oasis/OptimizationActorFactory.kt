@@ -42,7 +42,7 @@ sealed class SimulationProvidedMessage {
 
     data class StartOptimizationRequest(
             val inputs: List<Input>,
-            val intermediates: List<MathExpression>,
+            val outputs: List<MathExpression>,
             val constraints: List<MathExpression>,
             val objectives: List<Output>,
             val nodes: List<Simulation>

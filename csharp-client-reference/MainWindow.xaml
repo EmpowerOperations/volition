@@ -4,8 +4,14 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="CANSYS Simulator by Empower Operations" Height="450" Width="800">
-    <DockPanel>
+        Title="CANSYS Simulator by Empower Operations"
+        Height="450" Width="800">
+    <!-- <Window.Title> -->
+        <!-- <MultiBinding StringFormat="CANSYS Simulator by Empower Operations {0}"> -->
+          <!-- <Binding Path="Version"/> -->
+        <!-- </MultiBinding> -->
+    <!-- </Window.Title> -->
+  <DockPanel>
         <StatusBar Name="StatusBar" DockPanel.Dock="Bottom">
             <StatusBarItem>
                 <TextBlock Name="ConnectionStatus" />
@@ -60,7 +66,6 @@
                 </Grid.ColumnDefinitions>
                 <TextBox Name="RegName" TextWrapping="Wrap" Text="Node1" Grid.Column="0" />
                 <Label Name="RegisterLabel" Grid.Column="4" Content="Status: Idle" />
-                <Button Name="RenameButton" Grid.Column="3" Content="Rename" Click="Rename_Button_Click" IsEnabled="False"/>
             </Grid>
             <Grid Grid.Row="3" Margin="2">
                 <Grid.RowDefinitions>

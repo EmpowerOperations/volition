@@ -1,4 +1,4 @@
-﻿using EmpowerOps.Volition.DTO;
+﻿using EmpowerOps.Volition.Dto;
 using Google.Protobuf.Collections;
 using Grpc.Core;
 using System;
@@ -7,8 +7,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Reflection;
 using System.Windows.Forms;
-using static EmpowerOps.Volition.DTO.NodeStatusCommandOrResponseDTO.Types;
+using EmpowerOps.Volition.Api;
 using MessageBox = System.Windows.MessageBox;
 
 namespace EmpowerOps.Volition.RefClient
@@ -19,27 +20,42 @@ namespace EmpowerOps.Volition.RefClient
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly Optimizer.OptimizerClient _client;
+        private readonly UnaryOptimizer.UnaryOptimizerClient _client;
         private readonly Channel _channel;
-        private AsyncServerStreamingCall<RequestQueryDTO> _requests;
-        private ChannelState channelState;
-        private string _name = "";
-        private bool _isRegistered = false;
+        private readonly IEvaluator _randomNumberEvaluator = new RandomNumberEvaluator();
+        private readonly TaskFactory _uiTaskFactory;
+        
         private readonly BindingSource _inputSource = new BindingSource();
         private readonly BindingSource _outputSource = new BindingSource();
-        private Guid _latestRunID = Guid.Empty;
-        private Guid _activeRunID = Guid.Empty;
-        private List<Guid> _runIDs = new List<Guid>();
-        private string _serverPrefix = "Server:";
-        private string _commandPrefix = ">";
-        private IEvaluator _randomNumberEvaluator = new RandomNumberEvaluator();
+        
+        private readonly List<Guid> _runIDs = new List<Guid>();
+        
+        private AsyncServerStreamingCall<OptimizerGeneratedQueryDTO> _requests;
+        private ChannelState _channelState;
+        private string _name = "";
+        
+        private Guid _activeRunId = Guid.Empty;
+
+        private const string ServerPrefix = "Server:";
+        private const string CommandPrefix = ">";
+
+        public string Version 
+        { 
+            get 
+            {
+                return Assembly.GetEntryAssembly().GetName().Version.ToString();
+            } 
+        }
+
         public MainWindow()
         {
             //https://grpc.io/docs/quickstart/csharp.html#update-the-client
             _channel = new Channel("localhost:5550", ChannelCredentials.Insecure);
-            _client = new Optimizer.OptimizerClient(_channel);
+            _client = new UnaryOptimizer.UnaryOptimizerClient(_channel);
+            _uiTaskFactory = new TaskFactory(TaskScheduler.FromCurrentSynchronizationContext());
             InitializeComponent();
-            UpdateConnectionStatus();
+            Window.Title += Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            UpdateConnectionStatusAsync();
             UpdateButton();
             UpdateButton();
             ConfigGrid();
@@ -54,235 +70,227 @@ namespace EmpowerOps.Volition.RefClient
 
         private async void StartOptimization_Click(object sender, RoutedEventArgs e)
         {
-            if (!_isRegistered)
-            {
-                ShowNotRegisterMessage();
-                return;
-            }
-            Log($"{_commandPrefix} Start Requested");
+            await Log($"{CommandPrefix} Start Requested");
             try
             {
-                var startResponse = await _client.startOptimizationAsync(new StartOptimizationCommandDTO
+                var problemDef = new StartOptimizationCommandDTO.Types.ProblemDefinition();
+
+                foreach (Input input in _inputSource)
                 {
-                    Name = _name
-                });
-                switch (startResponse.ResponseCase)
-                {
-                    case StartOptimizationResponseDTO.ResponseOneofCase.RunID:
-                        Log($"{_serverPrefix} Start Reqeust received, running {startResponse.RunID}");                        
-                        break;
-                    case StartOptimizationResponseDTO.ResponseOneofCase.Issues:
-                        MessageBox.Show($"Optimizer can not start the run. {Environment.NewLine}Issues: {startResponse.Issues}");
-                        Log($"{_serverPrefix} {startResponse.Issues}");
-                        break;
-                    case StartOptimizationResponseDTO.ResponseOneofCase.None:
-                    default: 
-                        throw new NotImplementedException($"unknown response {startResponse.ResponseCase}");
+                    problemDef.Inputs.Add(new PrototypeInputParameter()
+                    {
+                        Name = input.Name,
+                        Continuous = new PrototypeInputParameter.Types.Continuous
+                        {
+                            LowerBound = input.LowerBound,
+                            UpperBound = input.UpperBound
+                        }
+                    });
                 }
+
+                foreach (Output output in _outputSource)
+                {
+                    problemDef.Objectives.Add(new PrototypeOutputParameter()
+                    {
+                        Name = output.Name
+                    });
+                }
+
+                var simulationNode = new StartOptimizationCommandDTO.Types.SimulationNode();
+                simulationNode.Inputs.AddRange(_inputSource.Cast<Input>().Select(it => it.Name).ToList());
+                simulationNode.Outputs.AddRange(_outputSource.Cast<Output>().Select(it => it.Name).ToList());
+                
+                _requests = _client.StartOptimization(new StartOptimizationCommandDTO
+                {
+                    ProblemDefinition = problemDef,
+                    Nodes =
+                    {
+                        simulationNode
+                    }
+                });
+
+                await _requests.ResponseStream.MoveNext(CancellationToken.None);
+                var next = _requests.ResponseStream.Current;
+
+                if (next.OptimizationNotStartedNotification != null)
+                {
+                    var issues = String.Join(",", next.OptimizationNotStartedNotification.Issues);
+                    await Log($"{ServerPrefix} Failed to start: {issues}");
+                }
+                else if (next.OptimizationStartedNotification != null)
+                {
+                    await Log($"{ServerPrefix} Started Optimization");
+                }
+                else throw new Exception($"bad protocol state, expected started-message or not-started-message, but got {next}");
+
+                await _uiTaskFactory.StartNew(async () => await HandlingRequestsAsync(_requests));
             }
             catch (RpcException exception)
             {
-                Log($"{_serverPrefix} Error invoke {nameof(_client.startOptimizationAsync)} Exception: {exception.Status}");
+                await Log($"{ServerPrefix} Error invoke {nameof(_client.StartOptimization)} Exception: {exception}");
             }
-
         }
 
-        private void ApplyTimeout_Click(object sender, RoutedEventArgs e)
+        private async void ApplyTimeout_Click(object sender, RoutedEventArgs e)
         {
-            if (!_isRegistered)
-            {
-                ShowNotRegisterMessage();
-                return;
-            }
             if (int.TryParse(TimeoutTextBox.Text, out int timeout) && timeout > 0)
             {
-                ApplyTimeout(timeout);
+                await ApplyTimeout(timeout);
             }
             else
             {
                 TimeoutTextBox.Text = "0";
-                ApplyTimeout(0);
+                await ApplyTimeout(0);
                 MessageBox.Show("Invalid time out, please input a postive integer value");
             }
 
         }
 
-        private async void ApplyTimeout(int timeout)
+        private async Task ApplyTimeout(int timeout)
         {
-            Log($"{_commandPrefix} Try to apply timeout {timeout}");
-            var configurationResponseDto = await _client.updateConfigurationAsync(new ConfigurationCommandDTO
-            {
-                Name = _name,
-                Config = new ConfigurationCommandDTO.Types.Config
-                {
-                    Timeout = Google.Protobuf.WellKnownTypes.Duration.FromTimeSpan(TimeSpan.FromMilliseconds(timeout)) 
-                }
-            });
-            Log($"{_serverPrefix} {configurationResponseDto.Message}");
+            await Log($"{CommandPrefix} Try to apply timeout {timeout}");
+            throw new NotImplementedException();
+            // var configurationResponseDto = await _client.UpdateConfigurationAsync(new ConfigurationCommandDTO
+            // {
+                // Name = _name,
+                // Config = new ConfigurationCommandDTO.Types.Config
+                // {
+                    // Timeout = Google.Protobuf.WellKnownTypes.Duration.FromTimeSpan(TimeSpan.FromMilliseconds(timeout)) 
+                // }
+            // });
+            // Log($"{_serverPrefix} {configurationResponseDto.Message}");
         }
 
         private void ClearTimeout_Click(object sender, RoutedEventArgs e)
         {
             TimeoutTextBox.Text = "0";
-            _client.updateConfiguration(new ConfigurationCommandDTO
+            throw new NotImplementedException();
+            // _client.updateConfiguration(new ConfigurationCommandDTO
+            // {
+            // Name = _name,
+            // Config = new ConfigurationCommandDTO.Types.Config
+            // {
+            // Timeout = Google.Protobuf.WellKnownTypes.Duration.FromTimeSpan(TimeSpan.Zero)
+            // }
+            // });
+            // MessageBox.Show("Timeout cleared");
+        }
+
+        private async void StopOptimization_Click(object sender, RoutedEventArgs e)
+        {
+            await Log($"{CommandPrefix} Request Stop - ID:{_activeRunId}");
+            var stopOptimizationResponseDto = await _client.StopOptimizationAsync(new StopOptimizationCommandDTO()
             {
                 Name = _name,
-                Config = new ConfigurationCommandDTO.Types.Config
+                RunID = _activeRunId.toUuidDto()
+            });
+            
+            await Log($"{ServerPrefix} Stop Reqeust received - Stopping RunID:{stopOptimizationResponseDto.RunID}");
+            _activeRunId = Guid.Empty;
+        }
+
+        private void RequestResult_Click(object sender, RoutedEventArgs e)
+        {
+            throw new Exception("blam!");   
+            // var resultResponseDto = await RequestRunResult(_latestRunID);
+            // Log($"{_serverPrefix} Result:{Environment.NewLine}{String.Join(Environment.NewLine, resultResponseDto.Frontier)}");
+        }
+
+        private async Task<OptimizationResultsResponseDTO> RequestRunResult(Guid runId)
+        {
+            await Log($"{CommandPrefix} Request run result - ID:{runId}");
+            return await _client.RequestRunResultAsync(new OptimizationResultsQueryDTO()
+            {
+                Name = _name,
+                RunID = runId.toUuidDto()
+            });
+        }
+
+        private Task UpdateConnectionStatusAsync()
+        {
+            return _uiTaskFactory.StartNew(async () =>
+            {
+                _channelState = _channel.State;
+                ConnectionStatus.Text = $"Connection: {_channelState.ToString()}";
+                while (true)
                 {
-                    Timeout = Google.Protobuf.WellKnownTypes.Duration.FromTimeSpan(TimeSpan.Zero)
-                }
+                    await _channel.WaitForStateChangedAsync(_channelState);
+                    _channelState = _channel.State;
+                    ConnectionStatus.Text = $"Connection: {_channelState.ToString()}";
+                }                
             });
-            MessageBox.Show("Timeout cleared");
-        }
-
-        private void StopOptimization_Click(object sender, RoutedEventArgs e)
-        {
-            if (!_isRegistered)
-            {
-                ShowNotRegisterMessage();
-                return;
-            }
-            Log($"{_commandPrefix} Request Stop - ID:{_activeRunID}");
-            var stopOptimizationResponseDto = _client.stopOptimization(new StopOptimizationCommandDTO()
-            {
-                Name = _name,
-                Id = _activeRunID.ToString()
-            });
-            switch (stopOptimizationResponseDto.ResponseCase)
-            {
-                case StopOptimizationResponseDTO.ResponseOneofCase.Message:
-                    Log($"{_serverPrefix} {stopOptimizationResponseDto.Message}");
-                    break;
-                case StopOptimizationResponseDTO.ResponseOneofCase.RunID:
-                    Log($"{_serverPrefix} Stop Reqeust received - Stopping RunID:{stopOptimizationResponseDto.RunID}");
-                    break;
-            }
-            _activeRunID = Guid.Empty;
-        }
-
-        private async void RequestResult_Click(object sender, RoutedEventArgs e)
-        {
-            var resultResponseDto = await requestRunResult(_latestRunID);
-            switch (resultResponseDto.ResponseCase)
-            {
-                case ResultResponseDTO.ResponseOneofCase.Message:
-                    Log($"{_serverPrefix} {resultResponseDto.Message}");
-                    break;
-                case ResultResponseDTO.ResponseOneofCase.RunResult:
-                    Log($"{_serverPrefix} Result:{Environment.NewLine}{String.Join(Environment.NewLine, resultResponseDto.RunResult.Point)}");
-                    break;
-            }
-
-
-        }
-
-        private async Task<ResultResponseDTO> requestRunResult(Guid runId)
-        {
-            Log($"{_commandPrefix} Request run result - ID:{runId}");
-            return await _client.requestRunResultAsync(new ResultRequestDTO()
-            {
-                Name = _name,
-                RunID = runId.ToString()
-            });
-        }
-
-        private async void UpdateConnectionStatus()
-        {
-            channelState = _channel.State;
-            ConnectionStatus.Text = $"Connection: {channelState.ToString()}";
-            while (true)
-            {
-                await _channel.WaitForStateChangedAsync(channelState);
-                channelState = _channel.State;
-                ConnectionStatus.Text = $"Connection: {channelState.ToString()}";
-            }
-
         }
 
         private void UpdateButton()
         {
-            RegistrationStatus.Text = _isRegistered ? $"Registered as {_name}" : $"Not registered";
+            RegistrationStatus.Text = "asdf";
         }
 
-        private async Task HandlingRequestsAsync(AsyncServerStreamingCall<RequestQueryDTO> requests)
+        private async Task HandlingRequestsAsync(AsyncServerStreamingCall<OptimizerGeneratedQueryDTO> requests)
         {
             //request for inputs, do the simulation, return result, repeat
             var requestsResponseStream = requests.ResponseStream;
             try
             {
-                while (await requestsResponseStream.MoveNext(new CancellationToken()))
+                while (await Task.Run(async () => await requestsResponseStream.MoveNext(CancellationToken.None)))
                 {
-                    HandleRequestAsync(requestsResponseStream.Current);
+                    await HandleRequestAsync(requestsResponseStream.Current);
                 }
 
-                Log($"{_commandPrefix} Query Closed, plugin has been unregisred by server");
+                await Log($"{CommandPrefix} Query Closed, plugin has been unregisred by server");
             }
             catch (Exception e)
             {
-                Log($"{_commandPrefix} Error happened when reading from request stream, unregistered\n{e}");
+                await Log($"{CommandPrefix} Error happened when reading from request stream, unregistered\n{e}");
             }
             finally
             {
                 _name = "";
                 _requests = null;
-                _isRegistered = false;
                 UpdateButton();
             }
 
         }
 
-        private async void HandleRequestAsync(RequestQueryDTO request)
+        private async Task HandleRequestAsync(OptimizerGeneratedQueryDTO request)
         {
             try
             {
-                switch (request.RequestCase)
+                switch (request.PurposeCase)
                 {
-                    case RequestQueryDTO.RequestOneofCase.EvaluationRequest:
+                    case OptimizerGeneratedQueryDTO.PurposeOneofCase.EvaluationRequest:
                         {
-                            Log($"{_serverPrefix} Request Evaluation");
+                            await Log($"{ServerPrefix} Request Evaluation");
                             EvaluateAsync(request);
                             break;
                         }
-                    case RequestQueryDTO.RequestOneofCase.NodeStatusRequest:
-                        Log($"{_serverPrefix} Request Node Status");
-                        await _client.offerSimulationConfigAsync(BuildNodeUpdateResponse());
-                        break;
-                    case RequestQueryDTO.RequestOneofCase.CancelRequest:
-                        Log($"{_serverPrefix} Request Cancel");
+                    case OptimizerGeneratedQueryDTO.PurposeOneofCase.CancelRequest:
+                        await Log($"{ServerPrefix} Request Cancel");
                         _randomNumberEvaluator.Cancel();
                         break;
-                    case RequestQueryDTO.RequestOneofCase.StartRequest:
-                        Log($"{_serverPrefix} Run Start - ID:{request.StartRequest.RunID}");
-                        _activeRunID = Guid.Parse(request.StartRequest.RunID);
-                        _latestRunID = _activeRunID;
-                        _runIDs.Add(_activeRunID);
-                        break;
-                    case RequestQueryDTO.RequestOneofCase.StopRequest:
-                        Log($"{_serverPrefix} Run Stop - ID:{request.StopRequest.RunID}");
-                        _activeRunID = Guid.Empty;
-                        break;
-                    case RequestQueryDTO.RequestOneofCase.None:
+                    case OptimizerGeneratedQueryDTO.PurposeOneofCase.None:
                         break;
                     default:
+                        await Log($"{ServerPrefix} Run Other - {request}");
                         break;
                 }
             }
             catch (Exception e)
             {
-                await _client.offerErrorResultAsync(new ErrorResponseDTO
+                await _client.OfferErrorResultAsync(new SimulationEvaluationErrorResponseDTO()
                 {
                     Name = _name,
-                    Message = $"Error handling request [{request.RequestCase}]",
+                    Message = $"Error handling request [{request.PurposeCase}]",
                     Exception = e.ToString()
                 });
             }
 
         }
 
-        private async void EvaluateAsync(RequestQueryDTO request)
+        private async void EvaluateAsync(OptimizerGeneratedQueryDTO request)
         {
             MapField<string, double> inputs = request.EvaluationRequest.InputVector;
-            Log($"{_commandPrefix} Requested Input: [{inputs}]");
+            await Log($"{CommandPrefix} Requested Input: [{inputs}]");
 
             foreach (Input input in _inputSource)
             {
@@ -295,7 +303,7 @@ namespace EmpowerOps.Volition.RefClient
             UpdateBindingSourceOnUI(_inputSource);
             UpdateBindingSourceOnUI(_outputSource);
 
-            Log($"{_commandPrefix} Evaluating...");
+            await Log($"{CommandPrefix} Evaluating...");
 
             var result = await _randomNumberEvaluator.EvaluateAsync(inputs, _outputSource.List);
 
@@ -323,26 +331,26 @@ namespace EmpowerOps.Volition.RefClient
             switch (result.Status)
             {
                 case EvaluationResult.ResultStatus.Succeed:
-                    Log($"{_commandPrefix} Evaluation Succeed [{ToDebugString(result.Output)}]");
-                    SimulationResponseDTO request1 = new SimulationResponseDTO
+                    await Log($"{CommandPrefix} Evaluation Succeed [{ToDebugString(result.Output)}]");
+                    SimulationEvaluationCompletedResponseDTO request1 = new SimulationEvaluationCompletedResponseDTO
                     {
                         Name = _name,
                         OutputVector = { result.Output }
                     };
-                    await _client.offerSimulationResultAsync(request1);
+                    await _client.OfferSimulationResultAsync(request1);
                     break;
                 case EvaluationResult.ResultStatus.Failed:
-                    Log($"{_commandPrefix} Evaluation Failed [{ToDebugString(result.Output)}]\nException: {result.Exception}");
-                    await _client.offerErrorResultAsync(new ErrorResponseDTO
+                    await Log($"{CommandPrefix} Evaluation Failed [{ToDebugString(result.Output)}]\nException: {result.Exception}");
+                    await _client.OfferErrorResultAsync(new SimulationEvaluationErrorResponseDTO()
                     {
                         Name = _name,
-                        Message = $"{_commandPrefix} Evaluation Failed when evaluating [{inputs}]",
+                        Message = $"{CommandPrefix} Evaluation Failed when evaluating [{inputs}]",
                         Exception = result.Exception.ToString()
                     });
                     break;
                 case EvaluationResult.ResultStatus.Canceled:
-                    Log($"{_commandPrefix} Evaluation Canceled");
-                    await _client.offerSimulationResultAsync(new SimulationResponseDTO
+                    await Log($"{CommandPrefix} Evaluation Canceled");
+                    await _client.OfferSimulationResultAsync(new SimulationEvaluationCompletedResponseDTO
                     {
                         Name = _name,
                         OutputVector = { result.Output }
@@ -357,108 +365,15 @@ namespace EmpowerOps.Volition.RefClient
         {
             return $"{{{ string.Join(",", dictionary.Select(it => $"\"{it.Key}\": {it.Value}").ToArray())}}}";
         }
-
-        private async void UpdateNode()
-        {
-            await _client.updateNodeAsync(BuildNodeUpdateResponse());
-        }
-
-        private NodeStatusCommandOrResponseDTO BuildNodeUpdateResponse()
-        {
-            var nodeStatusCommandOrResponseDto = new NodeStatusCommandOrResponseDTO
-            {
-                Name = _name,
-                Description = "Volition Reference Client"
-            };
-            //gather inputs/ outputs NodeStatusCommandOrResponseDTO
-            foreach (Input input in _inputSource)
-            {
-                nodeStatusCommandOrResponseDto.Inputs.Add(new PrototypeInputParameter
-                {
-                    Name = input.Name,
-                    LowerBound = input.LowerBound,
-                    UpperBound = input.UpperBound,
-                });
-            }
-
-            foreach (Output output in _outputSource)
-            {
-                nodeStatusCommandOrResponseDto.Outputs.Add(new PrototypeOutputParameter
-                {
-                    Name = output.Name
-                });
-            }
-
-            return nodeStatusCommandOrResponseDto;
-        }
-
-        private async void Register_Click(object sender, RoutedEventArgs e)
-        {
-            //TODO better error state handing, when register failed due to no connection, it is not well though right now
-            //TODO also when error flow when register e.g. same name
-            var registrationCommandDto = new RequestRegistrationCommandDTO { Name = RegName.Text };
-            if (_requests != null)
-            {
-                Log($"{_commandPrefix} Node already registered");
-                return;
-            }
-
-            Log($"{_commandPrefix} Try Register as {RegName.Text}");
-            _requests = _client.registerRequest(registrationCommandDto);
-            if (_channel.State != ChannelState.Ready)
-            {
-                await _channel.WaitForStateChangedAsync(_channel.State);
-            }
-
-            if (_channel.State == ChannelState.Ready)
-            {
-                Log($"{_commandPrefix} Registered");
-                _isRegistered = true;
-                _name = registrationCommandDto.Name;
-                UpdateButton();
-                await HandlingRequestsAsync(_requests);
-            }
-            else
-            {
-                Log($"{_commandPrefix} Connection Failed, Not Registered");
-                _requests = null;
-                _isRegistered = false;
-                _name = null;
-                UpdateButton();
-            }
-        }
-
-        private async void Rename_Button_Click(object sender, RoutedEventArgs e)
-        {
-            if (!_isRegistered)
-            {
-                ShowNotRegisterMessage();
-                return;
-            }
-
-            var nodeNameChangeCommandDto = new NodeNameChangeCommandDTO { OldName = _name, NewName = RegName.Text };
-
-            NodeNameChangeResponseDTO nodeNameChangeResponseDto = await _client.changeNodeNameAsync(nodeNameChangeCommandDto);
-            if (nodeNameChangeResponseDto.Changed)
-            {
-                MessageBox.Show($"Change name {nodeNameChangeCommandDto.OldName} to {nodeNameChangeCommandDto.NewName} succeed.");
-                _name = nodeNameChangeCommandDto.NewName;
-                RegisterLabel.Content = $"Registered as {_name}";
-            }
-            else
-            {
-                MessageBox.Show($"Change name {nodeNameChangeCommandDto.OldName} to {nodeNameChangeCommandDto.NewName} failed. ${nodeNameChangeResponseDto.Message}");
-            }
-        }
-
-        private async void Log(string message)
+        
+        private async Task Log(string message)
         {
 
             LogInfoTextBox.Text = LogInfoTextBox.Text += message + "\n";
             LogInfoTextBox.ScrollToEnd();
             if (_channel.State == ChannelState.Ready && ForwardMessageCheckBox.IsChecked.GetValueOrDefault(false))
             {
-                await _client.sendMessageAsync(new MessageCommandDTO() { Name = _name ?? "no_name", Message = message });
+                await _client.OfferEvaluationStatusMessageAsync(new StatusMessageCommandDTO() { Name = _name ?? "no_name", Message = message });
             }
 
         }
@@ -497,63 +412,9 @@ namespace EmpowerOps.Volition.RefClient
             _outputSource.Remove(OutputGrid.SelectedItem);
         }
 
-        private void UpdateButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (!_isRegistered)
-            {
-                ShowNotRegisterMessage();
-                return;
-            }
-            UpdateNode();
-        }
-
-        private void UnRegister_Click(object sender, RoutedEventArgs e)
-        {
-            if (!_isRegistered)
-            {
-                ShowNotRegisterMessage();
-                return;
-            }
-
-            Unregister();
-        }
-
-        private async void Unregister()
-        {
-            Log($"{_commandPrefix} Try Unregister {_name}");
-            var responseDto = await _client.unregisterRequestAsync(new RequestUnRegistrationRequestDTO() { Name = _name });
-            Log($"{_serverPrefix} {responseDto.Message}");  //We dont care the return result and consider ourself as unregsisted
-            _name = "";
-            _requests = null;
-            _isRegistered = false;
-            UpdateButton();
-        }
-
-
         private void FailNextRun_Click(object sender, RoutedEventArgs e)
         {
             _randomNumberEvaluator.SetFailNext();
-        }
-
-        private void ShowNotRegisterMessage()
-        {
-            MessageBox.Show("Simulation is not registerd.");
-        }
-
-        /**
-         * Auto setup will override existing setup and update the optizmer to a
-         * single plugin 
-         */
-        private async void AutoSetupButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (!_isRegistered)
-            {
-                ShowNotRegisterMessage();
-                return;
-            }
-            Log($"{_commandPrefix} Auto setup request");
-            var nodeChangeConfirmDto = await _client.autoConfigureAsync(BuildNodeUpdateResponse());
-            Log($"{_serverPrefix} {nodeChangeConfirmDto.Message}");
         }
     }
 

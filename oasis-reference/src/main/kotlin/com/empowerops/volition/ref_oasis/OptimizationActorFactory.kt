@@ -5,6 +5,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.channels.actor
 import java.util.*
+import java.util.logging.Level
 import java.util.logging.Logger
 
 sealed class OptimizerRequestMessage {
@@ -41,7 +42,7 @@ sealed class SimulationProvidedMessage {
 
     data class StartOptimizationRequest(
             val inputs: List<Input>,
-            val intermediates: List<MathExpression>,
+            val outputs: List<MathExpression>,
             val constraints: List<MathExpression>,
             val objectives: List<Output>,
             val nodes: List<Simulation>
@@ -53,7 +54,7 @@ typealias OptimizationActor = SendChannel<SimulationProvidedMessage>
 class OptimizationActorFactory(
         val scope: CoroutineScope,
         val optimizer: Optimizer,
-        val model: ModelService,
+        val model: MutableMap<UUID, RunResult>,
         val eventBus: EventBus
 ) {
 
@@ -64,7 +65,6 @@ class OptimizationActorFactory(
         var stopRequest: SimulationProvidedMessage.StopOptimization? = null
         val startMessage = channel.receive() as SimulationProvidedMessage.StartOptimizationRequest
         val sim = startMessage.nodes.single()
-
 
         val issues = ArrayList<String>()
         if(startMessage.objectives.isEmpty()){
@@ -132,24 +132,29 @@ class OptimizationActorFactory(
                     check(response != null)
 
                     //read the response
-                    when (response) {
+                    decodeResponse@when (response) {
                         is SimulationProvidedMessage.EvaluationResult -> {
                             eventBus.post(NewResultEvent(EvaluationResult.Success(sim.name, inputVector, response.outputVector)))
 
-                            val newPoint = ExpensivePointRow(
-                                    startMessage.inputs.map { inputVector.getValue(it.name) },
-                                    startMessage.objectives.map { response.outputVector.getValue(it.name) },
-                                    true
-                            )
-                            completedDesigns += newPoint
+                            if(stopRequest == null) {
 
-                            frontier += newPoint
+                                val newPoint = ExpensivePointRow(
+                                        startMessage.inputs.map { inputVector.getValue(it.name) },
+                                        startMessage.objectives.map { response.outputVector.getValue(it.name) },
+                                        true
+                                )
+                                completedDesigns += newPoint
 
-                            frontier.removeIf { existingFrontierPoint ->
-                                frontier.toTypedArray().any { it.dominates(existingFrontierPoint) }
+                                frontier += newPoint
+
+                                frontier.removeIf { existingFrontierPoint ->
+                                    frontier.toTypedArray().any { it.dominates(existingFrontierPoint) }
+                                }
+
+                                optimizer.addCompleteDesign(inputVector + response.outputVector)
                             }
 
-                            optimizer.addCompleteDesign(inputVector + response.outputVector)
+                            Unit
                         }
                         is SimulationProvidedMessage.ErrorResponse -> {
                             eventBus.post(NewResultEvent(EvaluationResult.Error(sim.name, inputVector, response.message)))
@@ -181,12 +186,17 @@ class OptimizationActorFactory(
                     frontier
             )
 
-            model.setResult(runID, runResult)
+            model[runID] = runResult
             stopRequest.runID.complete(runID)
         }
+        catch(ex: CancellationException){
+            logger.warning("optimization actor was cancelled, and is now quitting.")
+            return@actor
+        }
         finally {
-            output.send(OptimizerRequestMessage.RunFinishedNotification(sim.name, runID))
             eventBus.post(RunStoppedEvent(runID))
+            try { output.send(OptimizerRequestMessage.RunFinishedNotification(sim.name, runID)) }
+                    catch(ex: Exception) { logger.log(Level.WARNING, "failed to send run finished notification to client", ex) }
         }
     }
 }

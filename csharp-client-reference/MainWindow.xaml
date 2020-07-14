@@ -4,7 +4,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="CANSYS Simulator by Empower Operations" Height="450" Width="800">
+        Name="Window"
+        Title="CANSYS Simulator by Empower Operations"
+        Height="450" Width="800">
     <DockPanel>
         <StatusBar Name="StatusBar" DockPanel.Dock="Bottom">
             <StatusBarItem>
@@ -36,9 +38,7 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <Button Name="StartOptimization" Content="Start Optimization" Grid.Column="0" Click="StartOptimization_Click"/>
-                <Button Name="Update" Content="Update" Grid.Column="2" Click="UpdateButton_Click"/>
                 <Button Name="StopOptimization" Content="Stop Optimization" Grid.Column="1" Click="StopOptimization_Click"/>
-                <Button Content="Auto Setup" Grid.Column="3" Click="AutoSetupButton_Click"/>
             </Grid>
             <Grid Grid.Row="2" Margin="2">
                 <Grid.ColumnDefinitions>
@@ -60,11 +60,8 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <Button Name="RegisterButton" Grid.Column="1" Content="Register" Click="Register_Click"/>
-                <Button Name="UnRegisterButton" Grid.Column="2" Content="Unregister" Click="UnRegister_Click"/>
                 <TextBox Name="RegName" TextWrapping="Wrap" Text="Node1" Grid.Column="0" />
-                <Label Name="RegisterLabel" Grid.Column="4" Content="Status: Not Registered" />
-                <Button Name="RenameButton" Grid.Column="3" Content="Rename" Click="Rename_Button_Click"/>
+                <Label Name="RegisterLabel" Grid.Column="4" Content="Status: Idle" />
             </Grid>
             <Grid Grid.Row="3" Margin="2">
                 <Grid.RowDefinitions>

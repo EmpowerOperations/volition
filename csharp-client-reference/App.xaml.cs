@@ -1,17 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 
-namespace VolitionClientReference
+namespace EmpowerOps.Volition.RefClient
 {
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
     public partial class App : Application
     {
+        public App()
+        {
+            // AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
+            // {
+                // Console.Error.WriteLine(args);
+            // };
+        }
     }
 }

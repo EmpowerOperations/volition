@@ -23,5 +23,5 @@ using System.Runtime.InteropServices;
 [assembly: Guid("1ac199b1-9d40-42e6-b124-74e8ee4b8c71")]
 
 // version info; updated by teamcity
-[assembly: AssemblyVersion("0.1.147.0")]
-[assembly: AssemblyFileVersion("0.1.147.0")]
+[assembly: AssemblyVersion("0.9.0")]
+[assembly: AssemblyFileVersion("0.9.0")]

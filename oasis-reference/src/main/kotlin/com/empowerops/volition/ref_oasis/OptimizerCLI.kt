@@ -1,7 +1,6 @@
 package com.empowerops.volition.ref_oasis
 
-import com.empowerops.volition.dto.*
-import com.empowerops.volition.ref_oasis.front_end.ConsoleOutput
+import com.empowerops.volition.dto.LoggingInterceptor
 import com.google.common.eventbus.EventBus
 import io.grpc.ServerInterceptors
 import io.grpc.netty.shaded.io.grpc.netty.NettyServerBuilder
@@ -10,8 +9,11 @@ import picocli.CommandLine.*
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
 import java.nio.charset.StandardCharsets
+import java.util.*
 import java.util.concurrent.Callable
+import java.util.concurrent.TimeUnit
 import java.util.jar.Manifest
+import kotlin.collections.LinkedHashMap
 import kotlin.coroutines.CoroutineContext
 
 fun main(args: Array<String>) = runBlocking<Unit> { mainAsync(args)?.join() }
@@ -24,7 +26,7 @@ fun mainAsync(args: Array<String>): Job? {
 }
 
 class OptimizerCLICoroutineScope: CoroutineScope {
-    override val coroutineContext: CoroutineContext get() = Dispatchers.IO + SupervisorJob()
+    override val coroutineContext = Dispatchers.IO + SupervisorJob()
 }
 
 @Command(
@@ -38,21 +40,20 @@ class OptimizerCLI(val console: PrintStream) : Callable<Job> {
     @Option(names = ["-p", "--port"], paramLabel = "PORT", description = ["Run optimizer with specified port, when not specified, port number will default to 5550"])
     var port: Int = 5550
 
-    @Option(names = ["-o", "--overwrite"], description = ["Enable register overwrite when duplication happens"])
-    var overwrite: Boolean = false
-
     private val eventBus = EventBus()
     private val logger: ConsoleOutput = ConsoleOutput(eventBus)
     private val scope: CoroutineScope = OptimizerCLICoroutineScope()
 
     private val job = scope.launch(start = CoroutineStart.LAZY) {
-        val modelService = ModelService()
+
+        val modelService = LinkedHashMap<UUID, RunResult>()
         val optimizerEndpoint = OptimizerEndpoint(
                 modelService,
                 OptimizationActorFactory(this@launch, RandomNumberOptimizer(), modelService, eventBus)
         )
         val server = NettyServerBuilder
                 .forPort(port)
+                .keepAliveTime(12, TimeUnit.HOURS)
                 .addService(ServerInterceptors.intercept(optimizerEndpoint, LoggingInterceptor(logger)))
                 .build()
 
@@ -67,6 +68,10 @@ class OptimizerCLI(val console: PrintStream) : Callable<Job> {
                 console.println("Volition Server running")
                 server.awaitTermination()
             }.await()
+        }
+        catch (ex: Throwable){
+//            fail; //here, i get an exception "parent job is cancelling", but i dont know why.
+            throw ex;
         }
         finally {
             server.shutdownNow()

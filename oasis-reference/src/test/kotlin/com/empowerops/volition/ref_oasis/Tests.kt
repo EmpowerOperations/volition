@@ -1,7 +1,7 @@
 package com.empowerops.volition.ref_oasis
 
 import com.empowerops.volition.dto.*
-import com.empowerops.volition.dto.OptimizerGeneratedQueryDTO.RequestCase
+import com.empowerops.volition.dto.OptimizerGeneratedQueryDTO.PurposeCase.*
 import io.grpc.ManagedChannelBuilder
 import io.grpc.stub.StreamObserver
 import kotlinx.coroutines.*
@@ -48,9 +48,7 @@ class Tests {
 
         val str = consoleAltBytes.toString("utf-8")
 
-        assertThat(str.trim()).isEqualTo("""
-            Volition API 0.9.0
-        """.trimIndent().replace("\n", System.lineSeparator()))
+        assertThat(str.trim()).contains("Volition API 0.9")
     }
 
     @Test fun `when running a single var single simulation optimization should optimize normally`() = runBlocking<Unit> {
@@ -94,8 +92,8 @@ class Tests {
         //act
         service.startOptimization(startOptimizationRequest, object: StreamObserver<OptimizerGeneratedQueryDTO>{
             override fun onNext(optimizerRequest: OptimizerGeneratedQueryDTO) = cancelOnException { runBlocking<Unit> {
-                val dc: Unit = when(optimizerRequest.requestCase!!) {
-                    RequestCase.EVALUATION_REQUEST -> {
+                val dc: Unit = when(optimizerRequest.purposeCase!!) {
+                    EVALUATION_REQUEST -> {
 
                         // here we implement the simulation callback,
                         // for testing purposes, I've told the simulation client to only execute 5 iterations,
@@ -136,11 +134,11 @@ class Tests {
 
                         Unit
                     }
-                    RequestCase.CANCEL_REQUEST -> Unit //noop --this is a legal implementation in any situation for cancellation.
-                    RequestCase.OPTIMIZATION_STARTED_NOTIFICATION -> Unit // noop,
-                    RequestCase.OPTIMIZATION_FINISHED_NOTIFICATION -> Unit // noop
-                    RequestCase.REQUEST_NOT_SET -> TODO("unknown request $optimizerRequest")
-                    RequestCase.OPTIMIZATION_NOT_STARTED_NOTIFICATION -> {
+                    CANCEL_REQUEST -> Unit //noop --this is a legal implementation in any situation for cancellation.
+                    OPTIMIZATION_STARTED_NOTIFICATION -> Unit // noop,
+                    OPTIMIZATION_FINISHED_NOTIFICATION -> Unit // noop
+                    PURPOSE_NOT_SET -> TODO("unknown request $optimizerRequest")
+                    OPTIMIZATION_NOT_STARTED_NOTIFICATION -> {
                         TODO("optimization didn't start because: ${optimizerRequest.optimizationNotStartedNotification.issuesList.joinToString()}")
                     }
                 }
@@ -412,9 +410,9 @@ class Tests {
             override fun onNext(optimizerRequest: OptimizerGeneratedQueryDTO) = cancelOnException { runBlocking<Unit> {
 
                 //this function is called by the optimizer...
-                when(optimizerRequest.requestCase!!) {
+                when(optimizerRequest.purposeCase!!) {
                     // the optimizer is asking for an input vector to be simulated and its results sent back
-                    RequestCase.EVALUATION_REQUEST -> {
+                    EVALUATION_REQUEST -> {
                         if(iterationNo <= 5) {
 
                             //read the input vector from the message provided by the optimizer
@@ -454,20 +452,20 @@ class Tests {
                     }
                     // this is provided by the optimizer when it wishes to preempt the simulation.
                     // this can happen because of timeout or a stopOptimization request.
-                    RequestCase.CANCEL_REQUEST -> {
+                    CANCEL_REQUEST -> {
                         Unit //noop --this is a legal implementation in any situation for cancellation.
                     }
                     // this is provided by the optimizer at the start of each optimization run.
                     // It is to inform the simulation that the optimization has started
-                    RequestCase.OPTIMIZATION_STARTED_NOTIFICATION -> Unit // noop
+                    OPTIMIZATION_STARTED_NOTIFICATION -> Unit // noop
                     // and similarly the optimization has finished
-                    RequestCase.OPTIMIZATION_FINISHED_NOTIFICATION -> Unit // noop
+                    OPTIMIZATION_FINISHED_NOTIFICATION -> Unit // noop
                     // this is called by the optimizer when the provided problem definition is not valid.
                     // each problem will appear in the issuesList
-                    RequestCase.OPTIMIZATION_NOT_STARTED_NOTIFICATION -> {
+                    OPTIMIZATION_NOT_STARTED_NOTIFICATION -> {
                         TODO("optimization didn't start because: ${optimizerRequest.optimizationNotStartedNotification.issuesList.joinToString()}")
                     }
-                    RequestCase.REQUEST_NOT_SET -> TODO("unknown request $optimizerRequest")
+                    PURPOSE_NOT_SET -> TODO("unknown request $optimizerRequest")
                 } as Any
             }}
 

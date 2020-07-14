@@ -140,7 +140,7 @@ namespace EmpowerOps.Volition.RefClient
             else
             {
                 TimeoutTextBox.Text = "0";
-                ApplyTimeout(0);
+                await ApplyTimeout(0);
                 MessageBox.Show("Invalid time out, please input a postive integer value");
             }
 

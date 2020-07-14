@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 
-namespace VolitionClientReference
+namespace EmpowerOps.Volition.RefClient
 {
     /// <summary>
     /// Interaction logic for App.xaml

@@ -132,24 +132,29 @@ class OptimizationActorFactory(
                     check(response != null)
 
                     //read the response
-                    when (response) {
+                    decodeResponse@when (response) {
                         is SimulationProvidedMessage.EvaluationResult -> {
                             eventBus.post(NewResultEvent(EvaluationResult.Success(sim.name, inputVector, response.outputVector)))
 
-                            val newPoint = ExpensivePointRow(
-                                    startMessage.inputs.map { inputVector.getValue(it.name) },
-                                    startMessage.objectives.map { response.outputVector.getValue(it.name) },
-                                    true
-                            )
-                            completedDesigns += newPoint
+                            if(stopRequest == null) {
 
-                            frontier += newPoint
+                                val newPoint = ExpensivePointRow(
+                                        startMessage.inputs.map { inputVector.getValue(it.name) },
+                                        startMessage.objectives.map { response.outputVector.getValue(it.name) },
+                                        true
+                                )
+                                completedDesigns += newPoint
 
-                            frontier.removeIf { existingFrontierPoint ->
-                                frontier.toTypedArray().any { it.dominates(existingFrontierPoint) }
+                                frontier += newPoint
+
+                                frontier.removeIf { existingFrontierPoint ->
+                                    frontier.toTypedArray().any { it.dominates(existingFrontierPoint) }
+                                }
+
+                                optimizer.addCompleteDesign(inputVector + response.outputVector)
                             }
 
-                            optimizer.addCompleteDesign(inputVector + response.outputVector)
+                            Unit
                         }
                         is SimulationProvidedMessage.ErrorResponse -> {
                             eventBus.post(NewResultEvent(EvaluationResult.Error(sim.name, inputVector, response.message)))

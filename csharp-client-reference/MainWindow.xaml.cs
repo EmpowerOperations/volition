@@ -179,7 +179,7 @@ namespace EmpowerOps.Volition.RefClient
         private async void StopOptimization_Click(object sender, RoutedEventArgs e)
         {
             await Log($"{CommandPrefix} Request Stop - ID:{_activeRunId}");
-            var stopOptimizationResponseDto = _client.StopOptimization(new StopOptimizationCommandDTO()
+            var stopOptimizationResponseDto = await _client.StopOptimizationAsync(new StopOptimizationCommandDTO()
             {
                 Name = _name,
                 RunID = _activeRunId.toUuidDto()

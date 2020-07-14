@@ -54,6 +54,7 @@ namespace EmpowerOps.Volition.RefClient
             _client = new UnaryOptimizer.UnaryOptimizerClient(_channel);
             _uiTaskFactory = new TaskFactory(TaskScheduler.FromCurrentSynchronizationContext());
             InitializeComponent();
+            Window.Title += Assembly.GetExecutingAssembly().GetName().Version.ToString();
             UpdateConnectionStatusAsync();
             UpdateButton();
             UpdateButton();
@@ -188,7 +189,7 @@ namespace EmpowerOps.Volition.RefClient
             _activeRunId = Guid.Empty;
         }
 
-        private async void RequestResult_Click(object sender, RoutedEventArgs e)
+        private void RequestResult_Click(object sender, RoutedEventArgs e)
         {
             throw new Exception("blam!");   
             // var resultResponseDto = await RequestRunResult(_latestRunID);

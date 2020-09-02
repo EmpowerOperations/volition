@@ -4,13 +4,6 @@ import com.google.protobuf.Message
 import io.grpc.*
 import io.grpc.stub.StreamObserver
 import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
-import kotlinx.coroutines.channels.ReceiveChannel
-import kotlin.coroutines.intrinsics.COROUTINE_SUSPENDED
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
 
 fun <T> CoroutineScope.consumeSingleAsync(streamObserver: StreamObserver<T>, message: Message, block: suspend () -> T) {
     val sourceEx = Exception("server error while processing request=${message.toString().trim()}")
@@ -28,11 +21,7 @@ fun <T> CoroutineScope.consumeSingleAsync(streamObserver: StreamObserver<T>, mes
     }
 }
 
-interface Logger{
-    fun log(message:String, sender: String)
-}
-
-class LoggingInterceptor(val logger: Logger): ServerInterceptor {
+class LoggingInterceptor(val logger: (String) -> Unit): ServerInterceptor {
 
     override fun <T : Any?, R : Any?> interceptCall(
             call: ServerCall<T, R>,
@@ -58,7 +47,7 @@ class LoggingInterceptor(val logger: Logger): ServerInterceptor {
                 val messageType = (message ?: Any())::class.simpleName
                 val messageString = message.toString().let { if(it.isBlank()) "[empty $messageType]" else "\n$it"}
 
-                logger.log("$fullMethodName $messageString".trim(), "API $direction")
+                logger("API $direction > $fullMethodName $messageString".trim())
                 super.sendMessage(message)
             }
         }
@@ -68,14 +57,14 @@ class LoggingInterceptor(val logger: Logger): ServerInterceptor {
         val inboundInterceptor = object: ForwardingServerCallListener.SimpleForwardingServerCallListener<T>(actual) {
             override fun onComplete() {
                 if( ! type.serverSendsOneMessage()){
-                    logger.log("$fullMethodName".trim(), "API CLOSED")
+                    logger("API CLOSED > $fullMethodName".trim())
                 }
                 actual.onComplete()
             }
             override fun onMessage(message: T) {
                 val messageType = (message ?: Any())::class.simpleName
                 val messageString = message.toString().let { if(it.isBlank()) "[empty $messageType]" else "\n$it" }
-                logger.log("$fullMethodName $messageString".trim(), "API INBOUND")
+                logger("API INBOUND > $fullMethodName $messageString".trim())
                 actual.onMessage(message)
             }
         }

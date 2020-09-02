@@ -15,7 +15,7 @@ buildscript {
 }
 
 plugins {
-    id "com.jfrog.bintray" version "1.7"
+    id "com.jfrog.bintray" version "1.8.2"
     id "org.jetbrains.kotlin.jvm" version "1.3.0"
 }
 
@@ -29,14 +29,15 @@ dependencies {
 }
 
 def volitionBuildNumber = System.getenv("BUILD_NUMBER") ?: '0'
-def volitionVersion = "0.9.$volitionBuildNumber"
+def volitionSpecVersion = "0.9"
+def volitionFullVersion = "$volitionSpecVersion.$volitionBuildNumber"
 def volitionName = 'volition-api'
 def GRPC_VERSION = '1.30.2'
 
 allprojects {
 
     group 'com.empowerops'
-    version volitionVersion
+    version volitionFullVersion
 
     repositories {
         mavenCentral()
@@ -134,9 +135,9 @@ project('api'){
         baseName = volitionName
         manifest {
             attributes 'Specification-Title': 'Volition API'
-            attributes 'Specification-Version': volitionVersion
+            attributes 'Specification-Version': volitionSpecVersion
             attributes 'Specification-Vendor': 'Empower Operations Corp'
-            attributes 'Implementation-Version': volitionBuildNumber
+            attributes 'Implementation-Version': volitionFullVersion
             attributes 'Implementation-Vendor': 'Empower Operations Corp'
         }
     }
@@ -163,7 +164,7 @@ project('api'){
             Production(MavenPublication){
                 groupId 'com.empowerops'
                 artifactId volitionName
-                version volitionVersion
+                version volitionFullVersion
                 
                 //blargwargl: we need to express transitive deps here.
                 // see this: https://docs.gradle.org/current/userguide/publishing_maven.html
@@ -174,7 +175,13 @@ project('api'){
 
     bintray {
         user = 'empower-operations-team'
-        key = project.properties.bintrayEmpoweropsKey
+        if (!project.hasProperty("empowerTeamBintrayApiKey")) {
+            logger.info("bintray API key not set, wont be able to publish. please set empowerTeamBintrayApiKey in ~/.gradle/gradle.properties with your key from https://bintray.com/profile/edit /API key")
+        }
+        else {
+            key = project.empowerTeamBintrayApiKey
+        }
+
         pkg {
             repo = 'maven'
             name = volitionName
@@ -183,7 +190,7 @@ project('api'){
             vcsUrl = 'https://github.com/EmpowerOperations/volition.git'
 
             version {
-                name = volitionVersion
+                name = volitionFullVersion
                 desc = 'Empower Operations Volition API'
                 released  = new Date()
             }
@@ -231,7 +238,7 @@ project('oasis-reference'){
         manifest {
             attributes 'Main-Class': 'com.empowerops.volition.ref_oasis.OptimizerCLIKt'
             attributes 'Specification-Title': 'Volition Reference Optimizer'
-            attributes 'Specification-Version': volitionVersion
+            attributes 'Specification-Version': volitionFullVersion
             attributes 'Specification-Vendor': 'Empower Operations Corp'
             attributes 'Implementation-Version': volitionBuildNumber
             attributes 'Implementation-Vendor': 'Empower Operations Corp'

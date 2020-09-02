@@ -14,7 +14,6 @@ import java.util.concurrent.Callable
 import java.util.concurrent.TimeUnit
 import java.util.jar.Manifest
 import kotlin.collections.LinkedHashMap
-import kotlin.coroutines.CoroutineContext
 
 fun main(args: Array<String>) = runBlocking<Unit> { mainAsync(args)?.join() }
 
@@ -41,7 +40,6 @@ class OptimizerCLI(val console: PrintStream) : Callable<Job> {
     var port: Int = 5550
 
     private val eventBus = EventBus()
-    private val logger: ConsoleOutput = ConsoleOutput(eventBus)
     private val scope: CoroutineScope = OptimizerCLICoroutineScope()
 
     private val job = scope.launch(start = CoroutineStart.LAZY) {
@@ -54,7 +52,7 @@ class OptimizerCLI(val console: PrintStream) : Callable<Job> {
         val server = NettyServerBuilder
                 .forPort(port)
                 .keepAliveTime(12, TimeUnit.HOURS)
-                .addService(ServerInterceptors.intercept(optimizerEndpoint, LoggingInterceptor(logger)))
+                .addService(ServerInterceptors.intercept(optimizerEndpoint, LoggingInterceptor(System.out::println)))
                 .build()
 
         try {

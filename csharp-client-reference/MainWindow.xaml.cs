@@ -96,7 +96,11 @@ namespace EmpowerOps.Volition.RefClient
                     });
                 }
 
-                var simulationNode = new StartOptimizationCommandDTO.Types.SimulationNode();
+                var simulationNode = new StartOptimizationCommandDTO.Types.SimulationNode()
+                {
+                    Name = RegName.Text,
+                    AutoMap = true
+                };
                 simulationNode.Inputs.AddRange(_inputSource.Cast<Input>().Select(it => it.Name).ToList());
                 simulationNode.Outputs.AddRange(_outputSource.Cast<Output>().Select(it => it.Name).ToList());
                 
@@ -109,7 +113,12 @@ namespace EmpowerOps.Volition.RefClient
                     }
                 });
 
-                await _requests.ResponseStream.MoveNext(CancellationToken.None);
+                var hasNext = await _requests.ResponseStream.MoveNext(CancellationToken.None);
+                if( ! hasNext)
+                {
+                    await Log("failed to read response from StartOptimization stream");
+                    return;
+                }
                 var next = _requests.ResponseStream.Current;
 
                 if (next.OptimizationNotStartedNotification != null)

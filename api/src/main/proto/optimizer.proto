@@ -192,14 +192,16 @@ message OptimizerGeneratedQueryDTO {
     // start optimization request and that an optimization run has started.
     // included is the run ID for that optimization run which can be used after completion to obtain the results.
     message OptimizationStartedNotification {
-        UUID run_ID = 2;
+        UUID run_ID = 1;
     }
     
     // optimizer service notifies that it has finished an optimization run 
     // because a convergence criteria was met 
     // or because an abort_optimization flag was set on an evaluation response
     // or because the StopOptimization
-    message OptimizationFinishedNotification {}
+    message OptimizationFinishedNotification {
+        UUID run_ID = 1;
+    }
     
     // Response to start optimization indicating that the optimization
     // was not started for the reasons included here

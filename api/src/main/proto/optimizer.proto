@@ -129,11 +129,26 @@ message StartOptimizationCommandDTO {
         google.protobuf.Duration time_out = 6;
     }
 
-    google.protobuf.Duration run_time = 11;
-    google.protobuf.UInt32Value iteration_count = 12;
+    // the settings that will cause the optimization to normally terminate
+    // leaving it default will cause the optimization to run until a stop message is sent
+    OptimizationSettings settings = 3;
 
-    //note: ignored for multi-objective optimization
-    google.protobuf.DoubleValue target_objective_value = 13;
+    message OptimizationSettings {
+
+        // the amount of time to let the optimization run for
+        // after this amount of time has elapsed, no further evaluation requests will be submitted
+        google.protobuf.Duration run_time = 11;
+
+        // the count of iterations to let the optimization run for
+        google.protobuf.UInt32Value iteration_count = 12;
+
+        // an objective value for the optimizer to stop once reached
+        // note: ignored for multi-objective optimization
+        google.protobuf.DoubleValue target_objective_value = 13;
+    }
+
+    // data from which an optimization should be resumed
+    repeated DesignRow seed_points = 4;
 }
 
 // a request from the optimizer service to the simulator client, sent via 

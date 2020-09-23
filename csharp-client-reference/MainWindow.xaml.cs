@@ -32,8 +32,10 @@ namespace EmpowerOps.Volition.RefClient
         
         private AsyncServerStreamingCall<OptimizerGeneratedQueryDTO> _requests;
         private ChannelState _channelState;
+
         private string _name = "";
-        
+        private int? _timeoutSecs = null;
+
         private Guid _activeRunId = Guid.Empty;
 
         private const string ServerPrefix = "Server:";
@@ -103,14 +105,23 @@ namespace EmpowerOps.Volition.RefClient
                 };
                 simulationNode.Inputs.AddRange(_inputSource.Cast<Input>().Select(it => it.Name).ToList());
                 simulationNode.Outputs.AddRange(_outputSource.Cast<Output>().Select(it => it.Name).ToList());
-                
+
+                var settings = new StartOptimizationCommandDTO.Types.OptimizationSettings();
+
+                if(_timeoutSecs != null)
+                {
+                    settings.RunTime = new Google.Protobuf.WellKnownTypes.Duration() { Seconds = _timeoutSecs ?? -1 };
+                };
+
+
                 _requests = _client.StartOptimization(new StartOptimizationCommandDTO
                 {
                     ProblemDefinition = problemDef,
                     Nodes =
                     {
                         simulationNode
-                    }
+                    },
+                    Settings = settings
                 });
 
                 var hasNext = await _requests.ResponseStream.MoveNext(CancellationToken.None);
@@ -158,31 +169,13 @@ namespace EmpowerOps.Volition.RefClient
         private async Task ApplyTimeout(int timeout)
         {
             await Log($"{CommandPrefix} Try to apply timeout {timeout}");
-            throw new NotImplementedException();
-            // var configurationResponseDto = await _client.UpdateConfigurationAsync(new ConfigurationCommandDTO
-            // {
-                // Name = _name,
-                // Config = new ConfigurationCommandDTO.Types.Config
-                // {
-                    // Timeout = Google.Protobuf.WellKnownTypes.Duration.FromTimeSpan(TimeSpan.FromMilliseconds(timeout)) 
-                // }
-            // });
-            // Log($"{_serverPrefix} {configurationResponseDto.Message}");
+            this._timeoutSecs = timeout;
         }
 
         private void ClearTimeout_Click(object sender, RoutedEventArgs e)
         {
-            TimeoutTextBox.Text = "0";
-            throw new NotImplementedException();
-            // _client.updateConfiguration(new ConfigurationCommandDTO
-            // {
-            // Name = _name,
-            // Config = new ConfigurationCommandDTO.Types.Config
-            // {
-            // Timeout = Google.Protobuf.WellKnownTypes.Duration.FromTimeSpan(TimeSpan.Zero)
-            // }
-            // });
-            // MessageBox.Show("Timeout cleared");
+            TimeoutTextBox.Text = "";
+            _timeoutSecs = null;
         }
 
         private async void StopOptimization_Click(object sender, RoutedEventArgs e)
@@ -241,7 +234,7 @@ namespace EmpowerOps.Volition.RefClient
             var requestsResponseStream = requests.ResponseStream;
             try
             {
-                while (await Task.Run(async () => await requestsResponseStream.MoveNext(CancellationToken.None)))
+                while (await requestsResponseStream.MoveNext(CancellationToken.None))
                 {
                     await HandleRequestAsync(requestsResponseStream.Current);
                 }
@@ -270,7 +263,7 @@ namespace EmpowerOps.Volition.RefClient
                     case OptimizerGeneratedQueryDTO.PurposeOneofCase.EvaluationRequest:
                         {
                             await Log($"{ServerPrefix} Request Evaluation");
-                            EvaluateAsync(request);
+                            await EvaluateAsync(request);
                             break;
                         }
                     case OptimizerGeneratedQueryDTO.PurposeOneofCase.CancelRequest:
@@ -296,7 +289,7 @@ namespace EmpowerOps.Volition.RefClient
 
         }
 
-        private async void EvaluateAsync(OptimizerGeneratedQueryDTO request)
+        private async Task EvaluateAsync(OptimizerGeneratedQueryDTO request)
         {
             MapField<string, double> inputs = request.EvaluationRequest.InputVector;
             await Log($"{CommandPrefix} Requested Input: [{inputs}]");

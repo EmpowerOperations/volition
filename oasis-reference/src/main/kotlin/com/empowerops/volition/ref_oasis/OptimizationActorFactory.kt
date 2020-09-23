@@ -4,6 +4,8 @@ import com.google.common.eventbus.EventBus
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.channels.actor
+import java.time.Duration
+import java.time.Instant
 import java.util.*
 import java.util.logging.Level
 import java.util.logging.Logger
@@ -45,9 +47,17 @@ sealed class SimulationProvidedMessage {
             val outputs: List<MathExpression>,
             val constraints: List<MathExpression>,
             val objectives: List<Output>,
-            val nodes: List<Simulation>
+            val nodes: List<Simulation>,
+            val seedPoints: List<ExpensivePointRow>,
+            val settings: OptimizationSettings
     ): SimulationProvidedMessage()
 }
+
+data class OptimizationSettings(
+        val runtime: Duration?,
+        val iterationCount: Int?,
+        val targetObjectiveValue: Double?
+)
 
 typealias OptimizationActor = SendChannel<SimulationProvidedMessage>
 
@@ -74,6 +84,12 @@ class OptimizationActorFactory(
         if(badVars.any()){
             issues += "the variables ${badVars.joinToString { it.name }} must have a lower bound less than the upper bound"
         }
+        if(startMessage.seedPoints.any { it.inputs.size != startMessage.inputs.size }){
+            issues += "some seed points dont match the number of input parameters"
+        }
+        if(startMessage.seedPoints.any { it.outputs.size != startMessage.outputs.size }){
+            issues += "some seed points dont match the number of output parameters"
+        }
         //...etc
         // TODO: implement more validation
         if(issues.any()){
@@ -84,10 +100,21 @@ class OptimizationActorFactory(
             output.send(OptimizerRequestMessage.RunStartedNotification(sim.name, runID))
             eventBus.post(RunStartedEvent(runID))
 
-            val completedDesigns = ArrayList<ExpensivePointRow>()
+            val completedDesigns = startMessage.seedPoints.toMutableList()
             val frontier = ArrayList<ExpensivePointRow>()
 
-            optimizing@while (isActive && stopRequest == null) {
+            startMessage.seedPoints.minBy { it.outputs.first() }?.let { frontier += it }
+
+            val targetIterationCount = startMessage.settings.iterationCount ?: Int.MAX_VALUE
+            var iterationCount = 0
+
+            val endTime = Instant.now() + (startMessage.settings.runtime ?: Duration.ofSeconds(9_999_999))
+
+            optimizing@while (isActive
+                    && stopRequest == null
+                    && iterationCount < targetIterationCount
+                    && Instant.now() < endTime
+            ) {
 
                 var response: SimulationProvidedMessage? = null
 
@@ -173,6 +200,8 @@ class OptimizationActorFactory(
 
                     throw ex
                 }
+
+                iterationCount += 1
             }
 
             check(stopRequest != null)

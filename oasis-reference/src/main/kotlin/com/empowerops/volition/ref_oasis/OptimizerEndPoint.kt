@@ -16,12 +16,6 @@ import java.util.*
 import java.util.logging.Level
 import java.util.logging.Logger
 
-interface ResponseNeeded<in T>: AutoCloseable {
-    fun respondWith(value: T)
-    fun failedWith(ex: Throwable)
-    override fun close() //resume any waiters regardless of whether respondWith was called
-}
-
 typealias ParameterName = String
 
 sealed class State {
@@ -75,6 +69,7 @@ class OptimizerEndpoint(
                         }
                         is OptimizerRequestMessage.RunFinishedNotification -> {
                             wrapper.setOptimizationFinishedNotification(OptimizerGeneratedQueryDTO.OptimizationFinishedNotification.newBuilder()
+                                    .setRunID(message.runID.toDTO())
                                     .build()
                             )
                         }
@@ -245,7 +240,13 @@ class OptimizerEndpoint(
                                 inputMapping = explicitMapping?.inputsMap,
                                 outputMapping = explicitMapping?.outputsMap
                         )
-                    }
+                    },
+                    settings = request.settings.run { OptimizationSettings(
+                            runtime = if(hasRunTime()) Duration.ofSeconds(runTime.seconds) else null,
+                            iterationCount = if(hasIterationCount()) iterationCount.value else null,
+                            targetObjectiveValue = if(hasTargetObjectiveValue()) targetObjectiveValue.value else null
+                    )},
+                    seedPoints = request.seedPointsList.map { ExpensivePointRow(it.inputsList, it.outputsList, it.isFeasible) }
             )
 
             runBlocking<Unit> { optimizationActor.send(startMessage) }

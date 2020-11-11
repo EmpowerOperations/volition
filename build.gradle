@@ -29,7 +29,7 @@ dependencies {
 }
 
 def volitionBuildNumber = System.getenv("BUILD_NUMBER") ?: '0'
-def volitionSpecVersion = "0.9"
+def volitionSpecVersion = "1.0"
 def volitionFullVersion = "$volitionSpecVersion.$volitionBuildNumber"
 def volitionName = 'volition-api'
 def GRPC_VERSION = '1.30.2'

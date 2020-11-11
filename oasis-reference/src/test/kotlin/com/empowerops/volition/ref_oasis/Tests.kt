@@ -48,7 +48,7 @@ class Tests {
 
         val str = consoleAltBytes.toString("utf-8")
 
-        assertThat(str.trim()).contains("Volition API 0.9")
+        assertThat(str.trim()).contains("Volition API 1.0")
     }
 
     @Test fun `when running a single var single simulation optimization should optimize normally`() = runBlocking<Unit> {

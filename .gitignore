@@ -11,7 +11,9 @@ client-reference/.gradle
 oasis-reference/build
 oasis-reference/out
 oasis-reference/.gradle
-/packages/
+
+#removed to allow git to cache deps apparently blocked by chinese firewall
+#/packages/
 
 #CSharp and VS nonsense
 csharp-client-reference/bin

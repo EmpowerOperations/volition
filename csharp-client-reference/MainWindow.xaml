@@ -6,7 +6,7 @@
         mc:Ignorable="d"
         Name="Window"
         Title="CANSYS Simulator by Empower Operations"
-        Height="450" Width="800">
+        Height="550" Width="800">
     <DockPanel>
         <StatusBar Name="StatusBar" DockPanel.Dock="Bottom">
             <StatusBarItem>
@@ -27,7 +27,8 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="87*"/>
+                <RowDefinition Height="88*"/>
+                <RowDefinition Height="88*"/>
                 <RowDefinition Height="88*"/>
             </Grid.RowDefinitions>
             <Grid Grid.Row="1" Margin="2">
@@ -37,7 +38,7 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <Button Name="StartOptimization" Content="Start Optimization" Grid.Column="0" Click="StartOptimization_Click"/>
+                <Button Name="StartOptimization" Content="Start Optimization" Grid.Column="0" Click="StartOptimization_Click" Height="19" Margin="0,0,0,0.2" VerticalAlignment="Bottom"/>
                 <Button Name="StopOptimization" Content="Stop Optimization" Grid.Column="1" Click="StopOptimization_Click"/>
             </Grid>
             <Grid Grid.Row="2" Margin="2">
@@ -68,17 +69,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
-                <DataGrid AutoGenerateColumns="False" Name="InputGrid" Grid.Row="1" Grid.ColumnSpan="3" >
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
-                        <DataGridTextColumn Header="Lower Bound" Binding="{Binding LowerBound}"/>
-                        <DataGridTextColumn Header="Upper Bound" Binding="{Binding UpperBound}"/>
-                        <DataGridTextColumn Header="Current Value" IsReadOnly ="True" Binding="{Binding CurrentValue}"/>
-                        <DataGridTextColumn Header="Evaluating" IsReadOnly ="True" Binding="{Binding EvaluatingValue}"/>
-                    </DataGrid.Columns>
-
-                </DataGrid>
-                <Grid>
+                <Grid Grid.Row="0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
                         <ColumnDefinition Width="Auto"/>
@@ -88,8 +79,39 @@
                     <Button Content="Add" Click="AddInput_Button_Click" HorizontalAlignment="Right" Width="76" Grid.Column="1"/>
                     <Button Content="Remove" Grid.Row="0" Click="RemoveInput_Button_Click" Width="76" Grid.Column="2"/>
                 </Grid>
+                <DataGrid AutoGenerateColumns="False" Name="InputGrid" Grid.Row="1" Grid.ColumnSpan="3" >
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
+                        <DataGridTextColumn Header="Lower Bound" Binding="{Binding LowerBound}"/>
+                        <DataGridTextColumn Header="Upper Bound" Binding="{Binding UpperBound}"/>
+                        <DataGridTextColumn Header="Current Value" IsReadOnly ="True" Binding="{Binding CurrentValue}"/>
+                        <DataGridTextColumn Header="Evaluating" IsReadOnly ="True" Binding="{Binding EvaluatingValue}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
             </Grid>
             <Grid Grid.Row="4" Margin="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Content="Constraints" HorizontalAlignment="Left" />
+                    <Button Content="Add" Click="AddConstraint_Button_Click" HorizontalAlignment="Right" Width="76" Grid.Column="1"/>
+                    <Button Content="Remove"  Click="RemoveConstraint_Button_Click"  Width="76" Grid.Column="2"/>
+                </Grid>
+                <DataGrid AutoGenerateColumns="False" Name="ConstraintGrid" Grid.Row="1" >
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="65"/>
+                        <DataGridTextColumn Header="Expression" Binding="{Binding Expression}" Width="270"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+            <Grid Grid.Row="5" Margin="2">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition/>

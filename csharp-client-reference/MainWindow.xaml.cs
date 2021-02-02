@@ -27,7 +27,8 @@ namespace EmpowerOps.Volition.RefClient
         
         private readonly BindingSource _inputSource = new BindingSource();
         private readonly BindingSource _outputSource = new BindingSource();
-        
+        private readonly BindingSource _constraintSource = new BindingSource();
+
         private readonly List<Guid> _runIDs = new List<Guid>();
         
         private AsyncServerStreamingCall<OptimizerGeneratedQueryDTO> _requests;
@@ -40,6 +41,8 @@ namespace EmpowerOps.Volition.RefClient
 
         private const string ServerPrefix = "Server:";
         private const string CommandPrefix = ">";
+
+        private int _addCounter = 1;
 
         public string Version 
         { 
@@ -67,6 +70,7 @@ namespace EmpowerOps.Volition.RefClient
         {
             InputGrid.ItemsSource = _inputSource;
             OutputGrid.ItemsSource = _outputSource;
+            ConstraintGrid.ItemsSource = _constraintSource;
         }
 
 
@@ -90,6 +94,15 @@ namespace EmpowerOps.Volition.RefClient
                     });
                 }
 
+                foreach (Constraint userConstraint in _constraintSource)
+                {
+                    problemDef.Constraints.Add(new BabelConstraint()
+                    {
+                        BooleanExpression = userConstraint.Expression,
+                        OutputName = userConstraint.Name
+                    });
+                }
+
                 foreach (Output output in _outputSource)
                 {
                     problemDef.Objectives.Add(new PrototypeOutputParameter()
@@ -105,7 +118,7 @@ namespace EmpowerOps.Volition.RefClient
                 };
                 simulationNode.Inputs.AddRange(_inputSource.Cast<Input>().Select(it => it.Name).ToList());
                 simulationNode.Outputs.AddRange(_outputSource.Cast<Output>().Select(it => it.Name).ToList());
-
+                
                 var settings = new StartOptimizationCommandDTO.Types.OptimizationSettings();
 
                 if(_timeoutSecs != null)
@@ -187,7 +200,7 @@ namespace EmpowerOps.Volition.RefClient
                 RunID = _activeRunId.toUuidDto()
             });
             
-            await Log($"{ServerPrefix} Stop Reqeust received - Stopping RunID:{stopOptimizationResponseDto.RunID}");
+            await Log($"{ServerPrefix} Stop Request received - Stopping RunID:{stopOptimizationResponseDto.RunID}");
             _activeRunId = Guid.Empty;
         }
 
@@ -239,7 +252,7 @@ namespace EmpowerOps.Volition.RefClient
                     await HandleRequestAsync(requestsResponseStream.Current);
                 }
 
-                await Log($"{CommandPrefix} Query Closed, plugin has been unregisred by server");
+                await Log($"{CommandPrefix} Query Closed, plugin has been unregistered by server");
             }
             catch (Exception e)
             {
@@ -389,19 +402,38 @@ namespace EmpowerOps.Volition.RefClient
         {
             _inputSource.Add(new Input
             {
-                Name = "x1",
+                Name = "x" + _addCounter,
                 LowerBound = 0.0,
                 UpperBound = 10.0
             });
 
+            _addCounter++;
         }
 
         private void AddOutput_Button_Click(object sender, RoutedEventArgs e)
         {
             _outputSource.Add(new Output
             {
-                Name = "f1"
+                Name = "f" + _addCounter
             });
+
+            _addCounter++;
+        }
+
+        private void AddConstraint_Button_Click(object sender, RoutedEventArgs e)
+        {
+            _constraintSource.Add(new Constraint
+            {
+                Name = "c" + _addCounter,
+                Expression = "x1+x2<5"
+            });
+
+            _addCounter++;
+        }
+
+        private void RemoveConstraint_Button_Click(object sender, RoutedEventArgs e)
+        {
+            _constraintSource.Remove(ConstraintGrid.SelectedItem);
         }
 
         private void RemoveInput_Button_Click(object sender, RoutedEventArgs e)

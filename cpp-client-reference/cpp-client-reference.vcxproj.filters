@@ -15,21 +15,21 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\api\build\generated\source\proto\main\grpc_cpp\optimizer.grpc.pb.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\api\build\generated\source\proto\main\cpp\optimizer.pb.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="optimizer.grpc.pb.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="optimizer.pb.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\api\build\generated\source\proto\main\cpp\optimizer.pb.h">
+    <ClInclude Include="optimizer.grpc.pb.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\api\build\generated\source\proto\main\grpc_cpp\optimizer.grpc.pb.h">
+    <ClInclude Include="optimizer.pb.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

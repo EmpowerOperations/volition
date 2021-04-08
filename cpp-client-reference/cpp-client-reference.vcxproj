@@ -123,13 +123,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\api\build\generated\source\proto\main\cpp\optimizer.pb.cc" />
-    <ClCompile Include="..\api\build\generated\source\proto\main\grpc_cpp\optimizer.grpc.pb.cc" />
+    <ClCompile Include="optimizer.grpc.pb.cc" />
+    <ClCompile Include="optimizer.pb.cc" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\api\build\generated\source\proto\main\cpp\optimizer.pb.h" />
-    <ClInclude Include="..\api\build\generated\source\proto\main\grpc_cpp\optimizer.grpc.pb.h" />
+    <ClInclude Include="optimizer.grpc.pb.h" />
+    <ClInclude Include="optimizer.pb.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

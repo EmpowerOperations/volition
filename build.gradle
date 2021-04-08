@@ -162,14 +162,14 @@ project('api'){
     }
     
     task sourcesJar(type: Jar, dependsOn: classes) {
-        classifier = 'sources'
-        baseName = volitionName
+        archiveClassifier = 'sources'
+        archiveBaseName = volitionName
         from sourceSets.main.allSource
     }
     
     task javadocJar(type: Jar, dependsOn: javadoc) {
-        classifier = 'javadoc'
-        baseName = volitionName
+        archiveClassifier = 'javadoc'
+        archiveBaseName = volitionName
         from javadoc.destinationDir
     }
     
@@ -217,8 +217,15 @@ project('api'){
         configurations = ['archives']
         publications = ['Production']
     }
-
 }
+
+task copyGeneratedCpp(type: Copy){
+    from 'api/build/generated/source/proto/main/cpp'
+    from 'api/build/generated/source/proto/main/grpc_cpp'
+    include '*.cc', '*.h'
+    into 'cpp-client-reference/'
+}
+
 
 project('oasis-reference'){
     dependencies {
@@ -247,14 +254,13 @@ project('oasis-reference'){
         testCompile 'org.assertj:assertj-core:3.11.1'
     }
 
-
     task copyToLib(type: Copy) {
         from configurations.runtime
         into "$buildDir/deps"
     }
 
     assemble.dependsOn copyToLib
-    
+
     jar {
         manifest {
             attributes 'Main-Class': 'com.empowerops.volition.ref_oasis.OptimizerCLIKt'
@@ -272,7 +278,7 @@ project('oasis-reference'){
         from "$projectDir"
         include "*.exe"
         include "*.jar"
-        archiveName "optimizer-reference-${version}.zip"
+        archiveName "optimizer-reference-${archiveVersion}.zip"
         destinationDir(file("$buildDir/deliverable"))
     }
     

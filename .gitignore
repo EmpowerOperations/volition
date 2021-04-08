@@ -5,9 +5,6 @@ build/
 api/build
 api/out
 api/.gradle
-client-reference/build
-client-reference/out
-client-reference/.gradle
 oasis-reference/build
 oasis-reference/out
 oasis-reference/.gradle
@@ -18,6 +15,10 @@ csharp-client-reference/bin
 csharp-client-reference/obj
 csharp-client-reference/.vs
 csharp-client-reference/Artifacts
+
+#cpp and VS garbage
+cpp-client-reference/Debug
+cpp-client-reference/Release
 
 api/obj
 .vs/

@@ -1,3 +1,3 @@
 rootProject.name = 'volition-api'
 
-include 'api', 'client-reference', 'oasis-reference'
+include 'api', 'oasis-reference'

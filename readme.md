@@ -64,8 +64,6 @@ You can also configure their input bounds in the table.
 
 This should be similar in principal to the simulation client that you wish to build.   
 
-> Currently we do not support creation of constraints via the API. 
-
 To start the optimization loop:
 
 1. in the reference client (CANSYS):

@@ -1,2 +1,0 @@
-To get grpc generating C# code, it needs the C# generator which is available on traditional nuget-style C# build tooling, not, afaik, from gradle.
-so I used `nuget.exe install Grpc.Tools -Version 1.15.0` to pull this lib into my local nuget cache, then simply copy-paste'd it here for use with gradle.

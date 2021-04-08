@@ -1,7 +1,7 @@
 buildscript {
-    ext.kotlin_version = '1.3.0'
-
-    ext.grpc_csharp_generator = '$projectdir/.kinda-nuget/packages/grpc.tools/1.15.0/tools/windows_x64/grpc_csharp_plugin.exe'
+    ext {
+        kotlin_version = '1.4.32'
+    }
 
     repositories {
         mavenCentral()
@@ -29,11 +29,36 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 }
 
+def protobuf_version = '3.14.0'
+def grpc_version = '1.33.1'
 def volitionBuildNumber = System.getenv("BUILD_NUMBER") ?: '0'
 def volitionSpecVersion = "1.0"
 def volitionFullVersion = "$volitionSpecVersion.$volitionBuildNumber"
 def volitionName = 'volition-api'
-def GRPC_VERSION = '1.33.1'
+
+task vcpkgBootstrap(type: Exec) {
+    commandLine 'vcpkg/bootstrap-vcpkg.bat', '-disableMetrics'
+}
+
+task vcpkgMakeManifest(type: Copy, dependsOn: vcpkgBootstrap){
+    from file('vcpkg.json.template')
+    rename("vcpkg.json.template", 'vcpkg.json')
+    into './'
+    filter { line -> line.replaceAll('%volitionFullVersion%', volitionFullVersion) }
+
+    doLast {
+        println(file('vcpkg.json').text)
+    }
+}
+
+task vcpkgInstall(type: Exec, dependsOn: vcpkgMakeManifest) {
+    commandLine 'vcpkg/vcpkg.exe', '--feature-flags=manifests,versions', 'install'
+}
+
+task vcpkgCheckVersions(type: Exec, dependsOn: vcpkgInstall) {
+    commandLine 'vcpkg/vcpkg.exe', '--feature-flags=manifests,versions', 'list'
+    //TODO: we should parse this table and assert the pulled version of grpc and protobuf match our constants.
+}
 
 allprojects {
 
@@ -56,17 +81,6 @@ subprojects {
     apply plugin: 'java'
     apply plugin: 'kotlin'
 
-    sourceCompatibility = 1.8
-
-    compileKotlin {
-        kotlinOptions.jvmTarget = "1.8"
-    }
-    compileTestKotlin {
-        kotlinOptions.jvmTarget = "1.8"
-    }
-    kotlin {
-    }
-
     //This is purely for syntax highlighting in intelliJ,
     //this should be done by the gradle/proto plugin, but it isnt because they're dumb.
     sourceSets.main.java.srcDirs += 'build/generated/source/proto/main/java'
@@ -88,9 +102,9 @@ project('api'){
         compile 'com.google.guava:guava:27.0.1-jre'
 
         compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-        compile "io.grpc:grpc-netty-shaded:$GRPC_VERSION"
-        compile "io.grpc:grpc-protobuf:$GRPC_VERSION"
-        compile "io.grpc:grpc-stub:$GRPC_VERSION"
+        compile "io.grpc:grpc-netty-shaded:$grpc_version"
+        compile "io.grpc:grpc-protobuf:$grpc_version"
+        compile "io.grpc:grpc-stub:$grpc_version"
 
         compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.0.0"
         compile "org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.0.0"
@@ -99,21 +113,20 @@ project('api'){
     protobuf {
 
         protoc {
-            artifact = "com.google.protobuf:protoc:3.14.0"
+            artifact = "com.google.protobuf:protoc:$protobuf_version"
         }
         plugins {
             grpc_java {
-                artifact = 'io.grpc:protoc-gen-grpc-java:1.15.1'
-                path = file("$projectDir/../../vcpkg/installed/x64-windows/tools/grpc/")
+                artifact = "io.grpc:protoc-gen-grpc-java:$grpc_version"
             }
             grpc_csharp {
-                path = file("$projectDir/../.kinda-nuget/packages/grpc.tools/1.15.0/tools/windows_x64/grpc_csharp_plugin.exe").absolutePath
-                //TODO: consider dynamically pulling from nuget
-                //https://github.com/Ullink/gradle-nuget-plugin
-                // --also note, he has an msbuild plugin for gradle
+                path = "../vcpkg/packages/grpc_x64-windows/tools/grpc/grpc_csharp_plugin.exe"
             }
             grpc_cpp {
-                path = "$projectDir/../grpc_x86-windows/tools/grpc/grpc_cpp_plugin.exe"
+                path = "../vcpkg/packages/grpc_x64-windows/tools/grpc/grpc_cpp_plugin.exe"
+            }
+            grpc_python {
+                path = "../vcpkg/packages/grpc_x64-windows/tools/grpc/grpc_python_plugin.exe"
             }
         }
 
@@ -123,15 +136,19 @@ project('api'){
                     grpc_java {}
                     grpc_csharp {}
                     grpc_cpp {}
+                    grpc_python {}
                 }
                 task.builtins {
                     java { }
                     csharp {}
                     cpp {}
+                    python {}
                 }
             }
         }
     }
+
+    compileJava.dependsOn vcpkgInstall
 
     jar {
         baseName = volitionName
@@ -206,22 +223,23 @@ project('api'){
 project('oasis-reference'){
     dependencies {
         compile project(":api")
-        compile 'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.30.2'
+
+        compile files("babel-0.15.jar")
+        compile group: 'org.antlr', name: 'antlr4-runtime', version: '4.9.1'
+
+        compile "io.grpc:grpc-netty-shaded:$grpc_version"
+        compile "io.grpc:grpc-protobuf:$grpc_version"
+        compile "io.grpc:grpc-stub:$grpc_version"
+
+        compile group: 'org.jetbrains.kotlinx', name: 'kotlinx-collections-immutable', version: '0.1'
+        compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+        compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3"
+        compile "org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.4.3"
+
         compile 'no.tornado:tornadofx:1.7.17'
         compile 'info.picocli:picocli:3.9.5'
         compile group: 'org.funktionale', name: 'funktionale-all', version: '1.2'
-        compile files("babel-0.15.jar")
         implementation 'org.antlr:antlr4-runtime:4.8-1'
-        compile group: 'org.jetbrains.kotlinx', name: 'kotlinx-collections-immutable', version: '0.1'
-
-        compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-        compile "io.grpc:grpc-netty-shaded:$GRPC_VERSION"
-        compile "io.grpc:grpc-protobuf:$GRPC_VERSION"
-        compile "io.grpc:grpc-stub:$GRPC_VERSION"
-
-        compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.0.0"
-        compile "org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.0.0"
-        compile group: 'org.antlr', name: 'antlr4-runtime', version: '4.9.1'
 
         testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
         testImplementation 'com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0'

@@ -19,6 +19,12 @@ csharp-client-reference/Artifacts
 #cpp and VS garbage
 cpp-client-reference/Debug
 cpp-client-reference/Release
+cpp-client-reference/x64/Debug
+cpp-client-reference/x64/Release
+Debug/
+Release/
+x64/Debug/
+x64/Release/
 
 api/obj
 .vs/

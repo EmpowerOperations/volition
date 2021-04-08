@@ -21,6 +21,9 @@
     <ClCompile Include="..\api\build\generated\source\proto\main\cpp\optimizer.pb.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\api\build\generated\source\proto\main\cpp\optimizer.pb.h">

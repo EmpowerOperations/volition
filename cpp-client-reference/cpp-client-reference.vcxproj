@@ -125,6 +125,7 @@
   <ItemGroup>
     <ClCompile Include="..\api\build\generated\source\proto\main\cpp\optimizer.pb.cc" />
     <ClCompile Include="..\api\build\generated\source\proto\main\grpc_cpp\optimizer.grpc.pb.cc" />
+    <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\api\build\generated\source\proto\main\cpp\optimizer.pb.h" />

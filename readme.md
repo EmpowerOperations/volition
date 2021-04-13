@@ -113,7 +113,7 @@ To build the API binaries yourself you will need to run the gradle build scripts
 
    this will generate the `EmpowerOps.Volitiion.API.dll` .net assembly in `api\build\dotnet-bin\`. The other files in that folder are windows and linux runtime dependencies. These will be used by the simulator-client. 
 
-### Building the reference client ###
+### Building the C# reference client ###
 
 Once you have the API binaries built you can build and run a reference simulator client
 
@@ -124,7 +124,17 @@ Once you have the API binaries built you can build and run a reference simulator
    this will generate a runnable executable `EmpowerOps.Volition.RefClient.exe` in `csharp-client-reference\bin\Debug`
 
 
-### Building the reference optimizer ###
+### Building the cpp reference client ###
+
+The cpp reference client is a CLI based one-shot optimization client. The purpose of the client is to show how you can use grpc to generate cpp source code and link that code to your project.
+
+0. open a shell to the root of the repository
+1. run `.\gradlew.bat vcpkgInstall` to download grpc and all its dependencies through vcpkg
+2. run `.\vcpkg\vcpkg.exe integrate install "--feature-flags=manifests,versions"` to cause vcpkg to update visual studio INCLUDE directories to contain grpc lib files.
+3. run _Visual studio 2019_, open `volition.sln`
+4. from within visual studio, select `cpp-client-reference` as the startup project, and select `run`. 
+
+### Building the java/kotlin reference optimizer ###
 
 Once you have the API binaries built you can also build and run the reference optimizer server:
 

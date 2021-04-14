@@ -7,6 +7,10 @@
 
 #include <grpcpp/grpcpp.h>
 
+#include <windows.h>
+#include <winsock2.h>
+#pragma comment(lib, "Ws2_32.lib")
+
 using grpc::Channel;
 using grpc::ClientContext;
 using grpc::Status;
@@ -21,7 +25,7 @@ using empowerops::volition::dto::SimulationEvaluationCompletedResponseDTO;
 
 int main() {
 
-	auto channel = grpc::CreateChannel("localhost:50051", grpc::InsecureChannelCredentials());
+	auto channel = grpc::CreateChannel("localhost:5550", grpc::InsecureChannelCredentials());
 	auto stub = UnaryOptimizer::NewStub(channel);
 
 	auto context = new ClientContext();

@@ -8,7 +8,8 @@
 #include <grpcpp/grpcpp.h>
 
 #include <windows.h>
-#include <winsock2.h>
+
+//winsock2 needed by grpc
 #pragma comment(lib, "Ws2_32.lib")
 
 using grpc::Channel;

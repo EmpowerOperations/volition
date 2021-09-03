@@ -29,7 +29,7 @@ class OptimizerEndpoint(
         private val optimizationActorFactory: OptimizationActorFactory
 ) : UnaryOptimizerGrpc.UnaryOptimizerImplBase() {
 
-    val compiler = BabelCompiler()
+    val compiler = BabelCompiler
     val logger = Logger.getLogger(OptimizerEndpoint::class.qualifiedName)
     val scope = GlobalScope //TODO
 

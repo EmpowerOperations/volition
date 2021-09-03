@@ -2,6 +2,7 @@ package com.empowerops.volition.ref_oasis
 
 import com.empowerops.volition.dto.*
 import com.empowerops.volition.dto.OptimizerGeneratedQueryDTO.PurposeCase.*
+import com.google.protobuf.UInt32Value
 import io.grpc.ManagedChannelBuilder
 import io.grpc.stub.StreamObserver
 import kotlinx.coroutines.*
@@ -733,6 +734,122 @@ class Tests {
 
 
      */
+
+    @Test fun `when using seed data should run appropriately`() = runBlocking<Unit>() {
+        //act
+        val startRequest = StartOptimizationCommandDTO.newBuilder()
+            .setProblemDefinition(StartOptimizationCommandDTO.ProblemDefinition.newBuilder()
+                // this test is more complex than the above test because:
+                // 1. it uses two variables instead of one
+                // 2. it uses a constraint
+                .addAllInputs(listOf(
+                    PrototypeInputParameter.newBuilder()
+                        .setName("x1")
+                        .setContinuous(PrototypeInputParameter.Continuous.newBuilder()
+                            .setLowerBound(1.0)
+                            .setUpperBound(5.0)
+                            .build()
+                        )
+                        .build(),
+                    PrototypeInputParameter.newBuilder()
+                        .setName("x2")
+                        .setContinuous(PrototypeInputParameter.Continuous.newBuilder()
+                            .setLowerBound(1.0)
+                            .setUpperBound(5.0)
+                            .build()
+                        )
+                        .build()
+                ))
+                .addAllObjectives(listOf(
+                    PrototypeOutputParameter.newBuilder()
+                        .setName("f1")
+                        .build()
+                ))
+                .build()
+            )
+            .addNodes(StartOptimizationCommandDTO.SimulationNode.newBuilder()
+                .setAutoMap(true)
+                .addInputs("x1").addInputs("x2")
+                .addOutputs("f1")
+                .build()
+            )
+            .setSettings(StartOptimizationCommandDTO.OptimizationSettings.newBuilder()
+                .setIterationCount(UInt32Value.of(5))
+            )
+            .addSeedPoints(DesignRow.newBuilder()
+                .addAllInputs(listOf(2.0, 3.0))
+                .addAllOutputs(listOf(2.5))
+            )
+            .build()
+
+        val resultID = CompletableDeferred<java.util.UUID>()
+        var results: OptimizationResultsResponseDTO? = null
+
+        //act
+        service.startOptimization(startRequest, object: StreamObserver<OptimizerGeneratedQueryDTO>{
+            // the second argument to this function, the stream observer,
+            // is a callback offered by the client to the optimizer
+            // it is called by the optimizer when the optimizer makes an evaluation request
+            // or feels it should notify the client of some change.
+
+            val parentJob = coroutineContext[Job]!!
+
+            override fun onNext(optimizerRequest: OptimizerGeneratedQueryDTO) = cancelOnException { runBlocking<Unit> {
+
+                //this function is called by the optimizer...
+                when(optimizerRequest.purposeCase!!) {
+                    // the optimizer is asking for an input vector to be simulated and its results sent back
+                    EVALUATION_REQUEST -> {
+
+                        val result = optimizerRequest.evaluationRequest!!.inputVectorMap.values.sumByDouble { it } / 2.0
+
+                        val response = SimulationEvaluationCompletedResponseDTO.newBuilder()
+                            .setName("asdf")
+                            .putAllOutputVector(mapOf("f1" to result))
+                            .build()
+
+                        //send the response --this is a successful optimization
+                        service::offerSimulationResult.send(response)
+
+                        Unit
+                    }
+                    CANCEL_REQUEST -> Unit
+                    OPTIMIZATION_STARTED_NOTIFICATION -> Unit // noop
+                    OPTIMIZATION_FINISHED_NOTIFICATION -> {
+                        val id = optimizerRequest.optimizationFinishedNotification.runID.value
+                        val request = OptimizationResultsQueryDTO.newBuilder()
+                            .setRunID(UUID.newBuilder().setValue(id.toString()))
+                            .build()
+                        results = service::requestRunResult.send(request)
+                        resultID.complete(java.util.UUID.fromString(id))
+                        Unit
+                    }
+                    OPTIMIZATION_NOT_STARTED_NOTIFICATION -> {
+                        TODO("optimization didn't start because: ${optimizerRequest.optimizationNotStartedNotification.issuesList.joinToString()}")
+                    }
+                    PURPOSE_NOT_SET -> TODO("unknown request $optimizerRequest")
+                } as Any
+            }}
+
+            override fun onError(t: Throwable) {
+                t.printStackTrace()
+                parentJob.cancel()
+            }
+
+            override fun onCompleted() {
+                println("registration channel completed!")
+            }
+        })
+        val id = resultID.await()
+
+        //assert
+        assertThat(results!!.pointsList.first()).isEqualTo(DesignRow.newBuilder()
+            .addAllInputs(listOf(2.0, 3.0))
+            .addAllOutputs(listOf(2.5))
+            .setIsFeasible(true)
+            .build()
+        )
+    }
 }
 
 private sealed class ResponseState<out R> {

@@ -231,7 +231,7 @@ project('oasis-reference'){
     dependencies {
         compile project(":api")
 
-        compile files("babel-0.15.jar")
+        compile files("babel-0.18.jar")
         compile group: 'org.antlr', name: 'antlr4-runtime', version: '4.9.1'
 
         compile "io.grpc:grpc-netty-shaded:$grpc_version"

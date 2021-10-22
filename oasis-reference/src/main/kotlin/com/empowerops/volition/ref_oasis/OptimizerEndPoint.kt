@@ -5,7 +5,6 @@ import com.empowerops.babel.BabelExpression
 import com.empowerops.volition.dto.*
 import io.grpc.Status
 import io.grpc.stub.ServerCallStreamObserver
-import com.empowerops.volition.dto.UUID as UUIDDto
 import io.grpc.stub.StreamObserver
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.SendChannel
@@ -15,6 +14,7 @@ import java.time.Duration
 import java.util.*
 import java.util.logging.Level
 import java.util.logging.Logger
+import com.google.protobuf.kotlin.DslList
 
 typealias ParameterName = String
 
@@ -49,40 +49,50 @@ class OptimizerEndpoint(
 
                     val dto = when(message) {
                         is OptimizerRequestMessage.SimulationEvaluationRequest -> {
-                            wrapper.setEvaluationRequest(OptimizerGeneratedQueryDTO.SimulationEvaluationRequest.newBuilder()
+                            wrapper.setEvaluationRequest(SimulationEvaluationRequestDTO.newBuilder()
                                     .setName(message.name)
                                     .putAllInputVector(message.inputVector)
                                     .build()
                             )
                         }
                         is OptimizerRequestMessage.SimulationCancelRequest -> {
-                            wrapper.setCancelRequest(OptimizerGeneratedQueryDTO.SimulationCancelRequest.newBuilder()
+                            wrapper.setCancelRequest(SimulationCancelRequestDTO.newBuilder()
                                     .setName(message.name)
                                     .build()
                             )
                         }
                         is OptimizerRequestMessage.RunStartedNotification -> {
-                            wrapper.setOptimizationStartedNotification(OptimizerGeneratedQueryDTO.OptimizationStartedNotification.newBuilder()
+                            wrapper.setOptimizationStartedNotification(OptimizationStartedNotificationDTO.newBuilder()
                                     .setRunID(message.runID.toDTO())
                                     .build()
                             )
                         }
                         is OptimizerRequestMessage.RunFinishedNotification -> {
-                            wrapper.setOptimizationFinishedNotification(OptimizerGeneratedQueryDTO.OptimizationFinishedNotification.newBuilder()
+                            wrapper.setOptimizationFinishedNotification(OptimizationFinishedNotificationDTO.newBuilder()
                                     .setRunID(message.runID.toDTO())
                                     .build()
                             )
                         }
                         is OptimizerRequestMessage.RunNotStartedNotification -> {
-                            wrapper.setOptimizationNotStartedNotification(OptimizerGeneratedQueryDTO.OptimizationFailedToStartNotification.newBuilder()
+                            wrapper.setOptimizationNotStartedNotification(OptimizationFailedToStartNotificationDTO.newBuilder()
                                     .addAllIssues(message.issues)
                                     .build()
                             )
                         }
+                        is OptimizerRequestMessage.ExpensivePointFoundNotification -> {
+                            wrapper.setDesignIterationCompletedNotification(DesignIterationCompletedNotificationDTO.newBuilder()
+                                .setDesignPoint(designRowDTO {
+                                    inputs += message.point.inputs
+                                    outputs += message.point.outputs
+                                    isFeasible = message.point.isFeasible!!
+                                    isFrontier = message.point.isFrontier!!
+                                }))
+                        }
                     }.build()
 
                     responseObserver.onNext(dto)
-                } catch(ex: Exception){
+                }
+                catch(ex: Exception){
                     throw RuntimeException("error while converting message=$message", ex)
                 }
 
@@ -181,19 +191,19 @@ class OptimizerEndpoint(
                     inputs = request.problemDefinition.inputsList.map { inputDTO ->
 
                         val lowerBound = when (inputDTO.domainCase!!) {
-                            PrototypeInputParameter.DomainCase.CONTINUOUS -> inputDTO.continuous.lowerBound
-                            PrototypeInputParameter.DomainCase.DISCRETE_RANGE -> inputDTO.discreteRange.lowerBound
-                            PrototypeInputParameter.DomainCase.DOMAIN_NOT_SET -> TODO()
+                            PrototypeInputParameterDTO.DomainCase.CONTINUOUS -> inputDTO.continuous.lowerBound
+                            PrototypeInputParameterDTO.DomainCase.DISCRETE_RANGE -> inputDTO.discreteRange.lowerBound
+                            PrototypeInputParameterDTO.DomainCase.DOMAIN_NOT_SET -> TODO()
                         }
                         val upperBound = when (inputDTO.domainCase!!) {
-                            PrototypeInputParameter.DomainCase.CONTINUOUS -> inputDTO.continuous.upperBound
-                            PrototypeInputParameter.DomainCase.DISCRETE_RANGE -> inputDTO.discreteRange.upperBound
-                            PrototypeInputParameter.DomainCase.DOMAIN_NOT_SET -> TODO()
+                            PrototypeInputParameterDTO.DomainCase.CONTINUOUS -> inputDTO.continuous.upperBound
+                            PrototypeInputParameterDTO.DomainCase.DISCRETE_RANGE -> inputDTO.discreteRange.upperBound
+                            PrototypeInputParameterDTO.DomainCase.DOMAIN_NOT_SET -> TODO()
                         }
                         val stepSize = when (inputDTO.domainCase!!) {
-                            PrototypeInputParameter.DomainCase.CONTINUOUS -> null
-                            PrototypeInputParameter.DomainCase.DISCRETE_RANGE -> inputDTO.discreteRange.stepSize
-                            PrototypeInputParameter.DomainCase.DOMAIN_NOT_SET -> TODO()
+                            PrototypeInputParameterDTO.DomainCase.CONTINUOUS -> null
+                            PrototypeInputParameterDTO.DomainCase.DISCRETE_RANGE -> inputDTO.discreteRange.stepSize
+                            PrototypeInputParameterDTO.DomainCase.DOMAIN_NOT_SET -> TODO()
                         }
 
                         Input(
@@ -206,7 +216,7 @@ class OptimizerEndpoint(
                     objectives = request.problemDefinition.objectivesList.map { objectiveDTO ->
                         Output(name = objectiveDTO.name)
                     },
-                    outputs = request.problemDefinition.transformsList.map {
+                    transforms = request.problemDefinition.intermediateTransformsList.map {
                         val compiled = compiler.compile(it.scalarExpression) as BabelExpression
                         require(!compiled.isBooleanExpression)
                         MathExpression(it.outputName, compiled)
@@ -224,11 +234,11 @@ class OptimizerEndpoint(
                                 ?.timeOut?.let { Duration.ofSeconds(it.seconds) + Duration.ofNanos(it.nanos.toLong()) }
 
                         val autoMapping = simDTO
-                                .takeIf { it.mappingCase == StartOptimizationCommandDTO.SimulationNode.MappingCase.AUTO_MAP }
+                                .takeIf { it.mappingCase == SimulationNodeDTO.MappingCase.AUTO_MAP }
                                 ?.autoMap ?: false
 
                         val explicitMapping = simDTO
-                                .takeIf { it.mappingCase == StartOptimizationCommandDTO.SimulationNode.MappingCase.MAPPING_TABLE }
+                                .takeIf { it.mappingCase == SimulationNodeDTO.MappingCase.MAPPING_TABLE }
                                 ?.mappingTable
 
                         Simulation(
@@ -237,8 +247,8 @@ class OptimizerEndpoint(
                                 outputs = simDTO.outputsList,
                                 timeOut = timeOut,
                                 autoMap = autoMapping,
-                                inputMapping = explicitMapping?.inputsMap,
-                                outputMapping = explicitMapping?.outputsMap
+                                inputMapping = explicitMapping?.inputsMap?.mapValues { it.value.value },
+                                outputMapping = explicitMapping?.outputsMap?.mapValues { it.value.value }
                         )
                     },
                     settings = request.settings.run { OptimizationSettings(
@@ -246,7 +256,7 @@ class OptimizerEndpoint(
                             iterationCount = if(hasIterationCount()) iterationCount.value else null,
                             targetObjectiveValue = if(hasTargetObjectiveValue()) targetObjectiveValue.value else null
                     )},
-                    seedPoints = request.seedPointsList.map { ExpensivePointRow(it.inputsList, it.outputsList, it.isFeasible) }
+                    seedPoints = request.seedPointsList.map { ExpensivePointRow(it.inputsList, it.outputsList, null, null) }
             )
 
             runBlocking<Unit> { optimizationActor.send(startMessage) }
@@ -285,22 +295,17 @@ class OptimizerEndpoint(
 
         check(state is State.Idle)
 
-        val result = model.getValue(UUID.fromString(request.runID.value))
+        val result: RunResult = model.getValue(UUID.fromString(request.runID.value))
 
         OptimizationResultsResponseDTO.newBuilder()
                 .setRunID(result.uuid.toDTO())
                 .addAllInputColumns(result.inputs)
                 .addAllOutputColumns(result.outputs)
-                .addAllPoints(result.points.map { point -> DesignRow.newBuilder()
+                .addAllPoints(result.points.map { point -> DesignRowDTO.newBuilder()
                         .addAllInputs(point.inputs)
                         .addAllOutputs(point.outputs)
-                        .setIsFeasible(point.isFeasible)
-                        .build()
-                })
-                .addAllFrontier(result.frontier.map { frontierPoint -> DesignRow.newBuilder()
-                        .addAllInputs(frontierPoint.inputs)
-                        .addAllOutputs(frontierPoint.outputs)
-                        .setIsFeasible(frontierPoint.isFeasible)
+                        .setIsFeasible(point.isFeasible!!)
+                        .setIsFrontier(point.isFrontier!!)
                         .build()
                 })
                 .build()
@@ -313,4 +318,4 @@ private inline fun <reified T> checkIs(instance: Any): T {
     return instance as T
 }
 
-private fun UUID.toDTO(): UUIDDto = UUIDDto.newBuilder().setValue(this.toString()).build()
+private fun UUID.toDTO(): UUIDDTO = UUIDDTO.newBuilder().setValue(this.toString()).build()

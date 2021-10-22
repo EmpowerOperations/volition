@@ -49,7 +49,7 @@ class Tests {
 
         val str = consoleAltBytes.toString("utf-8")
 
-        assertThat(str.trim()).contains("Volition API 1.0")
+        assertThat(str.trim()).contains("Volition API 1.2")
     }
 
     @Test fun `when running a single var single simulation optimization should optimize normally`() = runBlocking<Unit> {
@@ -61,23 +61,23 @@ class Tests {
         // this is just about the smallest optimization possible:
         // A single variable, single objective, unconstrained function.
         val startOptimizationRequest = StartOptimizationCommandDTO.newBuilder()
-                .setProblemDefinition(StartOptimizationCommandDTO.ProblemDefinition.newBuilder()
-                        .addInputs(PrototypeInputParameter.newBuilder()
+                .setProblemDefinition(ProblemDefinitionDTO.newBuilder()
+                        .addInputs(PrototypeInputParameterDTO.newBuilder()
                                 .setName("x1")
-                                .setContinuous(PrototypeInputParameter.Continuous.newBuilder()
+                                .setContinuous(ContinuousDTO.newBuilder()
                                         .setLowerBound(1.0)
                                         .setUpperBound(5.0)
                                         .build()
                                 )
                                 .build()
                         )
-                        .addObjectives(PrototypeOutputParameter.newBuilder()
+                        .addObjectives(PrototypeOutputParameterDTO.newBuilder()
                                 .setName("f1")
                                 .build()
                         )
                         .build()
                 )
-                .addNodes(StartOptimizationCommandDTO.SimulationNode.newBuilder()
+                .addNodes(SimulationNodeDTO.newBuilder()
                         .setAutoMap(true) //by default, optimizers will not assume that a tool's input 'x1'
                                           // is the same as the optimization variable 'x1'. Set 'autoMap' to use a name-matching system.
                                           // some characters are illegal for variable names, eg 'x*1' is not a legal name.
@@ -142,6 +142,7 @@ class Tests {
                     OPTIMIZATION_NOT_STARTED_NOTIFICATION -> {
                         TODO("optimization didn't start because: ${optimizerRequest.optimizationNotStartedNotification.issuesList.joinToString()}")
                     }
+                    DESIGN_ITERATION_COMPLETED_NOTIFICATION -> Unit
                 }
             }}
 
@@ -164,8 +165,7 @@ class Tests {
         val results = sendAndAwaitResponse(service::requestRunResult)(OptimizationResultsQueryDTO.newBuilder().setRunID(run.runID).build())
 
         assertThat(results.pointsList.toList()).hasSize(5)
-        assertThat(results.frontierList.toList()).hasSize(1)
-        assertThat(results.pointsList.toList()).contains(results.frontierList.single())
+        assertThat(results.pointsList.filter { it.isFrontier }).hasSize(1)
         // this is a very weak set of assertions, you can see more details about whats in these results
         // in the transaction log below.
     }
@@ -357,22 +357,22 @@ class Tests {
         val fifthIteration = CompletableDeferred<Unit>()
 
         val startRequest = StartOptimizationCommandDTO.newBuilder()
-                .setProblemDefinition(StartOptimizationCommandDTO.ProblemDefinition.newBuilder()
+                .setProblemDefinition(ProblemDefinitionDTO.newBuilder()
                         // this test is more complex than the above test because:
                         // 1. it uses two variables instead of one
                         // 2. it uses a constraint
                         .addAllInputs(listOf(
-                                PrototypeInputParameter.newBuilder()
+                                PrototypeInputParameterDTO.newBuilder()
                                         .setName("x1")
-                                        .setContinuous(PrototypeInputParameter.Continuous.newBuilder()
+                                        .setContinuous(ContinuousDTO.newBuilder()
                                                 .setLowerBound(1.0)
                                                 .setUpperBound(5.0)
                                                 .build()
                                         )
                                         .build(),
-                                PrototypeInputParameter.newBuilder()
+                                PrototypeInputParameterDTO.newBuilder()
                                         .setName("x2")
-                                        .setContinuous(PrototypeInputParameter.Continuous.newBuilder()
+                                        .setContinuous(ContinuousDTO.newBuilder()
                                                 .setLowerBound(1.0)
                                                 .setUpperBound(5.0)
                                                 .build()
@@ -380,23 +380,25 @@ class Tests {
                                         .build()
                         ))
                         .addAllObjectives(listOf(
-                                PrototypeOutputParameter.newBuilder()
+                                PrototypeOutputParameterDTO.newBuilder()
                                         .setName("f1")
                                         .build()
                         ))
-                        .addConstraints(BabelConstraint.newBuilder()
+                        .addConstraints(BabelConstraintDTO.newBuilder()
                                 .setOutputName("c1")
                                 .setBooleanExpression("x1 < x2")
                                 .build())
                         .build()
                 )
-                .addNodes(StartOptimizationCommandDTO.SimulationNode.newBuilder()
+                .addNodes(SimulationNodeDTO.newBuilder()
                         .setAutoMap(true)
                         .addInputs("x1").addInputs("x2")
                         .addOutputs("f1")
                         .build()
                 )
                 .build()
+
+        var finishedPoints: List<DesignRowDTO> = emptyList()
 
         //act
         service.startOptimization(startRequest, object: StreamObserver<OptimizerGeneratedQueryDTO>{
@@ -467,6 +469,7 @@ class Tests {
                         TODO("optimization didn't start because: ${optimizerRequest.optimizationNotStartedNotification.issuesList.joinToString()}")
                     }
                     PURPOSE_NOT_SET -> TODO("unknown request $optimizerRequest")
+                    DESIGN_ITERATION_COMPLETED_NOTIFICATION -> finishedPoints += optimizerRequest.designIterationCompletedNotification.designPoint
                 } as Any
             }}
 
@@ -490,8 +493,9 @@ class Tests {
 
         assertThat(results).isNotNull()
         assertThat(results.pointsList.toList()).hasSize(5)
-        assertThat(results.frontierList.toList()).hasSize(1)
-        assertThat(results.pointsList.toList()).contains(results.frontierList.single())
+        assertThat(results.pointsList.filter { it.isFrontier }).hasSize(1)
+
+        assertThat(finishedPoints).isEqualTo(results.pointsList)
 
         //check that the constraint wasn't violated on any of the points
         for(point in results.pointsList){
@@ -738,22 +742,22 @@ class Tests {
     @Test fun `when using seed data should run appropriately`() = runBlocking<Unit>() {
         //act
         val startRequest = StartOptimizationCommandDTO.newBuilder()
-            .setProblemDefinition(StartOptimizationCommandDTO.ProblemDefinition.newBuilder()
+            .setProblemDefinition(ProblemDefinitionDTO.newBuilder()
                 // this test is more complex than the above test because:
                 // 1. it uses two variables instead of one
                 // 2. it uses a constraint
                 .addAllInputs(listOf(
-                    PrototypeInputParameter.newBuilder()
+                    PrototypeInputParameterDTO.newBuilder()
                         .setName("x1")
-                        .setContinuous(PrototypeInputParameter.Continuous.newBuilder()
+                        .setContinuous(ContinuousDTO.newBuilder()
                             .setLowerBound(1.0)
                             .setUpperBound(5.0)
                             .build()
                         )
                         .build(),
-                    PrototypeInputParameter.newBuilder()
+                    PrototypeInputParameterDTO.newBuilder()
                         .setName("x2")
-                        .setContinuous(PrototypeInputParameter.Continuous.newBuilder()
+                        .setContinuous(ContinuousDTO.newBuilder()
                             .setLowerBound(1.0)
                             .setUpperBound(5.0)
                             .build()
@@ -761,22 +765,22 @@ class Tests {
                         .build()
                 ))
                 .addAllObjectives(listOf(
-                    PrototypeOutputParameter.newBuilder()
+                    PrototypeOutputParameterDTO.newBuilder()
                         .setName("f1")
                         .build()
                 ))
                 .build()
             )
-            .addNodes(StartOptimizationCommandDTO.SimulationNode.newBuilder()
+            .addNodes(SimulationNodeDTO.newBuilder()
                 .setAutoMap(true)
                 .addInputs("x1").addInputs("x2")
                 .addOutputs("f1")
                 .build()
             )
-            .setSettings(StartOptimizationCommandDTO.OptimizationSettings.newBuilder()
+            .setSettings(OptimizationSettingsDTO.newBuilder()
                 .setIterationCount(UInt32Value.of(5))
             )
-            .addSeedPoints(DesignRow.newBuilder()
+            .addSeedPoints(SeedRowDTO.newBuilder()
                 .addAllInputs(listOf(2.0, 3.0))
                 .addAllOutputs(listOf(2.5))
             )
@@ -818,7 +822,7 @@ class Tests {
                     OPTIMIZATION_FINISHED_NOTIFICATION -> {
                         val id = optimizerRequest.optimizationFinishedNotification.runID.value
                         val request = OptimizationResultsQueryDTO.newBuilder()
-                            .setRunID(UUID.newBuilder().setValue(id.toString()))
+                            .setRunID(UUIDDTO.newBuilder().setValue(id.toString()))
                             .build()
                         results = service::requestRunResult.send(request)
                         resultID.complete(java.util.UUID.fromString(id))
@@ -828,6 +832,7 @@ class Tests {
                         TODO("optimization didn't start because: ${optimizerRequest.optimizationNotStartedNotification.issuesList.joinToString()}")
                     }
                     PURPOSE_NOT_SET -> TODO("unknown request $optimizerRequest")
+                    DESIGN_ITERATION_COMPLETED_NOTIFICATION -> Unit
                 } as Any
             }}
 
@@ -843,12 +848,8 @@ class Tests {
         val id = resultID.await()
 
         //assert
-        assertThat(results!!.pointsList.first()).isEqualTo(DesignRow.newBuilder()
-            .addAllInputs(listOf(2.0, 3.0))
-            .addAllOutputs(listOf(2.5))
-            .setIsFeasible(true)
-            .build()
-        )
+        assertThat(results!!.pointsList.first().inputsList).isEqualTo(listOf(2.0, 3.0))
+        assertThat(results!!.pointsList.first().outputsList).isEqualTo(listOf(2.5))
     }
 }
 

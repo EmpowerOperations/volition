@@ -15,14 +15,13 @@ class RunResult(
         val uuid : UUID,
         val inputs: List<String>,
         val outputs: List<String>,
-        val resultMessage: String,
         val points: List<ExpensivePointRow>,
-        val frontier: List<ExpensivePointRow>
 )
 data class ExpensivePointRow(
         val inputs: List<Double>,
         val outputs: List<Double>,
-        val isFeasible: Boolean
+        val isFeasible: Boolean?, //nullable for seed values
+        var isFrontier: Boolean? //mutable to save a bunch of copying
 )
 fun ExpensivePointRow.dominates(right: ExpensivePointRow): Boolean {
     val left = this

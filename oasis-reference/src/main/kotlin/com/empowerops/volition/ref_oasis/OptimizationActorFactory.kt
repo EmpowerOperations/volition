@@ -1,5 +1,6 @@
 package com.empowerops.volition.ref_oasis
 
+import com.empowerops.volition.dto.DesignRowDTO
 import com.google.common.eventbus.EventBus
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.SendChannel
@@ -19,6 +20,7 @@ sealed class OptimizerRequestMessage {
     data class RunFinishedNotification(val name: String, val runID: UUID): OptimizerRequestMessage()
 
     data class RunNotStartedNotification(val issues: List<String>): OptimizerRequestMessage()
+    data class ExpensivePointFoundNotification(val point: ExpensivePointRow): OptimizerRequestMessage()
 }
 
 sealed class SimulationProvidedMessage {
@@ -43,13 +45,13 @@ sealed class SimulationProvidedMessage {
     ): SimulationProvidedMessage()
 
     data class StartOptimizationRequest(
-            val inputs: List<Input>,
-            val outputs: List<MathExpression>,
-            val constraints: List<MathExpression>,
-            val objectives: List<Output>,
-            val nodes: List<Simulation>,
-            val seedPoints: List<ExpensivePointRow>,
-            val settings: OptimizationSettings
+        val inputs: List<Input>,
+        val transforms: List<MathExpression>,
+        val constraints: List<MathExpression>,
+        val objectives: List<Output>,
+        val nodes: List<Simulation>,
+        val seedPoints: List<ExpensivePointRow>,
+        val settings: OptimizationSettings
     ): SimulationProvidedMessage()
 }
 
@@ -70,6 +72,8 @@ class OptimizationActorFactory(
 
     private val logger = Logger.getLogger(OptimizationActorFactory::class.qualifiedName)
 
+    //TODO: replace with
+    // fun make(input: ReceiveChannel<SimulationProvidedMessage>): ReceieveChannel<OptimizerRequestMessage> = scope.produce { ...
     fun make(output: SendChannel<OptimizerRequestMessage>): OptimizationActor = scope.actor(start = CoroutineStart.LAZY) {
         val runID = UUID.randomUUID()
         var stopRequest: SimulationProvidedMessage.StopOptimization? = null
@@ -87,7 +91,7 @@ class OptimizationActorFactory(
         if(startMessage.seedPoints.any { it.inputs.size != startMessage.inputs.size }){
             issues += "some seed points dont match the number of input parameters"
         }
-        if(startMessage.seedPoints.any { it.outputs.size != startMessage.outputs.size }){
+        if(startMessage.seedPoints.any { it.outputs.size != startMessage.run { transforms.size + objectives.size + constraints.size }}){
             issues += "some seed points dont match the number of output parameters"
         }
         //...etc
@@ -100,10 +104,15 @@ class OptimizationActorFactory(
             output.send(OptimizerRequestMessage.RunStartedNotification(sim.name, runID))
             eventBus.post(RunStartedEvent(runID))
 
-            val completedDesigns = startMessage.seedPoints.toMutableList()
-            val frontier = ArrayList<ExpensivePointRow>()
-
-            startMessage.seedPoints.minBy { it.outputs.first() }?.let { frontier += it }
+            val inputNames = startMessage.inputs.map { it.name }
+            val completedDesigns = startMessage.seedPoints
+                .map { seed ->
+                    val inputVector = inputNames.zip(seed.inputs).toMap()
+                    val isActuallyFeasible = startMessage.constraints.all { it.expression.evaluate(inputVector) <= 0.0 }
+                    val isActuallyFrontier = ! startMessage.seedPoints.any { it.dominates(seed) }
+                    ExpensivePointRow(seed.inputs, seed.outputs, isActuallyFeasible, isActuallyFrontier)
+                }
+                .toMutableList()
 
             val targetIterationCount = startMessage.settings.iterationCount ?: Int.MAX_VALUE
             var iterationCount = 0
@@ -165,20 +174,30 @@ class OptimizationActorFactory(
 
                             if(stopRequest == null) {
 
+                                val inputVector = startMessage.inputs
+                                    .map { it.name }
+                                    .associateWith { inputVector.getValue(it) }
+
+                                val passesConstraints = startMessage.constraints
+                                    .all { it.expression.evaluate(inputVector) <= 0.0 }
+
                                 val newPoint = ExpensivePointRow(
-                                        startMessage.inputs.map { inputVector.getValue(it.name) },
+                                        inputVector.values.toList(),
                                         startMessage.objectives.map { response.outputVector.getValue(it.name) },
-                                        true
+                                        isFeasible = passesConstraints,
+                                        isFrontier = null //compute this below
                                 )
+
                                 completedDesigns += newPoint
 
-                                frontier += newPoint
-
-                                frontier.removeIf { existingFrontierPoint ->
-                                    frontier.toTypedArray().any { it.dominates(existingFrontierPoint) }
+                                for(design in completedDesigns){
+                                    design.isFrontier = completedDesigns.none { it.dominates(design) }
                                 }
 
                                 optimizer.addCompleteDesign(inputVector + response.outputVector)
+
+                                output.send(OptimizerRequestMessage.ExpensivePointFoundNotification(newPoint))
+
                             }
 
                             Unit
@@ -204,19 +223,15 @@ class OptimizationActorFactory(
                 iterationCount += 1
             }
 
-            check(stopRequest != null)
-
             val runResult = RunResult(
                     runID,
-                    startMessage.inputs.map { it.name },
+                    inputNames,
                     startMessage.objectives.map { it.name },
-                    "OK",
                     completedDesigns,
-                    frontier
             )
 
             model[runID] = runResult
-            stopRequest.runID.complete(runID)
+            stopRequest?.runID?.complete(runID)
         }
         catch(ex: CancellationException){
             logger.warning("optimization actor was cancelled, and is now quitting.")

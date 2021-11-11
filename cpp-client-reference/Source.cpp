@@ -26,6 +26,8 @@ using empowerops::volition::dto::SimulationEvaluationCompletedResponseDTO;
 
 int main() {
 
+	std::cout << "running cpp volition sample client!" << std::endl;
+
 	auto channel = grpc::CreateChannel("localhost:5550", grpc::InsecureChannelCredentials());
 	auto stub = UnaryOptimizer::NewStub(channel);
 

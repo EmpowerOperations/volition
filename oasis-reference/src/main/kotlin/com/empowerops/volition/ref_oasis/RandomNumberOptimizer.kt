@@ -4,15 +4,10 @@ import com.empowerops.babel.BabelExpression
 import kotlin.random.Random
 
 interface Optimizer {
-    fun addCompleteDesign(expensivePoint: Map<String, Double>)
     fun generateInputs(inputs: List<Input>, constraints: List<BabelExpression>): Map<String, Double>
 }
 
 class RandomNumberOptimizer : Optimizer {
-
-    override fun addCompleteDesign(expensivePoint: Map<String, Double>) {
-    }
-
     override fun generateInputs(inputs: List<Input>, constraints: List<BabelExpression>): Map<String, Double> {
         var result: Map<String, Double>
 
@@ -28,9 +23,6 @@ class RandomNumberOptimizer : Optimizer {
 }
 
 class FixValueOptimizer(val value: Double) : Optimizer {
-    override fun addCompleteDesign(expensivePoint: Map<String, Double>) {
-        TODO("Not yet implemented")
-    }
 
     override fun generateInputs(inputs: List<Input>, constraints: List<BabelExpression>): Map<String, Double> = inputs.associate {
         it.name to value

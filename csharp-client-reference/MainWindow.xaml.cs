@@ -3,6 +3,7 @@ using Google.Protobuf.Collections;
 using Grpc.Core;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,8 +21,6 @@ namespace EmpowerOps.Volition.RefClient
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly UnaryOptimizer.UnaryOptimizerClient _client;
-        private readonly Channel _channel;
         private readonly IEvaluator _randomNumberEvaluator = new RandomNumberEvaluator();
         private readonly TaskFactory _uiTaskFactory;
         
@@ -32,17 +31,20 @@ namespace EmpowerOps.Volition.RefClient
         private readonly List<Guid> _runIDs = new List<Guid>();
         
         private AsyncServerStreamingCall<OptimizerGeneratedQueryDTO> _requests;
-        private ChannelState _channelState;
-
+     
         private string _name = "";
         private int? _timeoutSecs = null;
 
-        private Guid _activeRunId = Guid.Empty;
+        private Guid? _activeRunId = null;
 
         private const string ServerPrefix = "Server:";
         private const string CommandPrefix = ">";
 
         private int _addCounter = 1;
+
+        private UnaryOptimizer.UnaryOptimizerClient _client;
+        private Channel _channel;
+        private ChannelState? _channelState;
 
         public string Version 
         { 
@@ -55,8 +57,6 @@ namespace EmpowerOps.Volition.RefClient
         public MainWindow()
         {
             //https://grpc.io/docs/quickstart/csharp.html#update-the-client
-            _channel = new Channel("localhost:5550", ChannelCredentials.Insecure);
-            _client = new UnaryOptimizer.UnaryOptimizerClient(_channel);
             _uiTaskFactory = new TaskFactory(TaskScheduler.FromCurrentSynchronizationContext());
             InitializeComponent();
             Window.Title += Assembly.GetExecutingAssembly().GetName().Version.ToString();
@@ -76,64 +76,60 @@ namespace EmpowerOps.Volition.RefClient
 
         private async void StartOptimization_Click(object sender, RoutedEventArgs e)
         {
+            _channel = new Channel("localhost:"+Port.Text, ChannelCredentials.Insecure);
+            _client = new UnaryOptimizer.UnaryOptimizerClient(_channel);
+            UpdateConnectionStatusAsync();
+
             await Log($"{CommandPrefix} Start Requested");
             try
             {
-                var problemDef = new StartOptimizationCommandDTO.Types.ProblemDefinition();
-
-                foreach (Input input in _inputSource)
+                var problemDef = new ProblemDefinitionDTO()
                 {
-                    problemDef.Inputs.Add(new PrototypeInputParameter()
+                    Inputs =
                     {
-                        Name = input.Name,
-                        Continuous = new PrototypeInputParameter.Types.Continuous
+                        _inputSource.Cast<Input>().Select(input => new InputParameterDTO()
                         {
-                            LowerBound = input.LowerBound,
-                            UpperBound = input.UpperBound
-                        }
-                    });
-                }
-
-                foreach (Constraint userConstraint in _constraintSource)
-                {
-                    problemDef.Constraints.Add(new BabelConstraint()
+                            Name = input.Name,
+                            Continuous = new ContinuousDTO()
+                            {
+                                LowerBound = input.LowerBound,
+                                UpperBound = input.UpperBound
+                            }
+                        })
+                    },
+                    Evaluables =
                     {
-                        BooleanExpression = userConstraint.Expression,
-                        OutputName = userConstraint.Name
-                    });
-                }
-
-                foreach (Output output in _outputSource)
-                {
-                    problemDef.Objectives.Add(new PrototypeOutputParameter()
-                    {
-                        Name = output.Name
-                    });
-                }
-
-                var simulationNode = new StartOptimizationCommandDTO.Types.SimulationNode()
-                {
-                    Name = RegName.Text,
-                    AutoMap = true
+                        new EvaluableNodeDTO() //only 1 simulation node
+                        {
+                            Simulation = new SimulationNodeDTO()
+                            {
+                                Inputs = { _inputSource.Cast<Input>().Select(it => new SimulationInputParameterDTO() { Name = it.Name }).ToList() },
+                                Outputs = { _outputSource.Cast<Output>().Select(it => new SimulationOutputParameterDTO { Name = it.Name }).ToList() },
+                                Name = RegName.Text,
+                                AutoMap = true
+                            } 
+                        },
+                        _constraintSource.Cast<Constraint>().Select(it => new EvaluableNodeDTO()
+                        {
+                            Constraint = new BabelConstraintNodeDTO()
+                            {
+                                OutputName = it.Name,
+                                BooleanExpression = it.Expression
+                            }
+                        })
+                    }
                 };
-                simulationNode.Inputs.AddRange(_inputSource.Cast<Input>().Select(it => it.Name).ToList());
-                simulationNode.Outputs.AddRange(_outputSource.Cast<Output>().Select(it => it.Name).ToList());
-                
-                var settings = new StartOptimizationCommandDTO.Types.OptimizationSettings();
+
+                var settings = new OptimizationSettingsDTO();
 
                 if(_timeoutSecs != null)
                 {
                     settings.RunTime = new Google.Protobuf.WellKnownTypes.Duration() { Seconds = _timeoutSecs ?? -1 };
-                };
-
+                }
 
                 _requests = _client.StartOptimization(new StartOptimizationCommandDTO
                 {
                     ProblemDefinition = problemDef,
-                    Nodes =
-                    {
-                        simulationNode
-                    },
                     Settings = settings
                 });
 
@@ -156,7 +152,7 @@ namespace EmpowerOps.Volition.RefClient
                 }
                 else throw new Exception($"bad protocol state, expected started-message or not-started-message, but got {next}");
 
-                await _uiTaskFactory.StartNew(async () => await HandlingRequestsAsync(_requests));
+                _uiTaskFactory.StartNew(async () => await HandlingRequestsAsync(_requests));
             }
             catch (RpcException exception)
             {
@@ -193,15 +189,22 @@ namespace EmpowerOps.Volition.RefClient
 
         private async void StopOptimization_Click(object sender, RoutedEventArgs e)
         {
-            await Log($"{CommandPrefix} Request Stop - ID:{_activeRunId}");
-            var stopOptimizationResponseDto = await _client.StopOptimizationAsync(new StopOptimizationCommandDTO()
+            try
             {
-                Name = _name,
-                RunID = _activeRunId.toUuidDto()
-            });
-            
-            await Log($"{ServerPrefix} Stop Request received - Stopping RunID:{stopOptimizationResponseDto.RunID}");
-            _activeRunId = Guid.Empty;
+                await Log($"{CommandPrefix} Request Stop - ID:{_activeRunId}");
+                var stopOptimizationResponseDto = await _client.StopOptimizationAsync(new StopOptimizationCommandDTO()
+                {
+                    Name = _name,
+                    RunID = _activeRunId?.toUuidDto()
+                });
+
+                await Log($"{ServerPrefix} Stop Request received - Stopping RunID:{stopOptimizationResponseDto.RunID}");
+                _activeRunId = null;
+            }
+            catch (Exception ex)
+            {
+                await Log($"{ServerPrefix} Error invoke {nameof(_client.StopOptimization)} Exception: {ex}");
+            }
         }
 
         private void RequestResult_Click(object sender, RoutedEventArgs e)
@@ -216,7 +219,6 @@ namespace EmpowerOps.Volition.RefClient
             await Log($"{CommandPrefix} Request run result - ID:{runId}");
             return await _client.RequestRunResultAsync(new OptimizationResultsQueryDTO()
             {
-                Name = _name,
                 RunID = runId.toUuidDto()
             });
         }
@@ -225,13 +227,13 @@ namespace EmpowerOps.Volition.RefClient
         {
             return _uiTaskFactory.StartNew(async () =>
             {
-                _channelState = _channel.State;
-                ConnectionStatus.Text = $"Connection: {_channelState.ToString()}";
-                while (true)
+                ChannelState channelState = _channel?.State ?? ChannelState.Idle;
+                ConnectionStatus.Text = $"Connection: {channelState}";
+                while (_channel != null)
                 {
-                    await _channel.WaitForStateChangedAsync(_channelState);
-                    _channelState = _channel.State;
-                    ConnectionStatus.Text = $"Connection: {_channelState.ToString()}";
+                    await _channel?.WaitForStateChangedAsync(channelState);
+                    channelState = _channel.State;
+                    ConnectionStatus.Text = $"Connection: {channelState}";
                 }                
             });
         }
@@ -273,12 +275,13 @@ namespace EmpowerOps.Volition.RefClient
             {
                 switch (request.PurposeCase)
                 {
+                    case OptimizerGeneratedQueryDTO.PurposeOneofCase.OptimizationStartedNotification:
+                        _activeRunId = request.OptimizationStartedNotification.RunID.toGuid();
+                        break;
                     case OptimizerGeneratedQueryDTO.PurposeOneofCase.EvaluationRequest:
-                        {
-                            await Log($"{ServerPrefix} Request Evaluation");
-                            await EvaluateAsync(request);
-                            break;
-                        }
+                        await Log($"{ServerPrefix} Request Evaluation");
+                        await EvaluateAsync(request);
+                        break;
                     case OptimizerGeneratedQueryDTO.PurposeOneofCase.CancelRequest:
                         await Log($"{ServerPrefix} Request Cancel");
                         _randomNumberEvaluator.Cancel();
@@ -383,9 +386,10 @@ namespace EmpowerOps.Volition.RefClient
         
         private async Task Log(string message)
         {
-
             LogInfoTextBox.Text = LogInfoTextBox.Text += message + "\n";
             LogInfoTextBox.ScrollToEnd();
+            Debug.WriteLine(message);
+            
             if (_channel.State == ChannelState.Ready && ForwardMessageCheckBox.IsChecked.GetValueOrDefault(false))
             {
                 await _client.OfferEvaluationStatusMessageAsync(new StatusMessageCommandDTO() { Name = _name ?? "no_name", Message = message });

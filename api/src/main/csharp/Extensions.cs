@@ -1,5 +1,5 @@
 using System;
-using UuidDto = EmpowerOps.Volition.Dto.UUID;
+using UuidDto = EmpowerOps.Volition.Dto.UUIDDTO;
 
 namespace EmpowerOps.Volition.Api
 {

@@ -15,13 +15,13 @@ import java.util.concurrent.TimeUnit
 import java.util.jar.Manifest
 import kotlin.collections.LinkedHashMap
 
-fun main(args: Array<String>) = runBlocking<Unit> { mainAsync(args)?.join() }
+fun main(args: Array<String>) = runBlocking<Unit> { mainAsync(args)?.job?.join() }
 
-fun mainAsync(args: Array<String>): Job? {
+fun mainAsync(args: Array<String>): OptimizerCLI? {
     val console: PrintStream = if(System.getProperty("com.empowerops.volition.ref_oasis.useConsoleAlt")?.toLowerCase() == "true") consoleAlt else System.out
     val cli = OptimizerCLI(console)
     val result = call(cli, console, *args)
-    return result
+    return if(result != null) cli else null
 }
 
 class OptimizerCLICoroutineScope: CoroutineScope {
@@ -36,25 +36,33 @@ class OptimizerCLICoroutineScope: CoroutineScope {
 )
 class OptimizerCLI(val console: PrintStream) : Callable<Job> {
 
-    @Option(names = ["-p", "--port"], paramLabel = "PORT", description = ["Run optimizer with specified port, when not specified, port number will default to 5550"])
+    @Option(
+        names = ["-p", "--port"],
+        paramLabel = "PORT",
+        description = ["Run optimizer with specified port, when not specified, port number will default to 5550"]
+    )
     var port: Int = 5550
 
-    private val eventBus = EventBus()
     private val scope: CoroutineScope = OptimizerCLICoroutineScope()
 
-    private val job = scope.launch(start = CoroutineStart.LAZY) {
+    val modelService = LinkedHashMap<UUID, RunResult>()
 
-        val modelService = LinkedHashMap<UUID, RunResult>()
-        val optimizerEndpoint = OptimizerEndpoint(
-                modelService,
-                OptimizationActorFactory(this@launch, RandomNumberOptimizer(), modelService, eventBus)
+    private val optimizerEndpoint by lazy {
+        OptimizerEndpoint(
+            modelService,
+            OptimizationActorFactory(scope, RandomNumberOptimizer(), modelService)
         )
-        val server = NettyServerBuilder
-                .forPort(port)
-                .keepAliveTime(12, TimeUnit.HOURS)
-                .addService(ServerInterceptors.intercept(optimizerEndpoint, LoggingInterceptor(System.out::println)))
-                .build()
+    }
 
+    private val server by lazy {
+        NettyServerBuilder
+            .forPort(port)
+            .keepAliveTime(12, TimeUnit.HOURS)
+            .addService(ServerInterceptors.intercept(optimizerEndpoint, LoggingInterceptor(System.out::println)))
+            .build()
+    }
+
+    val job = scope.launch(start = CoroutineStart.LAZY) {
         try {
             // TBD: I'm not sure why I cant simply use coroutineScope {} here,
             // the key that im looking for is that if this job is cancelled
@@ -63,7 +71,7 @@ class OptimizerCLI(val console: PrintStream) : Callable<Job> {
             // it seems to be waiting for awaitTermination()
             async(Dispatchers.IO) {
                 server.start()
-                console.println("Volition Server running")
+                console.println("Volition Server running on port $port")
                 server.awaitTermination()
             }.await()
         }
@@ -78,6 +86,10 @@ class OptimizerCLI(val console: PrintStream) : Callable<Job> {
     }
 
     override fun call(): Job = job.also { it.start() }
+
+    suspend fun stop(){
+        server.shutdownNow()
+    }
 }
 
 class MetaINFVersionProvider: IVersionProvider {

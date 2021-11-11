@@ -6,6 +6,7 @@ import java.time.Duration
 import java.time.LocalDateTime
 import java.util.*
 import java.util.logging.Level
+import kotlin.math.exp
 
 interface IssueFinder{
     fun findIssues() : List<Issue>
@@ -23,17 +24,6 @@ data class ExpensivePointRow(
         val isFeasible: Boolean?, //nullable for seed values
         var isFrontier: Boolean? //mutable to save a bunch of copying
 )
-fun ExpensivePointRow.dominates(right: ExpensivePointRow): Boolean {
-    val left = this
-    if(left === right) return false
-
-    for(index in outputs.indices){
-        if(left.outputs[index] > right.outputs[index]){
-            return false
-        }
-    }
-    return true
-}
 
 data class Input(
         val name: String,
@@ -45,11 +35,6 @@ data class Input(
 data class Output(
         val name: String
         // TBD: current value?
-)
-
-data class MathExpression(
-        val name: String,
-        val expression: BabelExpression
 )
 
 data class Message(
@@ -94,6 +79,13 @@ sealed class EvaluationResult(
     ): EvaluationResult(name, inputs)
 }
 
+sealed class Evaluable()
+
+data class MathExpression(
+    val name: String,
+    val expression: BabelExpression
+): Evaluable()
+
 data class Simulation(
         val name: String,
         val inputs: List<String> = emptyList(),
@@ -102,7 +94,20 @@ data class Simulation(
         val autoMap: Boolean = true,
         val inputMapping: Map<String, ParameterName>? = null,
         val outputMapping: Map<ParameterName, String>? = null
-)
+): Evaluable()
+
+val Evaluable.isConstraint: Boolean get() = when(this){
+    is MathExpression -> expression.isBooleanExpression
+    is Simulation -> false
+}
+val Evaluable.inputs: List<String> get() = when(this){
+    is MathExpression -> expression.staticallyReferencedSymbols.toList()
+    is Simulation -> inputs
+}
+val Evaluable.outputs: List<String> get() = when(this){
+    is MathExpression -> listOf(name)
+    is Simulation -> outputs
+}
 
 data class Issue(val message: String)
 

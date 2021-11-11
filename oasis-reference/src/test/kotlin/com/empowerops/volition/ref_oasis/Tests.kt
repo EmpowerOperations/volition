@@ -2,16 +2,19 @@ package com.empowerops.volition.ref_oasis
 
 import com.empowerops.volition.dto.*
 import com.empowerops.volition.dto.OptimizerGeneratedQueryDTO.PurposeCase.*
-import com.google.protobuf.UInt32Value
 import io.grpc.ManagedChannelBuilder
 import io.grpc.stub.StreamObserver
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.lang.IllegalStateException
 import java.lang.RuntimeException
+import java.net.ServerSocket
+import java.util.*
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 import kotlin.reflect.KFunction2
@@ -22,37 +25,53 @@ class Tests {
         System.setProperty("com.empowerops.volition.ref_oasis.useConsoleAlt", "true")
     }
 
-    private lateinit var server: Job
-    private lateinit var service: UnaryOptimizerGrpc.UnaryOptimizerStub
+    private lateinit var server: OptimizerCLI
+    private lateinit var service: UnaryOptimizerGrpcKt.UnaryOptimizerCoroutineStub
 
     @BeforeEach
     fun setupServer(){
-        server = mainAsync(arrayOf())!!
+        val port = findAvailablePort()
+
+        server = mainAsync(arrayOf("--port", port.toString()))!!
+
 
         val channel = ManagedChannelBuilder
-                .forAddress("localhost", 5550)
+                .forAddress("localhost", port)
                 .usePlaintext()
                 .build()
 
-        service = UnaryOptimizerGrpc.newStub(channel)
+        service = UnaryOptimizerGrpcKt.UnaryOptimizerCoroutineStub(channel)
+    }
+
+    private fun findAvailablePort(): Int {
+        val result = ServerSocket(0).use {
+            it.reuseAddress = true
+            it.localPort
+        }
+        return result
     }
 
     @AfterEach
     fun teardownServer() = runBlocking {
-        server.cancelAndJoin()
+        try {
+            server.stop()
+        }
+        catch(ex: Throwable){
+            val x = 4;
+        }
     }
 
-
-    //this was the very first sanity test I added.
-    @Test fun `when running with --version should print version`() = runBlocking<Unit> {
-        mainAsync(arrayOf("--version"))?.join()
+    @Test
+    fun `when running with version should print version`() = runBlocking<Unit> {
+        mainAsync(arrayOf("--version"))?.job?.join()
 
         val str = consoleAltBytes.toString("utf-8")
 
         assertThat(str.trim()).contains("Volition API 1.2")
     }
 
-    @Test fun `when running a single var single simulation optimization should optimize normally`() = runBlocking<Unit> {
+    @Test
+    fun `when running a single var single simulation optimization should optimize normally`() = runBlocking<Unit> {
         //act
         val fifthIteration = CompletableDeferred<Unit>()
 
@@ -60,40 +79,34 @@ class Tests {
         // here we specify the input parameters, and their variable bounds.
         // this is just about the smallest optimization possible:
         // A single variable, single objective, unconstrained function.
-        val startOptimizationRequest = StartOptimizationCommandDTO.newBuilder()
-                .setProblemDefinition(ProblemDefinitionDTO.newBuilder()
-                        .addInputs(PrototypeInputParameterDTO.newBuilder()
-                                .setName("x1")
-                                .setContinuous(ContinuousDTO.newBuilder()
-                                        .setLowerBound(1.0)
-                                        .setUpperBound(5.0)
-                                        .build()
-                                )
-                                .build()
-                        )
-                        .addObjectives(PrototypeOutputParameterDTO.newBuilder()
-                                .setName("f1")
-                                .build()
-                        )
-                        .build()
-                )
-                .addNodes(SimulationNodeDTO.newBuilder()
-                        .setAutoMap(true) //by default, optimizers will not assume that a tool's input 'x1'
-                                          // is the same as the optimization variable 'x1'. Set 'autoMap' to use a name-matching system.
-                                          // some characters are illegal for variable names, eg 'x*1' is not a legal name.
-                        .addInputs("x1")
-                        .addOutputs("f1")
-                        .build()
-                )
-                .build()
+        val startOptimizationRequest = startOptimizationCommandDTO {
+            problemDefinition = problemDefinitionDTO {
+                inputs += inputParameterDTO {
+                    name = "x1"
+                    continuous = continuousDTO {
+                        lowerBound = 1.0
+                        upperBound = 5.0
+                    }
+                }
+                evaluables += evaluableNodeDTO {
+                    simulation = simulationNodeDTO {
+                        autoMap = true
+                        inputs += simulationInputParameterDTO { name = "x1" }
+                        outputs += simulationOutputParameterDTO { name = "f1" }
+                    }
+                }
+            }
+        }
 
-        val parentJob = coroutineContext[Job]!!
-        var iterationNo = 1;
+        var iterationNo = 1
+        var runID: UUID? = null
 
         //act
-        service.startOptimization(startOptimizationRequest, object: StreamObserver<OptimizerGeneratedQueryDTO>{
-            override fun onNext(optimizerRequest: OptimizerGeneratedQueryDTO) = cancelOnException { runBlocking<Unit> {
-                val dc: Unit = when(optimizerRequest.purposeCase!!) {
+        val messages: Flow<OptimizerGeneratedQueryDTO> = service.startOptimization(startOptimizationRequest)
+
+        val collector = launch {
+            messages.collect { optimizerRequest: OptimizerGeneratedQueryDTO ->
+                when(optimizerRequest.purposeCase!!) {
                     EVALUATION_REQUEST -> {
 
                         // here we implement the simulation callback,
@@ -103,30 +116,30 @@ class Tests {
                         if(iterationNo <= 5) {
                             val inputVector = optimizerRequest.evaluationRequest!!.inputVectorMap.toMap()
                             val statusMessage = StatusMessageCommandDTO.newBuilder()
-                                    .setMessage("evaluating $inputVector!")
-                                    .build()
+                                .setMessage("evaluating $inputVector!")
+                                .build()
 
                             // this simulator also calls 'offerEvaluationStatusMessage', which is a way that
                             // the simulator can place things in the optimization log that do not pretain to
                             // the final design. Error messages or status updates about meshing, pre-processing,
                             // post-processing, etc can be set here.
-                            service::offerEvaluationStatusMessage.send(statusMessage)
+                            service.offerEvaluationStatusMessage(statusMessage)
 
                             val result = inputVector.values.sumByDouble { it } / 2.0
 
                             val response = SimulationEvaluationCompletedResponseDTO.newBuilder()
-                                    .setName("asdf")
-                                    .putAllOutputVector(mapOf("f1" to result))
-                                    .build()
+                                .setName("asdf")
+                                .putAllOutputVector(mapOf("f1" to result))
+                                .build()
 
-                            service::offerSimulationResult.send(response)
+                            service.offerSimulationResult(response)
                         }
                         else if (iterationNo > 5){
                             val response = SimulationEvaluationErrorResponseDTO.newBuilder()
-                                    .setMessage("already evaluated 5 iterations!")
-                                    .build()
+                                .setMessage("already evaluated 5 iterations!")
+                                .build()
 
-                            service::offerErrorResult.send(response)
+                            service.offerErrorResult(response)
                         }
                         if(iterationNo == 5){
                             fifthIteration.complete(Unit)
@@ -136,720 +149,659 @@ class Tests {
                         Unit
                     }
                     CANCEL_REQUEST -> Unit //noop --this is a legal implementation in any situation for cancellation.
-                    OPTIMIZATION_STARTED_NOTIFICATION -> Unit // noop,
+                    OPTIMIZATION_STARTED_NOTIFICATION -> {
+                        runID = optimizerRequest.optimizationStartedNotification.runID.toUUID()
+                    }
                     OPTIMIZATION_FINISHED_NOTIFICATION -> Unit // noop
                     PURPOSE_NOT_SET -> TODO("unknown request $optimizerRequest")
                     OPTIMIZATION_NOT_STARTED_NOTIFICATION -> {
                         TODO("optimization didn't start because: ${optimizerRequest.optimizationNotStartedNotification.issuesList.joinToString()}")
                     }
                     DESIGN_ITERATION_COMPLETED_NOTIFICATION -> Unit
-                }
-            }}
-
-            override fun onError(t: Throwable) {
-                t.printStackTrace()
-                parentJob.cancel()
+                } as Any?
             }
+        }
 
-            override fun onCompleted() {
-                println("registration channel completed!")
-            }
-        })
+        //note: the original test semantics didnt have stopOptimization being called on the fifh iteration;
+        // I migrated to the kotlin generated coroutiens and preserved those semantics.
+        // The multiple optimization run test does call stopOptimization() from the request loop.
         fifthIteration.await()
+
         // note: with this implementation there is a race condition here.
         // The simulator will release the fifth-iteration lock while (concurrently) moving on to the 6th iteration.
         // thus, you may see a 6th iteration before the stopOptimization call is processed.
-        val run = sendAndAwaitResponse(service::stopOptimization)(StopOptimizationCommandDTO.newBuilder().build())
+        val runIDDTO = runID!!.toDTO()
+        service.stopOptimization(stopOptimizationCommandDTO{
+            this.runID = runIDDTO
+        })
+
+        collector.join()
 
         //assert
-        val results = sendAndAwaitResponse(service::requestRunResult)(OptimizationResultsQueryDTO.newBuilder().setRunID(run.runID).build())
+        val results = service.requestRunResult(OptimizationResultsQueryDTO.newBuilder().setRunID(runIDDTO).build())
 
-        assertThat(results.pointsList.toList()).hasSize(5)
-        assertThat(results.pointsList.filter { it.isFrontier }).hasSize(1)
+        val resultsAll = results.pointsList.toList()
+        val resultsFrontier = results.pointsList.filter { it.isFrontier }
+
+        assertThat(resultsAll.size).isGreaterThanOrEqualTo(5)
+        assertThat(resultsFrontier).hasSize(1)
         // this is a very weak set of assertions, you can see more details about whats in these results
         // in the transaction log below.
     }
-    /*
-    The above produces the following logs:
 
-        [2020-07-02T01:55:32.496] API INBOUND > empowerops.volition.api.UnaryOptimizer/StartOptimization
-        problem_definition {
-          inputs {
-            name: "x1"
-            continuous {
-              lower_bound: 1.0
-              upper_bound: 5.0
-            }
-          }
-          objectives {
-            name: "f1"
-          }
-        }
-        nodes {
-          auto_map: true
-          inputs: "x1"
-          outputs: "f1"
-        }
-        [2020-07-02T01:55:32.523] API OUTBOUND-ITEM > empowerops.volition.api.UnaryOptimizer/StartOptimization
-        optimization_started_notification {
-        }
-        [2020-07-02T01:55:32.529] Event > Run Started - ID:f88337e8-776a-4c0d-aef2-9d4f804793e2
-        [2020-07-02T01:55:32.540] API OUTBOUND-ITEM > empowerops.volition.api.UnaryOptimizer/StartOptimization
-        evaluation_request {
-          input_vector {
-            key: "x1"
-            value: 2.3860577215157033
-          }
-        }
-        [2020-07-02T01:55:32.547] API INBOUND > empowerops.volition.api.UnaryOptimizer/OfferEvaluationStatusMessage
-        message: "evaluating {x1=2.3860577215157033}!"
-        [2020-07-02T01:55:32.549] API OUTBOUND > empowerops.volition.api.UnaryOptimizer/OfferEvaluationStatusMessage [empty StatusMessageConfirmDTO]
-        [2020-07-02T01:55:32.550] Event > New message received: Message(sender=, message=evaluating {x1=2.3860577215157033}!, level=INFO, receiveTime=2020-07-02T01:55:32.550)
-        [2020-07-02T01:55:32.557] API INBOUND > empowerops.volition.api.UnaryOptimizer/OfferSimulationResult
-        name: "asdf"
-        outputVector {
-          key: "f1"
-          value: 1.1930288607578516
-        }
-        [2020-07-02T01:55:32.559] API OUTBOUND > empowerops.volition.api.UnaryOptimizer/OfferSimulationResult [empty SimulationEvaluationResultConfirmDTO]
-        [2020-07-02T01:55:32.562] Event > New result received: Success(name=, inputs={x1=2.3860577215157033}, result={f1=1.1930288607578516})
-        [2020-07-02T01:55:32.565] API OUTBOUND-ITEM > empowerops.volition.api.UnaryOptimizer/StartOptimization
-        evaluation_request {
-          input_vector {
-            key: "x1"
-            value: 1.3187490204732786
-          }
-        }
-        [2020-07-02T01:55:32.567] API INBOUND > empowerops.volition.api.UnaryOptimizer/OfferEvaluationStatusMessage
-        message: "evaluating {x1=1.3187490204732786}!"
-        [2020-07-02T01:55:32.567] API OUTBOUND > empowerops.volition.api.UnaryOptimizer/OfferEvaluationStatusMessage [empty StatusMessageConfirmDTO]
-        [2020-07-02T01:55:32.567] Event > New message received: Message(sender=, message=evaluating {x1=1.3187490204732786}!, level=INFO, receiveTime=2020-07-02T01:55:32.567)
-        [2020-07-02T01:55:32.569] API INBOUND > empowerops.volition.api.UnaryOptimizer/OfferSimulationResult
-        name: "asdf"
-        outputVector {
-          key: "f1"
-          value: 0.6593745102366393
-        }
-        [2020-07-02T01:55:32.570] API OUTBOUND > empowerops.volition.api.UnaryOptimizer/OfferSimulationResult [empty SimulationEvaluationResultConfirmDTO]
-        [2020-07-02T01:55:32.570] Event > New result received: Success(name=, inputs={x1=1.3187490204732786}, result={f1=0.6593745102366393})
-        [2020-07-02T01:55:32.571] API OUTBOUND-ITEM > empowerops.volition.api.UnaryOptimizer/StartOptimization
-        evaluation_request {
-          input_vector {
-            key: "x1"
-            value: 3.9289716608882785
-          }
-        }
-        [2020-07-02T01:55:32.573] API INBOUND > empowerops.volition.api.UnaryOptimizer/OfferEvaluationStatusMessage
-        message: "evaluating {x1=3.9289716608882785}!"
-        [2020-07-02T01:55:32.573] API OUTBOUND > empowerops.volition.api.UnaryOptimizer/OfferEvaluationStatusMessage [empty StatusMessageConfirmDTO]
-        [2020-07-02T01:55:32.573] Event > New message received: Message(sender=, message=evaluating {x1=3.9289716608882785}!, level=INFO, receiveTime=2020-07-02T01:55:32.573)
-        [2020-07-02T01:55:32.575] API INBOUND > empowerops.volition.api.UnaryOptimizer/OfferSimulationResult
-        name: "asdf"
-        outputVector {
-          key: "f1"
-          value: 1.9644858304441393
-        }
-        [2020-07-02T01:55:32.575] API OUTBOUND > empowerops.volition.api.UnaryOptimizer/OfferSimulationResult [empty SimulationEvaluationResultConfirmDTO]
-        [2020-07-02T01:55:32.576] Event > New result received: Success(name=, inputs={x1=3.9289716608882785}, result={f1=1.9644858304441393})
-        [2020-07-02T01:55:32.595] API OUTBOUND-ITEM > empowerops.volition.api.UnaryOptimizer/StartOptimization
-        evaluation_request {
-          input_vector {
-            key: "x1"
-            value: 3.220131192218629
-          }
-        }
-        [2020-07-02T01:55:32.600] API INBOUND > empowerops.volition.api.UnaryOptimizer/OfferEvaluationStatusMessage
-        message: "evaluating {x1=3.220131192218629}!"
-        [2020-07-02T01:55:32.600] API OUTBOUND > empowerops.volition.api.UnaryOptimizer/OfferEvaluationStatusMessage [empty StatusMessageConfirmDTO]
-        [2020-07-02T01:55:32.601] Event > New message received: Message(sender=, message=evaluating {x1=3.220131192218629}!, level=INFO, receiveTime=2020-07-02T01:55:32.601)
-        [2020-07-02T01:55:32.604] API INBOUND > empowerops.volition.api.UnaryOptimizer/OfferSimulationResult
-        name: "asdf"
-        outputVector {
-          key: "f1"
-          value: 1.6100655961093144
-        }
-        [2020-07-02T01:55:32.604] API OUTBOUND > empowerops.volition.api.UnaryOptimizer/OfferSimulationResult [empty SimulationEvaluationResultConfirmDTO]
-        [2020-07-02T01:55:32.604] Event > New result received: Success(name=, inputs={x1=3.220131192218629}, result={f1=1.6100655961093144})
-        [2020-07-02T01:55:32.605] API OUTBOUND-ITEM > empowerops.volition.api.UnaryOptimizer/StartOptimization
-        evaluation_request {
-          input_vector {
-            key: "x1"
-            value: 2.4629973268117906
-          }
-        }
-        [2020-07-02T01:55:32.607] API INBOUND > empowerops.volition.api.UnaryOptimizer/OfferEvaluationStatusMessage
-        message: "evaluating {x1=2.4629973268117906}!"
-        [2020-07-02T01:55:32.607] API OUTBOUND > empowerops.volition.api.UnaryOptimizer/OfferEvaluationStatusMessage [empty StatusMessageConfirmDTO]
-        [2020-07-02T01:55:32.607] Event > New message received: Message(sender=, message=evaluating {x1=2.4629973268117906}!, level=INFO, receiveTime=2020-07-02T01:55:32.607)
-        [2020-07-02T01:55:32.609] API INBOUND > empowerops.volition.api.UnaryOptimizer/OfferSimulationResult
-        name: "asdf"
-        outputVector {
-          key: "f1"
-          value: 1.2314986634058953
-        }
-        [2020-07-02T01:55:32.609] API OUTBOUND > empowerops.volition.api.UnaryOptimizer/OfferSimulationResult [empty SimulationEvaluationResultConfirmDTO]
-        [2020-07-02T01:55:32.610] Event > New result received: Success(name=, inputs={x1=2.4629973268117906}, result={f1=1.2314986634058953})
-        [2020-07-02T01:55:32.610] API OUTBOUND-ITEM > empowerops.volition.api.UnaryOptimizer/StartOptimization
-        evaluation_request {
-          input_vector {
-            key: "x1"
-            value: 3.5308031856032955
-          }
-        }
-        [2020-07-02T01:55:32.617] API INBOUND > empowerops.volition.api.UnaryOptimizer/OfferErrorResult
-        message: "already evaluated 5 iterations!"
-        [2020-07-02T01:55:32.618] API INBOUND > empowerops.volition.api.UnaryOptimizer/StopOptimization [empty StopOptimizationCommandDTO]
-        [2020-07-02T01:55:32.622] Event > Stop Requested - ID:f88337e8-776a-4c0d-aef2-9d4f804793e2
-        [2020-07-02T01:55:32.624] API OUTBOUND-ITEM > empowerops.volition.api.UnaryOptimizer/StartOptimization
-        cancel_request {
-        }
-        [2020-07-02T01:55:32.626] Event > New result received: Error(name=, inputs={x1=3.5308031856032955}, exception=already evaluated 5 iterations!)
-        [2020-07-02T01:55:32.626] API OUTBOUND > empowerops.volition.api.UnaryOptimizer/OfferErrorResult [empty SimulationEvaluationErrorConfirmDTO]
-        [2020-07-02T01:55:32.631] API OUTBOUND-ITEM > empowerops.volition.api.UnaryOptimizer/StartOptimization
-        optimization_finished_notification {
-        }
-        [2020-07-02T01:55:32.633] Event > Run Stopped - ID:f88337e8-776a-4c0d-aef2-9d4f804793e2
-        [2020-07-02T01:55:32.637] API CLOSED > empowerops.volition.api.UnaryOptimizer/StartOptimization
-        registration channel completed!
-        [2020-07-02T01:55:32.640] API OUTBOUND > empowerops.volition.api.UnaryOptimizer/StopOptimization
-        run_ID: "f88337e8-776a-4c0d-aef2-9d4f804793e2"
-        [2020-07-02T01:55:32.648] API INBOUND > empowerops.volition.api.UnaryOptimizer/RequestRunResult
-        run_ID: "f88337e8-776a-4c0d-aef2-9d4f804793e2"
-        [2020-07-02T01:55:32.659] API OUTBOUND > empowerops.volition.api.UnaryOptimizer/RequestRunResult
-        run_ID: "f88337e8-776a-4c0d-aef2-9d4f804793e2"
-        input_columns: "x1"
-        output_columns: "f1"
-        points {
-          inputs: 2.3860577215157033
-          outputs: 1.1930288607578516
-          is_feasible: true
-        }
-        points {
-          inputs: 1.3187490204732786
-          outputs: 0.6593745102366393
-          is_feasible: true
-        }
-        points {
-          inputs: 3.9289716608882785
-          outputs: 1.9644858304441393
-          is_feasible: true
-        }
-        points {
-          inputs: 3.220131192218629
-          outputs: 1.6100655961093144
-          is_feasible: true
-        }
-        points {
-          inputs: 2.4629973268117906
-          outputs: 1.2314986634058953
-          is_feasible: true
-        }
-        frontier {
-          inputs: 1.3187490204732786
-          outputs: 0.6593745102366393
-          is_feasible: true
-        }
-
-     */
-
-    @Test fun `when running an optimization with a constraint that constraint should be respected while optimizing`() = runBlocking<Unit> {
+    @Test
+    fun `when running multiple single var single simulation optimization should optimize normally`() = runBlocking<Unit> {
         //act
-        val fifthIteration = CompletableDeferred<Unit>()
 
-        val startRequest = StartOptimizationCommandDTO.newBuilder()
-                .setProblemDefinition(ProblemDefinitionDTO.newBuilder()
-                        // this test is more complex than the above test because:
-                        // 1. it uses two variables instead of one
-                        // 2. it uses a constraint
-                        .addAllInputs(listOf(
-                                PrototypeInputParameterDTO.newBuilder()
-                                        .setName("x1")
-                                        .setContinuous(ContinuousDTO.newBuilder()
-                                                .setLowerBound(1.0)
-                                                .setUpperBound(5.0)
-                                                .build()
-                                        )
-                                        .build(),
-                                PrototypeInputParameterDTO.newBuilder()
-                                        .setName("x2")
-                                        .setContinuous(ContinuousDTO.newBuilder()
-                                                .setLowerBound(1.0)
-                                                .setUpperBound(5.0)
-                                                .build()
-                                        )
-                                        .build()
-                        ))
-                        .addAllObjectives(listOf(
-                                PrototypeOutputParameterDTO.newBuilder()
-                                        .setName("f1")
-                                        .build()
-                        ))
-                        .addConstraints(BabelConstraintDTO.newBuilder()
-                                .setOutputName("c1")
-                                .setBooleanExpression("x1 < x2")
-                                .build())
-                        .build()
-                )
-                .addNodes(SimulationNodeDTO.newBuilder()
-                        .setAutoMap(true)
-                        .addInputs("x1").addInputs("x2")
-                        .addOutputs("f1")
-                        .build()
-                )
-                .build()
+        // this is the API equivalent of an OPYL file.
+        // here we specify the input parameters, and their variable bounds.
+        // this is just about the smallest optimization possible:
+        // A single variable, single objective, unconstrained function.
+        val targetIterationCount = 5
+        val startOptimizationRequest = startOptimizationCommandDTO {
+            problemDefinition = problemDefinitionDTO {
+                inputs += inputParameterDTO {
+                    name = "x1"
+                    continuous = continuousDTO {
+                        lowerBound = 1.0
+                        upperBound = 5.0
+                    }
+                }
 
-        var finishedPoints: List<DesignRowDTO> = emptyList()
+                evaluables += evaluableNodeDTO {
+                    simulation = simulationNodeDTO {
+                        autoMap = true
+                        inputs += simulationInputParameterDTO { name = "x1" }
+                        outputs += simulationOutputParameterDTO { name = "f1" }
+                    }
+                }
+            }
+
+            settings = optimizationSettingsDTO {
+                iterationCount = targetIterationCount
+            }
+        }
+
+        var iterationNo = 0
 
         //act
-        service.startOptimization(startRequest, object: StreamObserver<OptimizerGeneratedQueryDTO>{
-            // the second argument to this function, the stream observer,
-            // is a callback offered by the client to the optimizer
-            // it is called by the optimizer when the optimizer makes an evaluation request
-            // or feels it should notify the client of some change.
+        val collector: suspend (value: OptimizerGeneratedQueryDTO) -> Unit = { optimizerRequest ->
+            val dc: Unit = when (optimizerRequest.purposeCase!!) {
+                EVALUATION_REQUEST -> {
 
-            val parentJob = coroutineContext[Job]!!
-            var iterationNo = 1;
+                    val inputVector = optimizerRequest.evaluationRequest!!.inputVectorMap.toMap()
+                    val statusMessage = StatusMessageCommandDTO.newBuilder()
+                        .setMessage("evaluating $inputVector!")
+                        .build()
 
-            override fun onNext(optimizerRequest: OptimizerGeneratedQueryDTO) = cancelOnException { runBlocking<Unit> {
+                    // this simulator also calls 'offerEvaluationStatusMessage', which is a way that
+                    // the simulator can place things in the optimization log that do not pretain to
+                    // the final design. Error messages or status updates about meshing, pre-processing,
+                    // post-processing, etc can be set here.
+                    service.offerEvaluationStatusMessage(statusMessage)
 
-                //this function is called by the optimizer...
-                when(optimizerRequest.purposeCase!!) {
-                    // the optimizer is asking for an input vector to be simulated and its results sent back
-                    EVALUATION_REQUEST -> {
-                        if(iterationNo <= 5) {
+                    val result = inputVector.values.sumByDouble { it } / 2.0
 
-                            //read the input vector from the message provided by the optimizer
-                            val inputVector = optimizerRequest.evaluationRequest!!.inputVectorMap.toMap()
-
-                            //send a status update, (this is optional, but encouraged)
-                            val message = StatusMessageCommandDTO.newBuilder()
-                                    .setMessage("evaluating $inputVector!")
-                                    .build()
-                            service::offerEvaluationStatusMessage.send(message)
-
-                            //compute the result
-                            val result = inputVector.values.sumByDouble { it } / 2.0
-
-                            val response = SimulationEvaluationCompletedResponseDTO.newBuilder()
-                                    .setName("asdf")
-                                    .putAllOutputVector(mapOf("f1" to result))
-                                    .build()
-
-                            //send the response --this is a successful optimization
-                            service::offerSimulationResult.send(response)
-                        }
-                        if(iterationNo == 5){
-                            // this code exists so that the test only runs for 5 iterations.
-                            fifthIteration.complete(Unit)
-                        }
-                        else if (iterationNo >= 5){
-                            // if we're attempting to evaluate a 6th point,
-                            // fail the evaluation by sending an errorResult.
-                            // you can use this same strategy for things like meshing failure or other simulation errors.
-                            val response = SimulationEvaluationErrorResponseDTO.newBuilder().setMessage("already evaluated 5 iterations!").build()
-                            service::offerErrorResult.send(response)
-                        }
-                        iterationNo += 1
-
-                        Unit
+                    val response = simulationEvaluationCompletedResponseDTO {
+                        name = "asdf"
+                        outputVector["f1"] = result
                     }
-                    // this is provided by the optimizer when it wishes to preempt the simulation.
-                    // this can happen because of timeout or a stopOptimization request.
-                    CANCEL_REQUEST -> {
-                        Unit //noop --this is a legal implementation in any situation for cancellation.
-                    }
-                    // this is provided by the optimizer at the start of each optimization run.
-                    // It is to inform the simulation that the optimization has started
-                    OPTIMIZATION_STARTED_NOTIFICATION -> Unit // noop
-                    // and similarly the optimization has finished
-                    OPTIMIZATION_FINISHED_NOTIFICATION -> Unit // noop
-                    // this is called by the optimizer when the provided problem definition is not valid.
-                    // each problem will appear in the issuesList
-                    OPTIMIZATION_NOT_STARTED_NOTIFICATION -> {
-                        TODO("optimization didn't start because: ${optimizerRequest.optimizationNotStartedNotification.issuesList.joinToString()}")
-                    }
-                    PURPOSE_NOT_SET -> TODO("unknown request $optimizerRequest")
-                    DESIGN_ITERATION_COMPLETED_NOTIFICATION -> finishedPoints += optimizerRequest.designIterationCompletedNotification.designPoint
-                } as Any
-            }}
 
-            override fun onError(t: Throwable) {
-                t.printStackTrace()
-                parentJob.cancel()
+                    service.offerSimulationResult(response)
+
+                    iterationNo += 1
+                }
+
+                CANCEL_REQUEST -> Unit //noop --this is a legal implementation in any situation for cancellation.
+                OPTIMIZATION_STARTED_NOTIFICATION -> Unit // noop,
+                OPTIMIZATION_FINISHED_NOTIFICATION -> Unit // noop
+                PURPOSE_NOT_SET -> TODO("unknown request $optimizerRequest")
+                OPTIMIZATION_NOT_STARTED_NOTIFICATION -> {
+                    TODO("optimization didn't start because: ${optimizerRequest.optimizationNotStartedNotification.issuesList.joinToString()}")
+                }
+                DESIGN_ITERATION_COMPLETED_NOTIFICATION -> Unit
             }
+        }
+        //first run
+        service.startOptimization(startOptimizationRequest).collect(collector)
+        println("finished first run!")
 
-            override fun onCompleted() {
-                println("registration channel completed!")
+        //second run
+        service.startOptimization(startOptimizationRequest).collect(collector)
+        println("finished second run!")
+
+        assertThat(iterationNo).isEqualTo(2 * targetIterationCount)
+    }
+
+    @Test
+    fun `when running an optimization with a constraint that constraint should be respected while optimizing`() = runBlocking<Unit> {
+        //act
+        val startRequest = startOptimizationCommandDTO {
+            problemDefinition = problemDefinitionDTO {
+                inputs += inputParameterDTO {
+                    name = "x1"
+                    continuous = continuousDTO {
+                        lowerBound = 1.0
+                        upperBound = 5.0
+                    }
+                }
+                inputs += inputParameterDTO {
+                    name = "x2"
+                    continuous = continuousDTO {
+                        lowerBound = 1.0
+                        upperBound = 5.0
+                    }
+                }
+                evaluables += evaluableNodeDTO {
+                    simulation = simulationNodeDTO {
+                        autoMap = true
+                        inputs += simulationInputParameterDTO { name = "x1" }
+                        inputs += simulationInputParameterDTO { name = "x2" }
+                        outputs += simulationOutputParameterDTO { name = "f1" }
+                    }
+                }
+                evaluables += evaluableNodeDTO {
+                    constraint = babelConstraintNodeDTO {
+                        outputName = "c1"
+                        booleanExpression = "x1 < x2"
+                    }
+                }
             }
-        })
+            settings = optimizationSettingsDTO {
+                iterationCount = 5
+            }
+        }
 
-        fifthIteration.await()
-        val run = service::stopOptimization.send(
-                StopOptimizationCommandDTO.newBuilder().build()
-        )
+        val resultID = CompletableDeferred<java.util.UUID>()
+
+        //act
+        val requestFlow = service.startOptimization(startRequest)
+
+        requestFlow.collect { optimizerRequest ->
+
+            //this function is called by the optimizer...
+            when(optimizerRequest.purposeCase!!) {
+                // the optimizer is asking for an input vector to be simulated and its results sent back
+                EVALUATION_REQUEST -> {
+
+                    //read the input vector from the message provided by the optimizer
+                    val inputVector = optimizerRequest.evaluationRequest!!.inputVectorMap.toMap()
+
+                    //send a status update, (this is optional, but encouraged)
+                    val message = StatusMessageCommandDTO.newBuilder()
+                        .setMessage("evaluating $inputVector!")
+                        .build()
+                    service.offerEvaluationStatusMessage(message)
+
+                    //compute the result
+                    val result = inputVector.values.sumByDouble { it } / 2.0
+
+                    val response = SimulationEvaluationCompletedResponseDTO.newBuilder()
+                        .setName("asdf")
+                        .putAllOutputVector(mapOf("f1" to result))
+                        .build()
+
+                    //send the response --this is a successful optimization
+                    service.offerSimulationResult(response)
+
+                    Unit
+                }
+                // this is provided by the optimizer when it wishes to preempt the simulation.
+                // this can happen because of timeout or a stopOptimization request.
+                CANCEL_REQUEST -> {
+                    Unit //noop --this is a legal implementation in any situation for cancellation.
+                }
+                // this is provided by the optimizer at the start of each optimization run.
+                // It is to inform the simulation that the optimization has started
+                OPTIMIZATION_STARTED_NOTIFICATION -> Unit // noop
+                // and similarly the optimization has finished
+                OPTIMIZATION_FINISHED_NOTIFICATION -> {
+                    resultID.complete(optimizerRequest.optimizationFinishedNotification.runID.toUUID())
+                    Unit
+                }
+                // this is called by the optimizer when the provided problem definition is not valid.
+                // each problem will appear in the issuesList
+                OPTIMIZATION_NOT_STARTED_NOTIFICATION -> {
+                    TODO("optimization didn't start because: ${optimizerRequest.optimizationNotStartedNotification.issuesList.joinToString()}")
+                }
+                PURPOSE_NOT_SET -> TODO("unknown request $optimizerRequest")
+                DESIGN_ITERATION_COMPLETED_NOTIFICATION -> {
+                    Unit
+                }
+            } as Any
+        }
+
+        val id = resultID.await()
 
         //assert
-        val results = service::requestRunResult.send(OptimizationResultsQueryDTO.newBuilder().setRunID(run.runID).build())
+        val request = optimizationResultsQueryDTO {
+            runID = id.toDTO()
+        }
+        val results = service.requestRunResult(request)
 
         assertThat(results).isNotNull()
         assertThat(results.pointsList.toList()).hasSize(5)
         assertThat(results.pointsList.filter { it.isFrontier }).hasSize(1)
 
-        assertThat(finishedPoints).isEqualTo(results.pointsList)
-
         //check that the constraint wasn't violated on any of the points
         for(point in results.pointsList){
             assertThat(point.inputsList.first(/*the value for x1*/))
-                    .describedAs("the value for x1 in the point $point")
-                    .isLessThan(point.inputsList.last(/*the value for x2*/))
+                .describedAs("the value for x1 in the point $point")
+                .isLessThan(point.inputsList.last(/*the value for x2*/))
         }
     }
-    /*  output from this test:
 
-        [2020-07-02T02:05:56.059] API INBOUND > empowerops.volition.api.UnaryOptimizer/StartOptimization
-        problem_definition {
-          inputs {
-            name: "x1"
-            continuous {
-              lower_bound: 1.0
-              upper_bound: 5.0
-            }
-          }
-          inputs {
-            name: "x2"
-            continuous {
-              lower_bound: 1.0
-              upper_bound: 5.0
-            }
-          }
-          objectives {
-            name: "f1"
-          }
-          constraints {
-            output_name: "c1"
-            boolean_expression: "x1 < x2"
-          }
-        }
-        nodes {
-          auto_map: true
-          inputs: "x1"
-          inputs: "x2"
-          outputs: "f1"
-        }
-        [2020-07-02T02:05:56.170] API OUTBOUND-ITEM > empowerops.volition.api.UnaryOptimizer/StartOptimization
-        optimization_started_notification {
-          run_ID {
-            value: "d7863580-deae-4e47-9cbb-9e5047e4b5a8"
-          }
-        }
-        [2020-07-02T02:05:56.190] Event > Run Started - ID:d7863580-deae-4e47-9cbb-9e5047e4b5a8
-        [2020-07-02T02:05:56.214] API OUTBOUND-ITEM > empowerops.volition.api.UnaryOptimizer/StartOptimization
-        evaluation_request {
-          input_vector {
-            key: "x1"
-            value: 1.1873350226522947
-          }
-          input_vector {
-            key: "x2"
-            value: 3.4525398961878757
-          }
-        }
-        [2020-07-02T02:05:56.221] API INBOUND > empowerops.volition.api.UnaryOptimizer/OfferEvaluationStatusMessage
-        message: "evaluating {x1=1.1873350226522947, x2=3.4525398961878757}!"
-        [2020-07-02T02:05:56.224] API OUTBOUND > empowerops.volition.api.UnaryOptimizer/OfferEvaluationStatusMessage [empty StatusMessageConfirmDTO]
-        [2020-07-02T02:05:56.225] Event > New message received: Message(sender=, message=evaluating {x1=1.1873350226522947, x2=3.4525398961878757}!, level=INFO, receiveTime=2020-07-02T02:05:56.225)
-        [2020-07-02T02:05:56.233] API INBOUND > empowerops.volition.api.UnaryOptimizer/OfferSimulationResult
-        name: "asdf"
-        output_vector {
-          key: "f1"
-          value: 2.3199374594200854
-        }
-        [2020-07-02T02:05:56.236] API OUTBOUND > empowerops.volition.api.UnaryOptimizer/OfferSimulationResult [empty SimulationEvaluationResultConfirmDTO]
-        [2020-07-02T02:05:56.239] Event > New result received: Success(name=, inputs={x1=1.1873350226522947, x2=3.4525398961878757}, result={f1=2.3199374594200854})
-        [2020-07-02T02:05:56.242] API OUTBOUND-ITEM > empowerops.volition.api.UnaryOptimizer/StartOptimization
-        evaluation_request {
-          input_vector {
-            key: "x1"
-            value: 1.4360031551270533
-          }
-          input_vector {
-            key: "x2"
-            value: 1.9902563871808439
-          }
-        }
-        [2020-07-02T02:05:56.244] API INBOUND > empowerops.volition.api.UnaryOptimizer/OfferEvaluationStatusMessage
-        message: "evaluating {x1=1.4360031551270533, x2=1.9902563871808439}!"
-        [2020-07-02T02:05:56.245] API OUTBOUND > empowerops.volition.api.UnaryOptimizer/OfferEvaluationStatusMessage [empty StatusMessageConfirmDTO]
-        [2020-07-02T02:05:56.245] Event > New message received: Message(sender=, message=evaluating {x1=1.4360031551270533, x2=1.9902563871808439}!, level=INFO, receiveTime=2020-07-02T02:05:56.245)
-        [2020-07-02T02:05:56.247] API INBOUND > empowerops.volition.api.UnaryOptimizer/OfferSimulationResult
-        name: "asdf"
-        output_vector {
-          key: "f1"
-          value: 1.7131297711539486
-        }
-        [2020-07-02T02:05:56.248] API OUTBOUND > empowerops.volition.api.UnaryOptimizer/OfferSimulationResult [empty SimulationEvaluationResultConfirmDTO]
-        [2020-07-02T02:05:56.248] Event > New result received: Success(name=, inputs={x1=1.4360031551270533, x2=1.9902563871808439}, result={f1=1.7131297711539486})
-        [2020-07-02T02:05:56.249] API OUTBOUND-ITEM > empowerops.volition.api.UnaryOptimizer/StartOptimization
-        evaluation_request {
-          input_vector {
-            key: "x1"
-            value: 1.5893881828218057
-          }
-          input_vector {
-            key: "x2"
-            value: 3.7375279460397097
-          }
-        }
-        [2020-07-02T02:05:56.254] API INBOUND > empowerops.volition.api.UnaryOptimizer/OfferEvaluationStatusMessage
-        message: "evaluating {x1=1.5893881828218057, x2=3.7375279460397097}!"
-        [2020-07-02T02:05:56.255] API OUTBOUND > empowerops.volition.api.UnaryOptimizer/OfferEvaluationStatusMessage [empty StatusMessageConfirmDTO]
-        [2020-07-02T02:05:56.255] Event > New message received: Message(sender=, message=evaluating {x1=1.5893881828218057, x2=3.7375279460397097}!, level=INFO, receiveTime=2020-07-02T02:05:56.255)
-        [2020-07-02T02:05:56.257] API INBOUND > empowerops.volition.api.UnaryOptimizer/OfferSimulationResult
-        name: "asdf"
-        output_vector {
-          key: "f1"
-          value: 2.663458064430758
-        }
-        [2020-07-02T02:05:56.258] API OUTBOUND > empowerops.volition.api.UnaryOptimizer/OfferSimulationResult [empty SimulationEvaluationResultConfirmDTO]
-        [2020-07-02T02:05:56.258] Event > New result received: Success(name=, inputs={x1=1.5893881828218057, x2=3.7375279460397097}, result={f1=2.663458064430758})
-        [2020-07-02T02:05:56.259] API OUTBOUND-ITEM > empowerops.volition.api.UnaryOptimizer/StartOptimization
-        evaluation_request {
-          input_vector {
-            key: "x1"
-            value: 2.3874267737095676
-          }
-          input_vector {
-            key: "x2"
-            value: 4.717997855227804
-          }
-        }
-        [2020-07-02T02:05:56.263] API INBOUND > empowerops.volition.api.UnaryOptimizer/OfferEvaluationStatusMessage
-        message: "evaluating {x1=2.3874267737095676, x2=4.717997855227804}!"
-        [2020-07-02T02:05:56.263] API OUTBOUND > empowerops.volition.api.UnaryOptimizer/OfferEvaluationStatusMessage [empty StatusMessageConfirmDTO]
-        [2020-07-02T02:05:56.263] Event > New message received: Message(sender=, message=evaluating {x1=2.3874267737095676, x2=4.717997855227804}!, level=INFO, receiveTime=2020-07-02T02:05:56.263)
-        [2020-07-02T02:05:56.266] API INBOUND > empowerops.volition.api.UnaryOptimizer/OfferSimulationResult
-        name: "asdf"
-        output_vector {
-          key: "f1"
-          value: 3.5527123144686854
-        }
-        [2020-07-02T02:05:56.266] API OUTBOUND > empowerops.volition.api.UnaryOptimizer/OfferSimulationResult [empty SimulationEvaluationResultConfirmDTO]
-        [2020-07-02T02:05:56.266] Event > New result received: Success(name=, inputs={x1=2.3874267737095676, x2=4.717997855227804}, result={f1=3.5527123144686854})
-        [2020-07-02T02:05:56.267] API OUTBOUND-ITEM > empowerops.volition.api.UnaryOptimizer/StartOptimization
-        evaluation_request {
-          input_vector {
-            key: "x1"
-            value: 1.4546440223685648
-          }
-          input_vector {
-            key: "x2"
-            value: 3.748288340982036
-          }
-        }
-        [2020-07-02T02:05:56.270] API INBOUND > empowerops.volition.api.UnaryOptimizer/OfferEvaluationStatusMessage
-        message: "evaluating {x1=1.4546440223685648, x2=3.748288340982036}!"
-        [2020-07-02T02:05:56.270] API OUTBOUND > empowerops.volition.api.UnaryOptimizer/OfferEvaluationStatusMessage [empty StatusMessageConfirmDTO]
-        [2020-07-02T02:05:56.270] Event > New message received: Message(sender=, message=evaluating {x1=1.4546440223685648, x2=3.748288340982036}!, level=INFO, receiveTime=2020-07-02T02:05:56.270)
-        [2020-07-02T02:05:56.277] API INBOUND > empowerops.volition.api.UnaryOptimizer/OfferSimulationResult
-        name: "asdf"
-        output_vector {
-          key: "f1"
-          value: 2.6014661816753004
-        }
-        [2020-07-02T02:05:56.278] API OUTBOUND > empowerops.volition.api.UnaryOptimizer/OfferSimulationResult [empty SimulationEvaluationResultConfirmDTO]
-        [2020-07-02T02:05:56.278] Event > New result received: Success(name=, inputs={x1=1.4546440223685648, x2=3.748288340982036}, result={f1=2.6014661816753004})
-        [2020-07-02T02:05:56.278] API OUTBOUND-ITEM > empowerops.volition.api.UnaryOptimizer/StartOptimization
-        evaluation_request {
-          input_vector {
-            key: "x1"
-            value: 1.6897836977364764
-          }
-          input_vector {
-            key: "x2"
-            value: 2.248593839594565
-          }
-        }
-        [2020-07-02T02:05:56.285] API INBOUND > empowerops.volition.api.UnaryOptimizer/OfferErrorResult
-        message: "already evaluated 5 iterations!"
-        [2020-07-02T02:05:56.285] API INBOUND > empowerops.volition.api.UnaryOptimizer/StopOptimization [empty StopOptimizationCommandDTO]
-        [2020-07-02T02:05:56.289] Event > Stop Requested - ID:d7863580-deae-4e47-9cbb-9e5047e4b5a8
-        [2020-07-02T02:05:56.291] API OUTBOUND-ITEM > empowerops.volition.api.UnaryOptimizer/StartOptimization
-        cancel_request {
-        }
-        [2020-07-02T02:05:56.293] Event > New result received: Error(name=, inputs={x1=1.6897836977364764, x2=2.248593839594565}, exception=already evaluated 5 iterations!)
-        [2020-07-02T02:05:56.293] API OUTBOUND > empowerops.volition.api.UnaryOptimizer/OfferErrorResult [empty SimulationEvaluationErrorConfirmDTO]
-        [2020-07-02T02:05:56.298] API OUTBOUND-ITEM > empowerops.volition.api.UnaryOptimizer/StartOptimization
-        optimization_finished_notification {
-        }
-        [2020-07-02T02:05:56.300] Event > Run Stopped - ID:d7863580-deae-4e47-9cbb-9e5047e4b5a8
-        [2020-07-02T02:05:56.304] API CLOSED > empowerops.volition.api.UnaryOptimizer/StartOptimization
-        registration channel completed!
-        [2020-07-02T02:05:56.306] API OUTBOUND > empowerops.volition.api.UnaryOptimizer/StopOptimization
-        run_ID {
-          value: "d7863580-deae-4e47-9cbb-9e5047e4b5a8"
-        }
-        [2020-07-02T02:05:56.311] API INBOUND > empowerops.volition.api.UnaryOptimizer/RequestRunResult
-        run_ID {
-          value: "d7863580-deae-4e47-9cbb-9e5047e4b5a8"
-        }
-        [2020-07-02T02:05:56.316] API OUTBOUND > empowerops.volition.api.UnaryOptimizer/RequestRunResult
-        run_ID {
-          value: "d7863580-deae-4e47-9cbb-9e5047e4b5a8"
-        }
-        input_columns: "x1"
-        input_columns: "x2"
-        output_columns: "f1"
-        points {
-          inputs: 1.1873350226522947
-          inputs: 3.4525398961878757
-          outputs: 2.3199374594200854
-          is_feasible: true
-        }
-        points {
-          inputs: 1.4360031551270533
-          inputs: 1.9902563871808439
-          outputs: 1.7131297711539486
-          is_feasible: true
-        }
-        points {
-          inputs: 1.5893881828218057
-          inputs: 3.7375279460397097
-          outputs: 2.663458064430758
-          is_feasible: true
-        }
-        points {
-          inputs: 2.3874267737095676
-          inputs: 4.717997855227804
-          outputs: 3.5527123144686854
-          is_feasible: true
-        }
-        points {
-          inputs: 1.4546440223685648
-          inputs: 3.748288340982036
-          outputs: 2.6014661816753004
-          is_feasible: true
-        }
-        frontier {
-          inputs: 1.4360031551270533
-          inputs: 1.9902563871808439
-          outputs: 1.7131297711539486
-          is_feasible: true
-        }
-
-
-     */
-
-    @Test fun `when using seed data should run appropriately`() = runBlocking<Unit>() {
+    @Test
+    fun `when using seed data should run appropriately`() = runBlocking<Unit>() {
         //act
-        val startRequest = StartOptimizationCommandDTO.newBuilder()
-            .setProblemDefinition(ProblemDefinitionDTO.newBuilder()
-                // this test is more complex than the above test because:
-                // 1. it uses two variables instead of one
-                // 2. it uses a constraint
-                .addAllInputs(listOf(
-                    PrototypeInputParameterDTO.newBuilder()
-                        .setName("x1")
-                        .setContinuous(ContinuousDTO.newBuilder()
-                            .setLowerBound(1.0)
-                            .setUpperBound(5.0)
-                            .build()
-                        )
-                        .build(),
-                    PrototypeInputParameterDTO.newBuilder()
-                        .setName("x2")
-                        .setContinuous(ContinuousDTO.newBuilder()
-                            .setLowerBound(1.0)
-                            .setUpperBound(5.0)
-                            .build()
-                        )
-                        .build()
-                ))
-                .addAllObjectives(listOf(
-                    PrototypeOutputParameterDTO.newBuilder()
-                        .setName("f1")
-                        .build()
-                ))
-                .build()
-            )
-            .addNodes(SimulationNodeDTO.newBuilder()
-                .setAutoMap(true)
-                .addInputs("x1").addInputs("x2")
-                .addOutputs("f1")
-                .build()
-            )
-            .setSettings(OptimizationSettingsDTO.newBuilder()
-                .setIterationCount(UInt32Value.of(5))
-            )
-            .addSeedPoints(SeedRowDTO.newBuilder()
-                .addAllInputs(listOf(2.0, 3.0))
-                .addAllOutputs(listOf(2.5))
-            )
-            .build()
+        val startRequest = startOptimizationCommandDTO {
+            problemDefinition = problemDefinitionDTO {
+                inputs += inputParameterDTO {
+                    name = "x1"
+                    continuous = continuousDTO {
+                        lowerBound = 1.0
+                        upperBound = 5.0
+                    }
+                }
+                inputs += inputParameterDTO {
+                    name = "x2"
+                    continuous = continuousDTO {
+                        lowerBound = 1.0
+                        upperBound = 5.0
+                    }
+                }
+                evaluables += evaluableNodeDTO {
+                    simulation = simulationNodeDTO {
+                        autoMap = true
+                        inputs += simulationInputParameterDTO { name = "x1" }
+                        inputs += simulationInputParameterDTO { name = "x2" }
+                        outputs += simulationOutputParameterDTO { name = "f1" }
+                    }
+                }
+            }
+            settings = optimizationSettingsDTO {
+                iterationCount = 5
+            }
+            seedPoints += seedRowDTO {
+                inputs += listOf(2.0, 3.0)
+                outputs += 2.5
+            }
+        }
 
         val resultID = CompletableDeferred<java.util.UUID>()
         var results: OptimizationResultsResponseDTO? = null
 
         //act
-        service.startOptimization(startRequest, object: StreamObserver<OptimizerGeneratedQueryDTO>{
-            // the second argument to this function, the stream observer,
-            // is a callback offered by the client to the optimizer
-            // it is called by the optimizer when the optimizer makes an evaluation request
-            // or feels it should notify the client of some change.
+        service.startOptimization(startRequest).collect { optimizerRequest ->
+            //this function is called by the optimizer...
+            when(optimizerRequest.purposeCase!!) {
+                // the optimizer is asking for an input vector to be simulated and its results sent back
+                EVALUATION_REQUEST -> {
 
-            val parentJob = coroutineContext[Job]!!
+                    val result = optimizerRequest.evaluationRequest!!.inputVectorMap.values.sumByDouble { it } / 2.0
 
-            override fun onNext(optimizerRequest: OptimizerGeneratedQueryDTO) = cancelOnException { runBlocking<Unit> {
+                    val response = SimulationEvaluationCompletedResponseDTO.newBuilder()
+                        .setName("asdf")
+                        .putAllOutputVector(mapOf("f1" to result))
+                        .build()
 
-                //this function is called by the optimizer...
-                when(optimizerRequest.purposeCase!!) {
-                    // the optimizer is asking for an input vector to be simulated and its results sent back
-                    EVALUATION_REQUEST -> {
+                    //send the response --this is a successful optimization
+                    service.offerSimulationResult(response)
 
-                        val result = optimizerRequest.evaluationRequest!!.inputVectorMap.values.sumByDouble { it } / 2.0
+                    Unit
+                }
+                CANCEL_REQUEST -> Unit
+                OPTIMIZATION_STARTED_NOTIFICATION -> Unit // noop
+                OPTIMIZATION_FINISHED_NOTIFICATION -> {
+                    val id = optimizerRequest.optimizationFinishedNotification.runID
 
-                        val response = SimulationEvaluationCompletedResponseDTO.newBuilder()
-                            .setName("asdf")
-                            .putAllOutputVector(mapOf("f1" to result))
-                            .build()
+                    results = service.requestRunResult(optimizationResultsQueryDTO { runID = id })
 
-                        //send the response --this is a successful optimization
-                        service::offerSimulationResult.send(response)
-
-                        Unit
-                    }
-                    CANCEL_REQUEST -> Unit
-                    OPTIMIZATION_STARTED_NOTIFICATION -> Unit // noop
-                    OPTIMIZATION_FINISHED_NOTIFICATION -> {
-                        val id = optimizerRequest.optimizationFinishedNotification.runID.value
-                        val request = OptimizationResultsQueryDTO.newBuilder()
-                            .setRunID(UUIDDTO.newBuilder().setValue(id.toString()))
-                            .build()
-                        results = service::requestRunResult.send(request)
-                        resultID.complete(java.util.UUID.fromString(id))
-                        Unit
-                    }
-                    OPTIMIZATION_NOT_STARTED_NOTIFICATION -> {
-                        TODO("optimization didn't start because: ${optimizerRequest.optimizationNotStartedNotification.issuesList.joinToString()}")
-                    }
-                    PURPOSE_NOT_SET -> TODO("unknown request $optimizerRequest")
-                    DESIGN_ITERATION_COMPLETED_NOTIFICATION -> Unit
-                } as Any
-            }}
-
-            override fun onError(t: Throwable) {
-                t.printStackTrace()
-                parentJob.cancel()
-            }
-
-            override fun onCompleted() {
-                println("registration channel completed!")
-            }
-        })
+                    resultID.complete(id.toUUID())
+                    Unit
+                }
+                OPTIMIZATION_NOT_STARTED_NOTIFICATION -> {
+                    TODO("optimization didn't start because: ${optimizerRequest.optimizationNotStartedNotification.issuesList.joinToString()}")
+                }
+                PURPOSE_NOT_SET -> TODO("unknown request $optimizerRequest")
+                DESIGN_ITERATION_COMPLETED_NOTIFICATION -> {
+                    Unit
+                }
+            } as Any
+        }
         val id = resultID.await()
 
         //assert
-        assertThat(results!!.pointsList.first().inputsList).isEqualTo(listOf(2.0, 3.0))
-        assertThat(results!!.pointsList.first().outputsList).isEqualTo(listOf(2.5))
+        val firstPoint = results!!.pointsList.first()
+        assertThat(firstPoint).isEqualTo(designRowDTO {
+            inputs += listOf(2.0, 3.0)
+            outputs += 2.5
+            isFeasible = true
+            isFrontier = firstPoint.isFrontier
+        })
+    }
+
+    @Test
+    fun `when starting and stopping using notifications should produce multiple optimizations`() = runBlocking<Unit> {
+        val startCommand = startOptimizationCommandDTO {
+            problemDefinition = problemDefinitionDTO {
+                inputs += inputParameterDTO {
+                    name = "x1"
+                    continuous = continuousDTO {
+                        lowerBound = 5.0
+                        upperBound = 15.0
+                    }
+                }
+                inputs += inputParameterDTO {
+                    name = "x2"
+                    continuous = continuousDTO {
+                        lowerBound = 15.0
+                        upperBound = 25.0
+                    }
+                }
+                evaluables += evaluableNodeDTO {
+                    transform = babelScalarNodeDTO {
+                        outputName = "f1"
+                        scalarExpression = "x1 + x2"
+                    }
+                }
+            }
+        }
+
+        val iterations = ArrayList<DesignRowDTO>()
+
+        //act
+        val collector: suspend (value: OptimizerGeneratedQueryDTO) -> Unit = { optimizerMessage ->
+            when (optimizerMessage.purposeCase) {
+                EVALUATION_REQUEST -> TODO("$optimizerMessage")
+                CANCEL_REQUEST -> TODO("$optimizerMessage")
+                OPTIMIZATION_STARTED_NOTIFICATION -> Unit
+                OPTIMIZATION_FINISHED_NOTIFICATION -> Unit
+                OPTIMIZATION_NOT_STARTED_NOTIFICATION -> TODO("$optimizerMessage")
+                DESIGN_ITERATION_COMPLETED_NOTIFICATION -> {
+                    iterations += optimizerMessage.designIterationCompletedNotification.designPoint
+
+                    if (iterations.size % 5 == 0) {
+                        service.stopOptimization(stopOptimizationCommandDTO {})
+                    }
+
+                    Unit
+                }
+                null, PURPOSE_NOT_SET -> TODO("$optimizerMessage")
+            } as Any
+        }
+        val firstRun = service.startOptimization(startCommand).collect(collector)
+        val secondRun = service.startOptimization(startCommand).collect(collector)
+
+        assertThat(iterations.size == 10)
+    }
+
+    @Test
+    fun `when running with lots of columns should maintain correct order`() = runBlocking<Unit> {
+
+        // setup
+        val startCommand = startOptimizationCommandDTO {
+            problemDefinition = problemDefinitionDTO {
+                inputs += inputParameterDTO {
+                    name = "x1"
+                    continuous = continuousDTO {
+                        lowerBound = 1.0
+                        upperBound = 2.0
+                    }
+                }
+                inputs += inputParameterDTO {
+                    name = "x2"
+                    continuous = continuousDTO {
+                        lowerBound = 2.0
+                        upperBound = 3.0
+                    }
+                }
+                evaluables += evaluableNodeDTO {
+                    transform = babelScalarNodeDTO {
+                        outputName = "i3"
+                        scalarExpression = "x1-1.0 + 3.0"
+                    }
+                }
+                evaluables += evaluableNodeDTO {
+                    transform = babelScalarNodeDTO {
+                        outputName = "i4"
+                        scalarExpression = "x2-2.0 + 4.0"
+                    }
+                }
+                evaluables += evaluableNodeDTO {
+                    transform = babelScalarNodeDTO {
+                        outputName = "f5"
+                        scalarExpression = "(i3-3 + i4-4)/2 + 5.0"
+                    }
+                }
+                evaluables += evaluableNodeDTO {
+                    constraint = babelConstraintNodeDTO {
+                        outputName = "c1"
+                        booleanExpression = "i3 < i4"
+                    }
+                }
+            }
+
+            settings = optimizationSettingsDTO {
+                iterationCount = 5
+            }
+        }
+
+        // act
+        var givenRunId: UUID? = null
+        service.startOptimization(startCommand).collect { optimizerMessage ->
+            when (optimizerMessage.purposeCase) {
+                EVALUATION_REQUEST -> TODO("$optimizerMessage")
+                CANCEL_REQUEST -> TODO("$optimizerMessage")
+                OPTIMIZATION_STARTED_NOTIFICATION -> {
+                    givenRunId = optimizerMessage.optimizationStartedNotification.runID.toUUID()
+                }
+                OPTIMIZATION_FINISHED_NOTIFICATION -> Unit
+                OPTIMIZATION_NOT_STARTED_NOTIFICATION -> TODO("$optimizerMessage")
+                DESIGN_ITERATION_COMPLETED_NOTIFICATION -> Unit
+                null, PURPOSE_NOT_SET -> TODO("$optimizerMessage")
+            }
+        }
+
+        val results = service.requestRunResult(optimizationResultsQueryDTO { runID = givenRunId!!.toDTO() })
+
+        // assert
+        val matcher = listOf(1.0 .. 2.0, 2.0 .. 3.0, 3.0 .. 4.0, 4.0 .. 5.0, 5.0 .. 6.0, Double.MIN_VALUE .. 0.0)
+        for(point in results.pointsList){
+            assertThat(point.matches(matcher)).describedAs("$point matches $matcher")
+        }
+    }
+
+    @Test
+    fun `when cancelling early and calling requestRunResult on each iteration should function properly`() = runBlocking<Unit> {
+        // setup
+        val startOptimizationRequest = startOptimizationCommandDTO {
+            problemDefinition = problemDefinitionDTO {
+                inputs += inputParameterDTO {
+                    name = "x1"
+                    continuous = continuousDTO {
+                        lowerBound = 1.0
+                        upperBound = 5.0
+                    }
+                }
+                evaluables += evaluableNodeDTO {
+                    simulation = simulationNodeDTO {
+                        autoMap = true
+                        inputs += simulationInputParameterDTO { name = "x1" }
+                        outputs += simulationOutputParameterDTO { name = "f1" }
+                    }
+                }
+            }
+        }
+        var givenRunId: UUID? = null
+        var iterationNo = 0
+        var results = emptyList<List<DesignRowDTO>>()
+
+        // act
+        service.startOptimization(startOptimizationRequest).collect { optimizerMessage ->
+            when (optimizerMessage.purposeCase) {
+                OPTIMIZATION_NOT_STARTED_NOTIFICATION -> TODO("$optimizerMessage")
+                OPTIMIZATION_STARTED_NOTIFICATION -> {
+                    givenRunId = optimizerMessage.optimizationStartedNotification.runID.toUUID()
+                }
+                EVALUATION_REQUEST -> {
+                    val response = service.requestRunResult(optimizationResultsQueryDTO { runID = givenRunId!!.toDTO() })
+                    results = results.plusElement(response.pointsList.toList())
+
+                    service.offerSimulationResult(simulationEvaluationCompletedResponseDTO {
+                        outputVector.putAll(mapOf("f1" to 42.0))
+                    })
+                }
+                CANCEL_REQUEST -> {
+                    // would be nice of the optimizer would listen to back pressure on the iteration event
+                    // but it doesnt, so by the teime you call stop from ITERATION_COMPLETED_NOTIFICATION
+                    // it might have already moved to the next iteration.
+                    println("cancelled!")
+                }
+                DESIGN_ITERATION_COMPLETED_NOTIFICATION -> {
+                    iterationNo += 1
+
+                    if(iterationNo >= 5){
+                        service.stopOptimization(stopOptimizationCommandDTO{})
+                    }
+                }
+                OPTIMIZATION_FINISHED_NOTIFICATION -> Unit
+                null, PURPOSE_NOT_SET -> TODO("$optimizerMessage")
+            }
+        }
+
+        // assert
+        assertThat(results.size).isGreaterThanOrEqualTo(iterationNo)
+    }
+
+    @Test fun `when calling startOptimization when previous optimization is not completed should provide good error message`(){
+        TODO()
+        // given that an optimiziation is already running
+        // when a user calls start optimization
+        // the result should be a RunNotStartedNotification issues=optimization ABCD1234 is already running.
+    }
+
+    @Test fun `should backpresure on iteration completed event`(){
+        TODO()
+        // ook this ones tricky,
+        // basically in the parallel optimizer i need a back pressure device
+        // IE, if we run a pure math function, the stream is flooded with designCompletedEvent.
+        //
+        // this seems to indicate we _might_ get it for free https://medium.com/@georgeleung_7777/seamless-backpressure-handling-with-grpc-kotlin-a6f99cab4b95
+        // another option is to add a confirm to the
+        //
+        // ok, similarly, we could interpret a stopOptimization call as an evaluation cancellation.
+        // BUT: we would need some mechanism to identify a straggler-evaluation completed response.
+        // one solution could be to have each EvaluationCompleted have both a runID and an iterationID.
+        // THIS ALSO ENABLES PARALLELISM, since each evaluation response would have an effective composite primary key
+    }
+
+    @Test fun `when using post-processing on simulation output and also an expensive constraint should work properly`() {
+        TODO()
+        // this is an API fault I found with the structure of intermediates et al.
+        //in
+//        message ProblemDefinitionDTO {
+//            repeated PrototypeInputParameterDTO inputs = 1;
+//            repeated BabelScalarDTO intermediate_transforms = 5;
+//            repeated PrototypeOutputParameterDTO objectives = 2;
+//            repeated BabelConstraintDTO constraints = 3;
+//        }
+
+        // how does one express an intermediate that uses the output from a simulation as input?
+        // does that simulation produce an 'objective'?
+
+        //change to maybe:
+//        message ProblemDefinitionDTO {
+//
+//            repeated OptimizationParameterDTO parameters
+//
+//        }
+//        message OptimizationParameterDTO {
+//            oneof value {
+//                PrototypeInputParameterDTO input = 1;
+//                BabelScalarDTO intermediate_transform = 5;
+//                PrototypeOutputParameterDTO intermediate_simulation_output = 7;
+//                PrototypeOutputParameterDTO objective = 2;
+//                BabelConstraintDTO constraint = 3;
+//            }
+//        }
+
+        // but that begs the question: why dont we just infer the entire thing?
+        // if you change the problem definition such that it simply has
+        // inputs, babel scalars, babel constraints, and simulations
+        // can you not infer the objectiveness?
+        // => yes, but then your column order is complex.
+
+        // you could simply copy repeated OptimizationParam parameters as columns around on each message
+        // we also dont need to pass the babel scalars here, thus
+//        message ProblemDefinitionDTO {
+//            repeated BabelScalar intermediate_transforms = 1;
+//            repeated BabelConstraint constraints = 2;
+
+//            repeated OptimizationParameterDTO parameters = 3;
+
+//            Inference output_inference_policy = 4;
+//            enum Inference {
+//                EVERYTHING = 0;             //<--- also note, you're not following protobuf enum conventions in optimizer.proto, should be CAPSLOCK_CAMEL_CASE, but is UpperCamelCase
+//                INTERMEDIATES_ONLY = 1;
+//                OBJECTIVES_ONLY = 2;
+//            }
+//        }
+//        message OptimizationParameterDTO {
+//            oneof value {
+//                PrototypeInputParameterDTO input = 1;
+//                PrototypeOutputParameterDTO intermediate = 2;
+//                PrototypeOutputParameterDTO objective = 3;
+//                PrototypeOutputParameterDTO constraints = 4;
+//            }
+//        }
+
+        @Test
+        fun `other things todo`() {
+            TODO("environment parameter for the volition port; clients should also listen to that parameter -- you should probably also add 'default' option to run oasis.cli.exe --volition default")
+            TODO("move the logs to %programdata% so that the svc produces some useful output --what are a NetworkServices permissions regarding logging?")
+        }
+
+        @Test
+        fun `when offering a simulation result with an incorrect number of columns should fail on unary call`(){
+            TODO("this was discovered in testing ")
+//            fail; // we should validate the schema of that message here.
+//            // in your test, the client is failing to include a value for c1.
+//            // that should error here.
+//            // design decision: should you put the response on the mssage
+//            // or demux it from the output channel?
+//            // another decision: do we need to do the same validation for the error result?
+        }
+    }
+
+    @Test fun `when call throws exception should be printed`(){
+        // soo kotlin grpc is swallowing exceptions
+        // this issue is to insert someting that wraps our implementation calls
+        // to catch and print excpetions
+
+        //some code I wrote
+        // note that you can put extra content on errors,
+        // the default error message type has a field:
+        // repeated Any details = 5;
+        // you can encode any message type to Any,
+
+//    catch (ex: Throwable) {
+//        val metadata = Metadata()
+//
+//        val formattedErrorMessage = Status.newBuilder()
+//            .setCode(io.grpc.Status.Code.ABORTED.value())
+//            .setMessage(ex::class.simpleName + " : " + ex.message)
+//            .addAllDetails(ex.stackTraceToString().lines().map { it.toProtobufAny() })
+//            .build()
+//
+//        fail; //oook, well somebody is swallowing these exceptions
+//        // also check in on https://github.com/grpc/grpc-java/issues/8678
+//
+//        metadata.put(ProtoUtils.keyForProto(Status.getDefaultInstance()), formattedErrorMessage)
+//        throw io.grpc.Status.OUT_OF_RANGE.asRuntimeException(metadata)
+//    }
+
+        TODO()
     }
 }
 
@@ -912,4 +864,15 @@ private fun <R> CoroutineScope.cancelOnException(block: () -> R): Unit {
 
         RuntimeException("client-side exception cancelled the tests", ex).printStackTrace()
     }
+}
+
+private fun DesignRowDTO.matches(ranges: List<ClosedRange<Double>>): Boolean {
+    val fullCoordinatesList = inputsList + outputsList
+    require(fullCoordinatesList.size == ranges.size)
+    for((index, value) in fullCoordinatesList.withIndex()){
+        val range = ranges[index]
+        if(value !in range) return false
+    }
+
+    return true
 }

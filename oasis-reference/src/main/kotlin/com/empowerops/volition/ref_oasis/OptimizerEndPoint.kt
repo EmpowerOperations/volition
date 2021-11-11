@@ -3,312 +3,238 @@ package com.empowerops.volition.ref_oasis
 import com.empowerops.babel.BabelCompiler
 import com.empowerops.babel.BabelExpression
 import com.empowerops.volition.dto.*
-import io.grpc.Status
-import io.grpc.stub.ServerCallStreamObserver
-import io.grpc.stub.StreamObserver
+import com.empowerops.volition.dto.toDTO
 import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.SendChannel
-import kotlinx.coroutines.channels.actor
-import java.lang.RuntimeException
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import java.time.Duration
 import java.util.*
-import java.util.logging.Level
 import java.util.logging.Logger
-import com.google.protobuf.kotlin.DslList
 
 typealias ParameterName = String
 
 sealed class State {
     object Idle: State() {}
-    data class Optimizing(val optimizationActor: OptimizationActor, val previous: Idle): State()
+    data class Optimizing(val optimizerBoundMessages: Channel<SimulationProvidedMessage>, val previous: Idle): State()
 }
 
 @Suppress("UsePropertyAccessSyntax") //for idiomatic protobuf use
 class OptimizerEndpoint(
         private val model: Map<UUID, RunResult>,
         private val optimizationActorFactory: OptimizationActorFactory
-) : UnaryOptimizerGrpc.UnaryOptimizerImplBase() {
+) : UnaryOptimizerGrpcKt.UnaryOptimizerCoroutineImplBase() {
 
     val compiler = BabelCompiler
     val logger = Logger.getLogger(OptimizerEndpoint::class.qualifiedName)
     val scope = GlobalScope //TODO
 
     private var state: State = State.Idle
+        get() = field
+        set(value) { field = value }
 
-    // returns a SendChannel<POJO> that wraps a StreamObserver<DTO>,
-    // doing context-free conversions from data-classes to DTOs.
-    private fun makeActorConvertingOptimizerRequestMessagesToDTOs(
-            responseObserver: StreamObserver<OptimizerGeneratedQueryDTO>
-    ): SendChannel<OptimizerRequestMessage> {
-
-        val actor = scope.actor<OptimizerRequestMessage>(Dispatchers.Unconfined, start = CoroutineStart.LAZY) {
-
-            try {
-                for (message in channel) try {
-                    val wrapper = OptimizerGeneratedQueryDTO.newBuilder()
-
-                    val dto = when(message) {
-                        is OptimizerRequestMessage.SimulationEvaluationRequest -> {
-                            wrapper.setEvaluationRequest(SimulationEvaluationRequestDTO.newBuilder()
-                                    .setName(message.name)
-                                    .putAllInputVector(message.inputVector)
-                                    .build()
-                            )
-                        }
-                        is OptimizerRequestMessage.SimulationCancelRequest -> {
-                            wrapper.setCancelRequest(SimulationCancelRequestDTO.newBuilder()
-                                    .setName(message.name)
-                                    .build()
-                            )
-                        }
-                        is OptimizerRequestMessage.RunStartedNotification -> {
-                            wrapper.setOptimizationStartedNotification(OptimizationStartedNotificationDTO.newBuilder()
-                                    .setRunID(message.runID.toDTO())
-                                    .build()
-                            )
-                        }
-                        is OptimizerRequestMessage.RunFinishedNotification -> {
-                            wrapper.setOptimizationFinishedNotification(OptimizationFinishedNotificationDTO.newBuilder()
-                                    .setRunID(message.runID.toDTO())
-                                    .build()
-                            )
-                        }
-                        is OptimizerRequestMessage.RunNotStartedNotification -> {
-                            wrapper.setOptimizationNotStartedNotification(OptimizationFailedToStartNotificationDTO.newBuilder()
-                                    .addAllIssues(message.issues)
-                                    .build()
-                            )
-                        }
-                        is OptimizerRequestMessage.ExpensivePointFoundNotification -> {
-                            wrapper.setDesignIterationCompletedNotification(DesignIterationCompletedNotificationDTO.newBuilder()
-                                .setDesignPoint(designRowDTO {
-                                    inputs += message.point.inputs
-                                    outputs += message.point.outputs
-                                    isFeasible = message.point.isFeasible!!
-                                    isFrontier = message.point.isFrontier!!
-                                }))
-                        }
-                    }.build()
-
-                    responseObserver.onNext(dto)
-                }
-                catch(ex: Exception){
-                    throw RuntimeException("error while converting message=$message", ex)
-                }
-
-                //NOT in a finally block! grpc expects EITHER an 'onError' OR an 'onComplete' call, NOT BOTH!!
-                responseObserver.onCompleted()
-            } catch(ex: Throwable){
-                logger.log(Level.SEVERE, "unexpected error in conversion actor", ex)
-                responseObserver.onError(ex)
-            }
-        }
-
-        val observer = responseObserver as? ServerCallStreamObserver
-        if(observer == null) {
-            logger.warning("stream isnt ServerCallStreamObserver => wont know if client disconnects")
-        }
-        else observer.setOnCancelHandler {
-            actor.close(Status.CANCELLED
-                    .withDescription("client cancelled start-optimization stream")
-                    .asRuntimeException()
-            )
-        }
-
-        return actor
-    }
-
-    override fun offerSimulationResult(
-            request: SimulationEvaluationCompletedResponseDTO,
-            responseObserver: StreamObserver<SimulationEvaluationResultConfirmDTO>
-    ) = scope.consumeSingleAsync(responseObserver, request) {
-
+    override suspend fun offerSimulationResult(request: SimulationEvaluationCompletedResponseDTO): SimulationEvaluationResultConfirmDTO {
         val state = checkIs<State.Optimizing>(state)
 
         val message = SimulationProvidedMessage.EvaluationResult(request.outputVectorMap)
-        state.optimizationActor.send(message)
+        state.optimizerBoundMessages.send(message)
 
-        SimulationEvaluationResultConfirmDTO.newBuilder().build()
+        return SimulationEvaluationResultConfirmDTO.newBuilder().build()
     }
 
-    override fun offerErrorResult(
-            request: SimulationEvaluationErrorResponseDTO,
-            responseObserver: StreamObserver<SimulationEvaluationErrorConfirmDTO>
-    ) = scope.consumeSingleAsync(responseObserver, request) {
+    override suspend fun offerErrorResult(request: SimulationEvaluationErrorResponseDTO): SimulationEvaluationErrorConfirmDTO {
         val state = checkIs<State.Optimizing>(state)
 
         val element = SimulationProvidedMessage.ErrorResponse(request.name, request.message)
-        state.optimizationActor.send(element)
+        state.optimizerBoundMessages.send(element)
 
-        SimulationEvaluationErrorConfirmDTO.newBuilder().build()
+        return simulationEvaluationErrorConfirmDTO {  }
     }
 
-    override fun offerEvaluationStatusMessage(
-            request: StatusMessageCommandDTO,
-            responseObserver: StreamObserver<StatusMessageConfirmDTO>
-    ) = scope.consumeSingleAsync(responseObserver, request) {
-
+    override suspend fun offerEvaluationStatusMessage(request: StatusMessageCommandDTO): StatusMessageConfirmDTO {
         val state = checkIs<State.Optimizing>(state)
 
         val element = SimulationProvidedMessage.Message(request.name, request.message)
-        state.optimizationActor.send(element)
+        state.optimizerBoundMessages.send(element)
 
-        StatusMessageConfirmDTO.newBuilder().build()
+        return statusMessageConfirmDTO {  }
     }
 
+    override fun startOptimization(request: StartOptimizationCommandDTO): Flow<OptimizerGeneratedQueryDTO> {
+        val idleState = checkIs<State.Idle>(state)
 
-    override fun startOptimization(
-            request: StartOptimizationCommandDTO,
-            responseObserver: StreamObserver<OptimizerGeneratedQueryDTO>
-    ): Unit {
+        val channel = Channel<SimulationProvidedMessage>(Channel.RENDEZVOUS)
+        state = State.Optimizing(channel, idleState)
 
-        val outputAdaptor = try { makeActorConvertingOptimizerRequestMessagesToDTOs(responseObserver) }
-                catch(ex: RuntimeException){responseObserver.onError(ex); throw ex }
+        val startMessage = SimulationProvidedMessage.StartOptimizationRequest(
+            inputs = request.problemDefinition.inputsList.map { inputDTO ->
 
-        try {
-            val idleState = checkIs<State.Idle>(state)
-
-            val optimizationActor = optimizationActorFactory.make(outputAdaptor)
-
-            optimizationActor.invokeOnClose {
-                outputAdaptor.close()
-                val optimizingState = checkIs<State.Optimizing>(state)
-                state = optimizingState.previous
-            }
-
-            outputAdaptor.invokeOnClose { closingEx ->
-                if( ! optimizationActor.isClosedForSend && closingEx is io.grpc.StatusRuntimeException) {
-                    // this is invoked when the client abrutply disconnects (think crash)
-                    // the problem there is that the output closes before the actor finishes,
-                    // so we just cancel the actor.
-                    optimizationActor.close(RuntimeException(closingEx))
+                val lowerBound = when (inputDTO.domainCase!!) {
+                    InputParameterDTO.DomainCase.CONTINUOUS -> inputDTO.continuous.lowerBound
+                    InputParameterDTO.DomainCase.DISCRETE_RANGE -> inputDTO.discreteRange.lowerBound
+                    InputParameterDTO.DomainCase.DOMAIN_NOT_SET -> TODO()
                 }
-            }
+                val upperBound = when (inputDTO.domainCase!!) {
+                    InputParameterDTO.DomainCase.CONTINUOUS -> inputDTO.continuous.upperBound
+                    InputParameterDTO.DomainCase.DISCRETE_RANGE -> inputDTO.discreteRange.upperBound
+                    InputParameterDTO.DomainCase.DOMAIN_NOT_SET -> TODO()
+                }
+                val stepSize = when (inputDTO.domainCase!!) {
+                    InputParameterDTO.DomainCase.CONTINUOUS -> null
+                    InputParameterDTO.DomainCase.DISCRETE_RANGE -> inputDTO.discreteRange.stepSize
+                    InputParameterDTO.DomainCase.DOMAIN_NOT_SET -> TODO()
+                }
 
-            state = State.Optimizing(optimizationActor, idleState)
-
-            val startMessage = SimulationProvidedMessage.StartOptimizationRequest(
-                    inputs = request.problemDefinition.inputsList.map { inputDTO ->
-
-                        val lowerBound = when (inputDTO.domainCase!!) {
-                            PrototypeInputParameterDTO.DomainCase.CONTINUOUS -> inputDTO.continuous.lowerBound
-                            PrototypeInputParameterDTO.DomainCase.DISCRETE_RANGE -> inputDTO.discreteRange.lowerBound
-                            PrototypeInputParameterDTO.DomainCase.DOMAIN_NOT_SET -> TODO()
-                        }
-                        val upperBound = when (inputDTO.domainCase!!) {
-                            PrototypeInputParameterDTO.DomainCase.CONTINUOUS -> inputDTO.continuous.upperBound
-                            PrototypeInputParameterDTO.DomainCase.DISCRETE_RANGE -> inputDTO.discreteRange.upperBound
-                            PrototypeInputParameterDTO.DomainCase.DOMAIN_NOT_SET -> TODO()
-                        }
-                        val stepSize = when (inputDTO.domainCase!!) {
-                            PrototypeInputParameterDTO.DomainCase.CONTINUOUS -> null
-                            PrototypeInputParameterDTO.DomainCase.DISCRETE_RANGE -> inputDTO.discreteRange.stepSize
-                            PrototypeInputParameterDTO.DomainCase.DOMAIN_NOT_SET -> TODO()
-                        }
-
-                        Input(
-                                name = inputDTO.name,
-                                lowerBound = lowerBound,
-                                upperBound = upperBound,
-                                stepSize = stepSize
-                        )
-                    },
-                    objectives = request.problemDefinition.objectivesList.map { objectiveDTO ->
-                        Output(name = objectiveDTO.name)
-                    },
-                    transforms = request.problemDefinition.intermediateTransformsList.map {
-                        val compiled = compiler.compile(it.scalarExpression) as BabelExpression
+                Input(
+                    name = inputDTO.name,
+                    lowerBound = lowerBound,
+                    upperBound = upperBound,
+                    stepSize = stepSize
+                )
+            },
+            transforms = request.problemDefinition.evaluablesList.map { node ->
+                val evaluable = when (node.valueCase) {
+                    EvaluableNodeDTO.ValueCase.TRANSFORM -> {
+                        val value = node.transform
+                        val compiled = compiler.compile(value.scalarExpression) as BabelExpression
                         require(!compiled.isBooleanExpression)
-                        MathExpression(it.outputName, compiled)
-                    },
-                    constraints = request.problemDefinition.constraintsList.map {
-                        val compiled = compiler.compile(it.booleanExpression) as BabelExpression
-                        require(compiled.isBooleanExpression)
-                        MathExpression(it.outputName, compiled)
-                    },
-
-                    nodes = request.nodesList.map { simDTO ->
-
-                        val timeOut = simDTO
-                                .takeIf { it.hasTimeOut() }
-                                ?.timeOut?.let { Duration.ofSeconds(it.seconds) + Duration.ofNanos(it.nanos.toLong()) }
-
-                        val autoMapping = simDTO
-                                .takeIf { it.mappingCase == SimulationNodeDTO.MappingCase.AUTO_MAP }
-                                ?.autoMap ?: false
-
-                        val explicitMapping = simDTO
-                                .takeIf { it.mappingCase == SimulationNodeDTO.MappingCase.MAPPING_TABLE }
-                                ?.mappingTable
+                        MathExpression(value.outputName, compiled)
+                    }
+                    EvaluableNodeDTO.ValueCase.SIMULATION -> {
+                        val simulation = node.simulation
+                        val autoMap = simulation.autoMap
+                        val mappingTableOrNull = simulation.takeIf { !autoMap }?.mappingTable
 
                         Simulation(
-                                name = simDTO.name,
-                                inputs = simDTO.inputsList,
-                                outputs = simDTO.outputsList,
-                                timeOut = timeOut,
-                                autoMap = autoMapping,
-                                inputMapping = explicitMapping?.inputsMap?.mapValues { it.value.value },
-                                outputMapping = explicitMapping?.outputsMap?.mapValues { it.value.value }
+                            simulation.name,
+                            simulation.inputsList.map { it.name },
+                            simulation.outputsList.map { simOutput ->
+                                simOutput.name.also {
+                                    require(!simOutput.isBoolean) {
+                                        "constraint outputs on simulations not yet supported in ref optimizer (it is suppored by the OASIS volition service."
+                                    }
+                                }
+                            },
+                            simulation.timeOut.toDuration(),
+                            autoMap,
+                            mappingTableOrNull?.inputsMap?.mapValues { (key, value) -> value.value },
+                            mappingTableOrNull?.outputsMap?.invert()?.mapKeys { key -> key.value }
                         )
-                    },
-                    settings = request.settings.run { OptimizationSettings(
-                            runtime = if(hasRunTime()) Duration.ofSeconds(runTime.seconds) else null,
-                            iterationCount = if(hasIterationCount()) iterationCount.value else null,
-                            targetObjectiveValue = if(hasTargetObjectiveValue()) targetObjectiveValue.value else null
-                    )},
-                    seedPoints = request.seedPointsList.map { ExpensivePointRow(it.inputsList, it.outputsList, null, null) }
-            )
+                    }
+                    EvaluableNodeDTO.ValueCase.CONSTRAINT -> {
+                        val value = node.constraint
+                        val compiled = compiler.compile(value.booleanExpression) as BabelExpression
+                        require(compiled.isBooleanExpression)
+                        MathExpression(value.outputName, compiled)
+                    }
+                    null, EvaluableNodeDTO.ValueCase.VALUE_NOT_SET -> TODO("unknown evaluable=$node")
+                }
 
-            runBlocking<Unit> { optimizationActor.send(startMessage) }
-        }
-        catch(ex: Throwable) {
-            logger.log(Level.SEVERE, "internal error starting optimization", ex)
-            responseObserver.onError(ex)
+                evaluable
+            },
+            settings = request.settings.run {
+                OptimizationSettings(
+                    runtime = if (hasRunTime()) Duration.ofSeconds(runTime.seconds) else null,
+                    iterationCount = if (hasIterationCount()) iterationCount else null,
+                    targetObjectiveValue = if (hasTargetObjectiveValue()) targetObjectiveValue else null
+                )
+            },
+            seedPoints = request.seedPointsList.map { ExpensivePointRow(it.inputsList, it.outputsList, null, null) }
+        )
+
+        val optimizationActor = optimizationActorFactory.make(startMessage, channel)
+
+        return optimizationActor.map { message ->
+            optimizerGeneratedQueryDTO {
+                when (message) {
+                    is OptimizerRequestMessage.ExpensivePointFoundNotification -> {
+                        designIterationCompletedNotification = designIterationCompletedNotificationDTO {
+                            designPoint = designRowDTO {
+                                inputs += message.point.inputs
+                                outputs += message.point.outputs
+                                isFeasible = message.point.isFeasible!!
+                                isFrontier = message.point.isFrontier!!
+                            }
+                        }
+                    }
+                    is OptimizerRequestMessage.RunFinishedNotification -> {
+
+                        state = (state as? State.Optimizing)?.previous ?: state
+
+                        optimizationFinishedNotification = optimizationFinishedNotificationDTO {
+                            runID = message.runID.toDTO()
+                        }
+                    }
+                    is OptimizerRequestMessage.RunNotStartedNotification -> {
+                        val clazz = OptimizationNotStartedNotificationDTO::class
+                        optimizationNotStartedNotification = optimizationNotStartedNotificationDTO {
+                            issues += message.issues
+                        }
+                    }
+                    is OptimizerRequestMessage.RunStartedNotification -> {
+                        optimizationStartedNotification = optimizationStartedNotificationDTO {
+                            runID = message.runID.toDTO()
+                        }
+                    }
+                    is OptimizerRequestMessage.SimulationCancelRequest -> {
+                        cancelRequest = simulationCancelRequestDTO {
+                            name = message.name
+                        }
+                    }
+                    is OptimizerRequestMessage.SimulationEvaluationRequest -> {
+                        evaluationRequest = simulationEvaluationRequestDTO {
+                            name = message.name
+                            inputVector.putAll(message.inputVector)
+                        }
+                    }
+                }
+            }
         }
     }
 
-    override fun stopOptimization(
-            request: StopOptimizationCommandDTO,
-            responseObserver: StreamObserver<StopOptimizationConfirmDTO>
-    ) = scope.consumeSingleAsync(responseObserver, request) {
-        var state = state
+    override suspend fun stopOptimization(request: StopOptimizationCommandDTO): StopOptimizationConfirmDTO =
+        when (val state = state) {
 
-        check(state is State.Optimizing)
+            is State.Idle -> {
+                val parsedID = request.runID.toUUIDOrNull()
+                check(parsedID == null || parsedID in model) { "id=$parsedID is not a recognized run ID" }
 
-        val message = SimulationProvidedMessage.StopOptimization()
-        state.optimizationActor.send(message)
-        (state.optimizationActor as Job).join()
+                stopOptimizationConfirmDTO {
+                    runID = parsedID?.toDTO() ?: runID
+                }
+            }
+            is State.Optimizing -> {
 
-        state = this.state
-        check(state is State.Idle)
+                val specifiedRunIDOrNull = request.runID.toUUIDOrNull()
+                val message = SimulationProvidedMessage.StopOptimization()
+                state.optimizerBoundMessages.send(message)
 
-        StopOptimizationConfirmDTO.newBuilder()
-                .setRunID(message.runID.await().toDTO())
-                .build()
-    }
+                val runningID = model.keys.last()
+                check(specifiedRunIDOrNull == null || runningID == specifiedRunIDOrNull)
 
-    override fun requestRunResult(
-            request: OptimizationResultsQueryDTO,
-            responseObserver: StreamObserver<OptimizationResultsResponseDTO>
-    ) = scope.consumeSingleAsync(responseObserver, request){
-        val state = state
+                stopOptimizationConfirmDTO {
+                    runID = runningID.toDTO()
+                }
+            }
+        }
 
-        check(state is State.Idle)
+    override suspend fun requestRunResult(request: OptimizationResultsQueryDTO): OptimizationResultsResponseDTO {
 
         val result: RunResult = model.getValue(UUID.fromString(request.runID.value))
 
-        OptimizationResultsResponseDTO.newBuilder()
-                .setRunID(result.uuid.toDTO())
-                .addAllInputColumns(result.inputs)
-                .addAllOutputColumns(result.outputs)
-                .addAllPoints(result.points.map { point -> DesignRowDTO.newBuilder()
-                        .addAllInputs(point.inputs)
-                        .addAllOutputs(point.outputs)
-                        .setIsFeasible(point.isFeasible!!)
-                        .setIsFrontier(point.isFrontier!!)
-                        .build()
-                })
-                .build()
+        return optimizationResultsResponseDTO {
+            runID = result.uuid.toDTO()
+            inputColumns += result.inputs
+            outputColumns += result.outputs
+            points += result.points.map { point ->
+                designRowDTO {
+                    inputs += point.inputs
+                    outputs += point.outputs
+                    isFeasible = point.isFeasible!!
+                    isFrontier = point.isFrontier!!
+                }
+            }
+        }
     }
 
 }
@@ -318,4 +244,11 @@ private inline fun <reified T> checkIs(instance: Any): T {
     return instance as T
 }
 
-private fun UUID.toDTO(): UUIDDTO = UUIDDTO.newBuilder().setValue(this.toString()).build()
+private fun <K, V> Map<K, V>.invert(): Map<V, K> {
+    val result = mutableMapOf<V, K>()
+    for((key, value) in this){
+        val oldKey = result.put(value, key)
+        require(oldKey == null) { "duplicate value $oldKey" }
+    }
+    return result
+}

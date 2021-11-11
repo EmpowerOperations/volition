@@ -31,6 +31,19 @@
                 <RowDefinition Height="88*"/>
                 <RowDefinition Height="88*"/>
             </Grid.RowDefinitions>
+            <Grid Grid.Row="0" Margin="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="80"/>
+                </Grid.ColumnDefinitions>
+                <TextBox Name="RegName" TextWrapping="Wrap" Text="Node1" Grid.Column="0" />
+                <Label Name="RegisterLabel" Grid.Column="1" Content="Status: Idle" />
+                <Label Name="PortLabel" Grid.Column="3" Content="Port:" />
+                <TextBox Name="Port" TextWrapping="Wrap" Text="5500" Grid.Column="4" />
+            </Grid>
             <Grid Grid.Row="1" Margin="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -52,17 +65,6 @@
                 <Button Name ="RemoveTimeout" Content="Clear" Grid.Column="3" Click="ClearTimeout_Click" />
                 <TextBox Name ="TimeoutTextBox" Grid.Column="1" HorizontalAlignment="Left" TextWrapping="Wrap" Width="120"/>
                 <Label Content="Timeout (in seconds)" Grid.Column="0" HorizontalAlignment="Left" />
-            </Grid>
-            <Grid Grid.Row="0" Margin="2">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <TextBox Name="RegName" TextWrapping="Wrap" Text="Node1" Grid.Column="0" />
-                <Label Name="RegisterLabel" Grid.Column="4" Content="Status: Idle" />
             </Grid>
             <Grid Grid.Row="3" Margin="2">
                 <Grid.RowDefinitions>

@@ -67,7 +67,7 @@ UnaryOptimizer::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& cha
   return ::grpc::internal::ClientReaderFactory< ::empowerops::volition::dto::OptimizerGeneratedQueryDTO>::Create(channel_.get(), rpcmethod_StartOptimization_, context, request);
 }
 
-void UnaryOptimizer::Stub::experimental_async::StartOptimization(::grpc::ClientContext* context, ::empowerops::volition::dto::StartOptimizationCommandDTO* request, ::grpc::experimental::ClientReadReactor< ::empowerops::volition::dto::OptimizerGeneratedQueryDTO>* reactor) {
+void UnaryOptimizer::Stub::experimental_async::StartOptimization(::grpc::ClientContext* context, const ::empowerops::volition::dto::StartOptimizationCommandDTO* request, ::grpc::experimental::ClientReadReactor< ::empowerops::volition::dto::OptimizerGeneratedQueryDTO>* reactor) {
   ::grpc::internal::ClientCallbackReaderFactory< ::empowerops::volition::dto::OptimizerGeneratedQueryDTO>::Create(stub_->channel_.get(), stub_->rpcmethod_StartOptimization_, context, request, reactor);
 }
 
@@ -80,19 +80,19 @@ void UnaryOptimizer::Stub::experimental_async::StartOptimization(::grpc::ClientC
 }
 
 ::grpc::Status UnaryOptimizer::Stub::OfferSimulationResult(::grpc::ClientContext* context, const ::empowerops::volition::dto::SimulationEvaluationCompletedResponseDTO& request, ::empowerops::volition::dto::SimulationEvaluationResultConfirmDTO* response) {
-  return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_OfferSimulationResult_, context, request, response);
+  return ::grpc::internal::BlockingUnaryCall< ::empowerops::volition::dto::SimulationEvaluationCompletedResponseDTO, ::empowerops::volition::dto::SimulationEvaluationResultConfirmDTO, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), rpcmethod_OfferSimulationResult_, context, request, response);
 }
 
 void UnaryOptimizer::Stub::experimental_async::OfferSimulationResult(::grpc::ClientContext* context, const ::empowerops::volition::dto::SimulationEvaluationCompletedResponseDTO* request, ::empowerops::volition::dto::SimulationEvaluationResultConfirmDTO* response, std::function<void(::grpc::Status)> f) {
-  ::grpc::internal::CallbackUnaryCall(stub_->channel_.get(), stub_->rpcmethod_OfferSimulationResult_, context, request, response, std::move(f));
+  ::grpc::internal::CallbackUnaryCall< ::empowerops::volition::dto::SimulationEvaluationCompletedResponseDTO, ::empowerops::volition::dto::SimulationEvaluationResultConfirmDTO, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_OfferSimulationResult_, context, request, response, std::move(f));
 }
 
 void UnaryOptimizer::Stub::experimental_async::OfferSimulationResult(::grpc::ClientContext* context, const ::empowerops::volition::dto::SimulationEvaluationCompletedResponseDTO* request, ::empowerops::volition::dto::SimulationEvaluationResultConfirmDTO* response, ::grpc::experimental::ClientUnaryReactor* reactor) {
-  ::grpc::internal::ClientCallbackUnaryFactory::Create(stub_->channel_.get(), stub_->rpcmethod_OfferSimulationResult_, context, request, response, reactor);
+  ::grpc::internal::ClientCallbackUnaryFactory::Create< ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_OfferSimulationResult_, context, request, response, reactor);
 }
 
 ::grpc::ClientAsyncResponseReader< ::empowerops::volition::dto::SimulationEvaluationResultConfirmDTO>* UnaryOptimizer::Stub::PrepareAsyncOfferSimulationResultRaw(::grpc::ClientContext* context, const ::empowerops::volition::dto::SimulationEvaluationCompletedResponseDTO& request, ::grpc::CompletionQueue* cq) {
-  return ::grpc::internal::ClientAsyncResponseReaderFactory< ::empowerops::volition::dto::SimulationEvaluationResultConfirmDTO>::Create(channel_.get(), cq, rpcmethod_OfferSimulationResult_, context, request, false);
+  return ::grpc::internal::ClientAsyncResponseReaderHelper::Create< ::empowerops::volition::dto::SimulationEvaluationResultConfirmDTO, ::empowerops::volition::dto::SimulationEvaluationCompletedResponseDTO, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), cq, rpcmethod_OfferSimulationResult_, context, request);
 }
 
 ::grpc::ClientAsyncResponseReader< ::empowerops::volition::dto::SimulationEvaluationResultConfirmDTO>* UnaryOptimizer::Stub::AsyncOfferSimulationResultRaw(::grpc::ClientContext* context, const ::empowerops::volition::dto::SimulationEvaluationCompletedResponseDTO& request, ::grpc::CompletionQueue* cq) {
@@ -103,19 +103,19 @@ void UnaryOptimizer::Stub::experimental_async::OfferSimulationResult(::grpc::Cli
 }
 
 ::grpc::Status UnaryOptimizer::Stub::OfferErrorResult(::grpc::ClientContext* context, const ::empowerops::volition::dto::SimulationEvaluationErrorResponseDTO& request, ::empowerops::volition::dto::SimulationEvaluationErrorConfirmDTO* response) {
-  return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_OfferErrorResult_, context, request, response);
+  return ::grpc::internal::BlockingUnaryCall< ::empowerops::volition::dto::SimulationEvaluationErrorResponseDTO, ::empowerops::volition::dto::SimulationEvaluationErrorConfirmDTO, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), rpcmethod_OfferErrorResult_, context, request, response);
 }
 
 void UnaryOptimizer::Stub::experimental_async::OfferErrorResult(::grpc::ClientContext* context, const ::empowerops::volition::dto::SimulationEvaluationErrorResponseDTO* request, ::empowerops::volition::dto::SimulationEvaluationErrorConfirmDTO* response, std::function<void(::grpc::Status)> f) {
-  ::grpc::internal::CallbackUnaryCall(stub_->channel_.get(), stub_->rpcmethod_OfferErrorResult_, context, request, response, std::move(f));
+  ::grpc::internal::CallbackUnaryCall< ::empowerops::volition::dto::SimulationEvaluationErrorResponseDTO, ::empowerops::volition::dto::SimulationEvaluationErrorConfirmDTO, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_OfferErrorResult_, context, request, response, std::move(f));
 }
 
 void UnaryOptimizer::Stub::experimental_async::OfferErrorResult(::grpc::ClientContext* context, const ::empowerops::volition::dto::SimulationEvaluationErrorResponseDTO* request, ::empowerops::volition::dto::SimulationEvaluationErrorConfirmDTO* response, ::grpc::experimental::ClientUnaryReactor* reactor) {
-  ::grpc::internal::ClientCallbackUnaryFactory::Create(stub_->channel_.get(), stub_->rpcmethod_OfferErrorResult_, context, request, response, reactor);
+  ::grpc::internal::ClientCallbackUnaryFactory::Create< ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_OfferErrorResult_, context, request, response, reactor);
 }
 
 ::grpc::ClientAsyncResponseReader< ::empowerops::volition::dto::SimulationEvaluationErrorConfirmDTO>* UnaryOptimizer::Stub::PrepareAsyncOfferErrorResultRaw(::grpc::ClientContext* context, const ::empowerops::volition::dto::SimulationEvaluationErrorResponseDTO& request, ::grpc::CompletionQueue* cq) {
-  return ::grpc::internal::ClientAsyncResponseReaderFactory< ::empowerops::volition::dto::SimulationEvaluationErrorConfirmDTO>::Create(channel_.get(), cq, rpcmethod_OfferErrorResult_, context, request, false);
+  return ::grpc::internal::ClientAsyncResponseReaderHelper::Create< ::empowerops::volition::dto::SimulationEvaluationErrorConfirmDTO, ::empowerops::volition::dto::SimulationEvaluationErrorResponseDTO, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), cq, rpcmethod_OfferErrorResult_, context, request);
 }
 
 ::grpc::ClientAsyncResponseReader< ::empowerops::volition::dto::SimulationEvaluationErrorConfirmDTO>* UnaryOptimizer::Stub::AsyncOfferErrorResultRaw(::grpc::ClientContext* context, const ::empowerops::volition::dto::SimulationEvaluationErrorResponseDTO& request, ::grpc::CompletionQueue* cq) {
@@ -126,19 +126,19 @@ void UnaryOptimizer::Stub::experimental_async::OfferErrorResult(::grpc::ClientCo
 }
 
 ::grpc::Status UnaryOptimizer::Stub::OfferEvaluationStatusMessage(::grpc::ClientContext* context, const ::empowerops::volition::dto::StatusMessageCommandDTO& request, ::empowerops::volition::dto::StatusMessageConfirmDTO* response) {
-  return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_OfferEvaluationStatusMessage_, context, request, response);
+  return ::grpc::internal::BlockingUnaryCall< ::empowerops::volition::dto::StatusMessageCommandDTO, ::empowerops::volition::dto::StatusMessageConfirmDTO, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), rpcmethod_OfferEvaluationStatusMessage_, context, request, response);
 }
 
 void UnaryOptimizer::Stub::experimental_async::OfferEvaluationStatusMessage(::grpc::ClientContext* context, const ::empowerops::volition::dto::StatusMessageCommandDTO* request, ::empowerops::volition::dto::StatusMessageConfirmDTO* response, std::function<void(::grpc::Status)> f) {
-  ::grpc::internal::CallbackUnaryCall(stub_->channel_.get(), stub_->rpcmethod_OfferEvaluationStatusMessage_, context, request, response, std::move(f));
+  ::grpc::internal::CallbackUnaryCall< ::empowerops::volition::dto::StatusMessageCommandDTO, ::empowerops::volition::dto::StatusMessageConfirmDTO, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_OfferEvaluationStatusMessage_, context, request, response, std::move(f));
 }
 
 void UnaryOptimizer::Stub::experimental_async::OfferEvaluationStatusMessage(::grpc::ClientContext* context, const ::empowerops::volition::dto::StatusMessageCommandDTO* request, ::empowerops::volition::dto::StatusMessageConfirmDTO* response, ::grpc::experimental::ClientUnaryReactor* reactor) {
-  ::grpc::internal::ClientCallbackUnaryFactory::Create(stub_->channel_.get(), stub_->rpcmethod_OfferEvaluationStatusMessage_, context, request, response, reactor);
+  ::grpc::internal::ClientCallbackUnaryFactory::Create< ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_OfferEvaluationStatusMessage_, context, request, response, reactor);
 }
 
 ::grpc::ClientAsyncResponseReader< ::empowerops::volition::dto::StatusMessageConfirmDTO>* UnaryOptimizer::Stub::PrepareAsyncOfferEvaluationStatusMessageRaw(::grpc::ClientContext* context, const ::empowerops::volition::dto::StatusMessageCommandDTO& request, ::grpc::CompletionQueue* cq) {
-  return ::grpc::internal::ClientAsyncResponseReaderFactory< ::empowerops::volition::dto::StatusMessageConfirmDTO>::Create(channel_.get(), cq, rpcmethod_OfferEvaluationStatusMessage_, context, request, false);
+  return ::grpc::internal::ClientAsyncResponseReaderHelper::Create< ::empowerops::volition::dto::StatusMessageConfirmDTO, ::empowerops::volition::dto::StatusMessageCommandDTO, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), cq, rpcmethod_OfferEvaluationStatusMessage_, context, request);
 }
 
 ::grpc::ClientAsyncResponseReader< ::empowerops::volition::dto::StatusMessageConfirmDTO>* UnaryOptimizer::Stub::AsyncOfferEvaluationStatusMessageRaw(::grpc::ClientContext* context, const ::empowerops::volition::dto::StatusMessageCommandDTO& request, ::grpc::CompletionQueue* cq) {
@@ -149,19 +149,19 @@ void UnaryOptimizer::Stub::experimental_async::OfferEvaluationStatusMessage(::gr
 }
 
 ::grpc::Status UnaryOptimizer::Stub::StopOptimization(::grpc::ClientContext* context, const ::empowerops::volition::dto::StopOptimizationCommandDTO& request, ::empowerops::volition::dto::StopOptimizationConfirmDTO* response) {
-  return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_StopOptimization_, context, request, response);
+  return ::grpc::internal::BlockingUnaryCall< ::empowerops::volition::dto::StopOptimizationCommandDTO, ::empowerops::volition::dto::StopOptimizationConfirmDTO, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), rpcmethod_StopOptimization_, context, request, response);
 }
 
 void UnaryOptimizer::Stub::experimental_async::StopOptimization(::grpc::ClientContext* context, const ::empowerops::volition::dto::StopOptimizationCommandDTO* request, ::empowerops::volition::dto::StopOptimizationConfirmDTO* response, std::function<void(::grpc::Status)> f) {
-  ::grpc::internal::CallbackUnaryCall(stub_->channel_.get(), stub_->rpcmethod_StopOptimization_, context, request, response, std::move(f));
+  ::grpc::internal::CallbackUnaryCall< ::empowerops::volition::dto::StopOptimizationCommandDTO, ::empowerops::volition::dto::StopOptimizationConfirmDTO, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_StopOptimization_, context, request, response, std::move(f));
 }
 
 void UnaryOptimizer::Stub::experimental_async::StopOptimization(::grpc::ClientContext* context, const ::empowerops::volition::dto::StopOptimizationCommandDTO* request, ::empowerops::volition::dto::StopOptimizationConfirmDTO* response, ::grpc::experimental::ClientUnaryReactor* reactor) {
-  ::grpc::internal::ClientCallbackUnaryFactory::Create(stub_->channel_.get(), stub_->rpcmethod_StopOptimization_, context, request, response, reactor);
+  ::grpc::internal::ClientCallbackUnaryFactory::Create< ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_StopOptimization_, context, request, response, reactor);
 }
 
 ::grpc::ClientAsyncResponseReader< ::empowerops::volition::dto::StopOptimizationConfirmDTO>* UnaryOptimizer::Stub::PrepareAsyncStopOptimizationRaw(::grpc::ClientContext* context, const ::empowerops::volition::dto::StopOptimizationCommandDTO& request, ::grpc::CompletionQueue* cq) {
-  return ::grpc::internal::ClientAsyncResponseReaderFactory< ::empowerops::volition::dto::StopOptimizationConfirmDTO>::Create(channel_.get(), cq, rpcmethod_StopOptimization_, context, request, false);
+  return ::grpc::internal::ClientAsyncResponseReaderHelper::Create< ::empowerops::volition::dto::StopOptimizationConfirmDTO, ::empowerops::volition::dto::StopOptimizationCommandDTO, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), cq, rpcmethod_StopOptimization_, context, request);
 }
 
 ::grpc::ClientAsyncResponseReader< ::empowerops::volition::dto::StopOptimizationConfirmDTO>* UnaryOptimizer::Stub::AsyncStopOptimizationRaw(::grpc::ClientContext* context, const ::empowerops::volition::dto::StopOptimizationCommandDTO& request, ::grpc::CompletionQueue* cq) {
@@ -172,19 +172,19 @@ void UnaryOptimizer::Stub::experimental_async::StopOptimization(::grpc::ClientCo
 }
 
 ::grpc::Status UnaryOptimizer::Stub::RequestRunResult(::grpc::ClientContext* context, const ::empowerops::volition::dto::OptimizationResultsQueryDTO& request, ::empowerops::volition::dto::OptimizationResultsResponseDTO* response) {
-  return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_RequestRunResult_, context, request, response);
+  return ::grpc::internal::BlockingUnaryCall< ::empowerops::volition::dto::OptimizationResultsQueryDTO, ::empowerops::volition::dto::OptimizationResultsResponseDTO, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), rpcmethod_RequestRunResult_, context, request, response);
 }
 
 void UnaryOptimizer::Stub::experimental_async::RequestRunResult(::grpc::ClientContext* context, const ::empowerops::volition::dto::OptimizationResultsQueryDTO* request, ::empowerops::volition::dto::OptimizationResultsResponseDTO* response, std::function<void(::grpc::Status)> f) {
-  ::grpc::internal::CallbackUnaryCall(stub_->channel_.get(), stub_->rpcmethod_RequestRunResult_, context, request, response, std::move(f));
+  ::grpc::internal::CallbackUnaryCall< ::empowerops::volition::dto::OptimizationResultsQueryDTO, ::empowerops::volition::dto::OptimizationResultsResponseDTO, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_RequestRunResult_, context, request, response, std::move(f));
 }
 
 void UnaryOptimizer::Stub::experimental_async::RequestRunResult(::grpc::ClientContext* context, const ::empowerops::volition::dto::OptimizationResultsQueryDTO* request, ::empowerops::volition::dto::OptimizationResultsResponseDTO* response, ::grpc::experimental::ClientUnaryReactor* reactor) {
-  ::grpc::internal::ClientCallbackUnaryFactory::Create(stub_->channel_.get(), stub_->rpcmethod_RequestRunResult_, context, request, response, reactor);
+  ::grpc::internal::ClientCallbackUnaryFactory::Create< ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_RequestRunResult_, context, request, response, reactor);
 }
 
 ::grpc::ClientAsyncResponseReader< ::empowerops::volition::dto::OptimizationResultsResponseDTO>* UnaryOptimizer::Stub::PrepareAsyncRequestRunResultRaw(::grpc::ClientContext* context, const ::empowerops::volition::dto::OptimizationResultsQueryDTO& request, ::grpc::CompletionQueue* cq) {
-  return ::grpc::internal::ClientAsyncResponseReaderFactory< ::empowerops::volition::dto::OptimizationResultsResponseDTO>::Create(channel_.get(), cq, rpcmethod_RequestRunResult_, context, request, false);
+  return ::grpc::internal::ClientAsyncResponseReaderHelper::Create< ::empowerops::volition::dto::OptimizationResultsResponseDTO, ::empowerops::volition::dto::OptimizationResultsQueryDTO, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), cq, rpcmethod_RequestRunResult_, context, request);
 }
 
 ::grpc::ClientAsyncResponseReader< ::empowerops::volition::dto::OptimizationResultsResponseDTO>* UnaryOptimizer::Stub::AsyncRequestRunResultRaw(::grpc::ClientContext* context, const ::empowerops::volition::dto::OptimizationResultsQueryDTO& request, ::grpc::CompletionQueue* cq) {
@@ -208,7 +208,7 @@ UnaryOptimizer::Service::Service() {
   AddMethod(new ::grpc::internal::RpcServiceMethod(
       UnaryOptimizer_method_names[1],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
-      new ::grpc::internal::RpcMethodHandler< UnaryOptimizer::Service, ::empowerops::volition::dto::SimulationEvaluationCompletedResponseDTO, ::empowerops::volition::dto::SimulationEvaluationResultConfirmDTO>(
+      new ::grpc::internal::RpcMethodHandler< UnaryOptimizer::Service, ::empowerops::volition::dto::SimulationEvaluationCompletedResponseDTO, ::empowerops::volition::dto::SimulationEvaluationResultConfirmDTO, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(
           [](UnaryOptimizer::Service* service,
              ::grpc::ServerContext* ctx,
              const ::empowerops::volition::dto::SimulationEvaluationCompletedResponseDTO* req,
@@ -218,7 +218,7 @@ UnaryOptimizer::Service::Service() {
   AddMethod(new ::grpc::internal::RpcServiceMethod(
       UnaryOptimizer_method_names[2],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
-      new ::grpc::internal::RpcMethodHandler< UnaryOptimizer::Service, ::empowerops::volition::dto::SimulationEvaluationErrorResponseDTO, ::empowerops::volition::dto::SimulationEvaluationErrorConfirmDTO>(
+      new ::grpc::internal::RpcMethodHandler< UnaryOptimizer::Service, ::empowerops::volition::dto::SimulationEvaluationErrorResponseDTO, ::empowerops::volition::dto::SimulationEvaluationErrorConfirmDTO, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(
           [](UnaryOptimizer::Service* service,
              ::grpc::ServerContext* ctx,
              const ::empowerops::volition::dto::SimulationEvaluationErrorResponseDTO* req,
@@ -228,7 +228,7 @@ UnaryOptimizer::Service::Service() {
   AddMethod(new ::grpc::internal::RpcServiceMethod(
       UnaryOptimizer_method_names[3],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
-      new ::grpc::internal::RpcMethodHandler< UnaryOptimizer::Service, ::empowerops::volition::dto::StatusMessageCommandDTO, ::empowerops::volition::dto::StatusMessageConfirmDTO>(
+      new ::grpc::internal::RpcMethodHandler< UnaryOptimizer::Service, ::empowerops::volition::dto::StatusMessageCommandDTO, ::empowerops::volition::dto::StatusMessageConfirmDTO, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(
           [](UnaryOptimizer::Service* service,
              ::grpc::ServerContext* ctx,
              const ::empowerops::volition::dto::StatusMessageCommandDTO* req,
@@ -238,7 +238,7 @@ UnaryOptimizer::Service::Service() {
   AddMethod(new ::grpc::internal::RpcServiceMethod(
       UnaryOptimizer_method_names[4],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
-      new ::grpc::internal::RpcMethodHandler< UnaryOptimizer::Service, ::empowerops::volition::dto::StopOptimizationCommandDTO, ::empowerops::volition::dto::StopOptimizationConfirmDTO>(
+      new ::grpc::internal::RpcMethodHandler< UnaryOptimizer::Service, ::empowerops::volition::dto::StopOptimizationCommandDTO, ::empowerops::volition::dto::StopOptimizationConfirmDTO, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(
           [](UnaryOptimizer::Service* service,
              ::grpc::ServerContext* ctx,
              const ::empowerops::volition::dto::StopOptimizationCommandDTO* req,
@@ -248,7 +248,7 @@ UnaryOptimizer::Service::Service() {
   AddMethod(new ::grpc::internal::RpcServiceMethod(
       UnaryOptimizer_method_names[5],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
-      new ::grpc::internal::RpcMethodHandler< UnaryOptimizer::Service, ::empowerops::volition::dto::OptimizationResultsQueryDTO, ::empowerops::volition::dto::OptimizationResultsResponseDTO>(
+      new ::grpc::internal::RpcMethodHandler< UnaryOptimizer::Service, ::empowerops::volition::dto::OptimizationResultsQueryDTO, ::empowerops::volition::dto::OptimizationResultsResponseDTO, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(
           [](UnaryOptimizer::Service* service,
              ::grpc::ServerContext* ctx,
              const ::empowerops::volition::dto::OptimizationResultsQueryDTO* req,

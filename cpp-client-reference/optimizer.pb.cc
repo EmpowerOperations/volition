@@ -14,723 +14,899 @@
 #include <google/protobuf/wire_format.h>
 // @@protoc_insertion_point(includes)
 #include <google/protobuf/port_def.inc>
-extern PROTOBUF_INTERNAL_EXPORT_optimizer_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_BabelConstraint_optimizer_2eproto;
-extern PROTOBUF_INTERNAL_EXPORT_optimizer_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_BabelScalar_optimizer_2eproto;
-extern PROTOBUF_INTERNAL_EXPORT_optimizer_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_DesignRow_optimizer_2eproto;
-extern PROTOBUF_INTERNAL_EXPORT_optimizer_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_OptimizerGeneratedQueryDTO_OptimizationFailedToStartNotification_optimizer_2eproto;
-extern PROTOBUF_INTERNAL_EXPORT_optimizer_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<1> scc_info_OptimizerGeneratedQueryDTO_OptimizationFinishedNotification_optimizer_2eproto;
-extern PROTOBUF_INTERNAL_EXPORT_optimizer_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<1> scc_info_OptimizerGeneratedQueryDTO_OptimizationStartedNotification_optimizer_2eproto;
-extern PROTOBUF_INTERNAL_EXPORT_optimizer_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_OptimizerGeneratedQueryDTO_SimulationCancelRequest_optimizer_2eproto;
-extern PROTOBUF_INTERNAL_EXPORT_optimizer_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<1> scc_info_OptimizerGeneratedQueryDTO_SimulationEvaluationRequest_optimizer_2eproto;
-extern PROTOBUF_INTERNAL_EXPORT_optimizer_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_OptimizerGeneratedQueryDTO_SimulationEvaluationRequest_InputVectorEntry_DoNotUse_optimizer_2eproto;
-extern PROTOBUF_INTERNAL_EXPORT_optimizer_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<2> scc_info_PrototypeInputParameter_optimizer_2eproto;
-extern PROTOBUF_INTERNAL_EXPORT_optimizer_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_PrototypeInputParameter_Continuous_optimizer_2eproto;
-extern PROTOBUF_INTERNAL_EXPORT_optimizer_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_PrototypeInputParameter_DiscreteRange_optimizer_2eproto;
-extern PROTOBUF_INTERNAL_EXPORT_optimizer_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_PrototypeOutputParameter_optimizer_2eproto;
-extern PROTOBUF_INTERNAL_EXPORT_optimizer_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_SimulationEvaluationCompletedResponseDTO_OutputVectorEntry_DoNotUse_optimizer_2eproto;
-extern PROTOBUF_INTERNAL_EXPORT_optimizer_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<3> scc_info_StartOptimizationCommandDTO_OptimizationSettings_optimizer_2eproto;
-extern PROTOBUF_INTERNAL_EXPORT_optimizer_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<4> scc_info_StartOptimizationCommandDTO_ProblemDefinition_optimizer_2eproto;
-extern PROTOBUF_INTERNAL_EXPORT_optimizer_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<2> scc_info_StartOptimizationCommandDTO_SimulationNode_optimizer_2eproto;
-extern PROTOBUF_INTERNAL_EXPORT_optimizer_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_UUID_optimizer_2eproto;
-extern PROTOBUF_INTERNAL_EXPORT_optimizer_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<2> scc_info_VariableMapping_optimizer_2eproto;
-extern PROTOBUF_INTERNAL_EXPORT_optimizer_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_VariableMapping_InputsEntry_DoNotUse_optimizer_2eproto;
-extern PROTOBUF_INTERNAL_EXPORT_optimizer_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_VariableMapping_OutputsEntry_DoNotUse_optimizer_2eproto;
-extern PROTOBUF_INTERNAL_EXPORT_google_2fprotobuf_2fwrappers_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_DoubleValue_google_2fprotobuf_2fwrappers_2eproto;
-extern PROTOBUF_INTERNAL_EXPORT_google_2fprotobuf_2fduration_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_Duration_google_2fprotobuf_2fduration_2eproto;
-extern PROTOBUF_INTERNAL_EXPORT_google_2fprotobuf_2fwrappers_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_UInt32Value_google_2fprotobuf_2fwrappers_2eproto;
+
+PROTOBUF_PRAGMA_INIT_SEG
 namespace empowerops {
 namespace volition {
 namespace dto {
-class StartOptimizationCommandDTO_ProblemDefinitionDefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<StartOptimizationCommandDTO_ProblemDefinition> _instance;
-} _StartOptimizationCommandDTO_ProblemDefinition_default_instance_;
-class StartOptimizationCommandDTO_SimulationNodeDefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<StartOptimizationCommandDTO_SimulationNode> _instance;
-} _StartOptimizationCommandDTO_SimulationNode_default_instance_;
-class StartOptimizationCommandDTO_OptimizationSettingsDefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<StartOptimizationCommandDTO_OptimizationSettings> _instance;
-} _StartOptimizationCommandDTO_OptimizationSettings_default_instance_;
-class StartOptimizationCommandDTODefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<StartOptimizationCommandDTO> _instance;
-} _StartOptimizationCommandDTO_default_instance_;
-class OptimizerGeneratedQueryDTO_SimulationEvaluationRequest_InputVectorEntry_DoNotUseDefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<OptimizerGeneratedQueryDTO_SimulationEvaluationRequest_InputVectorEntry_DoNotUse> _instance;
-} _OptimizerGeneratedQueryDTO_SimulationEvaluationRequest_InputVectorEntry_DoNotUse_default_instance_;
-class OptimizerGeneratedQueryDTO_SimulationEvaluationRequestDefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<OptimizerGeneratedQueryDTO_SimulationEvaluationRequest> _instance;
-} _OptimizerGeneratedQueryDTO_SimulationEvaluationRequest_default_instance_;
-class OptimizerGeneratedQueryDTO_SimulationCancelRequestDefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<OptimizerGeneratedQueryDTO_SimulationCancelRequest> _instance;
-} _OptimizerGeneratedQueryDTO_SimulationCancelRequest_default_instance_;
-class OptimizerGeneratedQueryDTO_OptimizationStartedNotificationDefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<OptimizerGeneratedQueryDTO_OptimizationStartedNotification> _instance;
-} _OptimizerGeneratedQueryDTO_OptimizationStartedNotification_default_instance_;
-class OptimizerGeneratedQueryDTO_OptimizationFinishedNotificationDefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<OptimizerGeneratedQueryDTO_OptimizationFinishedNotification> _instance;
-} _OptimizerGeneratedQueryDTO_OptimizationFinishedNotification_default_instance_;
-class OptimizerGeneratedQueryDTO_OptimizationFailedToStartNotificationDefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<OptimizerGeneratedQueryDTO_OptimizationFailedToStartNotification> _instance;
-} _OptimizerGeneratedQueryDTO_OptimizationFailedToStartNotification_default_instance_;
-class OptimizerGeneratedQueryDTODefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<OptimizerGeneratedQueryDTO> _instance;
-} _OptimizerGeneratedQueryDTO_default_instance_;
-class SimulationEvaluationCompletedResponseDTO_OutputVectorEntry_DoNotUseDefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<SimulationEvaluationCompletedResponseDTO_OutputVectorEntry_DoNotUse> _instance;
-} _SimulationEvaluationCompletedResponseDTO_OutputVectorEntry_DoNotUse_default_instance_;
-class SimulationEvaluationCompletedResponseDTODefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<SimulationEvaluationCompletedResponseDTO> _instance;
-} _SimulationEvaluationCompletedResponseDTO_default_instance_;
-class SimulationEvaluationResultConfirmDTODefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<SimulationEvaluationResultConfirmDTO> _instance;
-} _SimulationEvaluationResultConfirmDTO_default_instance_;
-class SimulationEvaluationErrorResponseDTODefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<SimulationEvaluationErrorResponseDTO> _instance;
-} _SimulationEvaluationErrorResponseDTO_default_instance_;
-class SimulationEvaluationErrorConfirmDTODefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<SimulationEvaluationErrorConfirmDTO> _instance;
-} _SimulationEvaluationErrorConfirmDTO_default_instance_;
-class StatusMessageCommandDTODefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<StatusMessageCommandDTO> _instance;
-} _StatusMessageCommandDTO_default_instance_;
-class StatusMessageConfirmDTODefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<StatusMessageConfirmDTO> _instance;
-} _StatusMessageConfirmDTO_default_instance_;
-class StopOptimizationCommandDTODefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<StopOptimizationCommandDTO> _instance;
-} _StopOptimizationCommandDTO_default_instance_;
-class StopOptimizationConfirmDTODefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<StopOptimizationConfirmDTO> _instance;
-} _StopOptimizationConfirmDTO_default_instance_;
-class OptimizationResultsQueryDTODefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<OptimizationResultsQueryDTO> _instance;
-} _OptimizationResultsQueryDTO_default_instance_;
-class OptimizationResultsResponseDTODefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<OptimizationResultsResponseDTO> _instance;
-} _OptimizationResultsResponseDTO_default_instance_;
-class PrototypeInputParameter_ContinuousDefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<PrototypeInputParameter_Continuous> _instance;
-} _PrototypeInputParameter_Continuous_default_instance_;
-class PrototypeInputParameter_DiscreteRangeDefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<PrototypeInputParameter_DiscreteRange> _instance;
-} _PrototypeInputParameter_DiscreteRange_default_instance_;
-class PrototypeInputParameterDefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<PrototypeInputParameter> _instance;
-} _PrototypeInputParameter_default_instance_;
-class PrototypeOutputParameterDefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<PrototypeOutputParameter> _instance;
-} _PrototypeOutputParameter_default_instance_;
-class VariableMapping_InputsEntry_DoNotUseDefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<VariableMapping_InputsEntry_DoNotUse> _instance;
-} _VariableMapping_InputsEntry_DoNotUse_default_instance_;
-class VariableMapping_OutputsEntry_DoNotUseDefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<VariableMapping_OutputsEntry_DoNotUse> _instance;
-} _VariableMapping_OutputsEntry_DoNotUse_default_instance_;
-class VariableMappingDefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<VariableMapping> _instance;
-} _VariableMapping_default_instance_;
-class BabelConstraintDefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<BabelConstraint> _instance;
-} _BabelConstraint_default_instance_;
-class BabelScalarDefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<BabelScalar> _instance;
-} _BabelScalar_default_instance_;
-class DesignRowDefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<DesignRow> _instance;
-} _DesignRow_default_instance_;
-class UUIDDefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<UUID> _instance;
-} _UUID_default_instance_;
+constexpr StartOptimizationCommandDTO::StartOptimizationCommandDTO(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : seed_points_()
+  , problem_definition_(nullptr)
+  , settings_(nullptr){}
+struct StartOptimizationCommandDTODefaultTypeInternal {
+  constexpr StartOptimizationCommandDTODefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~StartOptimizationCommandDTODefaultTypeInternal() {}
+  union {
+    StartOptimizationCommandDTO _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT StartOptimizationCommandDTODefaultTypeInternal _StartOptimizationCommandDTO_default_instance_;
+constexpr ProblemDefinitionDTO::ProblemDefinitionDTO(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : inputs_()
+  , evaluables_(){}
+struct ProblemDefinitionDTODefaultTypeInternal {
+  constexpr ProblemDefinitionDTODefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~ProblemDefinitionDTODefaultTypeInternal() {}
+  union {
+    ProblemDefinitionDTO _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT ProblemDefinitionDTODefaultTypeInternal _ProblemDefinitionDTO_default_instance_;
+constexpr EvaluableNodeDTO::EvaluableNodeDTO(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : _oneof_case_{}{}
+struct EvaluableNodeDTODefaultTypeInternal {
+  constexpr EvaluableNodeDTODefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~EvaluableNodeDTODefaultTypeInternal() {}
+  union {
+    EvaluableNodeDTO _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT EvaluableNodeDTODefaultTypeInternal _EvaluableNodeDTO_default_instance_;
+constexpr SimulationNodeDTO::SimulationNodeDTO(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : inputs_()
+  , outputs_()
+  , name_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
+  , time_out_(nullptr)
+  , _oneof_case_{}{}
+struct SimulationNodeDTODefaultTypeInternal {
+  constexpr SimulationNodeDTODefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~SimulationNodeDTODefaultTypeInternal() {}
+  union {
+    SimulationNodeDTO _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT SimulationNodeDTODefaultTypeInternal _SimulationNodeDTO_default_instance_;
+constexpr SimulationInputParameterDTO::SimulationInputParameterDTO(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : name_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string){}
+struct SimulationInputParameterDTODefaultTypeInternal {
+  constexpr SimulationInputParameterDTODefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~SimulationInputParameterDTODefaultTypeInternal() {}
+  union {
+    SimulationInputParameterDTO _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT SimulationInputParameterDTODefaultTypeInternal _SimulationInputParameterDTO_default_instance_;
+constexpr SimulationOutputParameterDTO::SimulationOutputParameterDTO(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : name_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
+  , is_boolean_(false){}
+struct SimulationOutputParameterDTODefaultTypeInternal {
+  constexpr SimulationOutputParameterDTODefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~SimulationOutputParameterDTODefaultTypeInternal() {}
+  union {
+    SimulationOutputParameterDTO _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT SimulationOutputParameterDTODefaultTypeInternal _SimulationOutputParameterDTO_default_instance_;
+constexpr SuspendAndCallbackConfigurationDTO::SuspendAndCallbackConfigurationDTO(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized){}
+struct SuspendAndCallbackConfigurationDTODefaultTypeInternal {
+  constexpr SuspendAndCallbackConfigurationDTODefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~SuspendAndCallbackConfigurationDTODefaultTypeInternal() {}
+  union {
+    SuspendAndCallbackConfigurationDTO _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT SuspendAndCallbackConfigurationDTODefaultTypeInternal _SuspendAndCallbackConfigurationDTO_default_instance_;
+constexpr ExternalSimulationExecConfigurationDTO::ExternalSimulationExecConfigurationDTO(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : options_()
+  , output_step_sequences_()
+  , input_step_sets_()
+  , exit_codes_()
+  , _exit_codes_cached_byte_size_(0)
+  , working_directory_(nullptr)
+  , input_file_(nullptr)
+  , output_file_(nullptr)
+  , backup_directory_(nullptr)
+  , executable_(nullptr)
+  , backup_timing_(0)
+
+  , exec_strategy_(0)
+{}
+struct ExternalSimulationExecConfigurationDTODefaultTypeInternal {
+  constexpr ExternalSimulationExecConfigurationDTODefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~ExternalSimulationExecConfigurationDTODefaultTypeInternal() {}
+  union {
+    ExternalSimulationExecConfigurationDTO _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT ExternalSimulationExecConfigurationDTODefaultTypeInternal _ExternalSimulationExecConfigurationDTO_default_instance_;
+constexpr ExecOptionDTO::ExecOptionDTO(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : option_name_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
+  , argument_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string){}
+struct ExecOptionDTODefaultTypeInternal {
+  constexpr ExecOptionDTODefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~ExecOptionDTODefaultTypeInternal() {}
+  union {
+    ExecOptionDTO _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT ExecOptionDTODefaultTypeInternal _ExecOptionDTO_default_instance_;
+constexpr OutputParameterLocationStepSequenceDTO::OutputParameterLocationStepSequenceDTO(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : steps_(){}
+struct OutputParameterLocationStepSequenceDTODefaultTypeInternal {
+  constexpr OutputParameterLocationStepSequenceDTODefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~OutputParameterLocationStepSequenceDTODefaultTypeInternal() {}
+  union {
+    OutputParameterLocationStepSequenceDTO _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT OutputParameterLocationStepSequenceDTODefaultTypeInternal _OutputParameterLocationStepSequenceDTO_default_instance_;
+constexpr InputParameterDetectionStepSetDTO::InputParameterDetectionStepSetDTO(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : steps_(){}
+struct InputParameterDetectionStepSetDTODefaultTypeInternal {
+  constexpr InputParameterDetectionStepSetDTODefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~InputParameterDetectionStepSetDTODefaultTypeInternal() {}
+  union {
+    InputParameterDetectionStepSetDTO _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT InputParameterDetectionStepSetDTODefaultTypeInternal _InputParameterDetectionStepSetDTO_default_instance_;
+constexpr OutputParameterLocationStepDTO::OutputParameterLocationStepDTO(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : name_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
+  , _oneof_case_{}{}
+struct OutputParameterLocationStepDTODefaultTypeInternal {
+  constexpr OutputParameterLocationStepDTODefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~OutputParameterLocationStepDTODefaultTypeInternal() {}
+  union {
+    OutputParameterLocationStepDTO _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT OutputParameterLocationStepDTODefaultTypeInternal _OutputParameterLocationStepDTO_default_instance_;
+constexpr InputParameterLocationStepDTO::InputParameterLocationStepDTO(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : name_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
+  , _oneof_case_{}{}
+struct InputParameterLocationStepDTODefaultTypeInternal {
+  constexpr InputParameterLocationStepDTODefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~InputParameterLocationStepDTODefaultTypeInternal() {}
+  union {
+    InputParameterLocationStepDTO _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT InputParameterLocationStepDTODefaultTypeInternal _InputParameterLocationStepDTO_default_instance_;
+constexpr RowColumnLengthLocationDTO::RowColumnLengthLocationDTO(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : row_number_(0u)
+  , column_number_(0u)
+  , length_(0u){}
+struct RowColumnLengthLocationDTODefaultTypeInternal {
+  constexpr RowColumnLengthLocationDTODefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~RowColumnLengthLocationDTODefaultTypeInternal() {}
+  union {
+    RowColumnLengthLocationDTO _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT RowColumnLengthLocationDTODefaultTypeInternal _RowColumnLengthLocationDTO_default_instance_;
+constexpr AnchorLocationDTO::AnchorLocationDTO(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : raw_anchor_text_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
+  , occurance_(0u){}
+struct AnchorLocationDTODefaultTypeInternal {
+  constexpr AnchorLocationDTODefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~AnchorLocationDTODefaultTypeInternal() {}
+  union {
+    AnchorLocationDTO _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT AnchorLocationDTODefaultTypeInternal _AnchorLocationDTO_default_instance_;
+constexpr OptimizationSettingsDTO::OptimizationSettingsDTO(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : run_time_(nullptr)
+  , iteration_count_(0u)
+  , target_objective_value_(0){}
+struct OptimizationSettingsDTODefaultTypeInternal {
+  constexpr OptimizationSettingsDTODefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~OptimizationSettingsDTODefaultTypeInternal() {}
+  union {
+    OptimizationSettingsDTO _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT OptimizationSettingsDTODefaultTypeInternal _OptimizationSettingsDTO_default_instance_;
+constexpr OptimizerGeneratedQueryDTO::OptimizerGeneratedQueryDTO(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : _oneof_case_{}{}
+struct OptimizerGeneratedQueryDTODefaultTypeInternal {
+  constexpr OptimizerGeneratedQueryDTODefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~OptimizerGeneratedQueryDTODefaultTypeInternal() {}
+  union {
+    OptimizerGeneratedQueryDTO _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT OptimizerGeneratedQueryDTODefaultTypeInternal _OptimizerGeneratedQueryDTO_default_instance_;
+constexpr SimulationEvaluationRequestDTO_InputVectorEntry_DoNotUse::SimulationEvaluationRequestDTO_InputVectorEntry_DoNotUse(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized){}
+struct SimulationEvaluationRequestDTO_InputVectorEntry_DoNotUseDefaultTypeInternal {
+  constexpr SimulationEvaluationRequestDTO_InputVectorEntry_DoNotUseDefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~SimulationEvaluationRequestDTO_InputVectorEntry_DoNotUseDefaultTypeInternal() {}
+  union {
+    SimulationEvaluationRequestDTO_InputVectorEntry_DoNotUse _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT SimulationEvaluationRequestDTO_InputVectorEntry_DoNotUseDefaultTypeInternal _SimulationEvaluationRequestDTO_InputVectorEntry_DoNotUse_default_instance_;
+constexpr SimulationEvaluationRequestDTO::SimulationEvaluationRequestDTO(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : input_vector_(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{})
+  , name_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string){}
+struct SimulationEvaluationRequestDTODefaultTypeInternal {
+  constexpr SimulationEvaluationRequestDTODefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~SimulationEvaluationRequestDTODefaultTypeInternal() {}
+  union {
+    SimulationEvaluationRequestDTO _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT SimulationEvaluationRequestDTODefaultTypeInternal _SimulationEvaluationRequestDTO_default_instance_;
+constexpr SimulationCancelRequestDTO::SimulationCancelRequestDTO(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : name_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string){}
+struct SimulationCancelRequestDTODefaultTypeInternal {
+  constexpr SimulationCancelRequestDTODefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~SimulationCancelRequestDTODefaultTypeInternal() {}
+  union {
+    SimulationCancelRequestDTO _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT SimulationCancelRequestDTODefaultTypeInternal _SimulationCancelRequestDTO_default_instance_;
+constexpr OptimizationStartedNotificationDTO::OptimizationStartedNotificationDTO(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : run_id_(nullptr){}
+struct OptimizationStartedNotificationDTODefaultTypeInternal {
+  constexpr OptimizationStartedNotificationDTODefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~OptimizationStartedNotificationDTODefaultTypeInternal() {}
+  union {
+    OptimizationStartedNotificationDTO _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT OptimizationStartedNotificationDTODefaultTypeInternal _OptimizationStartedNotificationDTO_default_instance_;
+constexpr OptimizationFinishedNotificationDTO::OptimizationFinishedNotificationDTO(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : run_id_(nullptr){}
+struct OptimizationFinishedNotificationDTODefaultTypeInternal {
+  constexpr OptimizationFinishedNotificationDTODefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~OptimizationFinishedNotificationDTODefaultTypeInternal() {}
+  union {
+    OptimizationFinishedNotificationDTO _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT OptimizationFinishedNotificationDTODefaultTypeInternal _OptimizationFinishedNotificationDTO_default_instance_;
+constexpr OptimizationNotStartedNotificationDTO::OptimizationNotStartedNotificationDTO(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : issues_(){}
+struct OptimizationNotStartedNotificationDTODefaultTypeInternal {
+  constexpr OptimizationNotStartedNotificationDTODefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~OptimizationNotStartedNotificationDTODefaultTypeInternal() {}
+  union {
+    OptimizationNotStartedNotificationDTO _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT OptimizationNotStartedNotificationDTODefaultTypeInternal _OptimizationNotStartedNotificationDTO_default_instance_;
+constexpr DesignIterationCompletedNotificationDTO::DesignIterationCompletedNotificationDTO(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : design_point_(nullptr){}
+struct DesignIterationCompletedNotificationDTODefaultTypeInternal {
+  constexpr DesignIterationCompletedNotificationDTODefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~DesignIterationCompletedNotificationDTODefaultTypeInternal() {}
+  union {
+    DesignIterationCompletedNotificationDTO _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT DesignIterationCompletedNotificationDTODefaultTypeInternal _DesignIterationCompletedNotificationDTO_default_instance_;
+constexpr SimulationEvaluationCompletedResponseDTO_OutputVectorEntry_DoNotUse::SimulationEvaluationCompletedResponseDTO_OutputVectorEntry_DoNotUse(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized){}
+struct SimulationEvaluationCompletedResponseDTO_OutputVectorEntry_DoNotUseDefaultTypeInternal {
+  constexpr SimulationEvaluationCompletedResponseDTO_OutputVectorEntry_DoNotUseDefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~SimulationEvaluationCompletedResponseDTO_OutputVectorEntry_DoNotUseDefaultTypeInternal() {}
+  union {
+    SimulationEvaluationCompletedResponseDTO_OutputVectorEntry_DoNotUse _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT SimulationEvaluationCompletedResponseDTO_OutputVectorEntry_DoNotUseDefaultTypeInternal _SimulationEvaluationCompletedResponseDTO_OutputVectorEntry_DoNotUse_default_instance_;
+constexpr SimulationEvaluationCompletedResponseDTO::SimulationEvaluationCompletedResponseDTO(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : output_vector_(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{})
+  , name_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
+  , abort_optimization_(false){}
+struct SimulationEvaluationCompletedResponseDTODefaultTypeInternal {
+  constexpr SimulationEvaluationCompletedResponseDTODefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~SimulationEvaluationCompletedResponseDTODefaultTypeInternal() {}
+  union {
+    SimulationEvaluationCompletedResponseDTO _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT SimulationEvaluationCompletedResponseDTODefaultTypeInternal _SimulationEvaluationCompletedResponseDTO_default_instance_;
+constexpr SimulationEvaluationResultConfirmDTO::SimulationEvaluationResultConfirmDTO(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized){}
+struct SimulationEvaluationResultConfirmDTODefaultTypeInternal {
+  constexpr SimulationEvaluationResultConfirmDTODefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~SimulationEvaluationResultConfirmDTODefaultTypeInternal() {}
+  union {
+    SimulationEvaluationResultConfirmDTO _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT SimulationEvaluationResultConfirmDTODefaultTypeInternal _SimulationEvaluationResultConfirmDTO_default_instance_;
+constexpr SimulationEvaluationErrorResponseDTO::SimulationEvaluationErrorResponseDTO(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : name_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
+  , message_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
+  , exception_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
+  , abort_optimization_(false){}
+struct SimulationEvaluationErrorResponseDTODefaultTypeInternal {
+  constexpr SimulationEvaluationErrorResponseDTODefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~SimulationEvaluationErrorResponseDTODefaultTypeInternal() {}
+  union {
+    SimulationEvaluationErrorResponseDTO _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT SimulationEvaluationErrorResponseDTODefaultTypeInternal _SimulationEvaluationErrorResponseDTO_default_instance_;
+constexpr SimulationEvaluationErrorConfirmDTO::SimulationEvaluationErrorConfirmDTO(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized){}
+struct SimulationEvaluationErrorConfirmDTODefaultTypeInternal {
+  constexpr SimulationEvaluationErrorConfirmDTODefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~SimulationEvaluationErrorConfirmDTODefaultTypeInternal() {}
+  union {
+    SimulationEvaluationErrorConfirmDTO _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT SimulationEvaluationErrorConfirmDTODefaultTypeInternal _SimulationEvaluationErrorConfirmDTO_default_instance_;
+constexpr StatusMessageCommandDTO::StatusMessageCommandDTO(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : name_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
+  , message_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string){}
+struct StatusMessageCommandDTODefaultTypeInternal {
+  constexpr StatusMessageCommandDTODefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~StatusMessageCommandDTODefaultTypeInternal() {}
+  union {
+    StatusMessageCommandDTO _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT StatusMessageCommandDTODefaultTypeInternal _StatusMessageCommandDTO_default_instance_;
+constexpr StatusMessageConfirmDTO::StatusMessageConfirmDTO(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized){}
+struct StatusMessageConfirmDTODefaultTypeInternal {
+  constexpr StatusMessageConfirmDTODefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~StatusMessageConfirmDTODefaultTypeInternal() {}
+  union {
+    StatusMessageConfirmDTO _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT StatusMessageConfirmDTODefaultTypeInternal _StatusMessageConfirmDTO_default_instance_;
+constexpr StopOptimizationCommandDTO::StopOptimizationCommandDTO(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : name_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
+  , run_id_(nullptr){}
+struct StopOptimizationCommandDTODefaultTypeInternal {
+  constexpr StopOptimizationCommandDTODefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~StopOptimizationCommandDTODefaultTypeInternal() {}
+  union {
+    StopOptimizationCommandDTO _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT StopOptimizationCommandDTODefaultTypeInternal _StopOptimizationCommandDTO_default_instance_;
+constexpr StopOptimizationConfirmDTO::StopOptimizationConfirmDTO(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : run_id_(nullptr){}
+struct StopOptimizationConfirmDTODefaultTypeInternal {
+  constexpr StopOptimizationConfirmDTODefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~StopOptimizationConfirmDTODefaultTypeInternal() {}
+  union {
+    StopOptimizationConfirmDTO _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT StopOptimizationConfirmDTODefaultTypeInternal _StopOptimizationConfirmDTO_default_instance_;
+constexpr OptimizationResultsQueryDTO::OptimizationResultsQueryDTO(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : run_id_(nullptr){}
+struct OptimizationResultsQueryDTODefaultTypeInternal {
+  constexpr OptimizationResultsQueryDTODefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~OptimizationResultsQueryDTODefaultTypeInternal() {}
+  union {
+    OptimizationResultsQueryDTO _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT OptimizationResultsQueryDTODefaultTypeInternal _OptimizationResultsQueryDTO_default_instance_;
+constexpr OptimizationResultsResponseDTO::OptimizationResultsResponseDTO(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : input_columns_()
+  , output_columns_()
+  , points_()
+  , run_id_(nullptr){}
+struct OptimizationResultsResponseDTODefaultTypeInternal {
+  constexpr OptimizationResultsResponseDTODefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~OptimizationResultsResponseDTODefaultTypeInternal() {}
+  union {
+    OptimizationResultsResponseDTO _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT OptimizationResultsResponseDTODefaultTypeInternal _OptimizationResultsResponseDTO_default_instance_;
+constexpr InputParameterDTO::InputParameterDTO(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : name_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
+  , _oneof_case_{}{}
+struct InputParameterDTODefaultTypeInternal {
+  constexpr InputParameterDTODefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~InputParameterDTODefaultTypeInternal() {}
+  union {
+    InputParameterDTO _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT InputParameterDTODefaultTypeInternal _InputParameterDTO_default_instance_;
+constexpr ContinuousDTO::ContinuousDTO(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : lower_bound_(0)
+  , upper_bound_(0){}
+struct ContinuousDTODefaultTypeInternal {
+  constexpr ContinuousDTODefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~ContinuousDTODefaultTypeInternal() {}
+  union {
+    ContinuousDTO _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT ContinuousDTODefaultTypeInternal _ContinuousDTO_default_instance_;
+constexpr DiscreteRangeDTO::DiscreteRangeDTO(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : lower_bound_(0)
+  , upper_bound_(0)
+  , step_size_(0){}
+struct DiscreteRangeDTODefaultTypeInternal {
+  constexpr DiscreteRangeDTODefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~DiscreteRangeDTODefaultTypeInternal() {}
+  union {
+    DiscreteRangeDTO _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT DiscreteRangeDTODefaultTypeInternal _DiscreteRangeDTO_default_instance_;
+constexpr VariableMappingDTO_InputsEntry_DoNotUse::VariableMappingDTO_InputsEntry_DoNotUse(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized){}
+struct VariableMappingDTO_InputsEntry_DoNotUseDefaultTypeInternal {
+  constexpr VariableMappingDTO_InputsEntry_DoNotUseDefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~VariableMappingDTO_InputsEntry_DoNotUseDefaultTypeInternal() {}
+  union {
+    VariableMappingDTO_InputsEntry_DoNotUse _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT VariableMappingDTO_InputsEntry_DoNotUseDefaultTypeInternal _VariableMappingDTO_InputsEntry_DoNotUse_default_instance_;
+constexpr VariableMappingDTO_OutputsEntry_DoNotUse::VariableMappingDTO_OutputsEntry_DoNotUse(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized){}
+struct VariableMappingDTO_OutputsEntry_DoNotUseDefaultTypeInternal {
+  constexpr VariableMappingDTO_OutputsEntry_DoNotUseDefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~VariableMappingDTO_OutputsEntry_DoNotUseDefaultTypeInternal() {}
+  union {
+    VariableMappingDTO_OutputsEntry_DoNotUse _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT VariableMappingDTO_OutputsEntry_DoNotUseDefaultTypeInternal _VariableMappingDTO_OutputsEntry_DoNotUse_default_instance_;
+constexpr VariableMappingDTO::VariableMappingDTO(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : inputs_(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{})
+  , outputs_(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}){}
+struct VariableMappingDTODefaultTypeInternal {
+  constexpr VariableMappingDTODefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~VariableMappingDTODefaultTypeInternal() {}
+  union {
+    VariableMappingDTO _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT VariableMappingDTODefaultTypeInternal _VariableMappingDTO_default_instance_;
+constexpr BabelConstraintNodeDTO::BabelConstraintNodeDTO(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : output_name_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
+  , boolean_expression_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string){}
+struct BabelConstraintNodeDTODefaultTypeInternal {
+  constexpr BabelConstraintNodeDTODefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~BabelConstraintNodeDTODefaultTypeInternal() {}
+  union {
+    BabelConstraintNodeDTO _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT BabelConstraintNodeDTODefaultTypeInternal _BabelConstraintNodeDTO_default_instance_;
+constexpr BabelScalarNodeDTO::BabelScalarNodeDTO(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : output_name_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
+  , scalar_expression_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string){}
+struct BabelScalarNodeDTODefaultTypeInternal {
+  constexpr BabelScalarNodeDTODefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~BabelScalarNodeDTODefaultTypeInternal() {}
+  union {
+    BabelScalarNodeDTO _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT BabelScalarNodeDTODefaultTypeInternal _BabelScalarNodeDTO_default_instance_;
+constexpr SeedRowDTO::SeedRowDTO(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : inputs_()
+  , outputs_(){}
+struct SeedRowDTODefaultTypeInternal {
+  constexpr SeedRowDTODefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~SeedRowDTODefaultTypeInternal() {}
+  union {
+    SeedRowDTO _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT SeedRowDTODefaultTypeInternal _SeedRowDTO_default_instance_;
+constexpr DesignRowDTO::DesignRowDTO(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : inputs_()
+  , outputs_()
+  , is_feasible_(false)
+  , is_frontier_(false){}
+struct DesignRowDTODefaultTypeInternal {
+  constexpr DesignRowDTODefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~DesignRowDTODefaultTypeInternal() {}
+  union {
+    DesignRowDTO _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT DesignRowDTODefaultTypeInternal _DesignRowDTO_default_instance_;
+constexpr UUIDDTO::UUIDDTO(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : value_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string){}
+struct UUIDDTODefaultTypeInternal {
+  constexpr UUIDDTODefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~UUIDDTODefaultTypeInternal() {}
+  union {
+    UUIDDTO _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT UUIDDTODefaultTypeInternal _UUIDDTO_default_instance_;
+constexpr PathDTO::PathDTO(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : value_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string){}
+struct PathDTODefaultTypeInternal {
+  constexpr PathDTODefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~PathDTODefaultTypeInternal() {}
+  union {
+    PathDTO _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PathDTODefaultTypeInternal _PathDTO_default_instance_;
+constexpr ErrorResponseDTO::ErrorResponseDTO(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : _oneof_case_{}{}
+struct ErrorResponseDTODefaultTypeInternal {
+  constexpr ErrorResponseDTODefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~ErrorResponseDTODefaultTypeInternal() {}
+  union {
+    ErrorResponseDTO _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT ErrorResponseDTODefaultTypeInternal _ErrorResponseDTO_default_instance_;
+constexpr InternalErrorDTO::InternalErrorDTO(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : message_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
+  , trace_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string){}
+struct InternalErrorDTODefaultTypeInternal {
+  constexpr InternalErrorDTODefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~InternalErrorDTODefaultTypeInternal() {}
+  union {
+    InternalErrorDTO _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT InternalErrorDTODefaultTypeInternal _InternalErrorDTO_default_instance_;
+constexpr NoSuchOptimizationRunDTO::NoSuchOptimizationRunDTO(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : run_id_(nullptr){}
+struct NoSuchOptimizationRunDTODefaultTypeInternal {
+  constexpr NoSuchOptimizationRunDTODefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~NoSuchOptimizationRunDTODefaultTypeInternal() {}
+  union {
+    NoSuchOptimizationRunDTO _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT NoSuchOptimizationRunDTODefaultTypeInternal _NoSuchOptimizationRunDTO_default_instance_;
+constexpr VariableNameDTO::VariableNameDTO(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : value_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string){}
+struct VariableNameDTODefaultTypeInternal {
+  constexpr VariableNameDTODefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~VariableNameDTODefaultTypeInternal() {}
+  union {
+    VariableNameDTO _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT VariableNameDTODefaultTypeInternal _VariableNameDTO_default_instance_;
 }  // namespace dto
 }  // namespace volition
 }  // namespace empowerops
-static void InitDefaultsscc_info_BabelConstraint_optimizer_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::empowerops::volition::dto::_BabelConstraint_default_instance_;
-    new (ptr) ::empowerops::volition::dto::BabelConstraint();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_BabelConstraint_optimizer_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_BabelConstraint_optimizer_2eproto}, {}};
-
-static void InitDefaultsscc_info_BabelScalar_optimizer_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::empowerops::volition::dto::_BabelScalar_default_instance_;
-    new (ptr) ::empowerops::volition::dto::BabelScalar();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_BabelScalar_optimizer_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_BabelScalar_optimizer_2eproto}, {}};
-
-static void InitDefaultsscc_info_DesignRow_optimizer_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::empowerops::volition::dto::_DesignRow_default_instance_;
-    new (ptr) ::empowerops::volition::dto::DesignRow();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_DesignRow_optimizer_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_DesignRow_optimizer_2eproto}, {}};
-
-static void InitDefaultsscc_info_OptimizationResultsQueryDTO_optimizer_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::empowerops::volition::dto::_OptimizationResultsQueryDTO_default_instance_;
-    new (ptr) ::empowerops::volition::dto::OptimizationResultsQueryDTO();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<1> scc_info_OptimizationResultsQueryDTO_optimizer_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 1, 0, InitDefaultsscc_info_OptimizationResultsQueryDTO_optimizer_2eproto}, {
-      &scc_info_UUID_optimizer_2eproto.base,}};
-
-static void InitDefaultsscc_info_OptimizationResultsResponseDTO_optimizer_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::empowerops::volition::dto::_OptimizationResultsResponseDTO_default_instance_;
-    new (ptr) ::empowerops::volition::dto::OptimizationResultsResponseDTO();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<2> scc_info_OptimizationResultsResponseDTO_optimizer_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 2, 0, InitDefaultsscc_info_OptimizationResultsResponseDTO_optimizer_2eproto}, {
-      &scc_info_UUID_optimizer_2eproto.base,
-      &scc_info_DesignRow_optimizer_2eproto.base,}};
-
-static void InitDefaultsscc_info_OptimizerGeneratedQueryDTO_optimizer_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::empowerops::volition::dto::_OptimizerGeneratedQueryDTO_default_instance_;
-    new (ptr) ::empowerops::volition::dto::OptimizerGeneratedQueryDTO();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<5> scc_info_OptimizerGeneratedQueryDTO_optimizer_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 5, 0, InitDefaultsscc_info_OptimizerGeneratedQueryDTO_optimizer_2eproto}, {
-      &scc_info_OptimizerGeneratedQueryDTO_SimulationEvaluationRequest_optimizer_2eproto.base,
-      &scc_info_OptimizerGeneratedQueryDTO_SimulationCancelRequest_optimizer_2eproto.base,
-      &scc_info_OptimizerGeneratedQueryDTO_OptimizationStartedNotification_optimizer_2eproto.base,
-      &scc_info_OptimizerGeneratedQueryDTO_OptimizationFinishedNotification_optimizer_2eproto.base,
-      &scc_info_OptimizerGeneratedQueryDTO_OptimizationFailedToStartNotification_optimizer_2eproto.base,}};
-
-static void InitDefaultsscc_info_OptimizerGeneratedQueryDTO_OptimizationFailedToStartNotification_optimizer_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::empowerops::volition::dto::_OptimizerGeneratedQueryDTO_OptimizationFailedToStartNotification_default_instance_;
-    new (ptr) ::empowerops::volition::dto::OptimizerGeneratedQueryDTO_OptimizationFailedToStartNotification();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_OptimizerGeneratedQueryDTO_OptimizationFailedToStartNotification_optimizer_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_OptimizerGeneratedQueryDTO_OptimizationFailedToStartNotification_optimizer_2eproto}, {}};
-
-static void InitDefaultsscc_info_OptimizerGeneratedQueryDTO_OptimizationFinishedNotification_optimizer_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::empowerops::volition::dto::_OptimizerGeneratedQueryDTO_OptimizationFinishedNotification_default_instance_;
-    new (ptr) ::empowerops::volition::dto::OptimizerGeneratedQueryDTO_OptimizationFinishedNotification();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<1> scc_info_OptimizerGeneratedQueryDTO_OptimizationFinishedNotification_optimizer_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 1, 0, InitDefaultsscc_info_OptimizerGeneratedQueryDTO_OptimizationFinishedNotification_optimizer_2eproto}, {
-      &scc_info_UUID_optimizer_2eproto.base,}};
-
-static void InitDefaultsscc_info_OptimizerGeneratedQueryDTO_OptimizationStartedNotification_optimizer_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::empowerops::volition::dto::_OptimizerGeneratedQueryDTO_OptimizationStartedNotification_default_instance_;
-    new (ptr) ::empowerops::volition::dto::OptimizerGeneratedQueryDTO_OptimizationStartedNotification();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<1> scc_info_OptimizerGeneratedQueryDTO_OptimizationStartedNotification_optimizer_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 1, 0, InitDefaultsscc_info_OptimizerGeneratedQueryDTO_OptimizationStartedNotification_optimizer_2eproto}, {
-      &scc_info_UUID_optimizer_2eproto.base,}};
-
-static void InitDefaultsscc_info_OptimizerGeneratedQueryDTO_SimulationCancelRequest_optimizer_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::empowerops::volition::dto::_OptimizerGeneratedQueryDTO_SimulationCancelRequest_default_instance_;
-    new (ptr) ::empowerops::volition::dto::OptimizerGeneratedQueryDTO_SimulationCancelRequest();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_OptimizerGeneratedQueryDTO_SimulationCancelRequest_optimizer_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_OptimizerGeneratedQueryDTO_SimulationCancelRequest_optimizer_2eproto}, {}};
-
-static void InitDefaultsscc_info_OptimizerGeneratedQueryDTO_SimulationEvaluationRequest_optimizer_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::empowerops::volition::dto::_OptimizerGeneratedQueryDTO_SimulationEvaluationRequest_default_instance_;
-    new (ptr) ::empowerops::volition::dto::OptimizerGeneratedQueryDTO_SimulationEvaluationRequest();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<1> scc_info_OptimizerGeneratedQueryDTO_SimulationEvaluationRequest_optimizer_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 1, 0, InitDefaultsscc_info_OptimizerGeneratedQueryDTO_SimulationEvaluationRequest_optimizer_2eproto}, {
-      &scc_info_OptimizerGeneratedQueryDTO_SimulationEvaluationRequest_InputVectorEntry_DoNotUse_optimizer_2eproto.base,}};
-
-static void InitDefaultsscc_info_OptimizerGeneratedQueryDTO_SimulationEvaluationRequest_InputVectorEntry_DoNotUse_optimizer_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::empowerops::volition::dto::_OptimizerGeneratedQueryDTO_SimulationEvaluationRequest_InputVectorEntry_DoNotUse_default_instance_;
-    new (ptr) ::empowerops::volition::dto::OptimizerGeneratedQueryDTO_SimulationEvaluationRequest_InputVectorEntry_DoNotUse();
-  }
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_OptimizerGeneratedQueryDTO_SimulationEvaluationRequest_InputVectorEntry_DoNotUse_optimizer_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_OptimizerGeneratedQueryDTO_SimulationEvaluationRequest_InputVectorEntry_DoNotUse_optimizer_2eproto}, {}};
-
-static void InitDefaultsscc_info_PrototypeInputParameter_optimizer_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::empowerops::volition::dto::_PrototypeInputParameter_default_instance_;
-    new (ptr) ::empowerops::volition::dto::PrototypeInputParameter();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<2> scc_info_PrototypeInputParameter_optimizer_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 2, 0, InitDefaultsscc_info_PrototypeInputParameter_optimizer_2eproto}, {
-      &scc_info_PrototypeInputParameter_Continuous_optimizer_2eproto.base,
-      &scc_info_PrototypeInputParameter_DiscreteRange_optimizer_2eproto.base,}};
-
-static void InitDefaultsscc_info_PrototypeInputParameter_Continuous_optimizer_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::empowerops::volition::dto::_PrototypeInputParameter_Continuous_default_instance_;
-    new (ptr) ::empowerops::volition::dto::PrototypeInputParameter_Continuous();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_PrototypeInputParameter_Continuous_optimizer_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_PrototypeInputParameter_Continuous_optimizer_2eproto}, {}};
-
-static void InitDefaultsscc_info_PrototypeInputParameter_DiscreteRange_optimizer_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::empowerops::volition::dto::_PrototypeInputParameter_DiscreteRange_default_instance_;
-    new (ptr) ::empowerops::volition::dto::PrototypeInputParameter_DiscreteRange();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_PrototypeInputParameter_DiscreteRange_optimizer_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_PrototypeInputParameter_DiscreteRange_optimizer_2eproto}, {}};
-
-static void InitDefaultsscc_info_PrototypeOutputParameter_optimizer_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::empowerops::volition::dto::_PrototypeOutputParameter_default_instance_;
-    new (ptr) ::empowerops::volition::dto::PrototypeOutputParameter();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_PrototypeOutputParameter_optimizer_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_PrototypeOutputParameter_optimizer_2eproto}, {}};
-
-static void InitDefaultsscc_info_SimulationEvaluationCompletedResponseDTO_optimizer_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::empowerops::volition::dto::_SimulationEvaluationCompletedResponseDTO_default_instance_;
-    new (ptr) ::empowerops::volition::dto::SimulationEvaluationCompletedResponseDTO();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<1> scc_info_SimulationEvaluationCompletedResponseDTO_optimizer_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 1, 0, InitDefaultsscc_info_SimulationEvaluationCompletedResponseDTO_optimizer_2eproto}, {
-      &scc_info_SimulationEvaluationCompletedResponseDTO_OutputVectorEntry_DoNotUse_optimizer_2eproto.base,}};
-
-static void InitDefaultsscc_info_SimulationEvaluationCompletedResponseDTO_OutputVectorEntry_DoNotUse_optimizer_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::empowerops::volition::dto::_SimulationEvaluationCompletedResponseDTO_OutputVectorEntry_DoNotUse_default_instance_;
-    new (ptr) ::empowerops::volition::dto::SimulationEvaluationCompletedResponseDTO_OutputVectorEntry_DoNotUse();
-  }
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_SimulationEvaluationCompletedResponseDTO_OutputVectorEntry_DoNotUse_optimizer_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_SimulationEvaluationCompletedResponseDTO_OutputVectorEntry_DoNotUse_optimizer_2eproto}, {}};
-
-static void InitDefaultsscc_info_SimulationEvaluationErrorConfirmDTO_optimizer_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::empowerops::volition::dto::_SimulationEvaluationErrorConfirmDTO_default_instance_;
-    new (ptr) ::empowerops::volition::dto::SimulationEvaluationErrorConfirmDTO();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_SimulationEvaluationErrorConfirmDTO_optimizer_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_SimulationEvaluationErrorConfirmDTO_optimizer_2eproto}, {}};
-
-static void InitDefaultsscc_info_SimulationEvaluationErrorResponseDTO_optimizer_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::empowerops::volition::dto::_SimulationEvaluationErrorResponseDTO_default_instance_;
-    new (ptr) ::empowerops::volition::dto::SimulationEvaluationErrorResponseDTO();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_SimulationEvaluationErrorResponseDTO_optimizer_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_SimulationEvaluationErrorResponseDTO_optimizer_2eproto}, {}};
-
-static void InitDefaultsscc_info_SimulationEvaluationResultConfirmDTO_optimizer_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::empowerops::volition::dto::_SimulationEvaluationResultConfirmDTO_default_instance_;
-    new (ptr) ::empowerops::volition::dto::SimulationEvaluationResultConfirmDTO();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_SimulationEvaluationResultConfirmDTO_optimizer_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_SimulationEvaluationResultConfirmDTO_optimizer_2eproto}, {}};
-
-static void InitDefaultsscc_info_StartOptimizationCommandDTO_optimizer_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::empowerops::volition::dto::_StartOptimizationCommandDTO_default_instance_;
-    new (ptr) ::empowerops::volition::dto::StartOptimizationCommandDTO();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<4> scc_info_StartOptimizationCommandDTO_optimizer_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 4, 0, InitDefaultsscc_info_StartOptimizationCommandDTO_optimizer_2eproto}, {
-      &scc_info_StartOptimizationCommandDTO_ProblemDefinition_optimizer_2eproto.base,
-      &scc_info_StartOptimizationCommandDTO_SimulationNode_optimizer_2eproto.base,
-      &scc_info_StartOptimizationCommandDTO_OptimizationSettings_optimizer_2eproto.base,
-      &scc_info_DesignRow_optimizer_2eproto.base,}};
-
-static void InitDefaultsscc_info_StartOptimizationCommandDTO_OptimizationSettings_optimizer_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::empowerops::volition::dto::_StartOptimizationCommandDTO_OptimizationSettings_default_instance_;
-    new (ptr) ::empowerops::volition::dto::StartOptimizationCommandDTO_OptimizationSettings();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<3> scc_info_StartOptimizationCommandDTO_OptimizationSettings_optimizer_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 3, 0, InitDefaultsscc_info_StartOptimizationCommandDTO_OptimizationSettings_optimizer_2eproto}, {
-      &scc_info_Duration_google_2fprotobuf_2fduration_2eproto.base,
-      &scc_info_UInt32Value_google_2fprotobuf_2fwrappers_2eproto.base,
-      &scc_info_DoubleValue_google_2fprotobuf_2fwrappers_2eproto.base,}};
-
-static void InitDefaultsscc_info_StartOptimizationCommandDTO_ProblemDefinition_optimizer_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::empowerops::volition::dto::_StartOptimizationCommandDTO_ProblemDefinition_default_instance_;
-    new (ptr) ::empowerops::volition::dto::StartOptimizationCommandDTO_ProblemDefinition();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<4> scc_info_StartOptimizationCommandDTO_ProblemDefinition_optimizer_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 4, 0, InitDefaultsscc_info_StartOptimizationCommandDTO_ProblemDefinition_optimizer_2eproto}, {
-      &scc_info_PrototypeInputParameter_optimizer_2eproto.base,
-      &scc_info_BabelScalar_optimizer_2eproto.base,
-      &scc_info_PrototypeOutputParameter_optimizer_2eproto.base,
-      &scc_info_BabelConstraint_optimizer_2eproto.base,}};
-
-static void InitDefaultsscc_info_StartOptimizationCommandDTO_SimulationNode_optimizer_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::empowerops::volition::dto::_StartOptimizationCommandDTO_SimulationNode_default_instance_;
-    new (ptr) ::empowerops::volition::dto::StartOptimizationCommandDTO_SimulationNode();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<2> scc_info_StartOptimizationCommandDTO_SimulationNode_optimizer_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 2, 0, InitDefaultsscc_info_StartOptimizationCommandDTO_SimulationNode_optimizer_2eproto}, {
-      &scc_info_VariableMapping_optimizer_2eproto.base,
-      &scc_info_Duration_google_2fprotobuf_2fduration_2eproto.base,}};
-
-static void InitDefaultsscc_info_StatusMessageCommandDTO_optimizer_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::empowerops::volition::dto::_StatusMessageCommandDTO_default_instance_;
-    new (ptr) ::empowerops::volition::dto::StatusMessageCommandDTO();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_StatusMessageCommandDTO_optimizer_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_StatusMessageCommandDTO_optimizer_2eproto}, {}};
-
-static void InitDefaultsscc_info_StatusMessageConfirmDTO_optimizer_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::empowerops::volition::dto::_StatusMessageConfirmDTO_default_instance_;
-    new (ptr) ::empowerops::volition::dto::StatusMessageConfirmDTO();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_StatusMessageConfirmDTO_optimizer_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_StatusMessageConfirmDTO_optimizer_2eproto}, {}};
-
-static void InitDefaultsscc_info_StopOptimizationCommandDTO_optimizer_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::empowerops::volition::dto::_StopOptimizationCommandDTO_default_instance_;
-    new (ptr) ::empowerops::volition::dto::StopOptimizationCommandDTO();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<1> scc_info_StopOptimizationCommandDTO_optimizer_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 1, 0, InitDefaultsscc_info_StopOptimizationCommandDTO_optimizer_2eproto}, {
-      &scc_info_UUID_optimizer_2eproto.base,}};
-
-static void InitDefaultsscc_info_StopOptimizationConfirmDTO_optimizer_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::empowerops::volition::dto::_StopOptimizationConfirmDTO_default_instance_;
-    new (ptr) ::empowerops::volition::dto::StopOptimizationConfirmDTO();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<1> scc_info_StopOptimizationConfirmDTO_optimizer_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 1, 0, InitDefaultsscc_info_StopOptimizationConfirmDTO_optimizer_2eproto}, {
-      &scc_info_UUID_optimizer_2eproto.base,}};
-
-static void InitDefaultsscc_info_UUID_optimizer_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::empowerops::volition::dto::_UUID_default_instance_;
-    new (ptr) ::empowerops::volition::dto::UUID();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_UUID_optimizer_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_UUID_optimizer_2eproto}, {}};
-
-static void InitDefaultsscc_info_VariableMapping_optimizer_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::empowerops::volition::dto::_VariableMapping_default_instance_;
-    new (ptr) ::empowerops::volition::dto::VariableMapping();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<2> scc_info_VariableMapping_optimizer_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 2, 0, InitDefaultsscc_info_VariableMapping_optimizer_2eproto}, {
-      &scc_info_VariableMapping_InputsEntry_DoNotUse_optimizer_2eproto.base,
-      &scc_info_VariableMapping_OutputsEntry_DoNotUse_optimizer_2eproto.base,}};
-
-static void InitDefaultsscc_info_VariableMapping_InputsEntry_DoNotUse_optimizer_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::empowerops::volition::dto::_VariableMapping_InputsEntry_DoNotUse_default_instance_;
-    new (ptr) ::empowerops::volition::dto::VariableMapping_InputsEntry_DoNotUse();
-  }
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_VariableMapping_InputsEntry_DoNotUse_optimizer_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_VariableMapping_InputsEntry_DoNotUse_optimizer_2eproto}, {}};
-
-static void InitDefaultsscc_info_VariableMapping_OutputsEntry_DoNotUse_optimizer_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::empowerops::volition::dto::_VariableMapping_OutputsEntry_DoNotUse_default_instance_;
-    new (ptr) ::empowerops::volition::dto::VariableMapping_OutputsEntry_DoNotUse();
-  }
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_VariableMapping_OutputsEntry_DoNotUse_optimizer_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_VariableMapping_OutputsEntry_DoNotUse_optimizer_2eproto}, {}};
-
-static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_optimizer_2eproto[33];
-static constexpr ::PROTOBUF_NAMESPACE_ID::EnumDescriptor const** file_level_enum_descriptors_optimizer_2eproto = nullptr;
+static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_optimizer_2eproto[51];
+static const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* file_level_enum_descriptors_optimizer_2eproto[2];
 static constexpr ::PROTOBUF_NAMESPACE_ID::ServiceDescriptor const** file_level_service_descriptors_optimizer_2eproto = nullptr;
 
 const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_optimizer_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-  ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::StartOptimizationCommandDTO_ProblemDefinition, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::StartOptimizationCommandDTO_ProblemDefinition, inputs_),
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::StartOptimizationCommandDTO_ProblemDefinition, transforms_),
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::StartOptimizationCommandDTO_ProblemDefinition, objectives_),
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::StartOptimizationCommandDTO_ProblemDefinition, constraints_),
-  ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::StartOptimizationCommandDTO_SimulationNode, _internal_metadata_),
-  ~0u,  // no _extensions_
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::StartOptimizationCommandDTO_SimulationNode, _oneof_case_[0]),
-  ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::StartOptimizationCommandDTO_SimulationNode, name_),
-  ::PROTOBUF_NAMESPACE_ID::internal::kInvalidFieldOffsetTag,
-  ::PROTOBUF_NAMESPACE_ID::internal::kInvalidFieldOffsetTag,
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::StartOptimizationCommandDTO_SimulationNode, inputs_),
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::StartOptimizationCommandDTO_SimulationNode, outputs_),
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::StartOptimizationCommandDTO_SimulationNode, time_out_),
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::StartOptimizationCommandDTO_SimulationNode, mapping_),
-  ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::StartOptimizationCommandDTO_OptimizationSettings, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::StartOptimizationCommandDTO_OptimizationSettings, run_time_),
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::StartOptimizationCommandDTO_OptimizationSettings, iteration_count_),
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::StartOptimizationCommandDTO_OptimizationSettings, target_objective_value_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::StartOptimizationCommandDTO, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::StartOptimizationCommandDTO, problem_definition_),
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::StartOptimizationCommandDTO, nodes_),
   PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::StartOptimizationCommandDTO, settings_),
   PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::StartOptimizationCommandDTO, seed_points_),
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::OptimizerGeneratedQueryDTO_SimulationEvaluationRequest_InputVectorEntry_DoNotUse, _has_bits_),
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::OptimizerGeneratedQueryDTO_SimulationEvaluationRequest_InputVectorEntry_DoNotUse, _internal_metadata_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::ProblemDefinitionDTO, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::OptimizerGeneratedQueryDTO_SimulationEvaluationRequest_InputVectorEntry_DoNotUse, key_),
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::OptimizerGeneratedQueryDTO_SimulationEvaluationRequest_InputVectorEntry_DoNotUse, value_),
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::ProblemDefinitionDTO, inputs_),
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::ProblemDefinitionDTO, evaluables_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::EvaluableNodeDTO, _internal_metadata_),
+  ~0u,  // no _extensions_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::EvaluableNodeDTO, _oneof_case_[0]),
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  ::PROTOBUF_NAMESPACE_ID::internal::kInvalidFieldOffsetTag,
+  ::PROTOBUF_NAMESPACE_ID::internal::kInvalidFieldOffsetTag,
+  ::PROTOBUF_NAMESPACE_ID::internal::kInvalidFieldOffsetTag,
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::EvaluableNodeDTO, value_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::SimulationNodeDTO, _internal_metadata_),
+  ~0u,  // no _extensions_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::SimulationNodeDTO, _oneof_case_[0]),
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::SimulationNodeDTO, name_),
+  ::PROTOBUF_NAMESPACE_ID::internal::kInvalidFieldOffsetTag,
+  ::PROTOBUF_NAMESPACE_ID::internal::kInvalidFieldOffsetTag,
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::SimulationNodeDTO, inputs_),
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::SimulationNodeDTO, outputs_),
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::SimulationNodeDTO, time_out_),
+  ::PROTOBUF_NAMESPACE_ID::internal::kInvalidFieldOffsetTag,
+  ::PROTOBUF_NAMESPACE_ID::internal::kInvalidFieldOffsetTag,
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::SimulationNodeDTO, mapping_),
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::SimulationNodeDTO, strategy_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::SimulationInputParameterDTO, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::SimulationInputParameterDTO, name_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::SimulationOutputParameterDTO, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::SimulationOutputParameterDTO, name_),
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::SimulationOutputParameterDTO, is_boolean_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::SuspendAndCallbackConfigurationDTO, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::ExternalSimulationExecConfigurationDTO, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::ExternalSimulationExecConfigurationDTO, working_directory_),
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::ExternalSimulationExecConfigurationDTO, input_file_),
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::ExternalSimulationExecConfigurationDTO, output_file_),
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::ExternalSimulationExecConfigurationDTO, backup_directory_),
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::ExternalSimulationExecConfigurationDTO, backup_timing_),
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::ExternalSimulationExecConfigurationDTO, executable_),
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::ExternalSimulationExecConfigurationDTO, options_),
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::ExternalSimulationExecConfigurationDTO, exec_strategy_),
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::ExternalSimulationExecConfigurationDTO, output_step_sequences_),
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::ExternalSimulationExecConfigurationDTO, input_step_sets_),
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::ExternalSimulationExecConfigurationDTO, exit_codes_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::ExecOptionDTO, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::ExecOptionDTO, option_name_),
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::ExecOptionDTO, argument_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::OutputParameterLocationStepSequenceDTO, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::OutputParameterLocationStepSequenceDTO, steps_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::InputParameterDetectionStepSetDTO, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::InputParameterDetectionStepSetDTO, steps_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::OutputParameterLocationStepDTO, _internal_metadata_),
+  ~0u,  // no _extensions_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::OutputParameterLocationStepDTO, _oneof_case_[0]),
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::OutputParameterLocationStepDTO, name_),
+  ::PROTOBUF_NAMESPACE_ID::internal::kInvalidFieldOffsetTag,
+  ::PROTOBUF_NAMESPACE_ID::internal::kInvalidFieldOffsetTag,
+  ::PROTOBUF_NAMESPACE_ID::internal::kInvalidFieldOffsetTag,
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::OutputParameterLocationStepDTO, location_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::InputParameterLocationStepDTO, _internal_metadata_),
+  ~0u,  // no _extensions_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::InputParameterLocationStepDTO, _oneof_case_[0]),
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::InputParameterLocationStepDTO, name_),
+  ::PROTOBUF_NAMESPACE_ID::internal::kInvalidFieldOffsetTag,
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::InputParameterLocationStepDTO, location_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::RowColumnLengthLocationDTO, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::RowColumnLengthLocationDTO, row_number_),
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::RowColumnLengthLocationDTO, column_number_),
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::RowColumnLengthLocationDTO, length_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::AnchorLocationDTO, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::AnchorLocationDTO, raw_anchor_text_),
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::AnchorLocationDTO, occurance_),
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::OptimizationSettingsDTO, _has_bits_),
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::OptimizationSettingsDTO, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::OptimizationSettingsDTO, run_time_),
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::OptimizationSettingsDTO, iteration_count_),
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::OptimizationSettingsDTO, target_objective_value_),
   0,
   1,
-  ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::OptimizerGeneratedQueryDTO_SimulationEvaluationRequest, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::OptimizerGeneratedQueryDTO_SimulationEvaluationRequest, name_),
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::OptimizerGeneratedQueryDTO_SimulationEvaluationRequest, input_vector_),
-  ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::OptimizerGeneratedQueryDTO_SimulationCancelRequest, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::OptimizerGeneratedQueryDTO_SimulationCancelRequest, name_),
-  ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::OptimizerGeneratedQueryDTO_OptimizationStartedNotification, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::OptimizerGeneratedQueryDTO_OptimizationStartedNotification, run_id_),
-  ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::OptimizerGeneratedQueryDTO_OptimizationFinishedNotification, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::OptimizerGeneratedQueryDTO_OptimizationFinishedNotification, run_id_),
-  ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::OptimizerGeneratedQueryDTO_OptimizationFailedToStartNotification, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::OptimizerGeneratedQueryDTO_OptimizationFailedToStartNotification, issues_),
+  2,
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::OptimizerGeneratedQueryDTO, _internal_metadata_),
   ~0u,  // no _extensions_
   PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::OptimizerGeneratedQueryDTO, _oneof_case_[0]),
   ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  ::PROTOBUF_NAMESPACE_ID::internal::kInvalidFieldOffsetTag,
   ::PROTOBUF_NAMESPACE_ID::internal::kInvalidFieldOffsetTag,
   ::PROTOBUF_NAMESPACE_ID::internal::kInvalidFieldOffsetTag,
   ::PROTOBUF_NAMESPACE_ID::internal::kInvalidFieldOffsetTag,
   ::PROTOBUF_NAMESPACE_ID::internal::kInvalidFieldOffsetTag,
   ::PROTOBUF_NAMESPACE_ID::internal::kInvalidFieldOffsetTag,
   PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::OptimizerGeneratedQueryDTO, purpose_),
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::SimulationEvaluationRequestDTO_InputVectorEntry_DoNotUse, _has_bits_),
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::SimulationEvaluationRequestDTO_InputVectorEntry_DoNotUse, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::SimulationEvaluationRequestDTO_InputVectorEntry_DoNotUse, key_),
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::SimulationEvaluationRequestDTO_InputVectorEntry_DoNotUse, value_),
+  0,
+  1,
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::SimulationEvaluationRequestDTO, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::SimulationEvaluationRequestDTO, name_),
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::SimulationEvaluationRequestDTO, input_vector_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::SimulationCancelRequestDTO, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::SimulationCancelRequestDTO, name_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::OptimizationStartedNotificationDTO, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::OptimizationStartedNotificationDTO, run_id_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::OptimizationFinishedNotificationDTO, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::OptimizationFinishedNotificationDTO, run_id_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::OptimizationNotStartedNotificationDTO, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::OptimizationNotStartedNotificationDTO, issues_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::DesignIterationCompletedNotificationDTO, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::DesignIterationCompletedNotificationDTO, design_point_),
   PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::SimulationEvaluationCompletedResponseDTO_OutputVectorEntry_DoNotUse, _has_bits_),
   PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::SimulationEvaluationCompletedResponseDTO_OutputVectorEntry_DoNotUse, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::SimulationEvaluationCompletedResponseDTO_OutputVectorEntry_DoNotUse, key_),
   PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::SimulationEvaluationCompletedResponseDTO_OutputVectorEntry_DoNotUse, value_),
   0,
@@ -740,6 +916,7 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_optimizer_2eproto::offsets[] P
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::SimulationEvaluationCompletedResponseDTO, name_),
   PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::SimulationEvaluationCompletedResponseDTO, output_vector_),
   PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::SimulationEvaluationCompletedResponseDTO, abort_optimization_),
@@ -748,11 +925,13 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_optimizer_2eproto::offsets[] P
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::SimulationEvaluationErrorResponseDTO, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::SimulationEvaluationErrorResponseDTO, name_),
   PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::SimulationEvaluationErrorResponseDTO, message_),
   PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::SimulationEvaluationErrorResponseDTO, exception_),
@@ -762,11 +941,13 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_optimizer_2eproto::offsets[] P
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::StatusMessageCommandDTO, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::StatusMessageCommandDTO, name_),
   PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::StatusMessageCommandDTO, message_),
   ~0u,  // no _has_bits_
@@ -774,11 +955,13 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_optimizer_2eproto::offsets[] P
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::StopOptimizationCommandDTO, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::StopOptimizationCommandDTO, name_),
   PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::StopOptimizationCommandDTO, run_id_),
   ~0u,  // no _has_bits_
@@ -786,156 +969,239 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_optimizer_2eproto::offsets[] P
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::StopOptimizationConfirmDTO, run_id_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::OptimizationResultsQueryDTO, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::OptimizationResultsQueryDTO, name_),
+  ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::OptimizationResultsQueryDTO, run_id_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::OptimizationResultsResponseDTO, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::OptimizationResultsResponseDTO, run_id_),
   PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::OptimizationResultsResponseDTO, input_columns_),
   PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::OptimizationResultsResponseDTO, output_columns_),
   PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::OptimizationResultsResponseDTO, points_),
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::OptimizationResultsResponseDTO, frontier_),
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::PrototypeInputParameter_Continuous, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::InputParameterDTO, _internal_metadata_),
   ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::InputParameterDTO, _oneof_case_[0]),
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::PrototypeInputParameter_Continuous, lower_bound_),
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::PrototypeInputParameter_Continuous, upper_bound_),
-  ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::PrototypeInputParameter_DiscreteRange, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::PrototypeInputParameter_DiscreteRange, lower_bound_),
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::PrototypeInputParameter_DiscreteRange, upper_bound_),
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::PrototypeInputParameter_DiscreteRange, step_size_),
-  ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::PrototypeInputParameter, _internal_metadata_),
-  ~0u,  // no _extensions_
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::PrototypeInputParameter, _oneof_case_[0]),
-  ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::PrototypeInputParameter, name_),
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::InputParameterDTO, name_),
   ::PROTOBUF_NAMESPACE_ID::internal::kInvalidFieldOffsetTag,
   ::PROTOBUF_NAMESPACE_ID::internal::kInvalidFieldOffsetTag,
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::PrototypeInputParameter, domain_),
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::InputParameterDTO, domain_),
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::PrototypeOutputParameter, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::ContinuousDTO, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::PrototypeOutputParameter, name_),
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::VariableMapping_InputsEntry_DoNotUse, _has_bits_),
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::VariableMapping_InputsEntry_DoNotUse, _internal_metadata_),
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::ContinuousDTO, lower_bound_),
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::ContinuousDTO, upper_bound_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::DiscreteRangeDTO, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::VariableMapping_InputsEntry_DoNotUse, key_),
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::VariableMapping_InputsEntry_DoNotUse, value_),
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::DiscreteRangeDTO, lower_bound_),
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::DiscreteRangeDTO, upper_bound_),
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::DiscreteRangeDTO, step_size_),
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::VariableMappingDTO_InputsEntry_DoNotUse, _has_bits_),
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::VariableMappingDTO_InputsEntry_DoNotUse, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::VariableMappingDTO_InputsEntry_DoNotUse, key_),
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::VariableMappingDTO_InputsEntry_DoNotUse, value_),
   0,
   1,
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::VariableMapping_OutputsEntry_DoNotUse, _has_bits_),
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::VariableMapping_OutputsEntry_DoNotUse, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::VariableMappingDTO_OutputsEntry_DoNotUse, _has_bits_),
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::VariableMappingDTO_OutputsEntry_DoNotUse, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::VariableMapping_OutputsEntry_DoNotUse, key_),
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::VariableMapping_OutputsEntry_DoNotUse, value_),
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::VariableMappingDTO_OutputsEntry_DoNotUse, key_),
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::VariableMappingDTO_OutputsEntry_DoNotUse, value_),
   0,
   1,
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::VariableMapping, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::VariableMappingDTO, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::VariableMapping, inputs_),
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::VariableMapping, outputs_),
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::VariableMappingDTO, inputs_),
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::VariableMappingDTO, outputs_),
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::BabelConstraint, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::BabelConstraintNodeDTO, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::BabelConstraint, output_name_),
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::BabelConstraint, boolean_expression_),
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::BabelConstraintNodeDTO, output_name_),
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::BabelConstraintNodeDTO, boolean_expression_),
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::BabelScalar, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::BabelScalarNodeDTO, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::BabelScalar, output_name_),
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::BabelScalar, scalar_expression_),
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::BabelScalarNodeDTO, output_name_),
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::BabelScalarNodeDTO, scalar_expression_),
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::DesignRow, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::SeedRowDTO, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::DesignRow, inputs_),
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::DesignRow, outputs_),
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::DesignRow, is_feasible_),
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::SeedRowDTO, inputs_),
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::SeedRowDTO, outputs_),
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::UUID, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::DesignRowDTO, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::UUID, value_),
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::DesignRowDTO, inputs_),
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::DesignRowDTO, outputs_),
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::DesignRowDTO, is_feasible_),
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::DesignRowDTO, is_frontier_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::UUIDDTO, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::UUIDDTO, value_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::PathDTO, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::PathDTO, value_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::ErrorResponseDTO, _internal_metadata_),
+  ~0u,  // no _extensions_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::ErrorResponseDTO, _oneof_case_[0]),
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  ::PROTOBUF_NAMESPACE_ID::internal::kInvalidFieldOffsetTag,
+  ::PROTOBUF_NAMESPACE_ID::internal::kInvalidFieldOffsetTag,
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::ErrorResponseDTO, value_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::InternalErrorDTO, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::InternalErrorDTO, message_),
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::InternalErrorDTO, trace_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::NoSuchOptimizationRunDTO, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::NoSuchOptimizationRunDTO, run_id_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::VariableNameDTO, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::empowerops::volition::dto::VariableNameDTO, value_),
 };
 static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-  { 0, -1, sizeof(::empowerops::volition::dto::StartOptimizationCommandDTO_ProblemDefinition)},
-  { 9, -1, sizeof(::empowerops::volition::dto::StartOptimizationCommandDTO_SimulationNode)},
-  { 21, -1, sizeof(::empowerops::volition::dto::StartOptimizationCommandDTO_OptimizationSettings)},
-  { 29, -1, sizeof(::empowerops::volition::dto::StartOptimizationCommandDTO)},
-  { 38, 45, sizeof(::empowerops::volition::dto::OptimizerGeneratedQueryDTO_SimulationEvaluationRequest_InputVectorEntry_DoNotUse)},
-  { 47, -1, sizeof(::empowerops::volition::dto::OptimizerGeneratedQueryDTO_SimulationEvaluationRequest)},
-  { 54, -1, sizeof(::empowerops::volition::dto::OptimizerGeneratedQueryDTO_SimulationCancelRequest)},
-  { 60, -1, sizeof(::empowerops::volition::dto::OptimizerGeneratedQueryDTO_OptimizationStartedNotification)},
-  { 66, -1, sizeof(::empowerops::volition::dto::OptimizerGeneratedQueryDTO_OptimizationFinishedNotification)},
-  { 72, -1, sizeof(::empowerops::volition::dto::OptimizerGeneratedQueryDTO_OptimizationFailedToStartNotification)},
-  { 78, -1, sizeof(::empowerops::volition::dto::OptimizerGeneratedQueryDTO)},
-  { 89, 96, sizeof(::empowerops::volition::dto::SimulationEvaluationCompletedResponseDTO_OutputVectorEntry_DoNotUse)},
-  { 98, -1, sizeof(::empowerops::volition::dto::SimulationEvaluationCompletedResponseDTO)},
-  { 106, -1, sizeof(::empowerops::volition::dto::SimulationEvaluationResultConfirmDTO)},
-  { 111, -1, sizeof(::empowerops::volition::dto::SimulationEvaluationErrorResponseDTO)},
-  { 120, -1, sizeof(::empowerops::volition::dto::SimulationEvaluationErrorConfirmDTO)},
-  { 125, -1, sizeof(::empowerops::volition::dto::StatusMessageCommandDTO)},
-  { 132, -1, sizeof(::empowerops::volition::dto::StatusMessageConfirmDTO)},
-  { 137, -1, sizeof(::empowerops::volition::dto::StopOptimizationCommandDTO)},
-  { 144, -1, sizeof(::empowerops::volition::dto::StopOptimizationConfirmDTO)},
-  { 150, -1, sizeof(::empowerops::volition::dto::OptimizationResultsQueryDTO)},
-  { 157, -1, sizeof(::empowerops::volition::dto::OptimizationResultsResponseDTO)},
-  { 167, -1, sizeof(::empowerops::volition::dto::PrototypeInputParameter_Continuous)},
-  { 174, -1, sizeof(::empowerops::volition::dto::PrototypeInputParameter_DiscreteRange)},
-  { 182, -1, sizeof(::empowerops::volition::dto::PrototypeInputParameter)},
-  { 191, -1, sizeof(::empowerops::volition::dto::PrototypeOutputParameter)},
-  { 197, 204, sizeof(::empowerops::volition::dto::VariableMapping_InputsEntry_DoNotUse)},
-  { 206, 213, sizeof(::empowerops::volition::dto::VariableMapping_OutputsEntry_DoNotUse)},
-  { 215, -1, sizeof(::empowerops::volition::dto::VariableMapping)},
-  { 222, -1, sizeof(::empowerops::volition::dto::BabelConstraint)},
-  { 229, -1, sizeof(::empowerops::volition::dto::BabelScalar)},
-  { 236, -1, sizeof(::empowerops::volition::dto::DesignRow)},
-  { 244, -1, sizeof(::empowerops::volition::dto::UUID)},
+  { 0, -1, -1, sizeof(::empowerops::volition::dto::StartOptimizationCommandDTO)},
+  { 9, -1, -1, sizeof(::empowerops::volition::dto::ProblemDefinitionDTO)},
+  { 17, -1, -1, sizeof(::empowerops::volition::dto::EvaluableNodeDTO)},
+  { 27, -1, -1, sizeof(::empowerops::volition::dto::SimulationNodeDTO)},
+  { 43, -1, -1, sizeof(::empowerops::volition::dto::SimulationInputParameterDTO)},
+  { 50, -1, -1, sizeof(::empowerops::volition::dto::SimulationOutputParameterDTO)},
+  { 58, -1, -1, sizeof(::empowerops::volition::dto::SuspendAndCallbackConfigurationDTO)},
+  { 64, -1, -1, sizeof(::empowerops::volition::dto::ExternalSimulationExecConfigurationDTO)},
+  { 81, -1, -1, sizeof(::empowerops::volition::dto::ExecOptionDTO)},
+  { 89, -1, -1, sizeof(::empowerops::volition::dto::OutputParameterLocationStepSequenceDTO)},
+  { 96, -1, -1, sizeof(::empowerops::volition::dto::InputParameterDetectionStepSetDTO)},
+  { 103, -1, -1, sizeof(::empowerops::volition::dto::OutputParameterLocationStepDTO)},
+  { 114, -1, -1, sizeof(::empowerops::volition::dto::InputParameterLocationStepDTO)},
+  { 123, -1, -1, sizeof(::empowerops::volition::dto::RowColumnLengthLocationDTO)},
+  { 132, -1, -1, sizeof(::empowerops::volition::dto::AnchorLocationDTO)},
+  { 140, 149, -1, sizeof(::empowerops::volition::dto::OptimizationSettingsDTO)},
+  { 152, -1, -1, sizeof(::empowerops::volition::dto::OptimizerGeneratedQueryDTO)},
+  { 165, 173, -1, sizeof(::empowerops::volition::dto::SimulationEvaluationRequestDTO_InputVectorEntry_DoNotUse)},
+  { 175, -1, -1, sizeof(::empowerops::volition::dto::SimulationEvaluationRequestDTO)},
+  { 183, -1, -1, sizeof(::empowerops::volition::dto::SimulationCancelRequestDTO)},
+  { 190, -1, -1, sizeof(::empowerops::volition::dto::OptimizationStartedNotificationDTO)},
+  { 197, -1, -1, sizeof(::empowerops::volition::dto::OptimizationFinishedNotificationDTO)},
+  { 204, -1, -1, sizeof(::empowerops::volition::dto::OptimizationNotStartedNotificationDTO)},
+  { 211, -1, -1, sizeof(::empowerops::volition::dto::DesignIterationCompletedNotificationDTO)},
+  { 218, 226, -1, sizeof(::empowerops::volition::dto::SimulationEvaluationCompletedResponseDTO_OutputVectorEntry_DoNotUse)},
+  { 228, -1, -1, sizeof(::empowerops::volition::dto::SimulationEvaluationCompletedResponseDTO)},
+  { 237, -1, -1, sizeof(::empowerops::volition::dto::SimulationEvaluationResultConfirmDTO)},
+  { 243, -1, -1, sizeof(::empowerops::volition::dto::SimulationEvaluationErrorResponseDTO)},
+  { 253, -1, -1, sizeof(::empowerops::volition::dto::SimulationEvaluationErrorConfirmDTO)},
+  { 259, -1, -1, sizeof(::empowerops::volition::dto::StatusMessageCommandDTO)},
+  { 267, -1, -1, sizeof(::empowerops::volition::dto::StatusMessageConfirmDTO)},
+  { 273, -1, -1, sizeof(::empowerops::volition::dto::StopOptimizationCommandDTO)},
+  { 281, -1, -1, sizeof(::empowerops::volition::dto::StopOptimizationConfirmDTO)},
+  { 288, -1, -1, sizeof(::empowerops::volition::dto::OptimizationResultsQueryDTO)},
+  { 295, -1, -1, sizeof(::empowerops::volition::dto::OptimizationResultsResponseDTO)},
+  { 305, -1, -1, sizeof(::empowerops::volition::dto::InputParameterDTO)},
+  { 315, -1, -1, sizeof(::empowerops::volition::dto::ContinuousDTO)},
+  { 323, -1, -1, sizeof(::empowerops::volition::dto::DiscreteRangeDTO)},
+  { 332, 340, -1, sizeof(::empowerops::volition::dto::VariableMappingDTO_InputsEntry_DoNotUse)},
+  { 342, 350, -1, sizeof(::empowerops::volition::dto::VariableMappingDTO_OutputsEntry_DoNotUse)},
+  { 352, -1, -1, sizeof(::empowerops::volition::dto::VariableMappingDTO)},
+  { 360, -1, -1, sizeof(::empowerops::volition::dto::BabelConstraintNodeDTO)},
+  { 368, -1, -1, sizeof(::empowerops::volition::dto::BabelScalarNodeDTO)},
+  { 376, -1, -1, sizeof(::empowerops::volition::dto::SeedRowDTO)},
+  { 384, -1, -1, sizeof(::empowerops::volition::dto::DesignRowDTO)},
+  { 394, -1, -1, sizeof(::empowerops::volition::dto::UUIDDTO)},
+  { 401, -1, -1, sizeof(::empowerops::volition::dto::PathDTO)},
+  { 408, -1, -1, sizeof(::empowerops::volition::dto::ErrorResponseDTO)},
+  { 417, -1, -1, sizeof(::empowerops::volition::dto::InternalErrorDTO)},
+  { 425, -1, -1, sizeof(::empowerops::volition::dto::NoSuchOptimizationRunDTO)},
+  { 432, -1, -1, sizeof(::empowerops::volition::dto::VariableNameDTO)},
 };
 
 static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] = {
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_StartOptimizationCommandDTO_ProblemDefinition_default_instance_),
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_StartOptimizationCommandDTO_SimulationNode_default_instance_),
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_StartOptimizationCommandDTO_OptimizationSettings_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_StartOptimizationCommandDTO_default_instance_),
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_OptimizerGeneratedQueryDTO_SimulationEvaluationRequest_InputVectorEntry_DoNotUse_default_instance_),
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_OptimizerGeneratedQueryDTO_SimulationEvaluationRequest_default_instance_),
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_OptimizerGeneratedQueryDTO_SimulationCancelRequest_default_instance_),
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_OptimizerGeneratedQueryDTO_OptimizationStartedNotification_default_instance_),
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_OptimizerGeneratedQueryDTO_OptimizationFinishedNotification_default_instance_),
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_OptimizerGeneratedQueryDTO_OptimizationFailedToStartNotification_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_ProblemDefinitionDTO_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_EvaluableNodeDTO_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_SimulationNodeDTO_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_SimulationInputParameterDTO_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_SimulationOutputParameterDTO_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_SuspendAndCallbackConfigurationDTO_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_ExternalSimulationExecConfigurationDTO_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_ExecOptionDTO_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_OutputParameterLocationStepSequenceDTO_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_InputParameterDetectionStepSetDTO_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_OutputParameterLocationStepDTO_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_InputParameterLocationStepDTO_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_RowColumnLengthLocationDTO_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_AnchorLocationDTO_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_OptimizationSettingsDTO_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_OptimizerGeneratedQueryDTO_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_SimulationEvaluationRequestDTO_InputVectorEntry_DoNotUse_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_SimulationEvaluationRequestDTO_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_SimulationCancelRequestDTO_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_OptimizationStartedNotificationDTO_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_OptimizationFinishedNotificationDTO_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_OptimizationNotStartedNotificationDTO_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_DesignIterationCompletedNotificationDTO_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_SimulationEvaluationCompletedResponseDTO_OutputVectorEntry_DoNotUse_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_SimulationEvaluationCompletedResponseDTO_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_SimulationEvaluationResultConfirmDTO_default_instance_),
@@ -947,558 +1213,327 @@ static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] =
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_StopOptimizationConfirmDTO_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_OptimizationResultsQueryDTO_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_OptimizationResultsResponseDTO_default_instance_),
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_PrototypeInputParameter_Continuous_default_instance_),
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_PrototypeInputParameter_DiscreteRange_default_instance_),
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_PrototypeInputParameter_default_instance_),
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_PrototypeOutputParameter_default_instance_),
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_VariableMapping_InputsEntry_DoNotUse_default_instance_),
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_VariableMapping_OutputsEntry_DoNotUse_default_instance_),
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_VariableMapping_default_instance_),
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_BabelConstraint_default_instance_),
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_BabelScalar_default_instance_),
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_DesignRow_default_instance_),
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_UUID_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_InputParameterDTO_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_ContinuousDTO_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_DiscreteRangeDTO_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_VariableMappingDTO_InputsEntry_DoNotUse_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_VariableMappingDTO_OutputsEntry_DoNotUse_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_VariableMappingDTO_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_BabelConstraintNodeDTO_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_BabelScalarNodeDTO_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_SeedRowDTO_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_DesignRowDTO_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_UUIDDTO_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_PathDTO_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_ErrorResponseDTO_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_InternalErrorDTO_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_NoSuchOptimizationRunDTO_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::empowerops::volition::dto::_VariableNameDTO_default_instance_),
 };
 
 const char descriptor_table_protodef_optimizer_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
   "\n\017optimizer.proto\022\027empowerops.volition.d"
   "to\032\036google/protobuf/duration.proto\032\036goog"
-  "le/protobuf/wrappers.proto\"\217\010\n\033StartOpti"
-  "mizationCommandDTO\022b\n\022problem_definition"
-  "\030\001 \001(\0132F.empowerops.volition.dto.StartOp"
-  "timizationCommandDTO.ProblemDefinition\022R"
-  "\n\005nodes\030\002 \003(\0132C.empowerops.volition.dto."
-  "StartOptimizationCommandDTO.SimulationNo"
-  "de\022[\n\010settings\030\003 \001(\0132I.empowerops.voliti"
-  "on.dto.StartOptimizationCommandDTO.Optim"
-  "izationSettings\0227\n\013seed_points\030\004 \003(\0132\".e"
-  "mpowerops.volition.dto.DesignRow\032\225\002\n\021Pro"
-  "blemDefinition\022@\n\006inputs\030\001 \003(\01320.empower"
-  "ops.volition.dto.PrototypeInputParameter"
-  "\0228\n\ntransforms\030\005 \003(\0132$.empowerops.voliti"
-  "on.dto.BabelScalar\022E\n\nobjectives\030\002 \003(\01321"
-  ".empowerops.volition.dto.PrototypeOutput"
-  "Parameter\022=\n\013constraints\030\003 \003(\0132(.empower"
-  "ops.volition.dto.BabelConstraint\032\316\001\n\016Sim"
-  "ulationNode\022\014\n\004name\030\001 \001(\t\022\022\n\010auto_map\030\002 "
-  "\001(\010H\000\022A\n\rmapping_table\030\003 \001(\0132(.empowerop"
-  "s.volition.dto.VariableMappingH\000\022\016\n\006inpu"
-  "ts\030\004 \003(\t\022\017\n\007outputs\030\005 \003(\t\022+\n\010time_out\030\006 "
-  "\001(\0132\031.google.protobuf.DurationB\t\n\007mappin"
-  "g\032\270\001\n\024OptimizationSettings\022+\n\010run_time\030\013"
-  " \001(\0132\031.google.protobuf.Duration\0225\n\017itera"
-  "tion_count\030\014 \001(\0132\034.google.protobuf.UInt3"
-  "2Value\022<\n\026target_objective_value\030\r \001(\0132\034"
-  ".google.protobuf.DoubleValue\"\363\010\n\032Optimiz"
-  "erGeneratedQueryDTO\022m\n\022evaluation_reques"
-  "t\030\001 \001(\0132O.empowerops.volition.dto.Optimi"
-  "zerGeneratedQueryDTO.SimulationEvaluatio"
-  "nRequestH\000\022e\n\016cancel_request\030\003 \001(\0132K.emp"
-  "owerops.volition.dto.OptimizerGeneratedQ"
-  "ueryDTO.SimulationCancelRequestH\000\022\200\001\n!op"
-  "timization_started_notification\030\005 \001(\0132S."
-  "empowerops.volition.dto.OptimizerGenerat"
-  "edQueryDTO.OptimizationStartedNotificati"
-  "onH\000\022\202\001\n\"optimization_finished_notificat"
-  "ion\030\006 \001(\0132T.empowerops.volition.dto.Opti"
-  "mizerGeneratedQueryDTO.OptimizationFinis"
-  "hedNotificationH\000\022\212\001\n%optimization_not_s"
-  "tarted_notification\030\007 \001(\0132Y.empowerops.v"
-  "olition.dto.OptimizerGeneratedQueryDTO.O"
-  "ptimizationFailedToStartNotificationH\000\032\327"
-  "\001\n\033SimulationEvaluationRequest\022\014\n\004name\030\001"
-  " \001(\t\022v\n\014input_vector\030\002 \003(\0132`.empowerops."
-  "volition.dto.OptimizerGeneratedQueryDTO."
-  "SimulationEvaluationRequest.InputVectorE"
-  "ntry\0322\n\020InputVectorEntry\022\013\n\003key\030\001 \001(\t\022\r\n"
-  "\005value\030\002 \001(\001:\0028\001\032\'\n\027SimulationCancelRequ"
-  "est\022\014\n\004name\030\001 \001(\t\032P\n\037OptimizationStarted"
-  "Notification\022-\n\006run_ID\030\001 \001(\0132\035.empowerop"
-  "s.volition.dto.UUID\032Q\n OptimizationFinis"
-  "hedNotification\022-\n\006run_ID\030\001 \001(\0132\035.empowe"
-  "rops.volition.dto.UUID\0327\n%OptimizationFa"
-  "iledToStartNotification\022\016\n\006issues\030\001 \003(\tB"
-  "\t\n\007purpose\"\365\001\n(SimulationEvaluationCompl"
-  "etedResponseDTO\022\014\n\004name\030\001 \001(\t\022j\n\routput_"
-  "vector\030\002 \003(\0132S.empowerops.volition.dto.S"
-  "imulationEvaluationCompletedResponseDTO."
-  "OutputVectorEntry\022\032\n\022abort_optimization\030"
-  "\003 \001(\010\0323\n\021OutputVectorEntry\022\013\n\003key\030\001 \001(\t\022"
-  "\r\n\005value\030\002 \001(\001:\0028\001\"&\n$SimulationEvaluati"
-  "onResultConfirmDTO\"t\n$SimulationEvaluati"
-  "onErrorResponseDTO\022\014\n\004name\030\001 \001(\t\022\017\n\007mess"
-  "age\030\002 \001(\t\022\021\n\texception\030\003 \001(\t\022\032\n\022abort_op"
-  "timization\030\004 \001(\010\"%\n#SimulationEvaluation"
-  "ErrorConfirmDTO\"8\n\027StatusMessageCommandD"
-  "TO\022\014\n\004name\030\001 \001(\t\022\017\n\007message\030\002 \001(\t\"\031\n\027Sta"
-  "tusMessageConfirmDTO\"Y\n\032StopOptimization"
-  "CommandDTO\022\014\n\004name\030\001 \001(\t\022-\n\006run_ID\030\002 \001(\013"
-  "2\035.empowerops.volition.dto.UUID\"K\n\032StopO"
-  "ptimizationConfirmDTO\022-\n\006run_ID\030\002 \001(\0132\035."
-  "empowerops.volition.dto.UUID\"Z\n\033Optimiza"
-  "tionResultsQueryDTO\022\014\n\004name\030\001 \001(\t\022-\n\006run"
-  "_ID\030\002 \001(\0132\035.empowerops.volition.dto.UUID"
-  "\"\350\001\n\036OptimizationResultsResponseDTO\022-\n\006r"
-  "un_ID\030\001 \001(\0132\035.empowerops.volition.dto.UU"
-  "ID\022\025\n\rinput_columns\030\007 \003(\t\022\026\n\016output_colu"
-  "mns\030\010 \003(\t\0222\n\006points\030\t \003(\0132\".empowerops.v"
-  "olition.dto.DesignRow\0224\n\010frontier\030\n \003(\0132"
-  "\".empowerops.volition.dto.DesignRow\"\344\002\n\027"
-  "PrototypeInputParameter\022\014\n\004name\030\001 \001(\t\022Q\n"
-  "\ncontinuous\030\004 \001(\0132;.empowerops.volition."
-  "dto.PrototypeInputParameter.ContinuousH\000"
-  "\022X\n\016discrete_range\030\005 \001(\0132>.empowerops.vo"
-  "lition.dto.PrototypeInputParameter.Discr"
-  "eteRangeH\000\0326\n\nContinuous\022\023\n\013lower_bound\030"
-  "\002 \001(\001\022\023\n\013upper_bound\030\003 \001(\001\032L\n\rDiscreteRa"
-  "nge\022\023\n\013lower_bound\030\002 \001(\001\022\023\n\013upper_bound\030"
-  "\003 \001(\001\022\021\n\tstep_size\030\004 \001(\001B\010\n\006domain\"(\n\030Pr"
-  "ototypeOutputParameter\022\014\n\004name\030\001 \001(\t\"\376\001\n"
-  "\017VariableMapping\022D\n\006inputs\030\001 \003(\01324.empow"
-  "erops.volition.dto.VariableMapping.Input"
-  "sEntry\022F\n\007outputs\030\002 \003(\01325.empowerops.vol"
-  "ition.dto.VariableMapping.OutputsEntry\032-"
-  "\n\013InputsEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001("
-  "\t:\0028\001\032.\n\014OutputsEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005va"
-  "lue\030\002 \001(\t:\0028\001\"B\n\017BabelConstraint\022\023\n\013outp"
-  "ut_name\030\001 \001(\t\022\032\n\022boolean_expression\030\002 \001("
-  "\t\"=\n\013BabelScalar\022\023\n\013output_name\030\001 \001(\t\022\031\n"
-  "\021scalar_expression\030\002 \001(\t\"A\n\tDesignRow\022\016\n"
-  "\006inputs\030\001 \003(\001\022\017\n\007outputs\030\002 \003(\001\022\023\n\013is_fea"
-  "sible\030\003 \001(\010\"\025\n\004UUID\022\r\n\005value\030\001 \001(\t2\024\n\022Fe"
-  "deratedOptimizer2\324\006\n\016UnaryOptimizer\022\202\001\n\021"
-  "StartOptimization\0224.empowerops.volition."
-  "dto.StartOptimizationCommandDTO\0323.empowe"
-  "rops.volition.dto.OptimizerGeneratedQuer"
-  "yDTO\"\0000\001\022\233\001\n\025OfferSimulationResult\022A.emp"
-  "owerops.volition.dto.SimulationEvaluatio"
-  "nCompletedResponseDTO\032=.empowerops.volit"
-  "ion.dto.SimulationEvaluationResultConfir"
-  "mDTO\"\000\022\221\001\n\020OfferErrorResult\022=.empowerops"
-  ".volition.dto.SimulationEvaluationErrorR"
-  "esponseDTO\032<.empowerops.volition.dto.Sim"
-  "ulationEvaluationErrorConfirmDTO\"\000\022\204\001\n\034O"
-  "fferEvaluationStatusMessage\0220.empowerops"
-  ".volition.dto.StatusMessageCommandDTO\0320."
-  "empowerops.volition.dto.StatusMessageCon"
-  "firmDTO\"\000\022~\n\020StopOptimization\0223.empowero"
-  "ps.volition.dto.StopOptimizationCommandD"
-  "TO\0323.empowerops.volition.dto.StopOptimiz"
-  "ationConfirmDTO\"\000\022\203\001\n\020RequestRunResult\0224"
-  ".empowerops.volition.dto.OptimizationRes"
-  "ultsQueryDTO\0327.empowerops.volition.dto.O"
-  "ptimizationResultsResponseDTO\"\000B;\n\033com.e"
-  "mpowerops.volition.dtoH\002P\001\252\002\027EmpowerOps."
-  "Volition.Dtob\006proto3"
+  "le/protobuf/wrappers.proto\032 google/proto"
+  "buf/descriptor.proto\"\346\001\n\033StartOptimizati"
+  "onCommandDTO\022I\n\022problem_definition\030\001 \001(\013"
+  "2-.empowerops.volition.dto.ProblemDefini"
+  "tionDTO\022B\n\010settings\030\003 \001(\01320.empowerops.v"
+  "olition.dto.OptimizationSettingsDTO\0228\n\013s"
+  "eed_points\030\004 \003(\0132#.empowerops.volition.d"
+  "to.SeedRowDTO\"\221\001\n\024ProblemDefinitionDTO\022:"
+  "\n\006inputs\030\001 \003(\0132*.empowerops.volition.dto"
+  ".InputParameterDTO\022=\n\nevaluables\030\002 \003(\0132)"
+  ".empowerops.volition.dto.EvaluableNodeDT"
+  "O\"\346\001\n\020EvaluableNodeDTO\022@\n\ttransform\030\002 \001("
+  "\0132+.empowerops.volition.dto.BabelScalarN"
+  "odeDTOH\000\022@\n\nsimulation\030\003 \001(\0132*.empowerop"
+  "s.volition.dto.SimulationNodeDTOH\000\022E\n\nco"
+  "nstraint\030\004 \001(\0132/.empowerops.volition.dto"
+  ".BabelConstraintNodeDTOH\000B\007\n\005value\"\217\004\n\021S"
+  "imulationNodeDTO\022\014\n\004name\030\001 \001(\t\022\022\n\010auto_m"
+  "ap\030\002 \001(\010H\000\022D\n\rmapping_table\030\003 \001(\0132+.empo"
+  "werops.volition.dto.VariableMappingDTOH\000"
+  "\022D\n\006inputs\030\004 \003(\01324.empowerops.volition.d"
+  "to.SimulationInputParameterDTO\022F\n\007output"
+  "s\030\005 \003(\01325.empowerops.volition.dto.Simula"
+  "tionOutputParameterDTO\022+\n\010time_out\030\006 \001(\013"
+  "2\031.google.protobuf.Duration\022[\n\024suspend_a"
+  "nd_callback\030\007 \001(\0132;.empowerops.volition."
+  "dto.SuspendAndCallbackConfigurationDTOH\001"
+  "\022c\n\030external_simulation_exec\030\010 \001(\0132\?.emp"
+  "owerops.volition.dto.ExternalSimulationE"
+  "xecConfigurationDTOH\001B\t\n\007mappingB\n\n\010stra"
+  "tegy\"+\n\033SimulationInputParameterDTO\022\014\n\004n"
+  "ame\030\001 \001(\t\"@\n\034SimulationOutputParameterDT"
+  "O\022\014\n\004name\030\001 \001(\t\022\022\n\nis_boolean\030\002 \001(\010\"$\n\"S"
+  "uspendAndCallbackConfigurationDTO\"\221\007\n&Ex"
+  "ternalSimulationExecConfigurationDTO\022;\n\021"
+  "working_directory\030\001 \001(\0132 .empowerops.vol"
+  "ition.dto.PathDTO\0224\n\ninput_file\030\002 \001(\0132 ."
+  "empowerops.volition.dto.PathDTO\0225\n\013outpu"
+  "t_file\030\003 \001(\0132 .empowerops.volition.dto.P"
+  "athDTO\022:\n\020backup_directory\030\004 \001(\0132 .empow"
+  "erops.volition.dto.PathDTO\022c\n\rbackup_tim"
+  "ing\030\005 \001(\0162L.empowerops.volition.dto.Exte"
+  "rnalSimulationExecConfigurationDTO.Backu"
+  "pTimimg\0224\n\nexecutable\030\006 \001(\0132 .empowerops"
+  ".volition.dto.PathDTO\0227\n\007options\030\007 \003(\0132&"
+  ".empowerops.volition.dto.ExecOptionDTO\022c"
+  "\n\rexec_strategy\030\010 \001(\0162L.empowerops.volit"
+  "ion.dto.ExternalSimulationExecConfigurat"
+  "ionDTO.ExecStrategy\022^\n\025output_step_seque"
+  "nces\030\t \003(\0132\?.empowerops.volition.dto.Out"
+  "putParameterLocationStepSequenceDTO\022S\n\017i"
+  "nput_step_sets\030\n \003(\0132:.empowerops.voliti"
+  "on.dto.InputParameterDetectionStepSetDTO"
+  "\022\022\n\nexit_codes\030\013 \003(\r\"<\n\014BackupTimimg\022\t\n\005"
+  "Never\020\000\022\013\n\007AtStart\020\001\022\024\n\020AtEachEvaluation"
+  "\020\002\"A\n\014ExecStrategy\022\032\n\026InvokeAtEachEvalua"
+  "tion\020\000\022\025\n\021OnceAndWatchFiles\020\001\"6\n\rExecOpt"
+  "ionDTO\022\023\n\013option_name\030\001 \001(\t\022\020\n\010argument\030"
+  "\002 \001(\t\"p\n&OutputParameterLocationStepSequ"
+  "enceDTO\022F\n\005steps\030\001 \003(\01327.empowerops.voli"
+  "tion.dto.OutputParameterLocationStepDTO\""
+  "j\n!InputParameterDetectionStepSetDTO\022E\n\005"
+  "steps\030\001 \003(\01326.empowerops.volition.dto.In"
+  "putParameterLocationStepDTO\"\260\001\n\036OutputPa"
+  "rameterLocationStepDTO\022\014\n\004name\030\001 \001(\t\022E\n\017"
+  "anchor_location\030\002 \001(\0132*.empowerops.volit"
+  "ion.dto.AnchorLocationDTOH\000\022\024\n\nrow_offse"
+  "t\030\003 \001(\rH\000\022\027\n\rcolumn_offset\030\004 \001(\rH\000B\n\n\010lo"
+  "cation\"\230\001\n\035InputParameterLocationStepDTO"
+  "\022\014\n\004name\030\001 \001(\t\022]\n\036row_column_and_length_"
+  "location\030\002 \001(\01323.empowerops.volition.dto"
+  ".RowColumnLengthLocationDTOH\000B\n\n\010locatio"
+  "n\"W\n\032RowColumnLengthLocationDTO\022\022\n\nrow_n"
+  "umber\030\001 \001(\r\022\025\n\rcolumn_number\030\002 \001(\r\022\016\n\006le"
+  "ngth\030\003 \001(\r\"\?\n\021AnchorLocationDTO\022\027\n\017raw_a"
+  "nchor_text\030\001 \001(\t\022\021\n\toccurance\030\002 \001(\r\"\312\001\n\027"
+  "OptimizationSettingsDTO\0220\n\010run_time\030\013 \001("
+  "\0132\031.google.protobuf.DurationH\000\210\001\001\022\034\n\017ite"
+  "ration_count\030\014 \001(\rH\001\210\001\001\022#\n\026target_object"
+  "ive_value\030\r \001(\001H\002\210\001\001B\013\n\t_run_timeB\022\n\020_it"
+  "eration_countB\031\n\027_target_objective_value"
+  "\"\211\005\n\032OptimizerGeneratedQueryDTO\022U\n\022evalu"
+  "ation_request\030\001 \001(\01327.empowerops.volitio"
+  "n.dto.SimulationEvaluationRequestDTOH\000\022M"
+  "\n\016cancel_request\030\003 \001(\01323.empowerops.voli"
+  "tion.dto.SimulationCancelRequestDTOH\000\022h\n"
+  "!optimization_started_notification\030\005 \001(\013"
+  "2;.empowerops.volition.dto.OptimizationS"
+  "tartedNotificationDTOH\000\022j\n\"optimization_"
+  "finished_notification\030\006 \001(\0132<.empowerops"
+  ".volition.dto.OptimizationFinishedNotifi"
+  "cationDTOH\000\022o\n%optimization_not_started_"
+  "notification\030\007 \001(\0132>.empowerops.volition"
+  ".dto.OptimizationNotStartedNotificationD"
+  "TOH\000\022s\n\'design_iteration_completed_notif"
+  "ication\030\010 \001(\0132@.empowerops.volition.dto."
+  "DesignIterationCompletedNotificationDTOH"
+  "\000B\t\n\007purpose\"\302\001\n\036SimulationEvaluationReq"
+  "uestDTO\022\014\n\004name\030\001 \001(\t\022^\n\014input_vector\030\002 "
+  "\003(\0132H.empowerops.volition.dto.Simulation"
+  "EvaluationRequestDTO.InputVectorEntry\0322\n"
+  "\020InputVectorEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030"
+  "\002 \001(\001:\0028\001\"*\n\032SimulationCancelRequestDTO\022"
+  "\014\n\004name\030\001 \001(\t\"V\n\"OptimizationStartedNoti"
+  "ficationDTO\0220\n\006run_ID\030\001 \001(\0132 .empowerops"
+  ".volition.dto.UUIDDTO\"W\n#OptimizationFin"
+  "ishedNotificationDTO\0220\n\006run_ID\030\001 \001(\0132 .e"
+  "mpowerops.volition.dto.UUIDDTO\"7\n%Optimi"
+  "zationNotStartedNotificationDTO\022\016\n\006issue"
+  "s\030\001 \003(\t\"f\n\'DesignIterationCompletedNotif"
+  "icationDTO\022;\n\014design_point\030\001 \001(\0132%.empow"
+  "erops.volition.dto.DesignRowDTO\"\365\001\n(Simu"
+  "lationEvaluationCompletedResponseDTO\022\014\n\004"
+  "name\030\001 \001(\t\022j\n\routput_vector\030\002 \003(\0132S.empo"
+  "werops.volition.dto.SimulationEvaluation"
+  "CompletedResponseDTO.OutputVectorEntry\022\032"
+  "\n\022abort_optimization\030\003 \001(\010\0323\n\021OutputVect"
+  "orEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\001:\0028\001\""
+  "&\n$SimulationEvaluationResultConfirmDTO\""
+  "t\n$SimulationEvaluationErrorResponseDTO\022"
+  "\014\n\004name\030\001 \001(\t\022\017\n\007message\030\002 \001(\t\022\021\n\texcept"
+  "ion\030\003 \001(\t\022\032\n\022abort_optimization\030\004 \001(\010\"%\n"
+  "#SimulationEvaluationErrorConfirmDTO\"8\n\027"
+  "StatusMessageCommandDTO\022\014\n\004name\030\001 \001(\t\022\017\n"
+  "\007message\030\002 \001(\t\"\031\n\027StatusMessageConfirmDT"
+  "O\"\\\n\032StopOptimizationCommandDTO\022\014\n\004name\030"
+  "\001 \001(\t\0220\n\006run_ID\030\002 \001(\0132 .empowerops.volit"
+  "ion.dto.UUIDDTO\"N\n\032StopOptimizationConfi"
+  "rmDTO\0220\n\006run_ID\030\002 \001(\0132 .empowerops.volit"
+  "ion.dto.UUIDDTO\"O\n\033OptimizationResultsQu"
+  "eryDTO\0220\n\006run_ID\030\002 \001(\0132 .empowerops.voli"
+  "tion.dto.UUIDDTO\"\303\001\n\036OptimizationResults"
+  "ResponseDTO\0220\n\006run_ID\030\001 \001(\0132 .empowerops"
+  ".volition.dto.UUIDDTO\022\025\n\rinput_columns\030\007"
+  " \003(\t\022\026\n\016output_columns\030\010 \003(\t\0225\n\006points\030\t"
+  " \003(\0132%.empowerops.volition.dto.DesignRow"
+  "DTO:\t\212\265\030\00510 MB\"\256\001\n\021InputParameterDTO\022\014\n\004"
+  "name\030\001 \001(\t\022<\n\ncontinuous\030\004 \001(\0132&.empower"
+  "ops.volition.dto.ContinuousDTOH\000\022C\n\016disc"
+  "rete_range\030\005 \001(\0132).empowerops.volition.d"
+  "to.DiscreteRangeDTOH\000B\010\n\006domain\"9\n\rConti"
+  "nuousDTO\022\023\n\013lower_bound\030\002 \001(\001\022\023\n\013upper_b"
+  "ound\030\003 \001(\001\"O\n\020DiscreteRangeDTO\022\023\n\013lower_"
+  "bound\030\002 \001(\001\022\023\n\013upper_bound\030\003 \001(\001\022\021\n\tstep"
+  "_size\030\004 \001(\001\"\333\002\n\022VariableMappingDTO\022G\n\006in"
+  "puts\030\001 \003(\01327.empowerops.volition.dto.Var"
+  "iableMappingDTO.InputsEntry\022I\n\007outputs\030\002"
+  " \003(\01328.empowerops.volition.dto.VariableM"
+  "appingDTO.OutputsEntry\032W\n\013InputsEntry\022\013\n"
+  "\003key\030\001 \001(\t\0227\n\005value\030\002 \001(\0132(.empowerops.v"
+  "olition.dto.VariableNameDTO:\0028\001\032X\n\014Outpu"
+  "tsEntry\022\013\n\003key\030\001 \001(\t\0227\n\005value\030\002 \001(\0132(.em"
+  "powerops.volition.dto.VariableNameDTO:\0028"
+  "\001\"I\n\026BabelConstraintNodeDTO\022\023\n\013output_na"
+  "me\030\001 \001(\t\022\032\n\022boolean_expression\030\002 \001(\t\"D\n\022"
+  "BabelScalarNodeDTO\022\023\n\013output_name\030\001 \001(\t\022"
+  "\031\n\021scalar_expression\030\002 \001(\t\"-\n\nSeedRowDTO"
+  "\022\016\n\006inputs\030\001 \003(\001\022\017\n\007outputs\030\002 \003(\001\"Y\n\014Des"
+  "ignRowDTO\022\016\n\006inputs\030\001 \003(\001\022\017\n\007outputs\030\002 \003"
+  "(\001\022\023\n\013is_feasible\030\003 \001(\010\022\023\n\013is_frontier\030\004"
+  " \001(\010\"\030\n\007UUIDDTO\022\r\n\005value\030\001 \001(\t\"\030\n\007PathDT"
+  "O\022\r\n\005value\030\001 \001(\t\"\267\001\n\020ErrorResponseDTO\022C\n"
+  "\016internal_error\030\001 \001(\0132).empowerops.volit"
+  "ion.dto.InternalErrorDTOH\000\022U\n\030no_such_op"
+  "timization_run\030\002 \001(\01321.empowerops.voliti"
+  "on.dto.NoSuchOptimizationRunDTOH\000B\007\n\005val"
+  "ue\"2\n\020InternalErrorDTO\022\017\n\007message\030\001 \001(\t\022"
+  "\r\n\005trace\030\002 \001(\t\"L\n\030NoSuchOptimizationRunD"
+  "TO\0220\n\006run_ID\030\001 \001(\0132 .empowerops.volition"
+  ".dto.UUIDDTO\" \n\017VariableNameDTO\022\r\n\005value"
+  "\030\001 \001(\t2\024\n\022FederatedOptimizer2\324\006\n\016UnaryOp"
+  "timizer\022\202\001\n\021StartOptimization\0224.empowero"
+  "ps.volition.dto.StartOptimizationCommand"
+  "DTO\0323.empowerops.volition.dto.OptimizerG"
+  "eneratedQueryDTO\"\0000\001\022\233\001\n\025OfferSimulation"
+  "Result\022A.empowerops.volition.dto.Simulat"
+  "ionEvaluationCompletedResponseDTO\032=.empo"
+  "werops.volition.dto.SimulationEvaluation"
+  "ResultConfirmDTO\"\000\022\221\001\n\020OfferErrorResult\022"
+  "=.empowerops.volition.dto.SimulationEval"
+  "uationErrorResponseDTO\032<.empowerops.voli"
+  "tion.dto.SimulationEvaluationErrorConfir"
+  "mDTO\"\000\022\204\001\n\034OfferEvaluationStatusMessage\022"
+  "0.empowerops.volition.dto.StatusMessageC"
+  "ommandDTO\0320.empowerops.volition.dto.Stat"
+  "usMessageConfirmDTO\"\000\022~\n\020StopOptimizatio"
+  "n\0223.empowerops.volition.dto.StopOptimiza"
+  "tionCommandDTO\0323.empowerops.volition.dto"
+  ".StopOptimizationConfirmDTO\"\000\022\203\001\n\020Reques"
+  "tRunResult\0224.empowerops.volition.dto.Opt"
+  "imizationResultsQueryDTO\0327.empowerops.vo"
+  "lition.dto.OptimizationResultsResponseDT"
+  "O\"\000:D\n\026potential_message_size\022\037.google.p"
+  "rotobuf.MessageOptions\030\321\206\003 \001(\t\210\001\001B;\n\033com"
+  ".empowerops.volition.dtoH\001P\001\252\002\027EmpowerOp"
+  "s.Volition.Dtob\006proto3"
   ;
-static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_optimizer_2eproto_deps[2] = {
+static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_optimizer_2eproto_deps[3] = {
+  &::descriptor_table_google_2fprotobuf_2fdescriptor_2eproto,
   &::descriptor_table_google_2fprotobuf_2fduration_2eproto,
   &::descriptor_table_google_2fprotobuf_2fwrappers_2eproto,
 };
-static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_optimizer_2eproto_sccs[33] = {
-  &scc_info_BabelConstraint_optimizer_2eproto.base,
-  &scc_info_BabelScalar_optimizer_2eproto.base,
-  &scc_info_DesignRow_optimizer_2eproto.base,
-  &scc_info_OptimizationResultsQueryDTO_optimizer_2eproto.base,
-  &scc_info_OptimizationResultsResponseDTO_optimizer_2eproto.base,
-  &scc_info_OptimizerGeneratedQueryDTO_optimizer_2eproto.base,
-  &scc_info_OptimizerGeneratedQueryDTO_OptimizationFailedToStartNotification_optimizer_2eproto.base,
-  &scc_info_OptimizerGeneratedQueryDTO_OptimizationFinishedNotification_optimizer_2eproto.base,
-  &scc_info_OptimizerGeneratedQueryDTO_OptimizationStartedNotification_optimizer_2eproto.base,
-  &scc_info_OptimizerGeneratedQueryDTO_SimulationCancelRequest_optimizer_2eproto.base,
-  &scc_info_OptimizerGeneratedQueryDTO_SimulationEvaluationRequest_optimizer_2eproto.base,
-  &scc_info_OptimizerGeneratedQueryDTO_SimulationEvaluationRequest_InputVectorEntry_DoNotUse_optimizer_2eproto.base,
-  &scc_info_PrototypeInputParameter_optimizer_2eproto.base,
-  &scc_info_PrototypeInputParameter_Continuous_optimizer_2eproto.base,
-  &scc_info_PrototypeInputParameter_DiscreteRange_optimizer_2eproto.base,
-  &scc_info_PrototypeOutputParameter_optimizer_2eproto.base,
-  &scc_info_SimulationEvaluationCompletedResponseDTO_optimizer_2eproto.base,
-  &scc_info_SimulationEvaluationCompletedResponseDTO_OutputVectorEntry_DoNotUse_optimizer_2eproto.base,
-  &scc_info_SimulationEvaluationErrorConfirmDTO_optimizer_2eproto.base,
-  &scc_info_SimulationEvaluationErrorResponseDTO_optimizer_2eproto.base,
-  &scc_info_SimulationEvaluationResultConfirmDTO_optimizer_2eproto.base,
-  &scc_info_StartOptimizationCommandDTO_optimizer_2eproto.base,
-  &scc_info_StartOptimizationCommandDTO_OptimizationSettings_optimizer_2eproto.base,
-  &scc_info_StartOptimizationCommandDTO_ProblemDefinition_optimizer_2eproto.base,
-  &scc_info_StartOptimizationCommandDTO_SimulationNode_optimizer_2eproto.base,
-  &scc_info_StatusMessageCommandDTO_optimizer_2eproto.base,
-  &scc_info_StatusMessageConfirmDTO_optimizer_2eproto.base,
-  &scc_info_StopOptimizationCommandDTO_optimizer_2eproto.base,
-  &scc_info_StopOptimizationConfirmDTO_optimizer_2eproto.base,
-  &scc_info_UUID_optimizer_2eproto.base,
-  &scc_info_VariableMapping_optimizer_2eproto.base,
-  &scc_info_VariableMapping_InputsEntry_DoNotUse_optimizer_2eproto.base,
-  &scc_info_VariableMapping_OutputsEntry_DoNotUse_optimizer_2eproto.base,
-};
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_optimizer_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_optimizer_2eproto = {
-  false, false, descriptor_table_protodef_optimizer_2eproto, "optimizer.proto", 5140,
-  &descriptor_table_optimizer_2eproto_once, descriptor_table_optimizer_2eproto_sccs, descriptor_table_optimizer_2eproto_deps, 33, 2,
+  false, false, 7902, descriptor_table_protodef_optimizer_2eproto, "optimizer.proto", 
+  &descriptor_table_optimizer_2eproto_once, descriptor_table_optimizer_2eproto_deps, 3, 51,
   schemas, file_default_instances, TableStruct_optimizer_2eproto::offsets,
-  file_level_metadata_optimizer_2eproto, 33, file_level_enum_descriptors_optimizer_2eproto, file_level_service_descriptors_optimizer_2eproto,
+  file_level_metadata_optimizer_2eproto, file_level_enum_descriptors_optimizer_2eproto, file_level_service_descriptors_optimizer_2eproto,
 };
+PROTOBUF_ATTRIBUTE_WEAK const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable* descriptor_table_optimizer_2eproto_getter() {
+  return &descriptor_table_optimizer_2eproto;
+}
 
 // Force running AddDescriptors() at dynamic initialization time.
-static bool dynamic_init_dummy_optimizer_2eproto = (static_cast<void>(::PROTOBUF_NAMESPACE_ID::internal::AddDescriptors(&descriptor_table_optimizer_2eproto)), true);
+PROTOBUF_ATTRIBUTE_INIT_PRIORITY static ::PROTOBUF_NAMESPACE_ID::internal::AddDescriptorsRunner dynamic_init_dummy_optimizer_2eproto(&descriptor_table_optimizer_2eproto);
 namespace empowerops {
 namespace volition {
 namespace dto {
-
-// ===================================================================
-
-class StartOptimizationCommandDTO_ProblemDefinition::_Internal {
- public:
-};
-
-StartOptimizationCommandDTO_ProblemDefinition::StartOptimizationCommandDTO_ProblemDefinition(::PROTOBUF_NAMESPACE_ID::Arena* arena)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena),
-  inputs_(arena),
-  objectives_(arena),
-  constraints_(arena),
-  transforms_(arena) {
-  SharedCtor();
-  RegisterArenaDtor(arena);
-  // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.StartOptimizationCommandDTO.ProblemDefinition)
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* ExternalSimulationExecConfigurationDTO_BackupTimimg_descriptor() {
+  ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&descriptor_table_optimizer_2eproto);
+  return file_level_enum_descriptors_optimizer_2eproto[0];
 }
-StartOptimizationCommandDTO_ProblemDefinition::StartOptimizationCommandDTO_ProblemDefinition(const StartOptimizationCommandDTO_ProblemDefinition& from)
-  : ::PROTOBUF_NAMESPACE_ID::Message(),
-      inputs_(from.inputs_),
-      objectives_(from.objectives_),
-      constraints_(from.constraints_),
-      transforms_(from.transforms_) {
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.StartOptimizationCommandDTO.ProblemDefinition)
-}
-
-void StartOptimizationCommandDTO_ProblemDefinition::SharedCtor() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_StartOptimizationCommandDTO_ProblemDefinition_optimizer_2eproto.base);
-}
-
-StartOptimizationCommandDTO_ProblemDefinition::~StartOptimizationCommandDTO_ProblemDefinition() {
-  // @@protoc_insertion_point(destructor:empowerops.volition.dto.StartOptimizationCommandDTO.ProblemDefinition)
-  SharedDtor();
-  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-}
-
-void StartOptimizationCommandDTO_ProblemDefinition::SharedDtor() {
-  GOOGLE_DCHECK(GetArena() == nullptr);
-}
-
-void StartOptimizationCommandDTO_ProblemDefinition::ArenaDtor(void* object) {
-  StartOptimizationCommandDTO_ProblemDefinition* _this = reinterpret_cast< StartOptimizationCommandDTO_ProblemDefinition* >(object);
-  (void)_this;
-}
-void StartOptimizationCommandDTO_ProblemDefinition::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
-}
-void StartOptimizationCommandDTO_ProblemDefinition::SetCachedSize(int size) const {
-  _cached_size_.Set(size);
-}
-const StartOptimizationCommandDTO_ProblemDefinition& StartOptimizationCommandDTO_ProblemDefinition::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_StartOptimizationCommandDTO_ProblemDefinition_optimizer_2eproto.base);
-  return *internal_default_instance();
-}
-
-
-void StartOptimizationCommandDTO_ProblemDefinition::InternalSwap(StartOptimizationCommandDTO_ProblemDefinition* other) {
-  using std::swap;
-  GetReflection()->Swap(this, other);}
-
-::PROTOBUF_NAMESPACE_ID::Metadata StartOptimizationCommandDTO_ProblemDefinition::GetMetadata() const {
-  return GetMetadataStatic();
-}
-
-
-// ===================================================================
-
-class StartOptimizationCommandDTO_SimulationNode::_Internal {
- public:
-  static const ::empowerops::volition::dto::VariableMapping& mapping_table(const StartOptimizationCommandDTO_SimulationNode* msg);
-  static const PROTOBUF_NAMESPACE_ID::Duration& time_out(const StartOptimizationCommandDTO_SimulationNode* msg);
-};
-
-const ::empowerops::volition::dto::VariableMapping&
-StartOptimizationCommandDTO_SimulationNode::_Internal::mapping_table(const StartOptimizationCommandDTO_SimulationNode* msg) {
-  return *msg->mapping_.mapping_table_;
-}
-const PROTOBUF_NAMESPACE_ID::Duration&
-StartOptimizationCommandDTO_SimulationNode::_Internal::time_out(const StartOptimizationCommandDTO_SimulationNode* msg) {
-  return *msg->time_out_;
-}
-void StartOptimizationCommandDTO_SimulationNode::set_allocated_mapping_table(::empowerops::volition::dto::VariableMapping* mapping_table) {
-  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArena();
-  clear_mapping();
-  if (mapping_table) {
-    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-      ::PROTOBUF_NAMESPACE_ID::Arena::GetArena(mapping_table);
-    if (message_arena != submessage_arena) {
-      mapping_table = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
-          message_arena, mapping_table, submessage_arena);
-    }
-    set_has_mapping_table();
-    mapping_.mapping_table_ = mapping_table;
-  }
-  // @@protoc_insertion_point(field_set_allocated:empowerops.volition.dto.StartOptimizationCommandDTO.SimulationNode.mapping_table)
-}
-void StartOptimizationCommandDTO_SimulationNode::clear_time_out() {
-  if (GetArena() == nullptr && time_out_ != nullptr) {
-    delete time_out_;
-  }
-  time_out_ = nullptr;
-}
-StartOptimizationCommandDTO_SimulationNode::StartOptimizationCommandDTO_SimulationNode(::PROTOBUF_NAMESPACE_ID::Arena* arena)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena),
-  inputs_(arena),
-  outputs_(arena) {
-  SharedCtor();
-  RegisterArenaDtor(arena);
-  // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.StartOptimizationCommandDTO.SimulationNode)
-}
-StartOptimizationCommandDTO_SimulationNode::StartOptimizationCommandDTO_SimulationNode(const StartOptimizationCommandDTO_SimulationNode& from)
-  : ::PROTOBUF_NAMESPACE_ID::Message(),
-      inputs_(from.inputs_),
-      outputs_(from.outputs_) {
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  if (!from._internal_name().empty()) {
-    name_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_name(), 
-      GetArena());
-  }
-  if (from._internal_has_time_out()) {
-    time_out_ = new PROTOBUF_NAMESPACE_ID::Duration(*from.time_out_);
-  } else {
-    time_out_ = nullptr;
-  }
-  clear_has_mapping();
-  switch (from.mapping_case()) {
-    case kAutoMap: {
-      _internal_set_auto_map(from._internal_auto_map());
-      break;
-    }
-    case kMappingTable: {
-      _internal_mutable_mapping_table()->::empowerops::volition::dto::VariableMapping::MergeFrom(from._internal_mapping_table());
-      break;
-    }
-    case MAPPING_NOT_SET: {
-      break;
-    }
-  }
-  // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.StartOptimizationCommandDTO.SimulationNode)
-}
-
-void StartOptimizationCommandDTO_SimulationNode::SharedCtor() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_StartOptimizationCommandDTO_SimulationNode_optimizer_2eproto.base);
-  name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  time_out_ = nullptr;
-  clear_has_mapping();
-}
-
-StartOptimizationCommandDTO_SimulationNode::~StartOptimizationCommandDTO_SimulationNode() {
-  // @@protoc_insertion_point(destructor:empowerops.volition.dto.StartOptimizationCommandDTO.SimulationNode)
-  SharedDtor();
-  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-}
-
-void StartOptimizationCommandDTO_SimulationNode::SharedDtor() {
-  GOOGLE_DCHECK(GetArena() == nullptr);
-  name_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  if (this != internal_default_instance()) delete time_out_;
-  if (has_mapping()) {
-    clear_mapping();
+bool ExternalSimulationExecConfigurationDTO_BackupTimimg_IsValid(int value) {
+  switch (value) {
+    case 0:
+    case 1:
+    case 2:
+      return true;
+    default:
+      return false;
   }
 }
 
-void StartOptimizationCommandDTO_SimulationNode::ArenaDtor(void* object) {
-  StartOptimizationCommandDTO_SimulationNode* _this = reinterpret_cast< StartOptimizationCommandDTO_SimulationNode* >(object);
-  (void)_this;
+#if (__cplusplus < 201703) && (!defined(_MSC_VER) || _MSC_VER >= 1900)
+constexpr ExternalSimulationExecConfigurationDTO_BackupTimimg ExternalSimulationExecConfigurationDTO::Never;
+constexpr ExternalSimulationExecConfigurationDTO_BackupTimimg ExternalSimulationExecConfigurationDTO::AtStart;
+constexpr ExternalSimulationExecConfigurationDTO_BackupTimimg ExternalSimulationExecConfigurationDTO::AtEachEvaluation;
+constexpr ExternalSimulationExecConfigurationDTO_BackupTimimg ExternalSimulationExecConfigurationDTO::BackupTimimg_MIN;
+constexpr ExternalSimulationExecConfigurationDTO_BackupTimimg ExternalSimulationExecConfigurationDTO::BackupTimimg_MAX;
+constexpr int ExternalSimulationExecConfigurationDTO::BackupTimimg_ARRAYSIZE;
+#endif  // (__cplusplus < 201703) && (!defined(_MSC_VER) || _MSC_VER >= 1900)
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* ExternalSimulationExecConfigurationDTO_ExecStrategy_descriptor() {
+  ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&descriptor_table_optimizer_2eproto);
+  return file_level_enum_descriptors_optimizer_2eproto[1];
 }
-void StartOptimizationCommandDTO_SimulationNode::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
-}
-void StartOptimizationCommandDTO_SimulationNode::SetCachedSize(int size) const {
-  _cached_size_.Set(size);
-}
-const StartOptimizationCommandDTO_SimulationNode& StartOptimizationCommandDTO_SimulationNode::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_StartOptimizationCommandDTO_SimulationNode_optimizer_2eproto.base);
-  return *internal_default_instance();
-}
-
-
-void StartOptimizationCommandDTO_SimulationNode::clear_mapping() {
-// @@protoc_insertion_point(one_of_clear_start:empowerops.volition.dto.StartOptimizationCommandDTO.SimulationNode)
-  switch (mapping_case()) {
-    case kAutoMap: {
-      // No need to clear
-      break;
-    }
-    case kMappingTable: {
-      if (GetArena() == nullptr) {
-        delete mapping_.mapping_table_;
-      }
-      break;
-    }
-    case MAPPING_NOT_SET: {
-      break;
-    }
+bool ExternalSimulationExecConfigurationDTO_ExecStrategy_IsValid(int value) {
+  switch (value) {
+    case 0:
+    case 1:
+      return true;
+    default:
+      return false;
   }
-  _oneof_case_[0] = MAPPING_NOT_SET;
 }
 
-
-void StartOptimizationCommandDTO_SimulationNode::InternalSwap(StartOptimizationCommandDTO_SimulationNode* other) {
-  using std::swap;
-  GetReflection()->Swap(this, other);}
-
-::PROTOBUF_NAMESPACE_ID::Metadata StartOptimizationCommandDTO_SimulationNode::GetMetadata() const {
-  return GetMetadataStatic();
-}
-
-
-// ===================================================================
-
-class StartOptimizationCommandDTO_OptimizationSettings::_Internal {
- public:
-  static const PROTOBUF_NAMESPACE_ID::Duration& run_time(const StartOptimizationCommandDTO_OptimizationSettings* msg);
-  static const PROTOBUF_NAMESPACE_ID::UInt32Value& iteration_count(const StartOptimizationCommandDTO_OptimizationSettings* msg);
-  static const PROTOBUF_NAMESPACE_ID::DoubleValue& target_objective_value(const StartOptimizationCommandDTO_OptimizationSettings* msg);
-};
-
-const PROTOBUF_NAMESPACE_ID::Duration&
-StartOptimizationCommandDTO_OptimizationSettings::_Internal::run_time(const StartOptimizationCommandDTO_OptimizationSettings* msg) {
-  return *msg->run_time_;
-}
-const PROTOBUF_NAMESPACE_ID::UInt32Value&
-StartOptimizationCommandDTO_OptimizationSettings::_Internal::iteration_count(const StartOptimizationCommandDTO_OptimizationSettings* msg) {
-  return *msg->iteration_count_;
-}
-const PROTOBUF_NAMESPACE_ID::DoubleValue&
-StartOptimizationCommandDTO_OptimizationSettings::_Internal::target_objective_value(const StartOptimizationCommandDTO_OptimizationSettings* msg) {
-  return *msg->target_objective_value_;
-}
-void StartOptimizationCommandDTO_OptimizationSettings::clear_run_time() {
-  if (GetArena() == nullptr && run_time_ != nullptr) {
-    delete run_time_;
-  }
-  run_time_ = nullptr;
-}
-void StartOptimizationCommandDTO_OptimizationSettings::clear_iteration_count() {
-  if (GetArena() == nullptr && iteration_count_ != nullptr) {
-    delete iteration_count_;
-  }
-  iteration_count_ = nullptr;
-}
-void StartOptimizationCommandDTO_OptimizationSettings::clear_target_objective_value() {
-  if (GetArena() == nullptr && target_objective_value_ != nullptr) {
-    delete target_objective_value_;
-  }
-  target_objective_value_ = nullptr;
-}
-StartOptimizationCommandDTO_OptimizationSettings::StartOptimizationCommandDTO_OptimizationSettings(::PROTOBUF_NAMESPACE_ID::Arena* arena)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
-  SharedCtor();
-  RegisterArenaDtor(arena);
-  // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.StartOptimizationCommandDTO.OptimizationSettings)
-}
-StartOptimizationCommandDTO_OptimizationSettings::StartOptimizationCommandDTO_OptimizationSettings(const StartOptimizationCommandDTO_OptimizationSettings& from)
-  : ::PROTOBUF_NAMESPACE_ID::Message() {
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  if (from._internal_has_run_time()) {
-    run_time_ = new PROTOBUF_NAMESPACE_ID::Duration(*from.run_time_);
-  } else {
-    run_time_ = nullptr;
-  }
-  if (from._internal_has_iteration_count()) {
-    iteration_count_ = new PROTOBUF_NAMESPACE_ID::UInt32Value(*from.iteration_count_);
-  } else {
-    iteration_count_ = nullptr;
-  }
-  if (from._internal_has_target_objective_value()) {
-    target_objective_value_ = new PROTOBUF_NAMESPACE_ID::DoubleValue(*from.target_objective_value_);
-  } else {
-    target_objective_value_ = nullptr;
-  }
-  // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.StartOptimizationCommandDTO.OptimizationSettings)
-}
-
-void StartOptimizationCommandDTO_OptimizationSettings::SharedCtor() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_StartOptimizationCommandDTO_OptimizationSettings_optimizer_2eproto.base);
-  ::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
-      reinterpret_cast<char*>(&run_time_) - reinterpret_cast<char*>(this)),
-      0, static_cast<size_t>(reinterpret_cast<char*>(&target_objective_value_) -
-      reinterpret_cast<char*>(&run_time_)) + sizeof(target_objective_value_));
-}
-
-StartOptimizationCommandDTO_OptimizationSettings::~StartOptimizationCommandDTO_OptimizationSettings() {
-  // @@protoc_insertion_point(destructor:empowerops.volition.dto.StartOptimizationCommandDTO.OptimizationSettings)
-  SharedDtor();
-  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-}
-
-void StartOptimizationCommandDTO_OptimizationSettings::SharedDtor() {
-  GOOGLE_DCHECK(GetArena() == nullptr);
-  if (this != internal_default_instance()) delete run_time_;
-  if (this != internal_default_instance()) delete iteration_count_;
-  if (this != internal_default_instance()) delete target_objective_value_;
-}
-
-void StartOptimizationCommandDTO_OptimizationSettings::ArenaDtor(void* object) {
-  StartOptimizationCommandDTO_OptimizationSettings* _this = reinterpret_cast< StartOptimizationCommandDTO_OptimizationSettings* >(object);
-  (void)_this;
-}
-void StartOptimizationCommandDTO_OptimizationSettings::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
-}
-void StartOptimizationCommandDTO_OptimizationSettings::SetCachedSize(int size) const {
-  _cached_size_.Set(size);
-}
-const StartOptimizationCommandDTO_OptimizationSettings& StartOptimizationCommandDTO_OptimizationSettings::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_StartOptimizationCommandDTO_OptimizationSettings_optimizer_2eproto.base);
-  return *internal_default_instance();
-}
-
-
-void StartOptimizationCommandDTO_OptimizationSettings::InternalSwap(StartOptimizationCommandDTO_OptimizationSettings* other) {
-  using std::swap;
-  GetReflection()->Swap(this, other);}
-
-::PROTOBUF_NAMESPACE_ID::Metadata StartOptimizationCommandDTO_OptimizationSettings::GetMetadata() const {
-  return GetMetadataStatic();
-}
-
+#if (__cplusplus < 201703) && (!defined(_MSC_VER) || _MSC_VER >= 1900)
+constexpr ExternalSimulationExecConfigurationDTO_ExecStrategy ExternalSimulationExecConfigurationDTO::InvokeAtEachEvaluation;
+constexpr ExternalSimulationExecConfigurationDTO_ExecStrategy ExternalSimulationExecConfigurationDTO::OnceAndWatchFiles;
+constexpr ExternalSimulationExecConfigurationDTO_ExecStrategy ExternalSimulationExecConfigurationDTO::ExecStrategy_MIN;
+constexpr ExternalSimulationExecConfigurationDTO_ExecStrategy ExternalSimulationExecConfigurationDTO::ExecStrategy_MAX;
+constexpr int ExternalSimulationExecConfigurationDTO::ExecStrategy_ARRAYSIZE;
+#endif  // (__cplusplus < 201703) && (!defined(_MSC_VER) || _MSC_VER >= 1900)
 
 // ===================================================================
 
 class StartOptimizationCommandDTO::_Internal {
  public:
-  static const ::empowerops::volition::dto::StartOptimizationCommandDTO_ProblemDefinition& problem_definition(const StartOptimizationCommandDTO* msg);
-  static const ::empowerops::volition::dto::StartOptimizationCommandDTO_OptimizationSettings& settings(const StartOptimizationCommandDTO* msg);
+  static const ::empowerops::volition::dto::ProblemDefinitionDTO& problem_definition(const StartOptimizationCommandDTO* msg);
+  static const ::empowerops::volition::dto::OptimizationSettingsDTO& settings(const StartOptimizationCommandDTO* msg);
 };
 
-const ::empowerops::volition::dto::StartOptimizationCommandDTO_ProblemDefinition&
+const ::empowerops::volition::dto::ProblemDefinitionDTO&
 StartOptimizationCommandDTO::_Internal::problem_definition(const StartOptimizationCommandDTO* msg) {
   return *msg->problem_definition_;
 }
-const ::empowerops::volition::dto::StartOptimizationCommandDTO_OptimizationSettings&
+const ::empowerops::volition::dto::OptimizationSettingsDTO&
 StartOptimizationCommandDTO::_Internal::settings(const StartOptimizationCommandDTO* msg) {
   return *msg->settings_;
 }
-StartOptimizationCommandDTO::StartOptimizationCommandDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena),
-  nodes_(arena),
+StartOptimizationCommandDTO::StartOptimizationCommandDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned),
   seed_points_(arena) {
   SharedCtor();
-  RegisterArenaDtor(arena);
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
   // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.StartOptimizationCommandDTO)
 }
 StartOptimizationCommandDTO::StartOptimizationCommandDTO(const StartOptimizationCommandDTO& from)
   : ::PROTOBUF_NAMESPACE_ID::Message(),
-      nodes_(from.nodes_),
       seed_points_(from.seed_points_) {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   if (from._internal_has_problem_definition()) {
-    problem_definition_ = new ::empowerops::volition::dto::StartOptimizationCommandDTO_ProblemDefinition(*from.problem_definition_);
+    problem_definition_ = new ::empowerops::volition::dto::ProblemDefinitionDTO(*from.problem_definition_);
   } else {
     problem_definition_ = nullptr;
   }
   if (from._internal_has_settings()) {
-    settings_ = new ::empowerops::volition::dto::StartOptimizationCommandDTO_OptimizationSettings(*from.settings_);
+    settings_ = new ::empowerops::volition::dto::OptimizationSettingsDTO(*from.settings_);
   } else {
     settings_ = nullptr;
   }
@@ -1506,21 +1541,21 @@ StartOptimizationCommandDTO::StartOptimizationCommandDTO(const StartOptimization
 }
 
 void StartOptimizationCommandDTO::SharedCtor() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_StartOptimizationCommandDTO_optimizer_2eproto.base);
-  ::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
-      reinterpret_cast<char*>(&problem_definition_) - reinterpret_cast<char*>(this)),
-      0, static_cast<size_t>(reinterpret_cast<char*>(&settings_) -
-      reinterpret_cast<char*>(&problem_definition_)) + sizeof(settings_));
+::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
+    reinterpret_cast<char*>(&problem_definition_) - reinterpret_cast<char*>(this)),
+    0, static_cast<size_t>(reinterpret_cast<char*>(&settings_) -
+    reinterpret_cast<char*>(&problem_definition_)) + sizeof(settings_));
 }
 
 StartOptimizationCommandDTO::~StartOptimizationCommandDTO() {
   // @@protoc_insertion_point(destructor:empowerops.volition.dto.StartOptimizationCommandDTO)
+  if (GetArenaForAllocation() != nullptr) return;
   SharedDtor();
   _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-void StartOptimizationCommandDTO::SharedDtor() {
-  GOOGLE_DCHECK(GetArena() == nullptr);
+inline void StartOptimizationCommandDTO::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
   if (this != internal_default_instance()) delete problem_definition_;
   if (this != internal_default_instance()) delete settings_;
 }
@@ -1534,397 +1569,4419 @@ void StartOptimizationCommandDTO::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Are
 void StartOptimizationCommandDTO::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const StartOptimizationCommandDTO& StartOptimizationCommandDTO::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_StartOptimizationCommandDTO_optimizer_2eproto.base);
-  return *internal_default_instance();
+
+void StartOptimizationCommandDTO::Clear() {
+// @@protoc_insertion_point(message_clear_start:empowerops.volition.dto.StartOptimizationCommandDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  seed_points_.Clear();
+  if (GetArenaForAllocation() == nullptr && problem_definition_ != nullptr) {
+    delete problem_definition_;
+  }
+  problem_definition_ = nullptr;
+  if (GetArenaForAllocation() == nullptr && settings_ != nullptr) {
+    delete settings_;
+  }
+  settings_ = nullptr;
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
+const char* StartOptimizationCommandDTO::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // .empowerops.volition.dto.ProblemDefinitionDTO problem_definition = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          ptr = ctx->ParseMessage(_internal_mutable_problem_definition(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // .empowerops.volition.dto.OptimizationSettingsDTO settings = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 26)) {
+          ptr = ctx->ParseMessage(_internal_mutable_settings(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated .empowerops.volition.dto.SeedRowDTO seed_points = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 34)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            ptr = ctx->ParseMessage(_internal_add_seed_points(), ptr);
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<34>(ptr));
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* StartOptimizationCommandDTO::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:empowerops.volition.dto.StartOptimizationCommandDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // .empowerops.volition.dto.ProblemDefinitionDTO problem_definition = 1;
+  if (this->_internal_has_problem_definition()) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(
+        1, _Internal::problem_definition(this), target, stream);
+  }
+
+  // .empowerops.volition.dto.OptimizationSettingsDTO settings = 3;
+  if (this->_internal_has_settings()) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(
+        3, _Internal::settings(this), target, stream);
+  }
+
+  // repeated .empowerops.volition.dto.SeedRowDTO seed_points = 4;
+  for (unsigned int i = 0,
+      n = static_cast<unsigned int>(this->_internal_seed_points_size()); i < n; i++) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(4, this->_internal_seed_points(i), target, stream);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:empowerops.volition.dto.StartOptimizationCommandDTO)
+  return target;
+}
+
+size_t StartOptimizationCommandDTO::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:empowerops.volition.dto.StartOptimizationCommandDTO)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // repeated .empowerops.volition.dto.SeedRowDTO seed_points = 4;
+  total_size += 1UL * this->_internal_seed_points_size();
+  for (const auto& msg : this->seed_points_) {
+    total_size +=
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
+  }
+
+  // .empowerops.volition.dto.ProblemDefinitionDTO problem_definition = 1;
+  if (this->_internal_has_problem_definition()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+        *problem_definition_);
+  }
+
+  // .empowerops.volition.dto.OptimizationSettingsDTO settings = 3;
+  if (this->_internal_has_settings()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+        *settings_);
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData StartOptimizationCommandDTO::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    StartOptimizationCommandDTO::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*StartOptimizationCommandDTO::GetClassData() const { return &_class_data_; }
+
+void StartOptimizationCommandDTO::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<StartOptimizationCommandDTO *>(to)->MergeFrom(
+      static_cast<const StartOptimizationCommandDTO &>(from));
+}
+
+
+void StartOptimizationCommandDTO::MergeFrom(const StartOptimizationCommandDTO& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:empowerops.volition.dto.StartOptimizationCommandDTO)
+  GOOGLE_DCHECK_NE(&from, this);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  seed_points_.MergeFrom(from.seed_points_);
+  if (from._internal_has_problem_definition()) {
+    _internal_mutable_problem_definition()->::empowerops::volition::dto::ProblemDefinitionDTO::MergeFrom(from._internal_problem_definition());
+  }
+  if (from._internal_has_settings()) {
+    _internal_mutable_settings()->::empowerops::volition::dto::OptimizationSettingsDTO::MergeFrom(from._internal_settings());
+  }
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void StartOptimizationCommandDTO::CopyFrom(const StartOptimizationCommandDTO& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:empowerops.volition.dto.StartOptimizationCommandDTO)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool StartOptimizationCommandDTO::IsInitialized() const {
+  return true;
+}
 
 void StartOptimizationCommandDTO::InternalSwap(StartOptimizationCommandDTO* other) {
   using std::swap;
-  GetReflection()->Swap(this, other);}
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  seed_points_.InternalSwap(&other->seed_points_);
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(StartOptimizationCommandDTO, settings_)
+      + sizeof(StartOptimizationCommandDTO::settings_)
+      - PROTOBUF_FIELD_OFFSET(StartOptimizationCommandDTO, problem_definition_)>(
+          reinterpret_cast<char*>(&problem_definition_),
+          reinterpret_cast<char*>(&other->problem_definition_));
+}
 
 ::PROTOBUF_NAMESPACE_ID::Metadata StartOptimizationCommandDTO::GetMetadata() const {
-  return GetMetadataStatic();
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_optimizer_2eproto_getter, &descriptor_table_optimizer_2eproto_once,
+      file_level_metadata_optimizer_2eproto[0]);
 }
-
 
 // ===================================================================
 
-OptimizerGeneratedQueryDTO_SimulationEvaluationRequest_InputVectorEntry_DoNotUse::OptimizerGeneratedQueryDTO_SimulationEvaluationRequest_InputVectorEntry_DoNotUse() {}
-OptimizerGeneratedQueryDTO_SimulationEvaluationRequest_InputVectorEntry_DoNotUse::OptimizerGeneratedQueryDTO_SimulationEvaluationRequest_InputVectorEntry_DoNotUse(::PROTOBUF_NAMESPACE_ID::Arena* arena)
-    : SuperType(arena) {}
-void OptimizerGeneratedQueryDTO_SimulationEvaluationRequest_InputVectorEntry_DoNotUse::MergeFrom(const OptimizerGeneratedQueryDTO_SimulationEvaluationRequest_InputVectorEntry_DoNotUse& other) {
-  MergeFromInternal(other);
-}
-::PROTOBUF_NAMESPACE_ID::Metadata OptimizerGeneratedQueryDTO_SimulationEvaluationRequest_InputVectorEntry_DoNotUse::GetMetadata() const {
-  return GetMetadataStatic();
-}
-void OptimizerGeneratedQueryDTO_SimulationEvaluationRequest_InputVectorEntry_DoNotUse::MergeFrom(
-    const ::PROTOBUF_NAMESPACE_ID::Message& other) {
-  ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom(other);
-}
-
-
-// ===================================================================
-
-class OptimizerGeneratedQueryDTO_SimulationEvaluationRequest::_Internal {
+class ProblemDefinitionDTO::_Internal {
  public:
 };
 
-OptimizerGeneratedQueryDTO_SimulationEvaluationRequest::OptimizerGeneratedQueryDTO_SimulationEvaluationRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena),
-  input_vector_(arena) {
+ProblemDefinitionDTO::ProblemDefinitionDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned),
+  inputs_(arena),
+  evaluables_(arena) {
   SharedCtor();
-  RegisterArenaDtor(arena);
-  // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.OptimizerGeneratedQueryDTO.SimulationEvaluationRequest)
-}
-OptimizerGeneratedQueryDTO_SimulationEvaluationRequest::OptimizerGeneratedQueryDTO_SimulationEvaluationRequest(const OptimizerGeneratedQueryDTO_SimulationEvaluationRequest& from)
-  : ::PROTOBUF_NAMESPACE_ID::Message() {
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  input_vector_.MergeFrom(from.input_vector_);
-  name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  if (!from._internal_name().empty()) {
-    name_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_name(), 
-      GetArena());
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
   }
-  // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.OptimizerGeneratedQueryDTO.SimulationEvaluationRequest)
+  // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.ProblemDefinitionDTO)
 }
-
-void OptimizerGeneratedQueryDTO_SimulationEvaluationRequest::SharedCtor() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_OptimizerGeneratedQueryDTO_SimulationEvaluationRequest_optimizer_2eproto.base);
-  name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-}
-
-OptimizerGeneratedQueryDTO_SimulationEvaluationRequest::~OptimizerGeneratedQueryDTO_SimulationEvaluationRequest() {
-  // @@protoc_insertion_point(destructor:empowerops.volition.dto.OptimizerGeneratedQueryDTO.SimulationEvaluationRequest)
-  SharedDtor();
-  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-}
-
-void OptimizerGeneratedQueryDTO_SimulationEvaluationRequest::SharedDtor() {
-  GOOGLE_DCHECK(GetArena() == nullptr);
-  name_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-}
-
-void OptimizerGeneratedQueryDTO_SimulationEvaluationRequest::ArenaDtor(void* object) {
-  OptimizerGeneratedQueryDTO_SimulationEvaluationRequest* _this = reinterpret_cast< OptimizerGeneratedQueryDTO_SimulationEvaluationRequest* >(object);
-  (void)_this;
-}
-void OptimizerGeneratedQueryDTO_SimulationEvaluationRequest::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
-}
-void OptimizerGeneratedQueryDTO_SimulationEvaluationRequest::SetCachedSize(int size) const {
-  _cached_size_.Set(size);
-}
-const OptimizerGeneratedQueryDTO_SimulationEvaluationRequest& OptimizerGeneratedQueryDTO_SimulationEvaluationRequest::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_OptimizerGeneratedQueryDTO_SimulationEvaluationRequest_optimizer_2eproto.base);
-  return *internal_default_instance();
-}
-
-
-void OptimizerGeneratedQueryDTO_SimulationEvaluationRequest::InternalSwap(OptimizerGeneratedQueryDTO_SimulationEvaluationRequest* other) {
-  using std::swap;
-  GetReflection()->Swap(this, other);}
-
-::PROTOBUF_NAMESPACE_ID::Metadata OptimizerGeneratedQueryDTO_SimulationEvaluationRequest::GetMetadata() const {
-  return GetMetadataStatic();
-}
-
-
-// ===================================================================
-
-class OptimizerGeneratedQueryDTO_SimulationCancelRequest::_Internal {
- public:
-};
-
-OptimizerGeneratedQueryDTO_SimulationCancelRequest::OptimizerGeneratedQueryDTO_SimulationCancelRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
-  SharedCtor();
-  RegisterArenaDtor(arena);
-  // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.OptimizerGeneratedQueryDTO.SimulationCancelRequest)
-}
-OptimizerGeneratedQueryDTO_SimulationCancelRequest::OptimizerGeneratedQueryDTO_SimulationCancelRequest(const OptimizerGeneratedQueryDTO_SimulationCancelRequest& from)
-  : ::PROTOBUF_NAMESPACE_ID::Message() {
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  if (!from._internal_name().empty()) {
-    name_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_name(), 
-      GetArena());
-  }
-  // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.OptimizerGeneratedQueryDTO.SimulationCancelRequest)
-}
-
-void OptimizerGeneratedQueryDTO_SimulationCancelRequest::SharedCtor() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_OptimizerGeneratedQueryDTO_SimulationCancelRequest_optimizer_2eproto.base);
-  name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-}
-
-OptimizerGeneratedQueryDTO_SimulationCancelRequest::~OptimizerGeneratedQueryDTO_SimulationCancelRequest() {
-  // @@protoc_insertion_point(destructor:empowerops.volition.dto.OptimizerGeneratedQueryDTO.SimulationCancelRequest)
-  SharedDtor();
-  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-}
-
-void OptimizerGeneratedQueryDTO_SimulationCancelRequest::SharedDtor() {
-  GOOGLE_DCHECK(GetArena() == nullptr);
-  name_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-}
-
-void OptimizerGeneratedQueryDTO_SimulationCancelRequest::ArenaDtor(void* object) {
-  OptimizerGeneratedQueryDTO_SimulationCancelRequest* _this = reinterpret_cast< OptimizerGeneratedQueryDTO_SimulationCancelRequest* >(object);
-  (void)_this;
-}
-void OptimizerGeneratedQueryDTO_SimulationCancelRequest::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
-}
-void OptimizerGeneratedQueryDTO_SimulationCancelRequest::SetCachedSize(int size) const {
-  _cached_size_.Set(size);
-}
-const OptimizerGeneratedQueryDTO_SimulationCancelRequest& OptimizerGeneratedQueryDTO_SimulationCancelRequest::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_OptimizerGeneratedQueryDTO_SimulationCancelRequest_optimizer_2eproto.base);
-  return *internal_default_instance();
-}
-
-
-void OptimizerGeneratedQueryDTO_SimulationCancelRequest::InternalSwap(OptimizerGeneratedQueryDTO_SimulationCancelRequest* other) {
-  using std::swap;
-  GetReflection()->Swap(this, other);}
-
-::PROTOBUF_NAMESPACE_ID::Metadata OptimizerGeneratedQueryDTO_SimulationCancelRequest::GetMetadata() const {
-  return GetMetadataStatic();
-}
-
-
-// ===================================================================
-
-class OptimizerGeneratedQueryDTO_OptimizationStartedNotification::_Internal {
- public:
-  static const ::empowerops::volition::dto::UUID& run_id(const OptimizerGeneratedQueryDTO_OptimizationStartedNotification* msg);
-};
-
-const ::empowerops::volition::dto::UUID&
-OptimizerGeneratedQueryDTO_OptimizationStartedNotification::_Internal::run_id(const OptimizerGeneratedQueryDTO_OptimizationStartedNotification* msg) {
-  return *msg->run_id_;
-}
-OptimizerGeneratedQueryDTO_OptimizationStartedNotification::OptimizerGeneratedQueryDTO_OptimizationStartedNotification(::PROTOBUF_NAMESPACE_ID::Arena* arena)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
-  SharedCtor();
-  RegisterArenaDtor(arena);
-  // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.OptimizerGeneratedQueryDTO.OptimizationStartedNotification)
-}
-OptimizerGeneratedQueryDTO_OptimizationStartedNotification::OptimizerGeneratedQueryDTO_OptimizationStartedNotification(const OptimizerGeneratedQueryDTO_OptimizationStartedNotification& from)
-  : ::PROTOBUF_NAMESPACE_ID::Message() {
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  if (from._internal_has_run_id()) {
-    run_id_ = new ::empowerops::volition::dto::UUID(*from.run_id_);
-  } else {
-    run_id_ = nullptr;
-  }
-  // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.OptimizerGeneratedQueryDTO.OptimizationStartedNotification)
-}
-
-void OptimizerGeneratedQueryDTO_OptimizationStartedNotification::SharedCtor() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_OptimizerGeneratedQueryDTO_OptimizationStartedNotification_optimizer_2eproto.base);
-  run_id_ = nullptr;
-}
-
-OptimizerGeneratedQueryDTO_OptimizationStartedNotification::~OptimizerGeneratedQueryDTO_OptimizationStartedNotification() {
-  // @@protoc_insertion_point(destructor:empowerops.volition.dto.OptimizerGeneratedQueryDTO.OptimizationStartedNotification)
-  SharedDtor();
-  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-}
-
-void OptimizerGeneratedQueryDTO_OptimizationStartedNotification::SharedDtor() {
-  GOOGLE_DCHECK(GetArena() == nullptr);
-  if (this != internal_default_instance()) delete run_id_;
-}
-
-void OptimizerGeneratedQueryDTO_OptimizationStartedNotification::ArenaDtor(void* object) {
-  OptimizerGeneratedQueryDTO_OptimizationStartedNotification* _this = reinterpret_cast< OptimizerGeneratedQueryDTO_OptimizationStartedNotification* >(object);
-  (void)_this;
-}
-void OptimizerGeneratedQueryDTO_OptimizationStartedNotification::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
-}
-void OptimizerGeneratedQueryDTO_OptimizationStartedNotification::SetCachedSize(int size) const {
-  _cached_size_.Set(size);
-}
-const OptimizerGeneratedQueryDTO_OptimizationStartedNotification& OptimizerGeneratedQueryDTO_OptimizationStartedNotification::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_OptimizerGeneratedQueryDTO_OptimizationStartedNotification_optimizer_2eproto.base);
-  return *internal_default_instance();
-}
-
-
-void OptimizerGeneratedQueryDTO_OptimizationStartedNotification::InternalSwap(OptimizerGeneratedQueryDTO_OptimizationStartedNotification* other) {
-  using std::swap;
-  GetReflection()->Swap(this, other);}
-
-::PROTOBUF_NAMESPACE_ID::Metadata OptimizerGeneratedQueryDTO_OptimizationStartedNotification::GetMetadata() const {
-  return GetMetadataStatic();
-}
-
-
-// ===================================================================
-
-class OptimizerGeneratedQueryDTO_OptimizationFinishedNotification::_Internal {
- public:
-  static const ::empowerops::volition::dto::UUID& run_id(const OptimizerGeneratedQueryDTO_OptimizationFinishedNotification* msg);
-};
-
-const ::empowerops::volition::dto::UUID&
-OptimizerGeneratedQueryDTO_OptimizationFinishedNotification::_Internal::run_id(const OptimizerGeneratedQueryDTO_OptimizationFinishedNotification* msg) {
-  return *msg->run_id_;
-}
-OptimizerGeneratedQueryDTO_OptimizationFinishedNotification::OptimizerGeneratedQueryDTO_OptimizationFinishedNotification(::PROTOBUF_NAMESPACE_ID::Arena* arena)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
-  SharedCtor();
-  RegisterArenaDtor(arena);
-  // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.OptimizerGeneratedQueryDTO.OptimizationFinishedNotification)
-}
-OptimizerGeneratedQueryDTO_OptimizationFinishedNotification::OptimizerGeneratedQueryDTO_OptimizationFinishedNotification(const OptimizerGeneratedQueryDTO_OptimizationFinishedNotification& from)
-  : ::PROTOBUF_NAMESPACE_ID::Message() {
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  if (from._internal_has_run_id()) {
-    run_id_ = new ::empowerops::volition::dto::UUID(*from.run_id_);
-  } else {
-    run_id_ = nullptr;
-  }
-  // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.OptimizerGeneratedQueryDTO.OptimizationFinishedNotification)
-}
-
-void OptimizerGeneratedQueryDTO_OptimizationFinishedNotification::SharedCtor() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_OptimizerGeneratedQueryDTO_OptimizationFinishedNotification_optimizer_2eproto.base);
-  run_id_ = nullptr;
-}
-
-OptimizerGeneratedQueryDTO_OptimizationFinishedNotification::~OptimizerGeneratedQueryDTO_OptimizationFinishedNotification() {
-  // @@protoc_insertion_point(destructor:empowerops.volition.dto.OptimizerGeneratedQueryDTO.OptimizationFinishedNotification)
-  SharedDtor();
-  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-}
-
-void OptimizerGeneratedQueryDTO_OptimizationFinishedNotification::SharedDtor() {
-  GOOGLE_DCHECK(GetArena() == nullptr);
-  if (this != internal_default_instance()) delete run_id_;
-}
-
-void OptimizerGeneratedQueryDTO_OptimizationFinishedNotification::ArenaDtor(void* object) {
-  OptimizerGeneratedQueryDTO_OptimizationFinishedNotification* _this = reinterpret_cast< OptimizerGeneratedQueryDTO_OptimizationFinishedNotification* >(object);
-  (void)_this;
-}
-void OptimizerGeneratedQueryDTO_OptimizationFinishedNotification::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
-}
-void OptimizerGeneratedQueryDTO_OptimizationFinishedNotification::SetCachedSize(int size) const {
-  _cached_size_.Set(size);
-}
-const OptimizerGeneratedQueryDTO_OptimizationFinishedNotification& OptimizerGeneratedQueryDTO_OptimizationFinishedNotification::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_OptimizerGeneratedQueryDTO_OptimizationFinishedNotification_optimizer_2eproto.base);
-  return *internal_default_instance();
-}
-
-
-void OptimizerGeneratedQueryDTO_OptimizationFinishedNotification::InternalSwap(OptimizerGeneratedQueryDTO_OptimizationFinishedNotification* other) {
-  using std::swap;
-  GetReflection()->Swap(this, other);}
-
-::PROTOBUF_NAMESPACE_ID::Metadata OptimizerGeneratedQueryDTO_OptimizationFinishedNotification::GetMetadata() const {
-  return GetMetadataStatic();
-}
-
-
-// ===================================================================
-
-class OptimizerGeneratedQueryDTO_OptimizationFailedToStartNotification::_Internal {
- public:
-};
-
-OptimizerGeneratedQueryDTO_OptimizationFailedToStartNotification::OptimizerGeneratedQueryDTO_OptimizationFailedToStartNotification(::PROTOBUF_NAMESPACE_ID::Arena* arena)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena),
-  issues_(arena) {
-  SharedCtor();
-  RegisterArenaDtor(arena);
-  // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.OptimizerGeneratedQueryDTO.OptimizationFailedToStartNotification)
-}
-OptimizerGeneratedQueryDTO_OptimizationFailedToStartNotification::OptimizerGeneratedQueryDTO_OptimizationFailedToStartNotification(const OptimizerGeneratedQueryDTO_OptimizationFailedToStartNotification& from)
+ProblemDefinitionDTO::ProblemDefinitionDTO(const ProblemDefinitionDTO& from)
   : ::PROTOBUF_NAMESPACE_ID::Message(),
-      issues_(from.issues_) {
+      inputs_(from.inputs_),
+      evaluables_(from.evaluables_) {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.OptimizerGeneratedQueryDTO.OptimizationFailedToStartNotification)
+  // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.ProblemDefinitionDTO)
 }
 
-void OptimizerGeneratedQueryDTO_OptimizationFailedToStartNotification::SharedCtor() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_OptimizerGeneratedQueryDTO_OptimizationFailedToStartNotification_optimizer_2eproto.base);
+void ProblemDefinitionDTO::SharedCtor() {
 }
 
-OptimizerGeneratedQueryDTO_OptimizationFailedToStartNotification::~OptimizerGeneratedQueryDTO_OptimizationFailedToStartNotification() {
-  // @@protoc_insertion_point(destructor:empowerops.volition.dto.OptimizerGeneratedQueryDTO.OptimizationFailedToStartNotification)
+ProblemDefinitionDTO::~ProblemDefinitionDTO() {
+  // @@protoc_insertion_point(destructor:empowerops.volition.dto.ProblemDefinitionDTO)
+  if (GetArenaForAllocation() != nullptr) return;
   SharedDtor();
   _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-void OptimizerGeneratedQueryDTO_OptimizationFailedToStartNotification::SharedDtor() {
-  GOOGLE_DCHECK(GetArena() == nullptr);
+inline void ProblemDefinitionDTO::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
 }
 
-void OptimizerGeneratedQueryDTO_OptimizationFailedToStartNotification::ArenaDtor(void* object) {
-  OptimizerGeneratedQueryDTO_OptimizationFailedToStartNotification* _this = reinterpret_cast< OptimizerGeneratedQueryDTO_OptimizationFailedToStartNotification* >(object);
+void ProblemDefinitionDTO::ArenaDtor(void* object) {
+  ProblemDefinitionDTO* _this = reinterpret_cast< ProblemDefinitionDTO* >(object);
   (void)_this;
 }
-void OptimizerGeneratedQueryDTO_OptimizationFailedToStartNotification::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+void ProblemDefinitionDTO::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
 }
-void OptimizerGeneratedQueryDTO_OptimizationFailedToStartNotification::SetCachedSize(int size) const {
+void ProblemDefinitionDTO::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const OptimizerGeneratedQueryDTO_OptimizationFailedToStartNotification& OptimizerGeneratedQueryDTO_OptimizationFailedToStartNotification::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_OptimizerGeneratedQueryDTO_OptimizationFailedToStartNotification_optimizer_2eproto.base);
-  return *internal_default_instance();
+
+void ProblemDefinitionDTO::Clear() {
+// @@protoc_insertion_point(message_clear_start:empowerops.volition.dto.ProblemDefinitionDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  inputs_.Clear();
+  evaluables_.Clear();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* ProblemDefinitionDTO::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // repeated .empowerops.volition.dto.InputParameterDTO inputs = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            ptr = ctx->ParseMessage(_internal_add_inputs(), ptr);
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<10>(ptr));
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated .empowerops.volition.dto.EvaluableNodeDTO evaluables = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            ptr = ctx->ParseMessage(_internal_add_evaluables(), ptr);
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<18>(ptr));
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* ProblemDefinitionDTO::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:empowerops.volition.dto.ProblemDefinitionDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // repeated .empowerops.volition.dto.InputParameterDTO inputs = 1;
+  for (unsigned int i = 0,
+      n = static_cast<unsigned int>(this->_internal_inputs_size()); i < n; i++) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(1, this->_internal_inputs(i), target, stream);
+  }
+
+  // repeated .empowerops.volition.dto.EvaluableNodeDTO evaluables = 2;
+  for (unsigned int i = 0,
+      n = static_cast<unsigned int>(this->_internal_evaluables_size()); i < n; i++) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(2, this->_internal_evaluables(i), target, stream);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:empowerops.volition.dto.ProblemDefinitionDTO)
+  return target;
+}
+
+size_t ProblemDefinitionDTO::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:empowerops.volition.dto.ProblemDefinitionDTO)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // repeated .empowerops.volition.dto.InputParameterDTO inputs = 1;
+  total_size += 1UL * this->_internal_inputs_size();
+  for (const auto& msg : this->inputs_) {
+    total_size +=
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
+  }
+
+  // repeated .empowerops.volition.dto.EvaluableNodeDTO evaluables = 2;
+  total_size += 1UL * this->_internal_evaluables_size();
+  for (const auto& msg : this->evaluables_) {
+    total_size +=
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData ProblemDefinitionDTO::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    ProblemDefinitionDTO::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*ProblemDefinitionDTO::GetClassData() const { return &_class_data_; }
+
+void ProblemDefinitionDTO::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<ProblemDefinitionDTO *>(to)->MergeFrom(
+      static_cast<const ProblemDefinitionDTO &>(from));
 }
 
 
-void OptimizerGeneratedQueryDTO_OptimizationFailedToStartNotification::InternalSwap(OptimizerGeneratedQueryDTO_OptimizationFailedToStartNotification* other) {
+void ProblemDefinitionDTO::MergeFrom(const ProblemDefinitionDTO& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:empowerops.volition.dto.ProblemDefinitionDTO)
+  GOOGLE_DCHECK_NE(&from, this);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  inputs_.MergeFrom(from.inputs_);
+  evaluables_.MergeFrom(from.evaluables_);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void ProblemDefinitionDTO::CopyFrom(const ProblemDefinitionDTO& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:empowerops.volition.dto.ProblemDefinitionDTO)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool ProblemDefinitionDTO::IsInitialized() const {
+  return true;
+}
+
+void ProblemDefinitionDTO::InternalSwap(ProblemDefinitionDTO* other) {
   using std::swap;
-  GetReflection()->Swap(this, other);}
-
-::PROTOBUF_NAMESPACE_ID::Metadata OptimizerGeneratedQueryDTO_OptimizationFailedToStartNotification::GetMetadata() const {
-  return GetMetadataStatic();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  inputs_.InternalSwap(&other->inputs_);
+  evaluables_.InternalSwap(&other->evaluables_);
 }
 
+::PROTOBUF_NAMESPACE_ID::Metadata ProblemDefinitionDTO::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_optimizer_2eproto_getter, &descriptor_table_optimizer_2eproto_once,
+      file_level_metadata_optimizer_2eproto[1]);
+}
+
+// ===================================================================
+
+class EvaluableNodeDTO::_Internal {
+ public:
+  static const ::empowerops::volition::dto::BabelScalarNodeDTO& transform(const EvaluableNodeDTO* msg);
+  static const ::empowerops::volition::dto::SimulationNodeDTO& simulation(const EvaluableNodeDTO* msg);
+  static const ::empowerops::volition::dto::BabelConstraintNodeDTO& constraint(const EvaluableNodeDTO* msg);
+};
+
+const ::empowerops::volition::dto::BabelScalarNodeDTO&
+EvaluableNodeDTO::_Internal::transform(const EvaluableNodeDTO* msg) {
+  return *msg->value_.transform_;
+}
+const ::empowerops::volition::dto::SimulationNodeDTO&
+EvaluableNodeDTO::_Internal::simulation(const EvaluableNodeDTO* msg) {
+  return *msg->value_.simulation_;
+}
+const ::empowerops::volition::dto::BabelConstraintNodeDTO&
+EvaluableNodeDTO::_Internal::constraint(const EvaluableNodeDTO* msg) {
+  return *msg->value_.constraint_;
+}
+void EvaluableNodeDTO::set_allocated_transform(::empowerops::volition::dto::BabelScalarNodeDTO* transform) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  clear_value();
+  if (transform) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+      ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper<::empowerops::volition::dto::BabelScalarNodeDTO>::GetOwningArena(transform);
+    if (message_arena != submessage_arena) {
+      transform = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, transform, submessage_arena);
+    }
+    set_has_transform();
+    value_.transform_ = transform;
+  }
+  // @@protoc_insertion_point(field_set_allocated:empowerops.volition.dto.EvaluableNodeDTO.transform)
+}
+void EvaluableNodeDTO::set_allocated_simulation(::empowerops::volition::dto::SimulationNodeDTO* simulation) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  clear_value();
+  if (simulation) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+      ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper<::empowerops::volition::dto::SimulationNodeDTO>::GetOwningArena(simulation);
+    if (message_arena != submessage_arena) {
+      simulation = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, simulation, submessage_arena);
+    }
+    set_has_simulation();
+    value_.simulation_ = simulation;
+  }
+  // @@protoc_insertion_point(field_set_allocated:empowerops.volition.dto.EvaluableNodeDTO.simulation)
+}
+void EvaluableNodeDTO::set_allocated_constraint(::empowerops::volition::dto::BabelConstraintNodeDTO* constraint) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  clear_value();
+  if (constraint) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+      ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper<::empowerops::volition::dto::BabelConstraintNodeDTO>::GetOwningArena(constraint);
+    if (message_arena != submessage_arena) {
+      constraint = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, constraint, submessage_arena);
+    }
+    set_has_constraint();
+    value_.constraint_ = constraint;
+  }
+  // @@protoc_insertion_point(field_set_allocated:empowerops.volition.dto.EvaluableNodeDTO.constraint)
+}
+EvaluableNodeDTO::EvaluableNodeDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor();
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
+  // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.EvaluableNodeDTO)
+}
+EvaluableNodeDTO::EvaluableNodeDTO(const EvaluableNodeDTO& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  clear_has_value();
+  switch (from.value_case()) {
+    case kTransform: {
+      _internal_mutable_transform()->::empowerops::volition::dto::BabelScalarNodeDTO::MergeFrom(from._internal_transform());
+      break;
+    }
+    case kSimulation: {
+      _internal_mutable_simulation()->::empowerops::volition::dto::SimulationNodeDTO::MergeFrom(from._internal_simulation());
+      break;
+    }
+    case kConstraint: {
+      _internal_mutable_constraint()->::empowerops::volition::dto::BabelConstraintNodeDTO::MergeFrom(from._internal_constraint());
+      break;
+    }
+    case VALUE_NOT_SET: {
+      break;
+    }
+  }
+  // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.EvaluableNodeDTO)
+}
+
+void EvaluableNodeDTO::SharedCtor() {
+clear_has_value();
+}
+
+EvaluableNodeDTO::~EvaluableNodeDTO() {
+  // @@protoc_insertion_point(destructor:empowerops.volition.dto.EvaluableNodeDTO)
+  if (GetArenaForAllocation() != nullptr) return;
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+inline void EvaluableNodeDTO::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  if (has_value()) {
+    clear_value();
+  }
+}
+
+void EvaluableNodeDTO::ArenaDtor(void* object) {
+  EvaluableNodeDTO* _this = reinterpret_cast< EvaluableNodeDTO* >(object);
+  (void)_this;
+}
+void EvaluableNodeDTO::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void EvaluableNodeDTO::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+
+void EvaluableNodeDTO::clear_value() {
+// @@protoc_insertion_point(one_of_clear_start:empowerops.volition.dto.EvaluableNodeDTO)
+  switch (value_case()) {
+    case kTransform: {
+      if (GetArenaForAllocation() == nullptr) {
+        delete value_.transform_;
+      }
+      break;
+    }
+    case kSimulation: {
+      if (GetArenaForAllocation() == nullptr) {
+        delete value_.simulation_;
+      }
+      break;
+    }
+    case kConstraint: {
+      if (GetArenaForAllocation() == nullptr) {
+        delete value_.constraint_;
+      }
+      break;
+    }
+    case VALUE_NOT_SET: {
+      break;
+    }
+  }
+  _oneof_case_[0] = VALUE_NOT_SET;
+}
+
+
+void EvaluableNodeDTO::Clear() {
+// @@protoc_insertion_point(message_clear_start:empowerops.volition.dto.EvaluableNodeDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  clear_value();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* EvaluableNodeDTO::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // .empowerops.volition.dto.BabelScalarNodeDTO transform = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
+          ptr = ctx->ParseMessage(_internal_mutable_transform(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // .empowerops.volition.dto.SimulationNodeDTO simulation = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 26)) {
+          ptr = ctx->ParseMessage(_internal_mutable_simulation(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // .empowerops.volition.dto.BabelConstraintNodeDTO constraint = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 34)) {
+          ptr = ctx->ParseMessage(_internal_mutable_constraint(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* EvaluableNodeDTO::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:empowerops.volition.dto.EvaluableNodeDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // .empowerops.volition.dto.BabelScalarNodeDTO transform = 2;
+  if (_internal_has_transform()) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(
+        2, _Internal::transform(this), target, stream);
+  }
+
+  // .empowerops.volition.dto.SimulationNodeDTO simulation = 3;
+  if (_internal_has_simulation()) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(
+        3, _Internal::simulation(this), target, stream);
+  }
+
+  // .empowerops.volition.dto.BabelConstraintNodeDTO constraint = 4;
+  if (_internal_has_constraint()) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(
+        4, _Internal::constraint(this), target, stream);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:empowerops.volition.dto.EvaluableNodeDTO)
+  return target;
+}
+
+size_t EvaluableNodeDTO::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:empowerops.volition.dto.EvaluableNodeDTO)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  switch (value_case()) {
+    // .empowerops.volition.dto.BabelScalarNodeDTO transform = 2;
+    case kTransform: {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+          *value_.transform_);
+      break;
+    }
+    // .empowerops.volition.dto.SimulationNodeDTO simulation = 3;
+    case kSimulation: {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+          *value_.simulation_);
+      break;
+    }
+    // .empowerops.volition.dto.BabelConstraintNodeDTO constraint = 4;
+    case kConstraint: {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+          *value_.constraint_);
+      break;
+    }
+    case VALUE_NOT_SET: {
+      break;
+    }
+  }
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData EvaluableNodeDTO::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    EvaluableNodeDTO::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*EvaluableNodeDTO::GetClassData() const { return &_class_data_; }
+
+void EvaluableNodeDTO::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<EvaluableNodeDTO *>(to)->MergeFrom(
+      static_cast<const EvaluableNodeDTO &>(from));
+}
+
+
+void EvaluableNodeDTO::MergeFrom(const EvaluableNodeDTO& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:empowerops.volition.dto.EvaluableNodeDTO)
+  GOOGLE_DCHECK_NE(&from, this);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  switch (from.value_case()) {
+    case kTransform: {
+      _internal_mutable_transform()->::empowerops::volition::dto::BabelScalarNodeDTO::MergeFrom(from._internal_transform());
+      break;
+    }
+    case kSimulation: {
+      _internal_mutable_simulation()->::empowerops::volition::dto::SimulationNodeDTO::MergeFrom(from._internal_simulation());
+      break;
+    }
+    case kConstraint: {
+      _internal_mutable_constraint()->::empowerops::volition::dto::BabelConstraintNodeDTO::MergeFrom(from._internal_constraint());
+      break;
+    }
+    case VALUE_NOT_SET: {
+      break;
+    }
+  }
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void EvaluableNodeDTO::CopyFrom(const EvaluableNodeDTO& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:empowerops.volition.dto.EvaluableNodeDTO)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool EvaluableNodeDTO::IsInitialized() const {
+  return true;
+}
+
+void EvaluableNodeDTO::InternalSwap(EvaluableNodeDTO* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(value_, other->value_);
+  swap(_oneof_case_[0], other->_oneof_case_[0]);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata EvaluableNodeDTO::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_optimizer_2eproto_getter, &descriptor_table_optimizer_2eproto_once,
+      file_level_metadata_optimizer_2eproto[2]);
+}
+
+// ===================================================================
+
+class SimulationNodeDTO::_Internal {
+ public:
+  static const ::empowerops::volition::dto::VariableMappingDTO& mapping_table(const SimulationNodeDTO* msg);
+  static const ::PROTOBUF_NAMESPACE_ID::Duration& time_out(const SimulationNodeDTO* msg);
+  static const ::empowerops::volition::dto::SuspendAndCallbackConfigurationDTO& suspend_and_callback(const SimulationNodeDTO* msg);
+  static const ::empowerops::volition::dto::ExternalSimulationExecConfigurationDTO& external_simulation_exec(const SimulationNodeDTO* msg);
+};
+
+const ::empowerops::volition::dto::VariableMappingDTO&
+SimulationNodeDTO::_Internal::mapping_table(const SimulationNodeDTO* msg) {
+  return *msg->mapping_.mapping_table_;
+}
+const ::PROTOBUF_NAMESPACE_ID::Duration&
+SimulationNodeDTO::_Internal::time_out(const SimulationNodeDTO* msg) {
+  return *msg->time_out_;
+}
+const ::empowerops::volition::dto::SuspendAndCallbackConfigurationDTO&
+SimulationNodeDTO::_Internal::suspend_and_callback(const SimulationNodeDTO* msg) {
+  return *msg->strategy_.suspend_and_callback_;
+}
+const ::empowerops::volition::dto::ExternalSimulationExecConfigurationDTO&
+SimulationNodeDTO::_Internal::external_simulation_exec(const SimulationNodeDTO* msg) {
+  return *msg->strategy_.external_simulation_exec_;
+}
+void SimulationNodeDTO::set_allocated_mapping_table(::empowerops::volition::dto::VariableMappingDTO* mapping_table) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  clear_mapping();
+  if (mapping_table) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+      ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper<::empowerops::volition::dto::VariableMappingDTO>::GetOwningArena(mapping_table);
+    if (message_arena != submessage_arena) {
+      mapping_table = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, mapping_table, submessage_arena);
+    }
+    set_has_mapping_table();
+    mapping_.mapping_table_ = mapping_table;
+  }
+  // @@protoc_insertion_point(field_set_allocated:empowerops.volition.dto.SimulationNodeDTO.mapping_table)
+}
+void SimulationNodeDTO::clear_time_out() {
+  if (GetArenaForAllocation() == nullptr && time_out_ != nullptr) {
+    delete time_out_;
+  }
+  time_out_ = nullptr;
+}
+void SimulationNodeDTO::set_allocated_suspend_and_callback(::empowerops::volition::dto::SuspendAndCallbackConfigurationDTO* suspend_and_callback) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  clear_strategy();
+  if (suspend_and_callback) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+      ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper<::empowerops::volition::dto::SuspendAndCallbackConfigurationDTO>::GetOwningArena(suspend_and_callback);
+    if (message_arena != submessage_arena) {
+      suspend_and_callback = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, suspend_and_callback, submessage_arena);
+    }
+    set_has_suspend_and_callback();
+    strategy_.suspend_and_callback_ = suspend_and_callback;
+  }
+  // @@protoc_insertion_point(field_set_allocated:empowerops.volition.dto.SimulationNodeDTO.suspend_and_callback)
+}
+void SimulationNodeDTO::set_allocated_external_simulation_exec(::empowerops::volition::dto::ExternalSimulationExecConfigurationDTO* external_simulation_exec) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  clear_strategy();
+  if (external_simulation_exec) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+      ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper<::empowerops::volition::dto::ExternalSimulationExecConfigurationDTO>::GetOwningArena(external_simulation_exec);
+    if (message_arena != submessage_arena) {
+      external_simulation_exec = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, external_simulation_exec, submessage_arena);
+    }
+    set_has_external_simulation_exec();
+    strategy_.external_simulation_exec_ = external_simulation_exec;
+  }
+  // @@protoc_insertion_point(field_set_allocated:empowerops.volition.dto.SimulationNodeDTO.external_simulation_exec)
+}
+SimulationNodeDTO::SimulationNodeDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned),
+  inputs_(arena),
+  outputs_(arena) {
+  SharedCtor();
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
+  // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.SimulationNodeDTO)
+}
+SimulationNodeDTO::SimulationNodeDTO(const SimulationNodeDTO& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message(),
+      inputs_(from.inputs_),
+      outputs_(from.outputs_) {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (!from._internal_name().empty()) {
+    name_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_name(), 
+      GetArenaForAllocation());
+  }
+  if (from._internal_has_time_out()) {
+    time_out_ = new ::PROTOBUF_NAMESPACE_ID::Duration(*from.time_out_);
+  } else {
+    time_out_ = nullptr;
+  }
+  clear_has_mapping();
+  switch (from.mapping_case()) {
+    case kAutoMap: {
+      _internal_set_auto_map(from._internal_auto_map());
+      break;
+    }
+    case kMappingTable: {
+      _internal_mutable_mapping_table()->::empowerops::volition::dto::VariableMappingDTO::MergeFrom(from._internal_mapping_table());
+      break;
+    }
+    case MAPPING_NOT_SET: {
+      break;
+    }
+  }
+  clear_has_strategy();
+  switch (from.strategy_case()) {
+    case kSuspendAndCallback: {
+      _internal_mutable_suspend_and_callback()->::empowerops::volition::dto::SuspendAndCallbackConfigurationDTO::MergeFrom(from._internal_suspend_and_callback());
+      break;
+    }
+    case kExternalSimulationExec: {
+      _internal_mutable_external_simulation_exec()->::empowerops::volition::dto::ExternalSimulationExecConfigurationDTO::MergeFrom(from._internal_external_simulation_exec());
+      break;
+    }
+    case STRATEGY_NOT_SET: {
+      break;
+    }
+  }
+  // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.SimulationNodeDTO)
+}
+
+void SimulationNodeDTO::SharedCtor() {
+name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+time_out_ = nullptr;
+clear_has_mapping();
+clear_has_strategy();
+}
+
+SimulationNodeDTO::~SimulationNodeDTO() {
+  // @@protoc_insertion_point(destructor:empowerops.volition.dto.SimulationNodeDTO)
+  if (GetArenaForAllocation() != nullptr) return;
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+inline void SimulationNodeDTO::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  name_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (this != internal_default_instance()) delete time_out_;
+  if (has_mapping()) {
+    clear_mapping();
+  }
+  if (has_strategy()) {
+    clear_strategy();
+  }
+}
+
+void SimulationNodeDTO::ArenaDtor(void* object) {
+  SimulationNodeDTO* _this = reinterpret_cast< SimulationNodeDTO* >(object);
+  (void)_this;
+}
+void SimulationNodeDTO::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void SimulationNodeDTO::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+
+void SimulationNodeDTO::clear_mapping() {
+// @@protoc_insertion_point(one_of_clear_start:empowerops.volition.dto.SimulationNodeDTO)
+  switch (mapping_case()) {
+    case kAutoMap: {
+      // No need to clear
+      break;
+    }
+    case kMappingTable: {
+      if (GetArenaForAllocation() == nullptr) {
+        delete mapping_.mapping_table_;
+      }
+      break;
+    }
+    case MAPPING_NOT_SET: {
+      break;
+    }
+  }
+  _oneof_case_[0] = MAPPING_NOT_SET;
+}
+
+void SimulationNodeDTO::clear_strategy() {
+// @@protoc_insertion_point(one_of_clear_start:empowerops.volition.dto.SimulationNodeDTO)
+  switch (strategy_case()) {
+    case kSuspendAndCallback: {
+      if (GetArenaForAllocation() == nullptr) {
+        delete strategy_.suspend_and_callback_;
+      }
+      break;
+    }
+    case kExternalSimulationExec: {
+      if (GetArenaForAllocation() == nullptr) {
+        delete strategy_.external_simulation_exec_;
+      }
+      break;
+    }
+    case STRATEGY_NOT_SET: {
+      break;
+    }
+  }
+  _oneof_case_[1] = STRATEGY_NOT_SET;
+}
+
+
+void SimulationNodeDTO::Clear() {
+// @@protoc_insertion_point(message_clear_start:empowerops.volition.dto.SimulationNodeDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  inputs_.Clear();
+  outputs_.Clear();
+  name_.ClearToEmpty();
+  if (GetArenaForAllocation() == nullptr && time_out_ != nullptr) {
+    delete time_out_;
+  }
+  time_out_ = nullptr;
+  clear_mapping();
+  clear_strategy();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* SimulationNodeDTO::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // string name = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          auto str = _internal_mutable_name();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "empowerops.volition.dto.SimulationNodeDTO.name"));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // bool auto_map = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 16)) {
+          _internal_set_auto_map(::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // .empowerops.volition.dto.VariableMappingDTO mapping_table = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 26)) {
+          ptr = ctx->ParseMessage(_internal_mutable_mapping_table(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated .empowerops.volition.dto.SimulationInputParameterDTO inputs = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 34)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            ptr = ctx->ParseMessage(_internal_add_inputs(), ptr);
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<34>(ptr));
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated .empowerops.volition.dto.SimulationOutputParameterDTO outputs = 5;
+      case 5:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 42)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            ptr = ctx->ParseMessage(_internal_add_outputs(), ptr);
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<42>(ptr));
+        } else
+          goto handle_unusual;
+        continue;
+      // .google.protobuf.Duration time_out = 6;
+      case 6:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 50)) {
+          ptr = ctx->ParseMessage(_internal_mutable_time_out(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // .empowerops.volition.dto.SuspendAndCallbackConfigurationDTO suspend_and_callback = 7;
+      case 7:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 58)) {
+          ptr = ctx->ParseMessage(_internal_mutable_suspend_and_callback(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // .empowerops.volition.dto.ExternalSimulationExecConfigurationDTO external_simulation_exec = 8;
+      case 8:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 66)) {
+          ptr = ctx->ParseMessage(_internal_mutable_external_simulation_exec(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* SimulationNodeDTO::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:empowerops.volition.dto.SimulationNodeDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // string name = 1;
+  if (!this->_internal_name().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_name().data(), static_cast<int>(this->_internal_name().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "empowerops.volition.dto.SimulationNodeDTO.name");
+    target = stream->WriteStringMaybeAliased(
+        1, this->_internal_name(), target);
+  }
+
+  // bool auto_map = 2;
+  if (_internal_has_auto_map()) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteBoolToArray(2, this->_internal_auto_map(), target);
+  }
+
+  // .empowerops.volition.dto.VariableMappingDTO mapping_table = 3;
+  if (_internal_has_mapping_table()) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(
+        3, _Internal::mapping_table(this), target, stream);
+  }
+
+  // repeated .empowerops.volition.dto.SimulationInputParameterDTO inputs = 4;
+  for (unsigned int i = 0,
+      n = static_cast<unsigned int>(this->_internal_inputs_size()); i < n; i++) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(4, this->_internal_inputs(i), target, stream);
+  }
+
+  // repeated .empowerops.volition.dto.SimulationOutputParameterDTO outputs = 5;
+  for (unsigned int i = 0,
+      n = static_cast<unsigned int>(this->_internal_outputs_size()); i < n; i++) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(5, this->_internal_outputs(i), target, stream);
+  }
+
+  // .google.protobuf.Duration time_out = 6;
+  if (this->_internal_has_time_out()) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(
+        6, _Internal::time_out(this), target, stream);
+  }
+
+  // .empowerops.volition.dto.SuspendAndCallbackConfigurationDTO suspend_and_callback = 7;
+  if (_internal_has_suspend_and_callback()) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(
+        7, _Internal::suspend_and_callback(this), target, stream);
+  }
+
+  // .empowerops.volition.dto.ExternalSimulationExecConfigurationDTO external_simulation_exec = 8;
+  if (_internal_has_external_simulation_exec()) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(
+        8, _Internal::external_simulation_exec(this), target, stream);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:empowerops.volition.dto.SimulationNodeDTO)
+  return target;
+}
+
+size_t SimulationNodeDTO::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:empowerops.volition.dto.SimulationNodeDTO)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // repeated .empowerops.volition.dto.SimulationInputParameterDTO inputs = 4;
+  total_size += 1UL * this->_internal_inputs_size();
+  for (const auto& msg : this->inputs_) {
+    total_size +=
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
+  }
+
+  // repeated .empowerops.volition.dto.SimulationOutputParameterDTO outputs = 5;
+  total_size += 1UL * this->_internal_outputs_size();
+  for (const auto& msg : this->outputs_) {
+    total_size +=
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
+  }
+
+  // string name = 1;
+  if (!this->_internal_name().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_name());
+  }
+
+  // .google.protobuf.Duration time_out = 6;
+  if (this->_internal_has_time_out()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+        *time_out_);
+  }
+
+  switch (mapping_case()) {
+    // bool auto_map = 2;
+    case kAutoMap: {
+      total_size += 1 + 1;
+      break;
+    }
+    // .empowerops.volition.dto.VariableMappingDTO mapping_table = 3;
+    case kMappingTable: {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+          *mapping_.mapping_table_);
+      break;
+    }
+    case MAPPING_NOT_SET: {
+      break;
+    }
+  }
+  switch (strategy_case()) {
+    // .empowerops.volition.dto.SuspendAndCallbackConfigurationDTO suspend_and_callback = 7;
+    case kSuspendAndCallback: {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+          *strategy_.suspend_and_callback_);
+      break;
+    }
+    // .empowerops.volition.dto.ExternalSimulationExecConfigurationDTO external_simulation_exec = 8;
+    case kExternalSimulationExec: {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+          *strategy_.external_simulation_exec_);
+      break;
+    }
+    case STRATEGY_NOT_SET: {
+      break;
+    }
+  }
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData SimulationNodeDTO::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    SimulationNodeDTO::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*SimulationNodeDTO::GetClassData() const { return &_class_data_; }
+
+void SimulationNodeDTO::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<SimulationNodeDTO *>(to)->MergeFrom(
+      static_cast<const SimulationNodeDTO &>(from));
+}
+
+
+void SimulationNodeDTO::MergeFrom(const SimulationNodeDTO& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:empowerops.volition.dto.SimulationNodeDTO)
+  GOOGLE_DCHECK_NE(&from, this);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  inputs_.MergeFrom(from.inputs_);
+  outputs_.MergeFrom(from.outputs_);
+  if (!from._internal_name().empty()) {
+    _internal_set_name(from._internal_name());
+  }
+  if (from._internal_has_time_out()) {
+    _internal_mutable_time_out()->::PROTOBUF_NAMESPACE_ID::Duration::MergeFrom(from._internal_time_out());
+  }
+  switch (from.mapping_case()) {
+    case kAutoMap: {
+      _internal_set_auto_map(from._internal_auto_map());
+      break;
+    }
+    case kMappingTable: {
+      _internal_mutable_mapping_table()->::empowerops::volition::dto::VariableMappingDTO::MergeFrom(from._internal_mapping_table());
+      break;
+    }
+    case MAPPING_NOT_SET: {
+      break;
+    }
+  }
+  switch (from.strategy_case()) {
+    case kSuspendAndCallback: {
+      _internal_mutable_suspend_and_callback()->::empowerops::volition::dto::SuspendAndCallbackConfigurationDTO::MergeFrom(from._internal_suspend_and_callback());
+      break;
+    }
+    case kExternalSimulationExec: {
+      _internal_mutable_external_simulation_exec()->::empowerops::volition::dto::ExternalSimulationExecConfigurationDTO::MergeFrom(from._internal_external_simulation_exec());
+      break;
+    }
+    case STRATEGY_NOT_SET: {
+      break;
+    }
+  }
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void SimulationNodeDTO::CopyFrom(const SimulationNodeDTO& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:empowerops.volition.dto.SimulationNodeDTO)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool SimulationNodeDTO::IsInitialized() const {
+  return true;
+}
+
+void SimulationNodeDTO::InternalSwap(SimulationNodeDTO* other) {
+  using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  inputs_.InternalSwap(&other->inputs_);
+  outputs_.InternalSwap(&other->outputs_);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      &name_, lhs_arena,
+      &other->name_, rhs_arena
+  );
+  swap(time_out_, other->time_out_);
+  swap(mapping_, other->mapping_);
+  swap(strategy_, other->strategy_);
+  swap(_oneof_case_[0], other->_oneof_case_[0]);
+  swap(_oneof_case_[1], other->_oneof_case_[1]);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata SimulationNodeDTO::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_optimizer_2eproto_getter, &descriptor_table_optimizer_2eproto_once,
+      file_level_metadata_optimizer_2eproto[3]);
+}
+
+// ===================================================================
+
+class SimulationInputParameterDTO::_Internal {
+ public:
+};
+
+SimulationInputParameterDTO::SimulationInputParameterDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor();
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
+  // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.SimulationInputParameterDTO)
+}
+SimulationInputParameterDTO::SimulationInputParameterDTO(const SimulationInputParameterDTO& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (!from._internal_name().empty()) {
+    name_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_name(), 
+      GetArenaForAllocation());
+  }
+  // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.SimulationInputParameterDTO)
+}
+
+void SimulationInputParameterDTO::SharedCtor() {
+name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+
+SimulationInputParameterDTO::~SimulationInputParameterDTO() {
+  // @@protoc_insertion_point(destructor:empowerops.volition.dto.SimulationInputParameterDTO)
+  if (GetArenaForAllocation() != nullptr) return;
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+inline void SimulationInputParameterDTO::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  name_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+
+void SimulationInputParameterDTO::ArenaDtor(void* object) {
+  SimulationInputParameterDTO* _this = reinterpret_cast< SimulationInputParameterDTO* >(object);
+  (void)_this;
+}
+void SimulationInputParameterDTO::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void SimulationInputParameterDTO::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+
+void SimulationInputParameterDTO::Clear() {
+// @@protoc_insertion_point(message_clear_start:empowerops.volition.dto.SimulationInputParameterDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  name_.ClearToEmpty();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* SimulationInputParameterDTO::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // string name = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          auto str = _internal_mutable_name();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "empowerops.volition.dto.SimulationInputParameterDTO.name"));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* SimulationInputParameterDTO::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:empowerops.volition.dto.SimulationInputParameterDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // string name = 1;
+  if (!this->_internal_name().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_name().data(), static_cast<int>(this->_internal_name().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "empowerops.volition.dto.SimulationInputParameterDTO.name");
+    target = stream->WriteStringMaybeAliased(
+        1, this->_internal_name(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:empowerops.volition.dto.SimulationInputParameterDTO)
+  return target;
+}
+
+size_t SimulationInputParameterDTO::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:empowerops.volition.dto.SimulationInputParameterDTO)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // string name = 1;
+  if (!this->_internal_name().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_name());
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData SimulationInputParameterDTO::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    SimulationInputParameterDTO::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*SimulationInputParameterDTO::GetClassData() const { return &_class_data_; }
+
+void SimulationInputParameterDTO::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<SimulationInputParameterDTO *>(to)->MergeFrom(
+      static_cast<const SimulationInputParameterDTO &>(from));
+}
+
+
+void SimulationInputParameterDTO::MergeFrom(const SimulationInputParameterDTO& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:empowerops.volition.dto.SimulationInputParameterDTO)
+  GOOGLE_DCHECK_NE(&from, this);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (!from._internal_name().empty()) {
+    _internal_set_name(from._internal_name());
+  }
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void SimulationInputParameterDTO::CopyFrom(const SimulationInputParameterDTO& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:empowerops.volition.dto.SimulationInputParameterDTO)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool SimulationInputParameterDTO::IsInitialized() const {
+  return true;
+}
+
+void SimulationInputParameterDTO::InternalSwap(SimulationInputParameterDTO* other) {
+  using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      &name_, lhs_arena,
+      &other->name_, rhs_arena
+  );
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata SimulationInputParameterDTO::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_optimizer_2eproto_getter, &descriptor_table_optimizer_2eproto_once,
+      file_level_metadata_optimizer_2eproto[4]);
+}
+
+// ===================================================================
+
+class SimulationOutputParameterDTO::_Internal {
+ public:
+};
+
+SimulationOutputParameterDTO::SimulationOutputParameterDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor();
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
+  // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.SimulationOutputParameterDTO)
+}
+SimulationOutputParameterDTO::SimulationOutputParameterDTO(const SimulationOutputParameterDTO& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (!from._internal_name().empty()) {
+    name_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_name(), 
+      GetArenaForAllocation());
+  }
+  is_boolean_ = from.is_boolean_;
+  // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.SimulationOutputParameterDTO)
+}
+
+void SimulationOutputParameterDTO::SharedCtor() {
+name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+is_boolean_ = false;
+}
+
+SimulationOutputParameterDTO::~SimulationOutputParameterDTO() {
+  // @@protoc_insertion_point(destructor:empowerops.volition.dto.SimulationOutputParameterDTO)
+  if (GetArenaForAllocation() != nullptr) return;
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+inline void SimulationOutputParameterDTO::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  name_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+
+void SimulationOutputParameterDTO::ArenaDtor(void* object) {
+  SimulationOutputParameterDTO* _this = reinterpret_cast< SimulationOutputParameterDTO* >(object);
+  (void)_this;
+}
+void SimulationOutputParameterDTO::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void SimulationOutputParameterDTO::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+
+void SimulationOutputParameterDTO::Clear() {
+// @@protoc_insertion_point(message_clear_start:empowerops.volition.dto.SimulationOutputParameterDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  name_.ClearToEmpty();
+  is_boolean_ = false;
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* SimulationOutputParameterDTO::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // string name = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          auto str = _internal_mutable_name();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "empowerops.volition.dto.SimulationOutputParameterDTO.name"));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // bool is_boolean = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 16)) {
+          is_boolean_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* SimulationOutputParameterDTO::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:empowerops.volition.dto.SimulationOutputParameterDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // string name = 1;
+  if (!this->_internal_name().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_name().data(), static_cast<int>(this->_internal_name().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "empowerops.volition.dto.SimulationOutputParameterDTO.name");
+    target = stream->WriteStringMaybeAliased(
+        1, this->_internal_name(), target);
+  }
+
+  // bool is_boolean = 2;
+  if (this->_internal_is_boolean() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteBoolToArray(2, this->_internal_is_boolean(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:empowerops.volition.dto.SimulationOutputParameterDTO)
+  return target;
+}
+
+size_t SimulationOutputParameterDTO::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:empowerops.volition.dto.SimulationOutputParameterDTO)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // string name = 1;
+  if (!this->_internal_name().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_name());
+  }
+
+  // bool is_boolean = 2;
+  if (this->_internal_is_boolean() != 0) {
+    total_size += 1 + 1;
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData SimulationOutputParameterDTO::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    SimulationOutputParameterDTO::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*SimulationOutputParameterDTO::GetClassData() const { return &_class_data_; }
+
+void SimulationOutputParameterDTO::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<SimulationOutputParameterDTO *>(to)->MergeFrom(
+      static_cast<const SimulationOutputParameterDTO &>(from));
+}
+
+
+void SimulationOutputParameterDTO::MergeFrom(const SimulationOutputParameterDTO& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:empowerops.volition.dto.SimulationOutputParameterDTO)
+  GOOGLE_DCHECK_NE(&from, this);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (!from._internal_name().empty()) {
+    _internal_set_name(from._internal_name());
+  }
+  if (from._internal_is_boolean() != 0) {
+    _internal_set_is_boolean(from._internal_is_boolean());
+  }
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void SimulationOutputParameterDTO::CopyFrom(const SimulationOutputParameterDTO& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:empowerops.volition.dto.SimulationOutputParameterDTO)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool SimulationOutputParameterDTO::IsInitialized() const {
+  return true;
+}
+
+void SimulationOutputParameterDTO::InternalSwap(SimulationOutputParameterDTO* other) {
+  using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      &name_, lhs_arena,
+      &other->name_, rhs_arena
+  );
+  swap(is_boolean_, other->is_boolean_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata SimulationOutputParameterDTO::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_optimizer_2eproto_getter, &descriptor_table_optimizer_2eproto_once,
+      file_level_metadata_optimizer_2eproto[5]);
+}
+
+// ===================================================================
+
+class SuspendAndCallbackConfigurationDTO::_Internal {
+ public:
+};
+
+SuspendAndCallbackConfigurationDTO::SuspendAndCallbackConfigurationDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase(arena, is_message_owned) {
+  // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.SuspendAndCallbackConfigurationDTO)
+}
+SuspendAndCallbackConfigurationDTO::SuspendAndCallbackConfigurationDTO(const SuspendAndCallbackConfigurationDTO& from)
+  : ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.SuspendAndCallbackConfigurationDTO)
+}
+
+
+
+
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData SuspendAndCallbackConfigurationDTO::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyImpl,
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeImpl,
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*SuspendAndCallbackConfigurationDTO::GetClassData() const { return &_class_data_; }
+
+
+
+
+
+
+
+::PROTOBUF_NAMESPACE_ID::Metadata SuspendAndCallbackConfigurationDTO::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_optimizer_2eproto_getter, &descriptor_table_optimizer_2eproto_once,
+      file_level_metadata_optimizer_2eproto[6]);
+}
+
+// ===================================================================
+
+class ExternalSimulationExecConfigurationDTO::_Internal {
+ public:
+  static const ::empowerops::volition::dto::PathDTO& working_directory(const ExternalSimulationExecConfigurationDTO* msg);
+  static const ::empowerops::volition::dto::PathDTO& input_file(const ExternalSimulationExecConfigurationDTO* msg);
+  static const ::empowerops::volition::dto::PathDTO& output_file(const ExternalSimulationExecConfigurationDTO* msg);
+  static const ::empowerops::volition::dto::PathDTO& backup_directory(const ExternalSimulationExecConfigurationDTO* msg);
+  static const ::empowerops::volition::dto::PathDTO& executable(const ExternalSimulationExecConfigurationDTO* msg);
+};
+
+const ::empowerops::volition::dto::PathDTO&
+ExternalSimulationExecConfigurationDTO::_Internal::working_directory(const ExternalSimulationExecConfigurationDTO* msg) {
+  return *msg->working_directory_;
+}
+const ::empowerops::volition::dto::PathDTO&
+ExternalSimulationExecConfigurationDTO::_Internal::input_file(const ExternalSimulationExecConfigurationDTO* msg) {
+  return *msg->input_file_;
+}
+const ::empowerops::volition::dto::PathDTO&
+ExternalSimulationExecConfigurationDTO::_Internal::output_file(const ExternalSimulationExecConfigurationDTO* msg) {
+  return *msg->output_file_;
+}
+const ::empowerops::volition::dto::PathDTO&
+ExternalSimulationExecConfigurationDTO::_Internal::backup_directory(const ExternalSimulationExecConfigurationDTO* msg) {
+  return *msg->backup_directory_;
+}
+const ::empowerops::volition::dto::PathDTO&
+ExternalSimulationExecConfigurationDTO::_Internal::executable(const ExternalSimulationExecConfigurationDTO* msg) {
+  return *msg->executable_;
+}
+ExternalSimulationExecConfigurationDTO::ExternalSimulationExecConfigurationDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned),
+  options_(arena),
+  output_step_sequences_(arena),
+  input_step_sets_(arena),
+  exit_codes_(arena) {
+  SharedCtor();
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
+  // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.ExternalSimulationExecConfigurationDTO)
+}
+ExternalSimulationExecConfigurationDTO::ExternalSimulationExecConfigurationDTO(const ExternalSimulationExecConfigurationDTO& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message(),
+      options_(from.options_),
+      output_step_sequences_(from.output_step_sequences_),
+      input_step_sets_(from.input_step_sets_),
+      exit_codes_(from.exit_codes_) {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  if (from._internal_has_working_directory()) {
+    working_directory_ = new ::empowerops::volition::dto::PathDTO(*from.working_directory_);
+  } else {
+    working_directory_ = nullptr;
+  }
+  if (from._internal_has_input_file()) {
+    input_file_ = new ::empowerops::volition::dto::PathDTO(*from.input_file_);
+  } else {
+    input_file_ = nullptr;
+  }
+  if (from._internal_has_output_file()) {
+    output_file_ = new ::empowerops::volition::dto::PathDTO(*from.output_file_);
+  } else {
+    output_file_ = nullptr;
+  }
+  if (from._internal_has_backup_directory()) {
+    backup_directory_ = new ::empowerops::volition::dto::PathDTO(*from.backup_directory_);
+  } else {
+    backup_directory_ = nullptr;
+  }
+  if (from._internal_has_executable()) {
+    executable_ = new ::empowerops::volition::dto::PathDTO(*from.executable_);
+  } else {
+    executable_ = nullptr;
+  }
+  ::memcpy(&backup_timing_, &from.backup_timing_,
+    static_cast<size_t>(reinterpret_cast<char*>(&exec_strategy_) -
+    reinterpret_cast<char*>(&backup_timing_)) + sizeof(exec_strategy_));
+  // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.ExternalSimulationExecConfigurationDTO)
+}
+
+void ExternalSimulationExecConfigurationDTO::SharedCtor() {
+::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
+    reinterpret_cast<char*>(&working_directory_) - reinterpret_cast<char*>(this)),
+    0, static_cast<size_t>(reinterpret_cast<char*>(&exec_strategy_) -
+    reinterpret_cast<char*>(&working_directory_)) + sizeof(exec_strategy_));
+}
+
+ExternalSimulationExecConfigurationDTO::~ExternalSimulationExecConfigurationDTO() {
+  // @@protoc_insertion_point(destructor:empowerops.volition.dto.ExternalSimulationExecConfigurationDTO)
+  if (GetArenaForAllocation() != nullptr) return;
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+inline void ExternalSimulationExecConfigurationDTO::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  if (this != internal_default_instance()) delete working_directory_;
+  if (this != internal_default_instance()) delete input_file_;
+  if (this != internal_default_instance()) delete output_file_;
+  if (this != internal_default_instance()) delete backup_directory_;
+  if (this != internal_default_instance()) delete executable_;
+}
+
+void ExternalSimulationExecConfigurationDTO::ArenaDtor(void* object) {
+  ExternalSimulationExecConfigurationDTO* _this = reinterpret_cast< ExternalSimulationExecConfigurationDTO* >(object);
+  (void)_this;
+}
+void ExternalSimulationExecConfigurationDTO::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void ExternalSimulationExecConfigurationDTO::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+
+void ExternalSimulationExecConfigurationDTO::Clear() {
+// @@protoc_insertion_point(message_clear_start:empowerops.volition.dto.ExternalSimulationExecConfigurationDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  options_.Clear();
+  output_step_sequences_.Clear();
+  input_step_sets_.Clear();
+  exit_codes_.Clear();
+  if (GetArenaForAllocation() == nullptr && working_directory_ != nullptr) {
+    delete working_directory_;
+  }
+  working_directory_ = nullptr;
+  if (GetArenaForAllocation() == nullptr && input_file_ != nullptr) {
+    delete input_file_;
+  }
+  input_file_ = nullptr;
+  if (GetArenaForAllocation() == nullptr && output_file_ != nullptr) {
+    delete output_file_;
+  }
+  output_file_ = nullptr;
+  if (GetArenaForAllocation() == nullptr && backup_directory_ != nullptr) {
+    delete backup_directory_;
+  }
+  backup_directory_ = nullptr;
+  if (GetArenaForAllocation() == nullptr && executable_ != nullptr) {
+    delete executable_;
+  }
+  executable_ = nullptr;
+  ::memset(&backup_timing_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&exec_strategy_) -
+      reinterpret_cast<char*>(&backup_timing_)) + sizeof(exec_strategy_));
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* ExternalSimulationExecConfigurationDTO::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // .empowerops.volition.dto.PathDTO working_directory = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          ptr = ctx->ParseMessage(_internal_mutable_working_directory(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // .empowerops.volition.dto.PathDTO input_file = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
+          ptr = ctx->ParseMessage(_internal_mutable_input_file(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // .empowerops.volition.dto.PathDTO output_file = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 26)) {
+          ptr = ctx->ParseMessage(_internal_mutable_output_file(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // .empowerops.volition.dto.PathDTO backup_directory = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 34)) {
+          ptr = ctx->ParseMessage(_internal_mutable_backup_directory(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // .empowerops.volition.dto.ExternalSimulationExecConfigurationDTO.BackupTimimg backup_timing = 5;
+      case 5:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 40)) {
+          ::PROTOBUF_NAMESPACE_ID::uint64 val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+          _internal_set_backup_timing(static_cast<::empowerops::volition::dto::ExternalSimulationExecConfigurationDTO_BackupTimimg>(val));
+        } else
+          goto handle_unusual;
+        continue;
+      // .empowerops.volition.dto.PathDTO executable = 6;
+      case 6:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 50)) {
+          ptr = ctx->ParseMessage(_internal_mutable_executable(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated .empowerops.volition.dto.ExecOptionDTO options = 7;
+      case 7:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 58)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            ptr = ctx->ParseMessage(_internal_add_options(), ptr);
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<58>(ptr));
+        } else
+          goto handle_unusual;
+        continue;
+      // .empowerops.volition.dto.ExternalSimulationExecConfigurationDTO.ExecStrategy exec_strategy = 8;
+      case 8:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 64)) {
+          ::PROTOBUF_NAMESPACE_ID::uint64 val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+          _internal_set_exec_strategy(static_cast<::empowerops::volition::dto::ExternalSimulationExecConfigurationDTO_ExecStrategy>(val));
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated .empowerops.volition.dto.OutputParameterLocationStepSequenceDTO output_step_sequences = 9;
+      case 9:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 74)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            ptr = ctx->ParseMessage(_internal_add_output_step_sequences(), ptr);
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<74>(ptr));
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated .empowerops.volition.dto.InputParameterDetectionStepSetDTO input_step_sets = 10;
+      case 10:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 82)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            ptr = ctx->ParseMessage(_internal_add_input_step_sets(), ptr);
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<82>(ptr));
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated uint32 exit_codes = 11;
+      case 11:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 90)) {
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::PackedUInt32Parser(_internal_mutable_exit_codes(), ptr, ctx);
+          CHK_(ptr);
+        } else if (static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 88) {
+          _internal_add_exit_codes(::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* ExternalSimulationExecConfigurationDTO::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:empowerops.volition.dto.ExternalSimulationExecConfigurationDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // .empowerops.volition.dto.PathDTO working_directory = 1;
+  if (this->_internal_has_working_directory()) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(
+        1, _Internal::working_directory(this), target, stream);
+  }
+
+  // .empowerops.volition.dto.PathDTO input_file = 2;
+  if (this->_internal_has_input_file()) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(
+        2, _Internal::input_file(this), target, stream);
+  }
+
+  // .empowerops.volition.dto.PathDTO output_file = 3;
+  if (this->_internal_has_output_file()) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(
+        3, _Internal::output_file(this), target, stream);
+  }
+
+  // .empowerops.volition.dto.PathDTO backup_directory = 4;
+  if (this->_internal_has_backup_directory()) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(
+        4, _Internal::backup_directory(this), target, stream);
+  }
+
+  // .empowerops.volition.dto.ExternalSimulationExecConfigurationDTO.BackupTimimg backup_timing = 5;
+  if (this->_internal_backup_timing() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteEnumToArray(
+      5, this->_internal_backup_timing(), target);
+  }
+
+  // .empowerops.volition.dto.PathDTO executable = 6;
+  if (this->_internal_has_executable()) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(
+        6, _Internal::executable(this), target, stream);
+  }
+
+  // repeated .empowerops.volition.dto.ExecOptionDTO options = 7;
+  for (unsigned int i = 0,
+      n = static_cast<unsigned int>(this->_internal_options_size()); i < n; i++) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(7, this->_internal_options(i), target, stream);
+  }
+
+  // .empowerops.volition.dto.ExternalSimulationExecConfigurationDTO.ExecStrategy exec_strategy = 8;
+  if (this->_internal_exec_strategy() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteEnumToArray(
+      8, this->_internal_exec_strategy(), target);
+  }
+
+  // repeated .empowerops.volition.dto.OutputParameterLocationStepSequenceDTO output_step_sequences = 9;
+  for (unsigned int i = 0,
+      n = static_cast<unsigned int>(this->_internal_output_step_sequences_size()); i < n; i++) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(9, this->_internal_output_step_sequences(i), target, stream);
+  }
+
+  // repeated .empowerops.volition.dto.InputParameterDetectionStepSetDTO input_step_sets = 10;
+  for (unsigned int i = 0,
+      n = static_cast<unsigned int>(this->_internal_input_step_sets_size()); i < n; i++) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(10, this->_internal_input_step_sets(i), target, stream);
+  }
+
+  // repeated uint32 exit_codes = 11;
+  {
+    int byte_size = _exit_codes_cached_byte_size_.load(std::memory_order_relaxed);
+    if (byte_size > 0) {
+      target = stream->WriteUInt32Packed(
+          11, _internal_exit_codes(), byte_size, target);
+    }
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:empowerops.volition.dto.ExternalSimulationExecConfigurationDTO)
+  return target;
+}
+
+size_t ExternalSimulationExecConfigurationDTO::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:empowerops.volition.dto.ExternalSimulationExecConfigurationDTO)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // repeated .empowerops.volition.dto.ExecOptionDTO options = 7;
+  total_size += 1UL * this->_internal_options_size();
+  for (const auto& msg : this->options_) {
+    total_size +=
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
+  }
+
+  // repeated .empowerops.volition.dto.OutputParameterLocationStepSequenceDTO output_step_sequences = 9;
+  total_size += 1UL * this->_internal_output_step_sequences_size();
+  for (const auto& msg : this->output_step_sequences_) {
+    total_size +=
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
+  }
+
+  // repeated .empowerops.volition.dto.InputParameterDetectionStepSetDTO input_step_sets = 10;
+  total_size += 1UL * this->_internal_input_step_sets_size();
+  for (const auto& msg : this->input_step_sets_) {
+    total_size +=
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
+  }
+
+  // repeated uint32 exit_codes = 11;
+  {
+    size_t data_size = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      UInt32Size(this->exit_codes_);
+    if (data_size > 0) {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
+            static_cast<::PROTOBUF_NAMESPACE_ID::int32>(data_size));
+    }
+    int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(data_size);
+    _exit_codes_cached_byte_size_.store(cached_size,
+                                    std::memory_order_relaxed);
+    total_size += data_size;
+  }
+
+  // .empowerops.volition.dto.PathDTO working_directory = 1;
+  if (this->_internal_has_working_directory()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+        *working_directory_);
+  }
+
+  // .empowerops.volition.dto.PathDTO input_file = 2;
+  if (this->_internal_has_input_file()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+        *input_file_);
+  }
+
+  // .empowerops.volition.dto.PathDTO output_file = 3;
+  if (this->_internal_has_output_file()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+        *output_file_);
+  }
+
+  // .empowerops.volition.dto.PathDTO backup_directory = 4;
+  if (this->_internal_has_backup_directory()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+        *backup_directory_);
+  }
+
+  // .empowerops.volition.dto.PathDTO executable = 6;
+  if (this->_internal_has_executable()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+        *executable_);
+  }
+
+  // .empowerops.volition.dto.ExternalSimulationExecConfigurationDTO.BackupTimimg backup_timing = 5;
+  if (this->_internal_backup_timing() != 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::EnumSize(this->_internal_backup_timing());
+  }
+
+  // .empowerops.volition.dto.ExternalSimulationExecConfigurationDTO.ExecStrategy exec_strategy = 8;
+  if (this->_internal_exec_strategy() != 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::EnumSize(this->_internal_exec_strategy());
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData ExternalSimulationExecConfigurationDTO::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    ExternalSimulationExecConfigurationDTO::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*ExternalSimulationExecConfigurationDTO::GetClassData() const { return &_class_data_; }
+
+void ExternalSimulationExecConfigurationDTO::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<ExternalSimulationExecConfigurationDTO *>(to)->MergeFrom(
+      static_cast<const ExternalSimulationExecConfigurationDTO &>(from));
+}
+
+
+void ExternalSimulationExecConfigurationDTO::MergeFrom(const ExternalSimulationExecConfigurationDTO& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:empowerops.volition.dto.ExternalSimulationExecConfigurationDTO)
+  GOOGLE_DCHECK_NE(&from, this);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  options_.MergeFrom(from.options_);
+  output_step_sequences_.MergeFrom(from.output_step_sequences_);
+  input_step_sets_.MergeFrom(from.input_step_sets_);
+  exit_codes_.MergeFrom(from.exit_codes_);
+  if (from._internal_has_working_directory()) {
+    _internal_mutable_working_directory()->::empowerops::volition::dto::PathDTO::MergeFrom(from._internal_working_directory());
+  }
+  if (from._internal_has_input_file()) {
+    _internal_mutable_input_file()->::empowerops::volition::dto::PathDTO::MergeFrom(from._internal_input_file());
+  }
+  if (from._internal_has_output_file()) {
+    _internal_mutable_output_file()->::empowerops::volition::dto::PathDTO::MergeFrom(from._internal_output_file());
+  }
+  if (from._internal_has_backup_directory()) {
+    _internal_mutable_backup_directory()->::empowerops::volition::dto::PathDTO::MergeFrom(from._internal_backup_directory());
+  }
+  if (from._internal_has_executable()) {
+    _internal_mutable_executable()->::empowerops::volition::dto::PathDTO::MergeFrom(from._internal_executable());
+  }
+  if (from._internal_backup_timing() != 0) {
+    _internal_set_backup_timing(from._internal_backup_timing());
+  }
+  if (from._internal_exec_strategy() != 0) {
+    _internal_set_exec_strategy(from._internal_exec_strategy());
+  }
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void ExternalSimulationExecConfigurationDTO::CopyFrom(const ExternalSimulationExecConfigurationDTO& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:empowerops.volition.dto.ExternalSimulationExecConfigurationDTO)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool ExternalSimulationExecConfigurationDTO::IsInitialized() const {
+  return true;
+}
+
+void ExternalSimulationExecConfigurationDTO::InternalSwap(ExternalSimulationExecConfigurationDTO* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  options_.InternalSwap(&other->options_);
+  output_step_sequences_.InternalSwap(&other->output_step_sequences_);
+  input_step_sets_.InternalSwap(&other->input_step_sets_);
+  exit_codes_.InternalSwap(&other->exit_codes_);
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(ExternalSimulationExecConfigurationDTO, exec_strategy_)
+      + sizeof(ExternalSimulationExecConfigurationDTO::exec_strategy_)
+      - PROTOBUF_FIELD_OFFSET(ExternalSimulationExecConfigurationDTO, working_directory_)>(
+          reinterpret_cast<char*>(&working_directory_),
+          reinterpret_cast<char*>(&other->working_directory_));
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata ExternalSimulationExecConfigurationDTO::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_optimizer_2eproto_getter, &descriptor_table_optimizer_2eproto_once,
+      file_level_metadata_optimizer_2eproto[7]);
+}
+
+// ===================================================================
+
+class ExecOptionDTO::_Internal {
+ public:
+};
+
+ExecOptionDTO::ExecOptionDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor();
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
+  // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.ExecOptionDTO)
+}
+ExecOptionDTO::ExecOptionDTO(const ExecOptionDTO& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  option_name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (!from._internal_option_name().empty()) {
+    option_name_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_option_name(), 
+      GetArenaForAllocation());
+  }
+  argument_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (!from._internal_argument().empty()) {
+    argument_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_argument(), 
+      GetArenaForAllocation());
+  }
+  // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.ExecOptionDTO)
+}
+
+void ExecOptionDTO::SharedCtor() {
+option_name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+argument_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+
+ExecOptionDTO::~ExecOptionDTO() {
+  // @@protoc_insertion_point(destructor:empowerops.volition.dto.ExecOptionDTO)
+  if (GetArenaForAllocation() != nullptr) return;
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+inline void ExecOptionDTO::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  option_name_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  argument_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+
+void ExecOptionDTO::ArenaDtor(void* object) {
+  ExecOptionDTO* _this = reinterpret_cast< ExecOptionDTO* >(object);
+  (void)_this;
+}
+void ExecOptionDTO::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void ExecOptionDTO::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+
+void ExecOptionDTO::Clear() {
+// @@protoc_insertion_point(message_clear_start:empowerops.volition.dto.ExecOptionDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  option_name_.ClearToEmpty();
+  argument_.ClearToEmpty();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* ExecOptionDTO::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // string option_name = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          auto str = _internal_mutable_option_name();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "empowerops.volition.dto.ExecOptionDTO.option_name"));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // string argument = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
+          auto str = _internal_mutable_argument();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "empowerops.volition.dto.ExecOptionDTO.argument"));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* ExecOptionDTO::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:empowerops.volition.dto.ExecOptionDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // string option_name = 1;
+  if (!this->_internal_option_name().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_option_name().data(), static_cast<int>(this->_internal_option_name().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "empowerops.volition.dto.ExecOptionDTO.option_name");
+    target = stream->WriteStringMaybeAliased(
+        1, this->_internal_option_name(), target);
+  }
+
+  // string argument = 2;
+  if (!this->_internal_argument().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_argument().data(), static_cast<int>(this->_internal_argument().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "empowerops.volition.dto.ExecOptionDTO.argument");
+    target = stream->WriteStringMaybeAliased(
+        2, this->_internal_argument(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:empowerops.volition.dto.ExecOptionDTO)
+  return target;
+}
+
+size_t ExecOptionDTO::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:empowerops.volition.dto.ExecOptionDTO)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // string option_name = 1;
+  if (!this->_internal_option_name().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_option_name());
+  }
+
+  // string argument = 2;
+  if (!this->_internal_argument().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_argument());
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData ExecOptionDTO::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    ExecOptionDTO::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*ExecOptionDTO::GetClassData() const { return &_class_data_; }
+
+void ExecOptionDTO::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<ExecOptionDTO *>(to)->MergeFrom(
+      static_cast<const ExecOptionDTO &>(from));
+}
+
+
+void ExecOptionDTO::MergeFrom(const ExecOptionDTO& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:empowerops.volition.dto.ExecOptionDTO)
+  GOOGLE_DCHECK_NE(&from, this);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (!from._internal_option_name().empty()) {
+    _internal_set_option_name(from._internal_option_name());
+  }
+  if (!from._internal_argument().empty()) {
+    _internal_set_argument(from._internal_argument());
+  }
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void ExecOptionDTO::CopyFrom(const ExecOptionDTO& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:empowerops.volition.dto.ExecOptionDTO)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool ExecOptionDTO::IsInitialized() const {
+  return true;
+}
+
+void ExecOptionDTO::InternalSwap(ExecOptionDTO* other) {
+  using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      &option_name_, lhs_arena,
+      &other->option_name_, rhs_arena
+  );
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      &argument_, lhs_arena,
+      &other->argument_, rhs_arena
+  );
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata ExecOptionDTO::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_optimizer_2eproto_getter, &descriptor_table_optimizer_2eproto_once,
+      file_level_metadata_optimizer_2eproto[8]);
+}
+
+// ===================================================================
+
+class OutputParameterLocationStepSequenceDTO::_Internal {
+ public:
+};
+
+OutputParameterLocationStepSequenceDTO::OutputParameterLocationStepSequenceDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned),
+  steps_(arena) {
+  SharedCtor();
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
+  // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.OutputParameterLocationStepSequenceDTO)
+}
+OutputParameterLocationStepSequenceDTO::OutputParameterLocationStepSequenceDTO(const OutputParameterLocationStepSequenceDTO& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message(),
+      steps_(from.steps_) {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.OutputParameterLocationStepSequenceDTO)
+}
+
+void OutputParameterLocationStepSequenceDTO::SharedCtor() {
+}
+
+OutputParameterLocationStepSequenceDTO::~OutputParameterLocationStepSequenceDTO() {
+  // @@protoc_insertion_point(destructor:empowerops.volition.dto.OutputParameterLocationStepSequenceDTO)
+  if (GetArenaForAllocation() != nullptr) return;
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+inline void OutputParameterLocationStepSequenceDTO::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+}
+
+void OutputParameterLocationStepSequenceDTO::ArenaDtor(void* object) {
+  OutputParameterLocationStepSequenceDTO* _this = reinterpret_cast< OutputParameterLocationStepSequenceDTO* >(object);
+  (void)_this;
+}
+void OutputParameterLocationStepSequenceDTO::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void OutputParameterLocationStepSequenceDTO::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+
+void OutputParameterLocationStepSequenceDTO::Clear() {
+// @@protoc_insertion_point(message_clear_start:empowerops.volition.dto.OutputParameterLocationStepSequenceDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  steps_.Clear();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* OutputParameterLocationStepSequenceDTO::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // repeated .empowerops.volition.dto.OutputParameterLocationStepDTO steps = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            ptr = ctx->ParseMessage(_internal_add_steps(), ptr);
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<10>(ptr));
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* OutputParameterLocationStepSequenceDTO::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:empowerops.volition.dto.OutputParameterLocationStepSequenceDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // repeated .empowerops.volition.dto.OutputParameterLocationStepDTO steps = 1;
+  for (unsigned int i = 0,
+      n = static_cast<unsigned int>(this->_internal_steps_size()); i < n; i++) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(1, this->_internal_steps(i), target, stream);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:empowerops.volition.dto.OutputParameterLocationStepSequenceDTO)
+  return target;
+}
+
+size_t OutputParameterLocationStepSequenceDTO::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:empowerops.volition.dto.OutputParameterLocationStepSequenceDTO)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // repeated .empowerops.volition.dto.OutputParameterLocationStepDTO steps = 1;
+  total_size += 1UL * this->_internal_steps_size();
+  for (const auto& msg : this->steps_) {
+    total_size +=
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData OutputParameterLocationStepSequenceDTO::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    OutputParameterLocationStepSequenceDTO::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*OutputParameterLocationStepSequenceDTO::GetClassData() const { return &_class_data_; }
+
+void OutputParameterLocationStepSequenceDTO::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<OutputParameterLocationStepSequenceDTO *>(to)->MergeFrom(
+      static_cast<const OutputParameterLocationStepSequenceDTO &>(from));
+}
+
+
+void OutputParameterLocationStepSequenceDTO::MergeFrom(const OutputParameterLocationStepSequenceDTO& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:empowerops.volition.dto.OutputParameterLocationStepSequenceDTO)
+  GOOGLE_DCHECK_NE(&from, this);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  steps_.MergeFrom(from.steps_);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void OutputParameterLocationStepSequenceDTO::CopyFrom(const OutputParameterLocationStepSequenceDTO& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:empowerops.volition.dto.OutputParameterLocationStepSequenceDTO)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool OutputParameterLocationStepSequenceDTO::IsInitialized() const {
+  return true;
+}
+
+void OutputParameterLocationStepSequenceDTO::InternalSwap(OutputParameterLocationStepSequenceDTO* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  steps_.InternalSwap(&other->steps_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata OutputParameterLocationStepSequenceDTO::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_optimizer_2eproto_getter, &descriptor_table_optimizer_2eproto_once,
+      file_level_metadata_optimizer_2eproto[9]);
+}
+
+// ===================================================================
+
+class InputParameterDetectionStepSetDTO::_Internal {
+ public:
+};
+
+InputParameterDetectionStepSetDTO::InputParameterDetectionStepSetDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned),
+  steps_(arena) {
+  SharedCtor();
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
+  // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.InputParameterDetectionStepSetDTO)
+}
+InputParameterDetectionStepSetDTO::InputParameterDetectionStepSetDTO(const InputParameterDetectionStepSetDTO& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message(),
+      steps_(from.steps_) {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.InputParameterDetectionStepSetDTO)
+}
+
+void InputParameterDetectionStepSetDTO::SharedCtor() {
+}
+
+InputParameterDetectionStepSetDTO::~InputParameterDetectionStepSetDTO() {
+  // @@protoc_insertion_point(destructor:empowerops.volition.dto.InputParameterDetectionStepSetDTO)
+  if (GetArenaForAllocation() != nullptr) return;
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+inline void InputParameterDetectionStepSetDTO::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+}
+
+void InputParameterDetectionStepSetDTO::ArenaDtor(void* object) {
+  InputParameterDetectionStepSetDTO* _this = reinterpret_cast< InputParameterDetectionStepSetDTO* >(object);
+  (void)_this;
+}
+void InputParameterDetectionStepSetDTO::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void InputParameterDetectionStepSetDTO::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+
+void InputParameterDetectionStepSetDTO::Clear() {
+// @@protoc_insertion_point(message_clear_start:empowerops.volition.dto.InputParameterDetectionStepSetDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  steps_.Clear();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* InputParameterDetectionStepSetDTO::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // repeated .empowerops.volition.dto.InputParameterLocationStepDTO steps = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            ptr = ctx->ParseMessage(_internal_add_steps(), ptr);
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<10>(ptr));
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* InputParameterDetectionStepSetDTO::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:empowerops.volition.dto.InputParameterDetectionStepSetDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // repeated .empowerops.volition.dto.InputParameterLocationStepDTO steps = 1;
+  for (unsigned int i = 0,
+      n = static_cast<unsigned int>(this->_internal_steps_size()); i < n; i++) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(1, this->_internal_steps(i), target, stream);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:empowerops.volition.dto.InputParameterDetectionStepSetDTO)
+  return target;
+}
+
+size_t InputParameterDetectionStepSetDTO::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:empowerops.volition.dto.InputParameterDetectionStepSetDTO)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // repeated .empowerops.volition.dto.InputParameterLocationStepDTO steps = 1;
+  total_size += 1UL * this->_internal_steps_size();
+  for (const auto& msg : this->steps_) {
+    total_size +=
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData InputParameterDetectionStepSetDTO::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    InputParameterDetectionStepSetDTO::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*InputParameterDetectionStepSetDTO::GetClassData() const { return &_class_data_; }
+
+void InputParameterDetectionStepSetDTO::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<InputParameterDetectionStepSetDTO *>(to)->MergeFrom(
+      static_cast<const InputParameterDetectionStepSetDTO &>(from));
+}
+
+
+void InputParameterDetectionStepSetDTO::MergeFrom(const InputParameterDetectionStepSetDTO& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:empowerops.volition.dto.InputParameterDetectionStepSetDTO)
+  GOOGLE_DCHECK_NE(&from, this);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  steps_.MergeFrom(from.steps_);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void InputParameterDetectionStepSetDTO::CopyFrom(const InputParameterDetectionStepSetDTO& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:empowerops.volition.dto.InputParameterDetectionStepSetDTO)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool InputParameterDetectionStepSetDTO::IsInitialized() const {
+  return true;
+}
+
+void InputParameterDetectionStepSetDTO::InternalSwap(InputParameterDetectionStepSetDTO* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  steps_.InternalSwap(&other->steps_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata InputParameterDetectionStepSetDTO::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_optimizer_2eproto_getter, &descriptor_table_optimizer_2eproto_once,
+      file_level_metadata_optimizer_2eproto[10]);
+}
+
+// ===================================================================
+
+class OutputParameterLocationStepDTO::_Internal {
+ public:
+  static const ::empowerops::volition::dto::AnchorLocationDTO& anchor_location(const OutputParameterLocationStepDTO* msg);
+};
+
+const ::empowerops::volition::dto::AnchorLocationDTO&
+OutputParameterLocationStepDTO::_Internal::anchor_location(const OutputParameterLocationStepDTO* msg) {
+  return *msg->location_.anchor_location_;
+}
+void OutputParameterLocationStepDTO::set_allocated_anchor_location(::empowerops::volition::dto::AnchorLocationDTO* anchor_location) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  clear_location();
+  if (anchor_location) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+      ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper<::empowerops::volition::dto::AnchorLocationDTO>::GetOwningArena(anchor_location);
+    if (message_arena != submessage_arena) {
+      anchor_location = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, anchor_location, submessage_arena);
+    }
+    set_has_anchor_location();
+    location_.anchor_location_ = anchor_location;
+  }
+  // @@protoc_insertion_point(field_set_allocated:empowerops.volition.dto.OutputParameterLocationStepDTO.anchor_location)
+}
+OutputParameterLocationStepDTO::OutputParameterLocationStepDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor();
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
+  // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.OutputParameterLocationStepDTO)
+}
+OutputParameterLocationStepDTO::OutputParameterLocationStepDTO(const OutputParameterLocationStepDTO& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (!from._internal_name().empty()) {
+    name_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_name(), 
+      GetArenaForAllocation());
+  }
+  clear_has_location();
+  switch (from.location_case()) {
+    case kAnchorLocation: {
+      _internal_mutable_anchor_location()->::empowerops::volition::dto::AnchorLocationDTO::MergeFrom(from._internal_anchor_location());
+      break;
+    }
+    case kRowOffset: {
+      _internal_set_row_offset(from._internal_row_offset());
+      break;
+    }
+    case kColumnOffset: {
+      _internal_set_column_offset(from._internal_column_offset());
+      break;
+    }
+    case LOCATION_NOT_SET: {
+      break;
+    }
+  }
+  // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.OutputParameterLocationStepDTO)
+}
+
+void OutputParameterLocationStepDTO::SharedCtor() {
+name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+clear_has_location();
+}
+
+OutputParameterLocationStepDTO::~OutputParameterLocationStepDTO() {
+  // @@protoc_insertion_point(destructor:empowerops.volition.dto.OutputParameterLocationStepDTO)
+  if (GetArenaForAllocation() != nullptr) return;
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+inline void OutputParameterLocationStepDTO::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  name_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (has_location()) {
+    clear_location();
+  }
+}
+
+void OutputParameterLocationStepDTO::ArenaDtor(void* object) {
+  OutputParameterLocationStepDTO* _this = reinterpret_cast< OutputParameterLocationStepDTO* >(object);
+  (void)_this;
+}
+void OutputParameterLocationStepDTO::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void OutputParameterLocationStepDTO::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+
+void OutputParameterLocationStepDTO::clear_location() {
+// @@protoc_insertion_point(one_of_clear_start:empowerops.volition.dto.OutputParameterLocationStepDTO)
+  switch (location_case()) {
+    case kAnchorLocation: {
+      if (GetArenaForAllocation() == nullptr) {
+        delete location_.anchor_location_;
+      }
+      break;
+    }
+    case kRowOffset: {
+      // No need to clear
+      break;
+    }
+    case kColumnOffset: {
+      // No need to clear
+      break;
+    }
+    case LOCATION_NOT_SET: {
+      break;
+    }
+  }
+  _oneof_case_[0] = LOCATION_NOT_SET;
+}
+
+
+void OutputParameterLocationStepDTO::Clear() {
+// @@protoc_insertion_point(message_clear_start:empowerops.volition.dto.OutputParameterLocationStepDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  name_.ClearToEmpty();
+  clear_location();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* OutputParameterLocationStepDTO::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // string name = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          auto str = _internal_mutable_name();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "empowerops.volition.dto.OutputParameterLocationStepDTO.name"));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // .empowerops.volition.dto.AnchorLocationDTO anchor_location = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
+          ptr = ctx->ParseMessage(_internal_mutable_anchor_location(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // uint32 row_offset = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 24)) {
+          _internal_set_row_offset(::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // uint32 column_offset = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 32)) {
+          _internal_set_column_offset(::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* OutputParameterLocationStepDTO::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:empowerops.volition.dto.OutputParameterLocationStepDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // string name = 1;
+  if (!this->_internal_name().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_name().data(), static_cast<int>(this->_internal_name().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "empowerops.volition.dto.OutputParameterLocationStepDTO.name");
+    target = stream->WriteStringMaybeAliased(
+        1, this->_internal_name(), target);
+  }
+
+  // .empowerops.volition.dto.AnchorLocationDTO anchor_location = 2;
+  if (_internal_has_anchor_location()) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(
+        2, _Internal::anchor_location(this), target, stream);
+  }
+
+  // uint32 row_offset = 3;
+  if (_internal_has_row_offset()) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(3, this->_internal_row_offset(), target);
+  }
+
+  // uint32 column_offset = 4;
+  if (_internal_has_column_offset()) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(4, this->_internal_column_offset(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:empowerops.volition.dto.OutputParameterLocationStepDTO)
+  return target;
+}
+
+size_t OutputParameterLocationStepDTO::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:empowerops.volition.dto.OutputParameterLocationStepDTO)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // string name = 1;
+  if (!this->_internal_name().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_name());
+  }
+
+  switch (location_case()) {
+    // .empowerops.volition.dto.AnchorLocationDTO anchor_location = 2;
+    case kAnchorLocation: {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+          *location_.anchor_location_);
+      break;
+    }
+    // uint32 row_offset = 3;
+    case kRowOffset: {
+      total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32SizePlusOne(this->_internal_row_offset());
+      break;
+    }
+    // uint32 column_offset = 4;
+    case kColumnOffset: {
+      total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32SizePlusOne(this->_internal_column_offset());
+      break;
+    }
+    case LOCATION_NOT_SET: {
+      break;
+    }
+  }
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData OutputParameterLocationStepDTO::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    OutputParameterLocationStepDTO::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*OutputParameterLocationStepDTO::GetClassData() const { return &_class_data_; }
+
+void OutputParameterLocationStepDTO::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<OutputParameterLocationStepDTO *>(to)->MergeFrom(
+      static_cast<const OutputParameterLocationStepDTO &>(from));
+}
+
+
+void OutputParameterLocationStepDTO::MergeFrom(const OutputParameterLocationStepDTO& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:empowerops.volition.dto.OutputParameterLocationStepDTO)
+  GOOGLE_DCHECK_NE(&from, this);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (!from._internal_name().empty()) {
+    _internal_set_name(from._internal_name());
+  }
+  switch (from.location_case()) {
+    case kAnchorLocation: {
+      _internal_mutable_anchor_location()->::empowerops::volition::dto::AnchorLocationDTO::MergeFrom(from._internal_anchor_location());
+      break;
+    }
+    case kRowOffset: {
+      _internal_set_row_offset(from._internal_row_offset());
+      break;
+    }
+    case kColumnOffset: {
+      _internal_set_column_offset(from._internal_column_offset());
+      break;
+    }
+    case LOCATION_NOT_SET: {
+      break;
+    }
+  }
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void OutputParameterLocationStepDTO::CopyFrom(const OutputParameterLocationStepDTO& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:empowerops.volition.dto.OutputParameterLocationStepDTO)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool OutputParameterLocationStepDTO::IsInitialized() const {
+  return true;
+}
+
+void OutputParameterLocationStepDTO::InternalSwap(OutputParameterLocationStepDTO* other) {
+  using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      &name_, lhs_arena,
+      &other->name_, rhs_arena
+  );
+  swap(location_, other->location_);
+  swap(_oneof_case_[0], other->_oneof_case_[0]);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata OutputParameterLocationStepDTO::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_optimizer_2eproto_getter, &descriptor_table_optimizer_2eproto_once,
+      file_level_metadata_optimizer_2eproto[11]);
+}
+
+// ===================================================================
+
+class InputParameterLocationStepDTO::_Internal {
+ public:
+  static const ::empowerops::volition::dto::RowColumnLengthLocationDTO& row_column_and_length_location(const InputParameterLocationStepDTO* msg);
+};
+
+const ::empowerops::volition::dto::RowColumnLengthLocationDTO&
+InputParameterLocationStepDTO::_Internal::row_column_and_length_location(const InputParameterLocationStepDTO* msg) {
+  return *msg->location_.row_column_and_length_location_;
+}
+void InputParameterLocationStepDTO::set_allocated_row_column_and_length_location(::empowerops::volition::dto::RowColumnLengthLocationDTO* row_column_and_length_location) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  clear_location();
+  if (row_column_and_length_location) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+      ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper<::empowerops::volition::dto::RowColumnLengthLocationDTO>::GetOwningArena(row_column_and_length_location);
+    if (message_arena != submessage_arena) {
+      row_column_and_length_location = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, row_column_and_length_location, submessage_arena);
+    }
+    set_has_row_column_and_length_location();
+    location_.row_column_and_length_location_ = row_column_and_length_location;
+  }
+  // @@protoc_insertion_point(field_set_allocated:empowerops.volition.dto.InputParameterLocationStepDTO.row_column_and_length_location)
+}
+InputParameterLocationStepDTO::InputParameterLocationStepDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor();
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
+  // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.InputParameterLocationStepDTO)
+}
+InputParameterLocationStepDTO::InputParameterLocationStepDTO(const InputParameterLocationStepDTO& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (!from._internal_name().empty()) {
+    name_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_name(), 
+      GetArenaForAllocation());
+  }
+  clear_has_location();
+  switch (from.location_case()) {
+    case kRowColumnAndLengthLocation: {
+      _internal_mutable_row_column_and_length_location()->::empowerops::volition::dto::RowColumnLengthLocationDTO::MergeFrom(from._internal_row_column_and_length_location());
+      break;
+    }
+    case LOCATION_NOT_SET: {
+      break;
+    }
+  }
+  // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.InputParameterLocationStepDTO)
+}
+
+void InputParameterLocationStepDTO::SharedCtor() {
+name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+clear_has_location();
+}
+
+InputParameterLocationStepDTO::~InputParameterLocationStepDTO() {
+  // @@protoc_insertion_point(destructor:empowerops.volition.dto.InputParameterLocationStepDTO)
+  if (GetArenaForAllocation() != nullptr) return;
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+inline void InputParameterLocationStepDTO::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  name_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (has_location()) {
+    clear_location();
+  }
+}
+
+void InputParameterLocationStepDTO::ArenaDtor(void* object) {
+  InputParameterLocationStepDTO* _this = reinterpret_cast< InputParameterLocationStepDTO* >(object);
+  (void)_this;
+}
+void InputParameterLocationStepDTO::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void InputParameterLocationStepDTO::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+
+void InputParameterLocationStepDTO::clear_location() {
+// @@protoc_insertion_point(one_of_clear_start:empowerops.volition.dto.InputParameterLocationStepDTO)
+  switch (location_case()) {
+    case kRowColumnAndLengthLocation: {
+      if (GetArenaForAllocation() == nullptr) {
+        delete location_.row_column_and_length_location_;
+      }
+      break;
+    }
+    case LOCATION_NOT_SET: {
+      break;
+    }
+  }
+  _oneof_case_[0] = LOCATION_NOT_SET;
+}
+
+
+void InputParameterLocationStepDTO::Clear() {
+// @@protoc_insertion_point(message_clear_start:empowerops.volition.dto.InputParameterLocationStepDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  name_.ClearToEmpty();
+  clear_location();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* InputParameterLocationStepDTO::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // string name = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          auto str = _internal_mutable_name();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "empowerops.volition.dto.InputParameterLocationStepDTO.name"));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // .empowerops.volition.dto.RowColumnLengthLocationDTO row_column_and_length_location = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
+          ptr = ctx->ParseMessage(_internal_mutable_row_column_and_length_location(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* InputParameterLocationStepDTO::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:empowerops.volition.dto.InputParameterLocationStepDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // string name = 1;
+  if (!this->_internal_name().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_name().data(), static_cast<int>(this->_internal_name().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "empowerops.volition.dto.InputParameterLocationStepDTO.name");
+    target = stream->WriteStringMaybeAliased(
+        1, this->_internal_name(), target);
+  }
+
+  // .empowerops.volition.dto.RowColumnLengthLocationDTO row_column_and_length_location = 2;
+  if (_internal_has_row_column_and_length_location()) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(
+        2, _Internal::row_column_and_length_location(this), target, stream);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:empowerops.volition.dto.InputParameterLocationStepDTO)
+  return target;
+}
+
+size_t InputParameterLocationStepDTO::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:empowerops.volition.dto.InputParameterLocationStepDTO)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // string name = 1;
+  if (!this->_internal_name().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_name());
+  }
+
+  switch (location_case()) {
+    // .empowerops.volition.dto.RowColumnLengthLocationDTO row_column_and_length_location = 2;
+    case kRowColumnAndLengthLocation: {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+          *location_.row_column_and_length_location_);
+      break;
+    }
+    case LOCATION_NOT_SET: {
+      break;
+    }
+  }
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData InputParameterLocationStepDTO::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    InputParameterLocationStepDTO::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*InputParameterLocationStepDTO::GetClassData() const { return &_class_data_; }
+
+void InputParameterLocationStepDTO::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<InputParameterLocationStepDTO *>(to)->MergeFrom(
+      static_cast<const InputParameterLocationStepDTO &>(from));
+}
+
+
+void InputParameterLocationStepDTO::MergeFrom(const InputParameterLocationStepDTO& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:empowerops.volition.dto.InputParameterLocationStepDTO)
+  GOOGLE_DCHECK_NE(&from, this);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (!from._internal_name().empty()) {
+    _internal_set_name(from._internal_name());
+  }
+  switch (from.location_case()) {
+    case kRowColumnAndLengthLocation: {
+      _internal_mutable_row_column_and_length_location()->::empowerops::volition::dto::RowColumnLengthLocationDTO::MergeFrom(from._internal_row_column_and_length_location());
+      break;
+    }
+    case LOCATION_NOT_SET: {
+      break;
+    }
+  }
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void InputParameterLocationStepDTO::CopyFrom(const InputParameterLocationStepDTO& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:empowerops.volition.dto.InputParameterLocationStepDTO)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool InputParameterLocationStepDTO::IsInitialized() const {
+  return true;
+}
+
+void InputParameterLocationStepDTO::InternalSwap(InputParameterLocationStepDTO* other) {
+  using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      &name_, lhs_arena,
+      &other->name_, rhs_arena
+  );
+  swap(location_, other->location_);
+  swap(_oneof_case_[0], other->_oneof_case_[0]);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata InputParameterLocationStepDTO::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_optimizer_2eproto_getter, &descriptor_table_optimizer_2eproto_once,
+      file_level_metadata_optimizer_2eproto[12]);
+}
+
+// ===================================================================
+
+class RowColumnLengthLocationDTO::_Internal {
+ public:
+};
+
+RowColumnLengthLocationDTO::RowColumnLengthLocationDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor();
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
+  // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.RowColumnLengthLocationDTO)
+}
+RowColumnLengthLocationDTO::RowColumnLengthLocationDTO(const RowColumnLengthLocationDTO& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  ::memcpy(&row_number_, &from.row_number_,
+    static_cast<size_t>(reinterpret_cast<char*>(&length_) -
+    reinterpret_cast<char*>(&row_number_)) + sizeof(length_));
+  // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.RowColumnLengthLocationDTO)
+}
+
+void RowColumnLengthLocationDTO::SharedCtor() {
+::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
+    reinterpret_cast<char*>(&row_number_) - reinterpret_cast<char*>(this)),
+    0, static_cast<size_t>(reinterpret_cast<char*>(&length_) -
+    reinterpret_cast<char*>(&row_number_)) + sizeof(length_));
+}
+
+RowColumnLengthLocationDTO::~RowColumnLengthLocationDTO() {
+  // @@protoc_insertion_point(destructor:empowerops.volition.dto.RowColumnLengthLocationDTO)
+  if (GetArenaForAllocation() != nullptr) return;
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+inline void RowColumnLengthLocationDTO::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+}
+
+void RowColumnLengthLocationDTO::ArenaDtor(void* object) {
+  RowColumnLengthLocationDTO* _this = reinterpret_cast< RowColumnLengthLocationDTO* >(object);
+  (void)_this;
+}
+void RowColumnLengthLocationDTO::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void RowColumnLengthLocationDTO::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+
+void RowColumnLengthLocationDTO::Clear() {
+// @@protoc_insertion_point(message_clear_start:empowerops.volition.dto.RowColumnLengthLocationDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  ::memset(&row_number_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&length_) -
+      reinterpret_cast<char*>(&row_number_)) + sizeof(length_));
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* RowColumnLengthLocationDTO::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // uint32 row_number = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 8)) {
+          row_number_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // uint32 column_number = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 16)) {
+          column_number_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // uint32 length = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 24)) {
+          length_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* RowColumnLengthLocationDTO::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:empowerops.volition.dto.RowColumnLengthLocationDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // uint32 row_number = 1;
+  if (this->_internal_row_number() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(1, this->_internal_row_number(), target);
+  }
+
+  // uint32 column_number = 2;
+  if (this->_internal_column_number() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(2, this->_internal_column_number(), target);
+  }
+
+  // uint32 length = 3;
+  if (this->_internal_length() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(3, this->_internal_length(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:empowerops.volition.dto.RowColumnLengthLocationDTO)
+  return target;
+}
+
+size_t RowColumnLengthLocationDTO::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:empowerops.volition.dto.RowColumnLengthLocationDTO)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // uint32 row_number = 1;
+  if (this->_internal_row_number() != 0) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32SizePlusOne(this->_internal_row_number());
+  }
+
+  // uint32 column_number = 2;
+  if (this->_internal_column_number() != 0) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32SizePlusOne(this->_internal_column_number());
+  }
+
+  // uint32 length = 3;
+  if (this->_internal_length() != 0) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32SizePlusOne(this->_internal_length());
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData RowColumnLengthLocationDTO::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    RowColumnLengthLocationDTO::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*RowColumnLengthLocationDTO::GetClassData() const { return &_class_data_; }
+
+void RowColumnLengthLocationDTO::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<RowColumnLengthLocationDTO *>(to)->MergeFrom(
+      static_cast<const RowColumnLengthLocationDTO &>(from));
+}
+
+
+void RowColumnLengthLocationDTO::MergeFrom(const RowColumnLengthLocationDTO& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:empowerops.volition.dto.RowColumnLengthLocationDTO)
+  GOOGLE_DCHECK_NE(&from, this);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from._internal_row_number() != 0) {
+    _internal_set_row_number(from._internal_row_number());
+  }
+  if (from._internal_column_number() != 0) {
+    _internal_set_column_number(from._internal_column_number());
+  }
+  if (from._internal_length() != 0) {
+    _internal_set_length(from._internal_length());
+  }
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void RowColumnLengthLocationDTO::CopyFrom(const RowColumnLengthLocationDTO& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:empowerops.volition.dto.RowColumnLengthLocationDTO)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool RowColumnLengthLocationDTO::IsInitialized() const {
+  return true;
+}
+
+void RowColumnLengthLocationDTO::InternalSwap(RowColumnLengthLocationDTO* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(RowColumnLengthLocationDTO, length_)
+      + sizeof(RowColumnLengthLocationDTO::length_)
+      - PROTOBUF_FIELD_OFFSET(RowColumnLengthLocationDTO, row_number_)>(
+          reinterpret_cast<char*>(&row_number_),
+          reinterpret_cast<char*>(&other->row_number_));
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata RowColumnLengthLocationDTO::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_optimizer_2eproto_getter, &descriptor_table_optimizer_2eproto_once,
+      file_level_metadata_optimizer_2eproto[13]);
+}
+
+// ===================================================================
+
+class AnchorLocationDTO::_Internal {
+ public:
+};
+
+AnchorLocationDTO::AnchorLocationDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor();
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
+  // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.AnchorLocationDTO)
+}
+AnchorLocationDTO::AnchorLocationDTO(const AnchorLocationDTO& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  raw_anchor_text_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (!from._internal_raw_anchor_text().empty()) {
+    raw_anchor_text_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_raw_anchor_text(), 
+      GetArenaForAllocation());
+  }
+  occurance_ = from.occurance_;
+  // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.AnchorLocationDTO)
+}
+
+void AnchorLocationDTO::SharedCtor() {
+raw_anchor_text_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+occurance_ = 0u;
+}
+
+AnchorLocationDTO::~AnchorLocationDTO() {
+  // @@protoc_insertion_point(destructor:empowerops.volition.dto.AnchorLocationDTO)
+  if (GetArenaForAllocation() != nullptr) return;
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+inline void AnchorLocationDTO::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  raw_anchor_text_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+
+void AnchorLocationDTO::ArenaDtor(void* object) {
+  AnchorLocationDTO* _this = reinterpret_cast< AnchorLocationDTO* >(object);
+  (void)_this;
+}
+void AnchorLocationDTO::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void AnchorLocationDTO::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+
+void AnchorLocationDTO::Clear() {
+// @@protoc_insertion_point(message_clear_start:empowerops.volition.dto.AnchorLocationDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  raw_anchor_text_.ClearToEmpty();
+  occurance_ = 0u;
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* AnchorLocationDTO::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // string raw_anchor_text = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          auto str = _internal_mutable_raw_anchor_text();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "empowerops.volition.dto.AnchorLocationDTO.raw_anchor_text"));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // uint32 occurance = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 16)) {
+          occurance_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* AnchorLocationDTO::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:empowerops.volition.dto.AnchorLocationDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // string raw_anchor_text = 1;
+  if (!this->_internal_raw_anchor_text().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_raw_anchor_text().data(), static_cast<int>(this->_internal_raw_anchor_text().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "empowerops.volition.dto.AnchorLocationDTO.raw_anchor_text");
+    target = stream->WriteStringMaybeAliased(
+        1, this->_internal_raw_anchor_text(), target);
+  }
+
+  // uint32 occurance = 2;
+  if (this->_internal_occurance() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(2, this->_internal_occurance(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:empowerops.volition.dto.AnchorLocationDTO)
+  return target;
+}
+
+size_t AnchorLocationDTO::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:empowerops.volition.dto.AnchorLocationDTO)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // string raw_anchor_text = 1;
+  if (!this->_internal_raw_anchor_text().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_raw_anchor_text());
+  }
+
+  // uint32 occurance = 2;
+  if (this->_internal_occurance() != 0) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32SizePlusOne(this->_internal_occurance());
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData AnchorLocationDTO::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    AnchorLocationDTO::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*AnchorLocationDTO::GetClassData() const { return &_class_data_; }
+
+void AnchorLocationDTO::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<AnchorLocationDTO *>(to)->MergeFrom(
+      static_cast<const AnchorLocationDTO &>(from));
+}
+
+
+void AnchorLocationDTO::MergeFrom(const AnchorLocationDTO& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:empowerops.volition.dto.AnchorLocationDTO)
+  GOOGLE_DCHECK_NE(&from, this);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (!from._internal_raw_anchor_text().empty()) {
+    _internal_set_raw_anchor_text(from._internal_raw_anchor_text());
+  }
+  if (from._internal_occurance() != 0) {
+    _internal_set_occurance(from._internal_occurance());
+  }
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void AnchorLocationDTO::CopyFrom(const AnchorLocationDTO& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:empowerops.volition.dto.AnchorLocationDTO)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool AnchorLocationDTO::IsInitialized() const {
+  return true;
+}
+
+void AnchorLocationDTO::InternalSwap(AnchorLocationDTO* other) {
+  using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      &raw_anchor_text_, lhs_arena,
+      &other->raw_anchor_text_, rhs_arena
+  );
+  swap(occurance_, other->occurance_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata AnchorLocationDTO::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_optimizer_2eproto_getter, &descriptor_table_optimizer_2eproto_once,
+      file_level_metadata_optimizer_2eproto[14]);
+}
+
+// ===================================================================
+
+class OptimizationSettingsDTO::_Internal {
+ public:
+  using HasBits = decltype(std::declval<OptimizationSettingsDTO>()._has_bits_);
+  static const ::PROTOBUF_NAMESPACE_ID::Duration& run_time(const OptimizationSettingsDTO* msg);
+  static void set_has_run_time(HasBits* has_bits) {
+    (*has_bits)[0] |= 1u;
+  }
+  static void set_has_iteration_count(HasBits* has_bits) {
+    (*has_bits)[0] |= 2u;
+  }
+  static void set_has_target_objective_value(HasBits* has_bits) {
+    (*has_bits)[0] |= 4u;
+  }
+};
+
+const ::PROTOBUF_NAMESPACE_ID::Duration&
+OptimizationSettingsDTO::_Internal::run_time(const OptimizationSettingsDTO* msg) {
+  return *msg->run_time_;
+}
+void OptimizationSettingsDTO::clear_run_time() {
+  if (run_time_ != nullptr) run_time_->Clear();
+  _has_bits_[0] &= ~0x00000001u;
+}
+OptimizationSettingsDTO::OptimizationSettingsDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor();
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
+  // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.OptimizationSettingsDTO)
+}
+OptimizationSettingsDTO::OptimizationSettingsDTO(const OptimizationSettingsDTO& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message(),
+      _has_bits_(from._has_bits_) {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  if (from._internal_has_run_time()) {
+    run_time_ = new ::PROTOBUF_NAMESPACE_ID::Duration(*from.run_time_);
+  } else {
+    run_time_ = nullptr;
+  }
+  ::memcpy(&iteration_count_, &from.iteration_count_,
+    static_cast<size_t>(reinterpret_cast<char*>(&target_objective_value_) -
+    reinterpret_cast<char*>(&iteration_count_)) + sizeof(target_objective_value_));
+  // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.OptimizationSettingsDTO)
+}
+
+void OptimizationSettingsDTO::SharedCtor() {
+::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
+    reinterpret_cast<char*>(&run_time_) - reinterpret_cast<char*>(this)),
+    0, static_cast<size_t>(reinterpret_cast<char*>(&target_objective_value_) -
+    reinterpret_cast<char*>(&run_time_)) + sizeof(target_objective_value_));
+}
+
+OptimizationSettingsDTO::~OptimizationSettingsDTO() {
+  // @@protoc_insertion_point(destructor:empowerops.volition.dto.OptimizationSettingsDTO)
+  if (GetArenaForAllocation() != nullptr) return;
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+inline void OptimizationSettingsDTO::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  if (this != internal_default_instance()) delete run_time_;
+}
+
+void OptimizationSettingsDTO::ArenaDtor(void* object) {
+  OptimizationSettingsDTO* _this = reinterpret_cast< OptimizationSettingsDTO* >(object);
+  (void)_this;
+}
+void OptimizationSettingsDTO::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void OptimizationSettingsDTO::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+
+void OptimizationSettingsDTO::Clear() {
+// @@protoc_insertion_point(message_clear_start:empowerops.volition.dto.OptimizationSettingsDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  cached_has_bits = _has_bits_[0];
+  if (cached_has_bits & 0x00000001u) {
+    GOOGLE_DCHECK(run_time_ != nullptr);
+    run_time_->Clear();
+  }
+  if (cached_has_bits & 0x00000006u) {
+    ::memset(&iteration_count_, 0, static_cast<size_t>(
+        reinterpret_cast<char*>(&target_objective_value_) -
+        reinterpret_cast<char*>(&iteration_count_)) + sizeof(target_objective_value_));
+  }
+  _has_bits_.Clear();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* OptimizationSettingsDTO::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  _Internal::HasBits has_bits{};
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // optional .google.protobuf.Duration run_time = 11;
+      case 11:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 90)) {
+          ptr = ctx->ParseMessage(_internal_mutable_run_time(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional uint32 iteration_count = 12;
+      case 12:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 96)) {
+          _Internal::set_has_iteration_count(&has_bits);
+          iteration_count_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional double target_objective_value = 13;
+      case 13:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 105)) {
+          _Internal::set_has_target_objective_value(&has_bits);
+          target_objective_value_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<double>(ptr);
+          ptr += sizeof(double);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  _has_bits_.Or(has_bits);
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* OptimizationSettingsDTO::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:empowerops.volition.dto.OptimizationSettingsDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // optional .google.protobuf.Duration run_time = 11;
+  if (_internal_has_run_time()) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(
+        11, _Internal::run_time(this), target, stream);
+  }
+
+  // optional uint32 iteration_count = 12;
+  if (_internal_has_iteration_count()) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(12, this->_internal_iteration_count(), target);
+  }
+
+  // optional double target_objective_value = 13;
+  if (_internal_has_target_objective_value()) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteDoubleToArray(13, this->_internal_target_objective_value(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:empowerops.volition.dto.OptimizationSettingsDTO)
+  return target;
+}
+
+size_t OptimizationSettingsDTO::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:empowerops.volition.dto.OptimizationSettingsDTO)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  cached_has_bits = _has_bits_[0];
+  if (cached_has_bits & 0x00000007u) {
+    // optional .google.protobuf.Duration run_time = 11;
+    if (cached_has_bits & 0x00000001u) {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+          *run_time_);
+    }
+
+    // optional uint32 iteration_count = 12;
+    if (cached_has_bits & 0x00000002u) {
+      total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32SizePlusOne(this->_internal_iteration_count());
+    }
+
+    // optional double target_objective_value = 13;
+    if (cached_has_bits & 0x00000004u) {
+      total_size += 1 + 8;
+    }
+
+  }
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData OptimizationSettingsDTO::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    OptimizationSettingsDTO::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*OptimizationSettingsDTO::GetClassData() const { return &_class_data_; }
+
+void OptimizationSettingsDTO::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<OptimizationSettingsDTO *>(to)->MergeFrom(
+      static_cast<const OptimizationSettingsDTO &>(from));
+}
+
+
+void OptimizationSettingsDTO::MergeFrom(const OptimizationSettingsDTO& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:empowerops.volition.dto.OptimizationSettingsDTO)
+  GOOGLE_DCHECK_NE(&from, this);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  cached_has_bits = from._has_bits_[0];
+  if (cached_has_bits & 0x00000007u) {
+    if (cached_has_bits & 0x00000001u) {
+      _internal_mutable_run_time()->::PROTOBUF_NAMESPACE_ID::Duration::MergeFrom(from._internal_run_time());
+    }
+    if (cached_has_bits & 0x00000002u) {
+      iteration_count_ = from.iteration_count_;
+    }
+    if (cached_has_bits & 0x00000004u) {
+      target_objective_value_ = from.target_objective_value_;
+    }
+    _has_bits_[0] |= cached_has_bits;
+  }
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void OptimizationSettingsDTO::CopyFrom(const OptimizationSettingsDTO& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:empowerops.volition.dto.OptimizationSettingsDTO)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool OptimizationSettingsDTO::IsInitialized() const {
+  return true;
+}
+
+void OptimizationSettingsDTO::InternalSwap(OptimizationSettingsDTO* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(_has_bits_[0], other->_has_bits_[0]);
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(OptimizationSettingsDTO, target_objective_value_)
+      + sizeof(OptimizationSettingsDTO::target_objective_value_)
+      - PROTOBUF_FIELD_OFFSET(OptimizationSettingsDTO, run_time_)>(
+          reinterpret_cast<char*>(&run_time_),
+          reinterpret_cast<char*>(&other->run_time_));
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata OptimizationSettingsDTO::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_optimizer_2eproto_getter, &descriptor_table_optimizer_2eproto_once,
+      file_level_metadata_optimizer_2eproto[15]);
+}
 
 // ===================================================================
 
 class OptimizerGeneratedQueryDTO::_Internal {
  public:
-  static const ::empowerops::volition::dto::OptimizerGeneratedQueryDTO_SimulationEvaluationRequest& evaluation_request(const OptimizerGeneratedQueryDTO* msg);
-  static const ::empowerops::volition::dto::OptimizerGeneratedQueryDTO_SimulationCancelRequest& cancel_request(const OptimizerGeneratedQueryDTO* msg);
-  static const ::empowerops::volition::dto::OptimizerGeneratedQueryDTO_OptimizationStartedNotification& optimization_started_notification(const OptimizerGeneratedQueryDTO* msg);
-  static const ::empowerops::volition::dto::OptimizerGeneratedQueryDTO_OptimizationFinishedNotification& optimization_finished_notification(const OptimizerGeneratedQueryDTO* msg);
-  static const ::empowerops::volition::dto::OptimizerGeneratedQueryDTO_OptimizationFailedToStartNotification& optimization_not_started_notification(const OptimizerGeneratedQueryDTO* msg);
+  static const ::empowerops::volition::dto::SimulationEvaluationRequestDTO& evaluation_request(const OptimizerGeneratedQueryDTO* msg);
+  static const ::empowerops::volition::dto::SimulationCancelRequestDTO& cancel_request(const OptimizerGeneratedQueryDTO* msg);
+  static const ::empowerops::volition::dto::OptimizationStartedNotificationDTO& optimization_started_notification(const OptimizerGeneratedQueryDTO* msg);
+  static const ::empowerops::volition::dto::OptimizationFinishedNotificationDTO& optimization_finished_notification(const OptimizerGeneratedQueryDTO* msg);
+  static const ::empowerops::volition::dto::OptimizationNotStartedNotificationDTO& optimization_not_started_notification(const OptimizerGeneratedQueryDTO* msg);
+  static const ::empowerops::volition::dto::DesignIterationCompletedNotificationDTO& design_iteration_completed_notification(const OptimizerGeneratedQueryDTO* msg);
 };
 
-const ::empowerops::volition::dto::OptimizerGeneratedQueryDTO_SimulationEvaluationRequest&
+const ::empowerops::volition::dto::SimulationEvaluationRequestDTO&
 OptimizerGeneratedQueryDTO::_Internal::evaluation_request(const OptimizerGeneratedQueryDTO* msg) {
   return *msg->purpose_.evaluation_request_;
 }
-const ::empowerops::volition::dto::OptimizerGeneratedQueryDTO_SimulationCancelRequest&
+const ::empowerops::volition::dto::SimulationCancelRequestDTO&
 OptimizerGeneratedQueryDTO::_Internal::cancel_request(const OptimizerGeneratedQueryDTO* msg) {
   return *msg->purpose_.cancel_request_;
 }
-const ::empowerops::volition::dto::OptimizerGeneratedQueryDTO_OptimizationStartedNotification&
+const ::empowerops::volition::dto::OptimizationStartedNotificationDTO&
 OptimizerGeneratedQueryDTO::_Internal::optimization_started_notification(const OptimizerGeneratedQueryDTO* msg) {
   return *msg->purpose_.optimization_started_notification_;
 }
-const ::empowerops::volition::dto::OptimizerGeneratedQueryDTO_OptimizationFinishedNotification&
+const ::empowerops::volition::dto::OptimizationFinishedNotificationDTO&
 OptimizerGeneratedQueryDTO::_Internal::optimization_finished_notification(const OptimizerGeneratedQueryDTO* msg) {
   return *msg->purpose_.optimization_finished_notification_;
 }
-const ::empowerops::volition::dto::OptimizerGeneratedQueryDTO_OptimizationFailedToStartNotification&
+const ::empowerops::volition::dto::OptimizationNotStartedNotificationDTO&
 OptimizerGeneratedQueryDTO::_Internal::optimization_not_started_notification(const OptimizerGeneratedQueryDTO* msg) {
   return *msg->purpose_.optimization_not_started_notification_;
 }
-void OptimizerGeneratedQueryDTO::set_allocated_evaluation_request(::empowerops::volition::dto::OptimizerGeneratedQueryDTO_SimulationEvaluationRequest* evaluation_request) {
-  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArena();
+const ::empowerops::volition::dto::DesignIterationCompletedNotificationDTO&
+OptimizerGeneratedQueryDTO::_Internal::design_iteration_completed_notification(const OptimizerGeneratedQueryDTO* msg) {
+  return *msg->purpose_.design_iteration_completed_notification_;
+}
+void OptimizerGeneratedQueryDTO::set_allocated_evaluation_request(::empowerops::volition::dto::SimulationEvaluationRequestDTO* evaluation_request) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
   clear_purpose();
   if (evaluation_request) {
     ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-      ::PROTOBUF_NAMESPACE_ID::Arena::GetArena(evaluation_request);
+      ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper<::empowerops::volition::dto::SimulationEvaluationRequestDTO>::GetOwningArena(evaluation_request);
     if (message_arena != submessage_arena) {
       evaluation_request = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
           message_arena, evaluation_request, submessage_arena);
@@ -1934,12 +5991,12 @@ void OptimizerGeneratedQueryDTO::set_allocated_evaluation_request(::empowerops::
   }
   // @@protoc_insertion_point(field_set_allocated:empowerops.volition.dto.OptimizerGeneratedQueryDTO.evaluation_request)
 }
-void OptimizerGeneratedQueryDTO::set_allocated_cancel_request(::empowerops::volition::dto::OptimizerGeneratedQueryDTO_SimulationCancelRequest* cancel_request) {
-  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArena();
+void OptimizerGeneratedQueryDTO::set_allocated_cancel_request(::empowerops::volition::dto::SimulationCancelRequestDTO* cancel_request) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
   clear_purpose();
   if (cancel_request) {
     ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-      ::PROTOBUF_NAMESPACE_ID::Arena::GetArena(cancel_request);
+      ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper<::empowerops::volition::dto::SimulationCancelRequestDTO>::GetOwningArena(cancel_request);
     if (message_arena != submessage_arena) {
       cancel_request = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
           message_arena, cancel_request, submessage_arena);
@@ -1949,12 +6006,12 @@ void OptimizerGeneratedQueryDTO::set_allocated_cancel_request(::empowerops::voli
   }
   // @@protoc_insertion_point(field_set_allocated:empowerops.volition.dto.OptimizerGeneratedQueryDTO.cancel_request)
 }
-void OptimizerGeneratedQueryDTO::set_allocated_optimization_started_notification(::empowerops::volition::dto::OptimizerGeneratedQueryDTO_OptimizationStartedNotification* optimization_started_notification) {
-  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArena();
+void OptimizerGeneratedQueryDTO::set_allocated_optimization_started_notification(::empowerops::volition::dto::OptimizationStartedNotificationDTO* optimization_started_notification) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
   clear_purpose();
   if (optimization_started_notification) {
     ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-      ::PROTOBUF_NAMESPACE_ID::Arena::GetArena(optimization_started_notification);
+      ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper<::empowerops::volition::dto::OptimizationStartedNotificationDTO>::GetOwningArena(optimization_started_notification);
     if (message_arena != submessage_arena) {
       optimization_started_notification = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
           message_arena, optimization_started_notification, submessage_arena);
@@ -1964,12 +6021,12 @@ void OptimizerGeneratedQueryDTO::set_allocated_optimization_started_notification
   }
   // @@protoc_insertion_point(field_set_allocated:empowerops.volition.dto.OptimizerGeneratedQueryDTO.optimization_started_notification)
 }
-void OptimizerGeneratedQueryDTO::set_allocated_optimization_finished_notification(::empowerops::volition::dto::OptimizerGeneratedQueryDTO_OptimizationFinishedNotification* optimization_finished_notification) {
-  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArena();
+void OptimizerGeneratedQueryDTO::set_allocated_optimization_finished_notification(::empowerops::volition::dto::OptimizationFinishedNotificationDTO* optimization_finished_notification) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
   clear_purpose();
   if (optimization_finished_notification) {
     ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-      ::PROTOBUF_NAMESPACE_ID::Arena::GetArena(optimization_finished_notification);
+      ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper<::empowerops::volition::dto::OptimizationFinishedNotificationDTO>::GetOwningArena(optimization_finished_notification);
     if (message_arena != submessage_arena) {
       optimization_finished_notification = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
           message_arena, optimization_finished_notification, submessage_arena);
@@ -1979,12 +6036,12 @@ void OptimizerGeneratedQueryDTO::set_allocated_optimization_finished_notificatio
   }
   // @@protoc_insertion_point(field_set_allocated:empowerops.volition.dto.OptimizerGeneratedQueryDTO.optimization_finished_notification)
 }
-void OptimizerGeneratedQueryDTO::set_allocated_optimization_not_started_notification(::empowerops::volition::dto::OptimizerGeneratedQueryDTO_OptimizationFailedToStartNotification* optimization_not_started_notification) {
-  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArena();
+void OptimizerGeneratedQueryDTO::set_allocated_optimization_not_started_notification(::empowerops::volition::dto::OptimizationNotStartedNotificationDTO* optimization_not_started_notification) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
   clear_purpose();
   if (optimization_not_started_notification) {
     ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-      ::PROTOBUF_NAMESPACE_ID::Arena::GetArena(optimization_not_started_notification);
+      ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper<::empowerops::volition::dto::OptimizationNotStartedNotificationDTO>::GetOwningArena(optimization_not_started_notification);
     if (message_arena != submessage_arena) {
       optimization_not_started_notification = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
           message_arena, optimization_not_started_notification, submessage_arena);
@@ -1994,10 +6051,28 @@ void OptimizerGeneratedQueryDTO::set_allocated_optimization_not_started_notifica
   }
   // @@protoc_insertion_point(field_set_allocated:empowerops.volition.dto.OptimizerGeneratedQueryDTO.optimization_not_started_notification)
 }
-OptimizerGeneratedQueryDTO::OptimizerGeneratedQueryDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
+void OptimizerGeneratedQueryDTO::set_allocated_design_iteration_completed_notification(::empowerops::volition::dto::DesignIterationCompletedNotificationDTO* design_iteration_completed_notification) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  clear_purpose();
+  if (design_iteration_completed_notification) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+      ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper<::empowerops::volition::dto::DesignIterationCompletedNotificationDTO>::GetOwningArena(design_iteration_completed_notification);
+    if (message_arena != submessage_arena) {
+      design_iteration_completed_notification = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, design_iteration_completed_notification, submessage_arena);
+    }
+    set_has_design_iteration_completed_notification();
+    purpose_.design_iteration_completed_notification_ = design_iteration_completed_notification;
+  }
+  // @@protoc_insertion_point(field_set_allocated:empowerops.volition.dto.OptimizerGeneratedQueryDTO.design_iteration_completed_notification)
+}
+OptimizerGeneratedQueryDTO::OptimizerGeneratedQueryDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
   SharedCtor();
-  RegisterArenaDtor(arena);
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
   // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.OptimizerGeneratedQueryDTO)
 }
 OptimizerGeneratedQueryDTO::OptimizerGeneratedQueryDTO(const OptimizerGeneratedQueryDTO& from)
@@ -2006,23 +6081,27 @@ OptimizerGeneratedQueryDTO::OptimizerGeneratedQueryDTO(const OptimizerGeneratedQ
   clear_has_purpose();
   switch (from.purpose_case()) {
     case kEvaluationRequest: {
-      _internal_mutable_evaluation_request()->::empowerops::volition::dto::OptimizerGeneratedQueryDTO_SimulationEvaluationRequest::MergeFrom(from._internal_evaluation_request());
+      _internal_mutable_evaluation_request()->::empowerops::volition::dto::SimulationEvaluationRequestDTO::MergeFrom(from._internal_evaluation_request());
       break;
     }
     case kCancelRequest: {
-      _internal_mutable_cancel_request()->::empowerops::volition::dto::OptimizerGeneratedQueryDTO_SimulationCancelRequest::MergeFrom(from._internal_cancel_request());
+      _internal_mutable_cancel_request()->::empowerops::volition::dto::SimulationCancelRequestDTO::MergeFrom(from._internal_cancel_request());
       break;
     }
     case kOptimizationStartedNotification: {
-      _internal_mutable_optimization_started_notification()->::empowerops::volition::dto::OptimizerGeneratedQueryDTO_OptimizationStartedNotification::MergeFrom(from._internal_optimization_started_notification());
+      _internal_mutable_optimization_started_notification()->::empowerops::volition::dto::OptimizationStartedNotificationDTO::MergeFrom(from._internal_optimization_started_notification());
       break;
     }
     case kOptimizationFinishedNotification: {
-      _internal_mutable_optimization_finished_notification()->::empowerops::volition::dto::OptimizerGeneratedQueryDTO_OptimizationFinishedNotification::MergeFrom(from._internal_optimization_finished_notification());
+      _internal_mutable_optimization_finished_notification()->::empowerops::volition::dto::OptimizationFinishedNotificationDTO::MergeFrom(from._internal_optimization_finished_notification());
       break;
     }
     case kOptimizationNotStartedNotification: {
-      _internal_mutable_optimization_not_started_notification()->::empowerops::volition::dto::OptimizerGeneratedQueryDTO_OptimizationFailedToStartNotification::MergeFrom(from._internal_optimization_not_started_notification());
+      _internal_mutable_optimization_not_started_notification()->::empowerops::volition::dto::OptimizationNotStartedNotificationDTO::MergeFrom(from._internal_optimization_not_started_notification());
+      break;
+    }
+    case kDesignIterationCompletedNotification: {
+      _internal_mutable_design_iteration_completed_notification()->::empowerops::volition::dto::DesignIterationCompletedNotificationDTO::MergeFrom(from._internal_design_iteration_completed_notification());
       break;
     }
     case PURPOSE_NOT_SET: {
@@ -2033,18 +6112,18 @@ OptimizerGeneratedQueryDTO::OptimizerGeneratedQueryDTO(const OptimizerGeneratedQ
 }
 
 void OptimizerGeneratedQueryDTO::SharedCtor() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_OptimizerGeneratedQueryDTO_optimizer_2eproto.base);
-  clear_has_purpose();
+clear_has_purpose();
 }
 
 OptimizerGeneratedQueryDTO::~OptimizerGeneratedQueryDTO() {
   // @@protoc_insertion_point(destructor:empowerops.volition.dto.OptimizerGeneratedQueryDTO)
+  if (GetArenaForAllocation() != nullptr) return;
   SharedDtor();
   _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-void OptimizerGeneratedQueryDTO::SharedDtor() {
-  GOOGLE_DCHECK(GetArena() == nullptr);
+inline void OptimizerGeneratedQueryDTO::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
   if (has_purpose()) {
     clear_purpose();
   }
@@ -2059,42 +6138,43 @@ void OptimizerGeneratedQueryDTO::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Aren
 void OptimizerGeneratedQueryDTO::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const OptimizerGeneratedQueryDTO& OptimizerGeneratedQueryDTO::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_OptimizerGeneratedQueryDTO_optimizer_2eproto.base);
-  return *internal_default_instance();
-}
-
 
 void OptimizerGeneratedQueryDTO::clear_purpose() {
 // @@protoc_insertion_point(one_of_clear_start:empowerops.volition.dto.OptimizerGeneratedQueryDTO)
   switch (purpose_case()) {
     case kEvaluationRequest: {
-      if (GetArena() == nullptr) {
+      if (GetArenaForAllocation() == nullptr) {
         delete purpose_.evaluation_request_;
       }
       break;
     }
     case kCancelRequest: {
-      if (GetArena() == nullptr) {
+      if (GetArenaForAllocation() == nullptr) {
         delete purpose_.cancel_request_;
       }
       break;
     }
     case kOptimizationStartedNotification: {
-      if (GetArena() == nullptr) {
+      if (GetArenaForAllocation() == nullptr) {
         delete purpose_.optimization_started_notification_;
       }
       break;
     }
     case kOptimizationFinishedNotification: {
-      if (GetArena() == nullptr) {
+      if (GetArenaForAllocation() == nullptr) {
         delete purpose_.optimization_finished_notification_;
       }
       break;
     }
     case kOptimizationNotStartedNotification: {
-      if (GetArena() == nullptr) {
+      if (GetArenaForAllocation() == nullptr) {
         delete purpose_.optimization_not_started_notification_;
+      }
+      break;
+    }
+    case kDesignIterationCompletedNotification: {
+      if (GetArenaForAllocation() == nullptr) {
+        delete purpose_.design_iteration_completed_notification_;
       }
       break;
     }
@@ -2106,14 +6186,1543 @@ void OptimizerGeneratedQueryDTO::clear_purpose() {
 }
 
 
-void OptimizerGeneratedQueryDTO::InternalSwap(OptimizerGeneratedQueryDTO* other) {
-  using std::swap;
-  GetReflection()->Swap(this, other);}
+void OptimizerGeneratedQueryDTO::Clear() {
+// @@protoc_insertion_point(message_clear_start:empowerops.volition.dto.OptimizerGeneratedQueryDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
 
-::PROTOBUF_NAMESPACE_ID::Metadata OptimizerGeneratedQueryDTO::GetMetadata() const {
-  return GetMetadataStatic();
+  clear_purpose();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
+const char* OptimizerGeneratedQueryDTO::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // .empowerops.volition.dto.SimulationEvaluationRequestDTO evaluation_request = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          ptr = ctx->ParseMessage(_internal_mutable_evaluation_request(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // .empowerops.volition.dto.SimulationCancelRequestDTO cancel_request = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 26)) {
+          ptr = ctx->ParseMessage(_internal_mutable_cancel_request(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // .empowerops.volition.dto.OptimizationStartedNotificationDTO optimization_started_notification = 5;
+      case 5:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 42)) {
+          ptr = ctx->ParseMessage(_internal_mutable_optimization_started_notification(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // .empowerops.volition.dto.OptimizationFinishedNotificationDTO optimization_finished_notification = 6;
+      case 6:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 50)) {
+          ptr = ctx->ParseMessage(_internal_mutable_optimization_finished_notification(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // .empowerops.volition.dto.OptimizationNotStartedNotificationDTO optimization_not_started_notification = 7;
+      case 7:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 58)) {
+          ptr = ctx->ParseMessage(_internal_mutable_optimization_not_started_notification(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // .empowerops.volition.dto.DesignIterationCompletedNotificationDTO design_iteration_completed_notification = 8;
+      case 8:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 66)) {
+          ptr = ctx->ParseMessage(_internal_mutable_design_iteration_completed_notification(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* OptimizerGeneratedQueryDTO::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:empowerops.volition.dto.OptimizerGeneratedQueryDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // .empowerops.volition.dto.SimulationEvaluationRequestDTO evaluation_request = 1;
+  if (_internal_has_evaluation_request()) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(
+        1, _Internal::evaluation_request(this), target, stream);
+  }
+
+  // .empowerops.volition.dto.SimulationCancelRequestDTO cancel_request = 3;
+  if (_internal_has_cancel_request()) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(
+        3, _Internal::cancel_request(this), target, stream);
+  }
+
+  // .empowerops.volition.dto.OptimizationStartedNotificationDTO optimization_started_notification = 5;
+  if (_internal_has_optimization_started_notification()) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(
+        5, _Internal::optimization_started_notification(this), target, stream);
+  }
+
+  // .empowerops.volition.dto.OptimizationFinishedNotificationDTO optimization_finished_notification = 6;
+  if (_internal_has_optimization_finished_notification()) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(
+        6, _Internal::optimization_finished_notification(this), target, stream);
+  }
+
+  // .empowerops.volition.dto.OptimizationNotStartedNotificationDTO optimization_not_started_notification = 7;
+  if (_internal_has_optimization_not_started_notification()) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(
+        7, _Internal::optimization_not_started_notification(this), target, stream);
+  }
+
+  // .empowerops.volition.dto.DesignIterationCompletedNotificationDTO design_iteration_completed_notification = 8;
+  if (_internal_has_design_iteration_completed_notification()) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(
+        8, _Internal::design_iteration_completed_notification(this), target, stream);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:empowerops.volition.dto.OptimizerGeneratedQueryDTO)
+  return target;
+}
+
+size_t OptimizerGeneratedQueryDTO::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:empowerops.volition.dto.OptimizerGeneratedQueryDTO)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  switch (purpose_case()) {
+    // .empowerops.volition.dto.SimulationEvaluationRequestDTO evaluation_request = 1;
+    case kEvaluationRequest: {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+          *purpose_.evaluation_request_);
+      break;
+    }
+    // .empowerops.volition.dto.SimulationCancelRequestDTO cancel_request = 3;
+    case kCancelRequest: {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+          *purpose_.cancel_request_);
+      break;
+    }
+    // .empowerops.volition.dto.OptimizationStartedNotificationDTO optimization_started_notification = 5;
+    case kOptimizationStartedNotification: {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+          *purpose_.optimization_started_notification_);
+      break;
+    }
+    // .empowerops.volition.dto.OptimizationFinishedNotificationDTO optimization_finished_notification = 6;
+    case kOptimizationFinishedNotification: {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+          *purpose_.optimization_finished_notification_);
+      break;
+    }
+    // .empowerops.volition.dto.OptimizationNotStartedNotificationDTO optimization_not_started_notification = 7;
+    case kOptimizationNotStartedNotification: {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+          *purpose_.optimization_not_started_notification_);
+      break;
+    }
+    // .empowerops.volition.dto.DesignIterationCompletedNotificationDTO design_iteration_completed_notification = 8;
+    case kDesignIterationCompletedNotification: {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+          *purpose_.design_iteration_completed_notification_);
+      break;
+    }
+    case PURPOSE_NOT_SET: {
+      break;
+    }
+  }
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData OptimizerGeneratedQueryDTO::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    OptimizerGeneratedQueryDTO::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*OptimizerGeneratedQueryDTO::GetClassData() const { return &_class_data_; }
+
+void OptimizerGeneratedQueryDTO::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<OptimizerGeneratedQueryDTO *>(to)->MergeFrom(
+      static_cast<const OptimizerGeneratedQueryDTO &>(from));
+}
+
+
+void OptimizerGeneratedQueryDTO::MergeFrom(const OptimizerGeneratedQueryDTO& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:empowerops.volition.dto.OptimizerGeneratedQueryDTO)
+  GOOGLE_DCHECK_NE(&from, this);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  switch (from.purpose_case()) {
+    case kEvaluationRequest: {
+      _internal_mutable_evaluation_request()->::empowerops::volition::dto::SimulationEvaluationRequestDTO::MergeFrom(from._internal_evaluation_request());
+      break;
+    }
+    case kCancelRequest: {
+      _internal_mutable_cancel_request()->::empowerops::volition::dto::SimulationCancelRequestDTO::MergeFrom(from._internal_cancel_request());
+      break;
+    }
+    case kOptimizationStartedNotification: {
+      _internal_mutable_optimization_started_notification()->::empowerops::volition::dto::OptimizationStartedNotificationDTO::MergeFrom(from._internal_optimization_started_notification());
+      break;
+    }
+    case kOptimizationFinishedNotification: {
+      _internal_mutable_optimization_finished_notification()->::empowerops::volition::dto::OptimizationFinishedNotificationDTO::MergeFrom(from._internal_optimization_finished_notification());
+      break;
+    }
+    case kOptimizationNotStartedNotification: {
+      _internal_mutable_optimization_not_started_notification()->::empowerops::volition::dto::OptimizationNotStartedNotificationDTO::MergeFrom(from._internal_optimization_not_started_notification());
+      break;
+    }
+    case kDesignIterationCompletedNotification: {
+      _internal_mutable_design_iteration_completed_notification()->::empowerops::volition::dto::DesignIterationCompletedNotificationDTO::MergeFrom(from._internal_design_iteration_completed_notification());
+      break;
+    }
+    case PURPOSE_NOT_SET: {
+      break;
+    }
+  }
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void OptimizerGeneratedQueryDTO::CopyFrom(const OptimizerGeneratedQueryDTO& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:empowerops.volition.dto.OptimizerGeneratedQueryDTO)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool OptimizerGeneratedQueryDTO::IsInitialized() const {
+  return true;
+}
+
+void OptimizerGeneratedQueryDTO::InternalSwap(OptimizerGeneratedQueryDTO* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(purpose_, other->purpose_);
+  swap(_oneof_case_[0], other->_oneof_case_[0]);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata OptimizerGeneratedQueryDTO::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_optimizer_2eproto_getter, &descriptor_table_optimizer_2eproto_once,
+      file_level_metadata_optimizer_2eproto[16]);
+}
+
+// ===================================================================
+
+SimulationEvaluationRequestDTO_InputVectorEntry_DoNotUse::SimulationEvaluationRequestDTO_InputVectorEntry_DoNotUse() {}
+SimulationEvaluationRequestDTO_InputVectorEntry_DoNotUse::SimulationEvaluationRequestDTO_InputVectorEntry_DoNotUse(::PROTOBUF_NAMESPACE_ID::Arena* arena)
+    : SuperType(arena) {}
+void SimulationEvaluationRequestDTO_InputVectorEntry_DoNotUse::MergeFrom(const SimulationEvaluationRequestDTO_InputVectorEntry_DoNotUse& other) {
+  MergeFromInternal(other);
+}
+::PROTOBUF_NAMESPACE_ID::Metadata SimulationEvaluationRequestDTO_InputVectorEntry_DoNotUse::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_optimizer_2eproto_getter, &descriptor_table_optimizer_2eproto_once,
+      file_level_metadata_optimizer_2eproto[17]);
+}
+
+// ===================================================================
+
+class SimulationEvaluationRequestDTO::_Internal {
+ public:
+};
+
+SimulationEvaluationRequestDTO::SimulationEvaluationRequestDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned),
+  input_vector_(arena) {
+  SharedCtor();
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
+  // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.SimulationEvaluationRequestDTO)
+}
+SimulationEvaluationRequestDTO::SimulationEvaluationRequestDTO(const SimulationEvaluationRequestDTO& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  input_vector_.MergeFrom(from.input_vector_);
+  name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (!from._internal_name().empty()) {
+    name_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_name(), 
+      GetArenaForAllocation());
+  }
+  // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.SimulationEvaluationRequestDTO)
+}
+
+void SimulationEvaluationRequestDTO::SharedCtor() {
+name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+
+SimulationEvaluationRequestDTO::~SimulationEvaluationRequestDTO() {
+  // @@protoc_insertion_point(destructor:empowerops.volition.dto.SimulationEvaluationRequestDTO)
+  if (GetArenaForAllocation() != nullptr) return;
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+inline void SimulationEvaluationRequestDTO::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  name_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+
+void SimulationEvaluationRequestDTO::ArenaDtor(void* object) {
+  SimulationEvaluationRequestDTO* _this = reinterpret_cast< SimulationEvaluationRequestDTO* >(object);
+  (void)_this;
+  _this->input_vector_. ~MapField();
+}
+inline void SimulationEvaluationRequestDTO::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena) {
+  if (arena != nullptr) {
+    arena->OwnCustomDestructor(this, &SimulationEvaluationRequestDTO::ArenaDtor);
+  }
+}
+void SimulationEvaluationRequestDTO::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+
+void SimulationEvaluationRequestDTO::Clear() {
+// @@protoc_insertion_point(message_clear_start:empowerops.volition.dto.SimulationEvaluationRequestDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  input_vector_.Clear();
+  name_.ClearToEmpty();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* SimulationEvaluationRequestDTO::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // string name = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          auto str = _internal_mutable_name();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "empowerops.volition.dto.SimulationEvaluationRequestDTO.name"));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // map<string, double> input_vector = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            ptr = ctx->ParseMessage(&input_vector_, ptr);
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<18>(ptr));
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* SimulationEvaluationRequestDTO::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:empowerops.volition.dto.SimulationEvaluationRequestDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // string name = 1;
+  if (!this->_internal_name().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_name().data(), static_cast<int>(this->_internal_name().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "empowerops.volition.dto.SimulationEvaluationRequestDTO.name");
+    target = stream->WriteStringMaybeAliased(
+        1, this->_internal_name(), target);
+  }
+
+  // map<string, double> input_vector = 2;
+  if (!this->_internal_input_vector().empty()) {
+    typedef ::PROTOBUF_NAMESPACE_ID::Map< std::string, double >::const_pointer
+        ConstPtr;
+    typedef ConstPtr SortItem;
+    typedef ::PROTOBUF_NAMESPACE_ID::internal::CompareByDerefFirst<SortItem> Less;
+    struct Utf8Check {
+      static void Check(ConstPtr p) {
+        (void)p;
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+          p->first.data(), static_cast<int>(p->first.length()),
+          ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+          "empowerops.volition.dto.SimulationEvaluationRequestDTO.InputVectorEntry.key");
+      }
+    };
+
+    if (stream->IsSerializationDeterministic() &&
+        this->_internal_input_vector().size() > 1) {
+      ::std::unique_ptr<SortItem[]> items(
+          new SortItem[this->_internal_input_vector().size()]);
+      typedef ::PROTOBUF_NAMESPACE_ID::Map< std::string, double >::size_type size_type;
+      size_type n = 0;
+      for (::PROTOBUF_NAMESPACE_ID::Map< std::string, double >::const_iterator
+          it = this->_internal_input_vector().begin();
+          it != this->_internal_input_vector().end(); ++it, ++n) {
+        items[static_cast<ptrdiff_t>(n)] = SortItem(&*it);
+      }
+      ::std::sort(&items[0], &items[static_cast<ptrdiff_t>(n)], Less());
+      for (size_type i = 0; i < n; i++) {
+        target = SimulationEvaluationRequestDTO_InputVectorEntry_DoNotUse::Funcs::InternalSerialize(2, items[static_cast<ptrdiff_t>(i)]->first, items[static_cast<ptrdiff_t>(i)]->second, target, stream);
+        Utf8Check::Check(&(*items[static_cast<ptrdiff_t>(i)]));
+      }
+    } else {
+      for (::PROTOBUF_NAMESPACE_ID::Map< std::string, double >::const_iterator
+          it = this->_internal_input_vector().begin();
+          it != this->_internal_input_vector().end(); ++it) {
+        target = SimulationEvaluationRequestDTO_InputVectorEntry_DoNotUse::Funcs::InternalSerialize(2, it->first, it->second, target, stream);
+        Utf8Check::Check(&(*it));
+      }
+    }
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:empowerops.volition.dto.SimulationEvaluationRequestDTO)
+  return target;
+}
+
+size_t SimulationEvaluationRequestDTO::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:empowerops.volition.dto.SimulationEvaluationRequestDTO)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // map<string, double> input_vector = 2;
+  total_size += 1 *
+      ::PROTOBUF_NAMESPACE_ID::internal::FromIntSize(this->_internal_input_vector_size());
+  for (::PROTOBUF_NAMESPACE_ID::Map< std::string, double >::const_iterator
+      it = this->_internal_input_vector().begin();
+      it != this->_internal_input_vector().end(); ++it) {
+    total_size += SimulationEvaluationRequestDTO_InputVectorEntry_DoNotUse::Funcs::ByteSizeLong(it->first, it->second);
+  }
+
+  // string name = 1;
+  if (!this->_internal_name().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_name());
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData SimulationEvaluationRequestDTO::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    SimulationEvaluationRequestDTO::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*SimulationEvaluationRequestDTO::GetClassData() const { return &_class_data_; }
+
+void SimulationEvaluationRequestDTO::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<SimulationEvaluationRequestDTO *>(to)->MergeFrom(
+      static_cast<const SimulationEvaluationRequestDTO &>(from));
+}
+
+
+void SimulationEvaluationRequestDTO::MergeFrom(const SimulationEvaluationRequestDTO& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:empowerops.volition.dto.SimulationEvaluationRequestDTO)
+  GOOGLE_DCHECK_NE(&from, this);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  input_vector_.MergeFrom(from.input_vector_);
+  if (!from._internal_name().empty()) {
+    _internal_set_name(from._internal_name());
+  }
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void SimulationEvaluationRequestDTO::CopyFrom(const SimulationEvaluationRequestDTO& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:empowerops.volition.dto.SimulationEvaluationRequestDTO)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool SimulationEvaluationRequestDTO::IsInitialized() const {
+  return true;
+}
+
+void SimulationEvaluationRequestDTO::InternalSwap(SimulationEvaluationRequestDTO* other) {
+  using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  input_vector_.InternalSwap(&other->input_vector_);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      &name_, lhs_arena,
+      &other->name_, rhs_arena
+  );
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata SimulationEvaluationRequestDTO::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_optimizer_2eproto_getter, &descriptor_table_optimizer_2eproto_once,
+      file_level_metadata_optimizer_2eproto[18]);
+}
+
+// ===================================================================
+
+class SimulationCancelRequestDTO::_Internal {
+ public:
+};
+
+SimulationCancelRequestDTO::SimulationCancelRequestDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor();
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
+  // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.SimulationCancelRequestDTO)
+}
+SimulationCancelRequestDTO::SimulationCancelRequestDTO(const SimulationCancelRequestDTO& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (!from._internal_name().empty()) {
+    name_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_name(), 
+      GetArenaForAllocation());
+  }
+  // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.SimulationCancelRequestDTO)
+}
+
+void SimulationCancelRequestDTO::SharedCtor() {
+name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+
+SimulationCancelRequestDTO::~SimulationCancelRequestDTO() {
+  // @@protoc_insertion_point(destructor:empowerops.volition.dto.SimulationCancelRequestDTO)
+  if (GetArenaForAllocation() != nullptr) return;
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+inline void SimulationCancelRequestDTO::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  name_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+
+void SimulationCancelRequestDTO::ArenaDtor(void* object) {
+  SimulationCancelRequestDTO* _this = reinterpret_cast< SimulationCancelRequestDTO* >(object);
+  (void)_this;
+}
+void SimulationCancelRequestDTO::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void SimulationCancelRequestDTO::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+
+void SimulationCancelRequestDTO::Clear() {
+// @@protoc_insertion_point(message_clear_start:empowerops.volition.dto.SimulationCancelRequestDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  name_.ClearToEmpty();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* SimulationCancelRequestDTO::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // string name = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          auto str = _internal_mutable_name();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "empowerops.volition.dto.SimulationCancelRequestDTO.name"));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* SimulationCancelRequestDTO::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:empowerops.volition.dto.SimulationCancelRequestDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // string name = 1;
+  if (!this->_internal_name().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_name().data(), static_cast<int>(this->_internal_name().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "empowerops.volition.dto.SimulationCancelRequestDTO.name");
+    target = stream->WriteStringMaybeAliased(
+        1, this->_internal_name(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:empowerops.volition.dto.SimulationCancelRequestDTO)
+  return target;
+}
+
+size_t SimulationCancelRequestDTO::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:empowerops.volition.dto.SimulationCancelRequestDTO)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // string name = 1;
+  if (!this->_internal_name().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_name());
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData SimulationCancelRequestDTO::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    SimulationCancelRequestDTO::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*SimulationCancelRequestDTO::GetClassData() const { return &_class_data_; }
+
+void SimulationCancelRequestDTO::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<SimulationCancelRequestDTO *>(to)->MergeFrom(
+      static_cast<const SimulationCancelRequestDTO &>(from));
+}
+
+
+void SimulationCancelRequestDTO::MergeFrom(const SimulationCancelRequestDTO& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:empowerops.volition.dto.SimulationCancelRequestDTO)
+  GOOGLE_DCHECK_NE(&from, this);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (!from._internal_name().empty()) {
+    _internal_set_name(from._internal_name());
+  }
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void SimulationCancelRequestDTO::CopyFrom(const SimulationCancelRequestDTO& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:empowerops.volition.dto.SimulationCancelRequestDTO)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool SimulationCancelRequestDTO::IsInitialized() const {
+  return true;
+}
+
+void SimulationCancelRequestDTO::InternalSwap(SimulationCancelRequestDTO* other) {
+  using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      &name_, lhs_arena,
+      &other->name_, rhs_arena
+  );
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata SimulationCancelRequestDTO::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_optimizer_2eproto_getter, &descriptor_table_optimizer_2eproto_once,
+      file_level_metadata_optimizer_2eproto[19]);
+}
+
+// ===================================================================
+
+class OptimizationStartedNotificationDTO::_Internal {
+ public:
+  static const ::empowerops::volition::dto::UUIDDTO& run_id(const OptimizationStartedNotificationDTO* msg);
+};
+
+const ::empowerops::volition::dto::UUIDDTO&
+OptimizationStartedNotificationDTO::_Internal::run_id(const OptimizationStartedNotificationDTO* msg) {
+  return *msg->run_id_;
+}
+OptimizationStartedNotificationDTO::OptimizationStartedNotificationDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor();
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
+  // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.OptimizationStartedNotificationDTO)
+}
+OptimizationStartedNotificationDTO::OptimizationStartedNotificationDTO(const OptimizationStartedNotificationDTO& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  if (from._internal_has_run_id()) {
+    run_id_ = new ::empowerops::volition::dto::UUIDDTO(*from.run_id_);
+  } else {
+    run_id_ = nullptr;
+  }
+  // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.OptimizationStartedNotificationDTO)
+}
+
+void OptimizationStartedNotificationDTO::SharedCtor() {
+run_id_ = nullptr;
+}
+
+OptimizationStartedNotificationDTO::~OptimizationStartedNotificationDTO() {
+  // @@protoc_insertion_point(destructor:empowerops.volition.dto.OptimizationStartedNotificationDTO)
+  if (GetArenaForAllocation() != nullptr) return;
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+inline void OptimizationStartedNotificationDTO::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  if (this != internal_default_instance()) delete run_id_;
+}
+
+void OptimizationStartedNotificationDTO::ArenaDtor(void* object) {
+  OptimizationStartedNotificationDTO* _this = reinterpret_cast< OptimizationStartedNotificationDTO* >(object);
+  (void)_this;
+}
+void OptimizationStartedNotificationDTO::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void OptimizationStartedNotificationDTO::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+
+void OptimizationStartedNotificationDTO::Clear() {
+// @@protoc_insertion_point(message_clear_start:empowerops.volition.dto.OptimizationStartedNotificationDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  if (GetArenaForAllocation() == nullptr && run_id_ != nullptr) {
+    delete run_id_;
+  }
+  run_id_ = nullptr;
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* OptimizationStartedNotificationDTO::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // .empowerops.volition.dto.UUIDDTO run_ID = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          ptr = ctx->ParseMessage(_internal_mutable_run_id(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* OptimizationStartedNotificationDTO::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:empowerops.volition.dto.OptimizationStartedNotificationDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // .empowerops.volition.dto.UUIDDTO run_ID = 1;
+  if (this->_internal_has_run_id()) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(
+        1, _Internal::run_id(this), target, stream);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:empowerops.volition.dto.OptimizationStartedNotificationDTO)
+  return target;
+}
+
+size_t OptimizationStartedNotificationDTO::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:empowerops.volition.dto.OptimizationStartedNotificationDTO)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // .empowerops.volition.dto.UUIDDTO run_ID = 1;
+  if (this->_internal_has_run_id()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+        *run_id_);
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData OptimizationStartedNotificationDTO::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    OptimizationStartedNotificationDTO::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*OptimizationStartedNotificationDTO::GetClassData() const { return &_class_data_; }
+
+void OptimizationStartedNotificationDTO::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<OptimizationStartedNotificationDTO *>(to)->MergeFrom(
+      static_cast<const OptimizationStartedNotificationDTO &>(from));
+}
+
+
+void OptimizationStartedNotificationDTO::MergeFrom(const OptimizationStartedNotificationDTO& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:empowerops.volition.dto.OptimizationStartedNotificationDTO)
+  GOOGLE_DCHECK_NE(&from, this);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from._internal_has_run_id()) {
+    _internal_mutable_run_id()->::empowerops::volition::dto::UUIDDTO::MergeFrom(from._internal_run_id());
+  }
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void OptimizationStartedNotificationDTO::CopyFrom(const OptimizationStartedNotificationDTO& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:empowerops.volition.dto.OptimizationStartedNotificationDTO)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool OptimizationStartedNotificationDTO::IsInitialized() const {
+  return true;
+}
+
+void OptimizationStartedNotificationDTO::InternalSwap(OptimizationStartedNotificationDTO* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(run_id_, other->run_id_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata OptimizationStartedNotificationDTO::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_optimizer_2eproto_getter, &descriptor_table_optimizer_2eproto_once,
+      file_level_metadata_optimizer_2eproto[20]);
+}
+
+// ===================================================================
+
+class OptimizationFinishedNotificationDTO::_Internal {
+ public:
+  static const ::empowerops::volition::dto::UUIDDTO& run_id(const OptimizationFinishedNotificationDTO* msg);
+};
+
+const ::empowerops::volition::dto::UUIDDTO&
+OptimizationFinishedNotificationDTO::_Internal::run_id(const OptimizationFinishedNotificationDTO* msg) {
+  return *msg->run_id_;
+}
+OptimizationFinishedNotificationDTO::OptimizationFinishedNotificationDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor();
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
+  // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.OptimizationFinishedNotificationDTO)
+}
+OptimizationFinishedNotificationDTO::OptimizationFinishedNotificationDTO(const OptimizationFinishedNotificationDTO& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  if (from._internal_has_run_id()) {
+    run_id_ = new ::empowerops::volition::dto::UUIDDTO(*from.run_id_);
+  } else {
+    run_id_ = nullptr;
+  }
+  // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.OptimizationFinishedNotificationDTO)
+}
+
+void OptimizationFinishedNotificationDTO::SharedCtor() {
+run_id_ = nullptr;
+}
+
+OptimizationFinishedNotificationDTO::~OptimizationFinishedNotificationDTO() {
+  // @@protoc_insertion_point(destructor:empowerops.volition.dto.OptimizationFinishedNotificationDTO)
+  if (GetArenaForAllocation() != nullptr) return;
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+inline void OptimizationFinishedNotificationDTO::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  if (this != internal_default_instance()) delete run_id_;
+}
+
+void OptimizationFinishedNotificationDTO::ArenaDtor(void* object) {
+  OptimizationFinishedNotificationDTO* _this = reinterpret_cast< OptimizationFinishedNotificationDTO* >(object);
+  (void)_this;
+}
+void OptimizationFinishedNotificationDTO::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void OptimizationFinishedNotificationDTO::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+
+void OptimizationFinishedNotificationDTO::Clear() {
+// @@protoc_insertion_point(message_clear_start:empowerops.volition.dto.OptimizationFinishedNotificationDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  if (GetArenaForAllocation() == nullptr && run_id_ != nullptr) {
+    delete run_id_;
+  }
+  run_id_ = nullptr;
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* OptimizationFinishedNotificationDTO::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // .empowerops.volition.dto.UUIDDTO run_ID = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          ptr = ctx->ParseMessage(_internal_mutable_run_id(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* OptimizationFinishedNotificationDTO::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:empowerops.volition.dto.OptimizationFinishedNotificationDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // .empowerops.volition.dto.UUIDDTO run_ID = 1;
+  if (this->_internal_has_run_id()) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(
+        1, _Internal::run_id(this), target, stream);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:empowerops.volition.dto.OptimizationFinishedNotificationDTO)
+  return target;
+}
+
+size_t OptimizationFinishedNotificationDTO::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:empowerops.volition.dto.OptimizationFinishedNotificationDTO)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // .empowerops.volition.dto.UUIDDTO run_ID = 1;
+  if (this->_internal_has_run_id()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+        *run_id_);
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData OptimizationFinishedNotificationDTO::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    OptimizationFinishedNotificationDTO::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*OptimizationFinishedNotificationDTO::GetClassData() const { return &_class_data_; }
+
+void OptimizationFinishedNotificationDTO::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<OptimizationFinishedNotificationDTO *>(to)->MergeFrom(
+      static_cast<const OptimizationFinishedNotificationDTO &>(from));
+}
+
+
+void OptimizationFinishedNotificationDTO::MergeFrom(const OptimizationFinishedNotificationDTO& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:empowerops.volition.dto.OptimizationFinishedNotificationDTO)
+  GOOGLE_DCHECK_NE(&from, this);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from._internal_has_run_id()) {
+    _internal_mutable_run_id()->::empowerops::volition::dto::UUIDDTO::MergeFrom(from._internal_run_id());
+  }
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void OptimizationFinishedNotificationDTO::CopyFrom(const OptimizationFinishedNotificationDTO& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:empowerops.volition.dto.OptimizationFinishedNotificationDTO)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool OptimizationFinishedNotificationDTO::IsInitialized() const {
+  return true;
+}
+
+void OptimizationFinishedNotificationDTO::InternalSwap(OptimizationFinishedNotificationDTO* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(run_id_, other->run_id_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata OptimizationFinishedNotificationDTO::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_optimizer_2eproto_getter, &descriptor_table_optimizer_2eproto_once,
+      file_level_metadata_optimizer_2eproto[21]);
+}
+
+// ===================================================================
+
+class OptimizationNotStartedNotificationDTO::_Internal {
+ public:
+};
+
+OptimizationNotStartedNotificationDTO::OptimizationNotStartedNotificationDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned),
+  issues_(arena) {
+  SharedCtor();
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
+  // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.OptimizationNotStartedNotificationDTO)
+}
+OptimizationNotStartedNotificationDTO::OptimizationNotStartedNotificationDTO(const OptimizationNotStartedNotificationDTO& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message(),
+      issues_(from.issues_) {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.OptimizationNotStartedNotificationDTO)
+}
+
+void OptimizationNotStartedNotificationDTO::SharedCtor() {
+}
+
+OptimizationNotStartedNotificationDTO::~OptimizationNotStartedNotificationDTO() {
+  // @@protoc_insertion_point(destructor:empowerops.volition.dto.OptimizationNotStartedNotificationDTO)
+  if (GetArenaForAllocation() != nullptr) return;
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+inline void OptimizationNotStartedNotificationDTO::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+}
+
+void OptimizationNotStartedNotificationDTO::ArenaDtor(void* object) {
+  OptimizationNotStartedNotificationDTO* _this = reinterpret_cast< OptimizationNotStartedNotificationDTO* >(object);
+  (void)_this;
+}
+void OptimizationNotStartedNotificationDTO::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void OptimizationNotStartedNotificationDTO::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+
+void OptimizationNotStartedNotificationDTO::Clear() {
+// @@protoc_insertion_point(message_clear_start:empowerops.volition.dto.OptimizationNotStartedNotificationDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  issues_.Clear();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* OptimizationNotStartedNotificationDTO::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // repeated string issues = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            auto str = _internal_add_issues();
+            ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+            CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "empowerops.volition.dto.OptimizationNotStartedNotificationDTO.issues"));
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<10>(ptr));
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* OptimizationNotStartedNotificationDTO::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:empowerops.volition.dto.OptimizationNotStartedNotificationDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // repeated string issues = 1;
+  for (int i = 0, n = this->_internal_issues_size(); i < n; i++) {
+    const auto& s = this->_internal_issues(i);
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      s.data(), static_cast<int>(s.length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "empowerops.volition.dto.OptimizationNotStartedNotificationDTO.issues");
+    target = stream->WriteString(1, s, target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:empowerops.volition.dto.OptimizationNotStartedNotificationDTO)
+  return target;
+}
+
+size_t OptimizationNotStartedNotificationDTO::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:empowerops.volition.dto.OptimizationNotStartedNotificationDTO)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // repeated string issues = 1;
+  total_size += 1 *
+      ::PROTOBUF_NAMESPACE_ID::internal::FromIntSize(issues_.size());
+  for (int i = 0, n = issues_.size(); i < n; i++) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+      issues_.Get(i));
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData OptimizationNotStartedNotificationDTO::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    OptimizationNotStartedNotificationDTO::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*OptimizationNotStartedNotificationDTO::GetClassData() const { return &_class_data_; }
+
+void OptimizationNotStartedNotificationDTO::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<OptimizationNotStartedNotificationDTO *>(to)->MergeFrom(
+      static_cast<const OptimizationNotStartedNotificationDTO &>(from));
+}
+
+
+void OptimizationNotStartedNotificationDTO::MergeFrom(const OptimizationNotStartedNotificationDTO& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:empowerops.volition.dto.OptimizationNotStartedNotificationDTO)
+  GOOGLE_DCHECK_NE(&from, this);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  issues_.MergeFrom(from.issues_);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void OptimizationNotStartedNotificationDTO::CopyFrom(const OptimizationNotStartedNotificationDTO& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:empowerops.volition.dto.OptimizationNotStartedNotificationDTO)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool OptimizationNotStartedNotificationDTO::IsInitialized() const {
+  return true;
+}
+
+void OptimizationNotStartedNotificationDTO::InternalSwap(OptimizationNotStartedNotificationDTO* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  issues_.InternalSwap(&other->issues_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata OptimizationNotStartedNotificationDTO::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_optimizer_2eproto_getter, &descriptor_table_optimizer_2eproto_once,
+      file_level_metadata_optimizer_2eproto[22]);
+}
+
+// ===================================================================
+
+class DesignIterationCompletedNotificationDTO::_Internal {
+ public:
+  static const ::empowerops::volition::dto::DesignRowDTO& design_point(const DesignIterationCompletedNotificationDTO* msg);
+};
+
+const ::empowerops::volition::dto::DesignRowDTO&
+DesignIterationCompletedNotificationDTO::_Internal::design_point(const DesignIterationCompletedNotificationDTO* msg) {
+  return *msg->design_point_;
+}
+DesignIterationCompletedNotificationDTO::DesignIterationCompletedNotificationDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor();
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
+  // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.DesignIterationCompletedNotificationDTO)
+}
+DesignIterationCompletedNotificationDTO::DesignIterationCompletedNotificationDTO(const DesignIterationCompletedNotificationDTO& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  if (from._internal_has_design_point()) {
+    design_point_ = new ::empowerops::volition::dto::DesignRowDTO(*from.design_point_);
+  } else {
+    design_point_ = nullptr;
+  }
+  // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.DesignIterationCompletedNotificationDTO)
+}
+
+void DesignIterationCompletedNotificationDTO::SharedCtor() {
+design_point_ = nullptr;
+}
+
+DesignIterationCompletedNotificationDTO::~DesignIterationCompletedNotificationDTO() {
+  // @@protoc_insertion_point(destructor:empowerops.volition.dto.DesignIterationCompletedNotificationDTO)
+  if (GetArenaForAllocation() != nullptr) return;
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+inline void DesignIterationCompletedNotificationDTO::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  if (this != internal_default_instance()) delete design_point_;
+}
+
+void DesignIterationCompletedNotificationDTO::ArenaDtor(void* object) {
+  DesignIterationCompletedNotificationDTO* _this = reinterpret_cast< DesignIterationCompletedNotificationDTO* >(object);
+  (void)_this;
+}
+void DesignIterationCompletedNotificationDTO::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void DesignIterationCompletedNotificationDTO::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+
+void DesignIterationCompletedNotificationDTO::Clear() {
+// @@protoc_insertion_point(message_clear_start:empowerops.volition.dto.DesignIterationCompletedNotificationDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  if (GetArenaForAllocation() == nullptr && design_point_ != nullptr) {
+    delete design_point_;
+  }
+  design_point_ = nullptr;
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* DesignIterationCompletedNotificationDTO::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // .empowerops.volition.dto.DesignRowDTO design_point = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          ptr = ctx->ParseMessage(_internal_mutable_design_point(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* DesignIterationCompletedNotificationDTO::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:empowerops.volition.dto.DesignIterationCompletedNotificationDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // .empowerops.volition.dto.DesignRowDTO design_point = 1;
+  if (this->_internal_has_design_point()) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(
+        1, _Internal::design_point(this), target, stream);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:empowerops.volition.dto.DesignIterationCompletedNotificationDTO)
+  return target;
+}
+
+size_t DesignIterationCompletedNotificationDTO::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:empowerops.volition.dto.DesignIterationCompletedNotificationDTO)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // .empowerops.volition.dto.DesignRowDTO design_point = 1;
+  if (this->_internal_has_design_point()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+        *design_point_);
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData DesignIterationCompletedNotificationDTO::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    DesignIterationCompletedNotificationDTO::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*DesignIterationCompletedNotificationDTO::GetClassData() const { return &_class_data_; }
+
+void DesignIterationCompletedNotificationDTO::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<DesignIterationCompletedNotificationDTO *>(to)->MergeFrom(
+      static_cast<const DesignIterationCompletedNotificationDTO &>(from));
+}
+
+
+void DesignIterationCompletedNotificationDTO::MergeFrom(const DesignIterationCompletedNotificationDTO& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:empowerops.volition.dto.DesignIterationCompletedNotificationDTO)
+  GOOGLE_DCHECK_NE(&from, this);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from._internal_has_design_point()) {
+    _internal_mutable_design_point()->::empowerops::volition::dto::DesignRowDTO::MergeFrom(from._internal_design_point());
+  }
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void DesignIterationCompletedNotificationDTO::CopyFrom(const DesignIterationCompletedNotificationDTO& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:empowerops.volition.dto.DesignIterationCompletedNotificationDTO)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool DesignIterationCompletedNotificationDTO::IsInitialized() const {
+  return true;
+}
+
+void DesignIterationCompletedNotificationDTO::InternalSwap(DesignIterationCompletedNotificationDTO* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(design_point_, other->design_point_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata DesignIterationCompletedNotificationDTO::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_optimizer_2eproto_getter, &descriptor_table_optimizer_2eproto_once,
+      file_level_metadata_optimizer_2eproto[23]);
+}
 
 // ===================================================================
 
@@ -2124,13 +7733,10 @@ void SimulationEvaluationCompletedResponseDTO_OutputVectorEntry_DoNotUse::MergeF
   MergeFromInternal(other);
 }
 ::PROTOBUF_NAMESPACE_ID::Metadata SimulationEvaluationCompletedResponseDTO_OutputVectorEntry_DoNotUse::GetMetadata() const {
-  return GetMetadataStatic();
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_optimizer_2eproto_getter, &descriptor_table_optimizer_2eproto_once,
+      file_level_metadata_optimizer_2eproto[24]);
 }
-void SimulationEvaluationCompletedResponseDTO_OutputVectorEntry_DoNotUse::MergeFrom(
-    const ::PROTOBUF_NAMESPACE_ID::Message& other) {
-  ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom(other);
-}
-
 
 // ===================================================================
 
@@ -2138,11 +7744,14 @@ class SimulationEvaluationCompletedResponseDTO::_Internal {
  public:
 };
 
-SimulationEvaluationCompletedResponseDTO::SimulationEvaluationCompletedResponseDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena),
+SimulationEvaluationCompletedResponseDTO::SimulationEvaluationCompletedResponseDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned),
   output_vector_(arena) {
   SharedCtor();
-  RegisterArenaDtor(arena);
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
   // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.SimulationEvaluationCompletedResponseDTO)
 }
 SimulationEvaluationCompletedResponseDTO::SimulationEvaluationCompletedResponseDTO(const SimulationEvaluationCompletedResponseDTO& from)
@@ -2152,52 +7761,278 @@ SimulationEvaluationCompletedResponseDTO::SimulationEvaluationCompletedResponseD
   name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   if (!from._internal_name().empty()) {
     name_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_name(), 
-      GetArena());
+      GetArenaForAllocation());
   }
   abort_optimization_ = from.abort_optimization_;
   // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.SimulationEvaluationCompletedResponseDTO)
 }
 
 void SimulationEvaluationCompletedResponseDTO::SharedCtor() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_SimulationEvaluationCompletedResponseDTO_optimizer_2eproto.base);
-  name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  abort_optimization_ = false;
+name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+abort_optimization_ = false;
 }
 
 SimulationEvaluationCompletedResponseDTO::~SimulationEvaluationCompletedResponseDTO() {
   // @@protoc_insertion_point(destructor:empowerops.volition.dto.SimulationEvaluationCompletedResponseDTO)
+  if (GetArenaForAllocation() != nullptr) return;
   SharedDtor();
   _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-void SimulationEvaluationCompletedResponseDTO::SharedDtor() {
-  GOOGLE_DCHECK(GetArena() == nullptr);
+inline void SimulationEvaluationCompletedResponseDTO::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
   name_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
 }
 
 void SimulationEvaluationCompletedResponseDTO::ArenaDtor(void* object) {
   SimulationEvaluationCompletedResponseDTO* _this = reinterpret_cast< SimulationEvaluationCompletedResponseDTO* >(object);
   (void)_this;
+  _this->output_vector_. ~MapField();
 }
-void SimulationEvaluationCompletedResponseDTO::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+inline void SimulationEvaluationCompletedResponseDTO::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena) {
+  if (arena != nullptr) {
+    arena->OwnCustomDestructor(this, &SimulationEvaluationCompletedResponseDTO::ArenaDtor);
+  }
 }
 void SimulationEvaluationCompletedResponseDTO::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const SimulationEvaluationCompletedResponseDTO& SimulationEvaluationCompletedResponseDTO::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_SimulationEvaluationCompletedResponseDTO_optimizer_2eproto.base);
-  return *internal_default_instance();
+
+void SimulationEvaluationCompletedResponseDTO::Clear() {
+// @@protoc_insertion_point(message_clear_start:empowerops.volition.dto.SimulationEvaluationCompletedResponseDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  output_vector_.Clear();
+  name_.ClearToEmpty();
+  abort_optimization_ = false;
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
+const char* SimulationEvaluationCompletedResponseDTO::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // string name = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          auto str = _internal_mutable_name();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "empowerops.volition.dto.SimulationEvaluationCompletedResponseDTO.name"));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // map<string, double> output_vector = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            ptr = ctx->ParseMessage(&output_vector_, ptr);
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<18>(ptr));
+        } else
+          goto handle_unusual;
+        continue;
+      // bool abort_optimization = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 24)) {
+          abort_optimization_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* SimulationEvaluationCompletedResponseDTO::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:empowerops.volition.dto.SimulationEvaluationCompletedResponseDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // string name = 1;
+  if (!this->_internal_name().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_name().data(), static_cast<int>(this->_internal_name().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "empowerops.volition.dto.SimulationEvaluationCompletedResponseDTO.name");
+    target = stream->WriteStringMaybeAliased(
+        1, this->_internal_name(), target);
+  }
+
+  // map<string, double> output_vector = 2;
+  if (!this->_internal_output_vector().empty()) {
+    typedef ::PROTOBUF_NAMESPACE_ID::Map< std::string, double >::const_pointer
+        ConstPtr;
+    typedef ConstPtr SortItem;
+    typedef ::PROTOBUF_NAMESPACE_ID::internal::CompareByDerefFirst<SortItem> Less;
+    struct Utf8Check {
+      static void Check(ConstPtr p) {
+        (void)p;
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+          p->first.data(), static_cast<int>(p->first.length()),
+          ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+          "empowerops.volition.dto.SimulationEvaluationCompletedResponseDTO.OutputVectorEntry.key");
+      }
+    };
+
+    if (stream->IsSerializationDeterministic() &&
+        this->_internal_output_vector().size() > 1) {
+      ::std::unique_ptr<SortItem[]> items(
+          new SortItem[this->_internal_output_vector().size()]);
+      typedef ::PROTOBUF_NAMESPACE_ID::Map< std::string, double >::size_type size_type;
+      size_type n = 0;
+      for (::PROTOBUF_NAMESPACE_ID::Map< std::string, double >::const_iterator
+          it = this->_internal_output_vector().begin();
+          it != this->_internal_output_vector().end(); ++it, ++n) {
+        items[static_cast<ptrdiff_t>(n)] = SortItem(&*it);
+      }
+      ::std::sort(&items[0], &items[static_cast<ptrdiff_t>(n)], Less());
+      for (size_type i = 0; i < n; i++) {
+        target = SimulationEvaluationCompletedResponseDTO_OutputVectorEntry_DoNotUse::Funcs::InternalSerialize(2, items[static_cast<ptrdiff_t>(i)]->first, items[static_cast<ptrdiff_t>(i)]->second, target, stream);
+        Utf8Check::Check(&(*items[static_cast<ptrdiff_t>(i)]));
+      }
+    } else {
+      for (::PROTOBUF_NAMESPACE_ID::Map< std::string, double >::const_iterator
+          it = this->_internal_output_vector().begin();
+          it != this->_internal_output_vector().end(); ++it) {
+        target = SimulationEvaluationCompletedResponseDTO_OutputVectorEntry_DoNotUse::Funcs::InternalSerialize(2, it->first, it->second, target, stream);
+        Utf8Check::Check(&(*it));
+      }
+    }
+  }
+
+  // bool abort_optimization = 3;
+  if (this->_internal_abort_optimization() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteBoolToArray(3, this->_internal_abort_optimization(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:empowerops.volition.dto.SimulationEvaluationCompletedResponseDTO)
+  return target;
+}
+
+size_t SimulationEvaluationCompletedResponseDTO::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:empowerops.volition.dto.SimulationEvaluationCompletedResponseDTO)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // map<string, double> output_vector = 2;
+  total_size += 1 *
+      ::PROTOBUF_NAMESPACE_ID::internal::FromIntSize(this->_internal_output_vector_size());
+  for (::PROTOBUF_NAMESPACE_ID::Map< std::string, double >::const_iterator
+      it = this->_internal_output_vector().begin();
+      it != this->_internal_output_vector().end(); ++it) {
+    total_size += SimulationEvaluationCompletedResponseDTO_OutputVectorEntry_DoNotUse::Funcs::ByteSizeLong(it->first, it->second);
+  }
+
+  // string name = 1;
+  if (!this->_internal_name().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_name());
+  }
+
+  // bool abort_optimization = 3;
+  if (this->_internal_abort_optimization() != 0) {
+    total_size += 1 + 1;
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData SimulationEvaluationCompletedResponseDTO::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    SimulationEvaluationCompletedResponseDTO::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*SimulationEvaluationCompletedResponseDTO::GetClassData() const { return &_class_data_; }
+
+void SimulationEvaluationCompletedResponseDTO::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<SimulationEvaluationCompletedResponseDTO *>(to)->MergeFrom(
+      static_cast<const SimulationEvaluationCompletedResponseDTO &>(from));
+}
+
+
+void SimulationEvaluationCompletedResponseDTO::MergeFrom(const SimulationEvaluationCompletedResponseDTO& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:empowerops.volition.dto.SimulationEvaluationCompletedResponseDTO)
+  GOOGLE_DCHECK_NE(&from, this);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  output_vector_.MergeFrom(from.output_vector_);
+  if (!from._internal_name().empty()) {
+    _internal_set_name(from._internal_name());
+  }
+  if (from._internal_abort_optimization() != 0) {
+    _internal_set_abort_optimization(from._internal_abort_optimization());
+  }
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void SimulationEvaluationCompletedResponseDTO::CopyFrom(const SimulationEvaluationCompletedResponseDTO& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:empowerops.volition.dto.SimulationEvaluationCompletedResponseDTO)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool SimulationEvaluationCompletedResponseDTO::IsInitialized() const {
+  return true;
+}
 
 void SimulationEvaluationCompletedResponseDTO::InternalSwap(SimulationEvaluationCompletedResponseDTO* other) {
   using std::swap;
-  GetReflection()->Swap(this, other);}
-
-::PROTOBUF_NAMESPACE_ID::Metadata SimulationEvaluationCompletedResponseDTO::GetMetadata() const {
-  return GetMetadataStatic();
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  output_vector_.InternalSwap(&other->output_vector_);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      &name_, lhs_arena,
+      &other->name_, rhs_arena
+  );
+  swap(abort_optimization_, other->abort_optimization_);
 }
 
+::PROTOBUF_NAMESPACE_ID::Metadata SimulationEvaluationCompletedResponseDTO::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_optimizer_2eproto_getter, &descriptor_table_optimizer_2eproto_once,
+      file_level_metadata_optimizer_2eproto[25]);
+}
 
 // ===================================================================
 
@@ -2205,54 +8040,38 @@ class SimulationEvaluationResultConfirmDTO::_Internal {
  public:
 };
 
-SimulationEvaluationResultConfirmDTO::SimulationEvaluationResultConfirmDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
-  SharedCtor();
-  RegisterArenaDtor(arena);
+SimulationEvaluationResultConfirmDTO::SimulationEvaluationResultConfirmDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase(arena, is_message_owned) {
   // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.SimulationEvaluationResultConfirmDTO)
 }
 SimulationEvaluationResultConfirmDTO::SimulationEvaluationResultConfirmDTO(const SimulationEvaluationResultConfirmDTO& from)
-  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  : ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase() {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.SimulationEvaluationResultConfirmDTO)
 }
 
-void SimulationEvaluationResultConfirmDTO::SharedCtor() {
-}
-
-SimulationEvaluationResultConfirmDTO::~SimulationEvaluationResultConfirmDTO() {
-  // @@protoc_insertion_point(destructor:empowerops.volition.dto.SimulationEvaluationResultConfirmDTO)
-  SharedDtor();
-  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-}
-
-void SimulationEvaluationResultConfirmDTO::SharedDtor() {
-  GOOGLE_DCHECK(GetArena() == nullptr);
-}
-
-void SimulationEvaluationResultConfirmDTO::ArenaDtor(void* object) {
-  SimulationEvaluationResultConfirmDTO* _this = reinterpret_cast< SimulationEvaluationResultConfirmDTO* >(object);
-  (void)_this;
-}
-void SimulationEvaluationResultConfirmDTO::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
-}
-void SimulationEvaluationResultConfirmDTO::SetCachedSize(int size) const {
-  _cached_size_.Set(size);
-}
-const SimulationEvaluationResultConfirmDTO& SimulationEvaluationResultConfirmDTO::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_SimulationEvaluationResultConfirmDTO_optimizer_2eproto.base);
-  return *internal_default_instance();
-}
 
 
-void SimulationEvaluationResultConfirmDTO::InternalSwap(SimulationEvaluationResultConfirmDTO* other) {
-  using std::swap;
-  GetReflection()->Swap(this, other);}
+
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData SimulationEvaluationResultConfirmDTO::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyImpl,
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeImpl,
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*SimulationEvaluationResultConfirmDTO::GetClassData() const { return &_class_data_; }
+
+
+
+
+
+
 
 ::PROTOBUF_NAMESPACE_ID::Metadata SimulationEvaluationResultConfirmDTO::GetMetadata() const {
-  return GetMetadataStatic();
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_optimizer_2eproto_getter, &descriptor_table_optimizer_2eproto_once,
+      file_level_metadata_optimizer_2eproto[26]);
 }
-
 
 // ===================================================================
 
@@ -2260,10 +8079,13 @@ class SimulationEvaluationErrorResponseDTO::_Internal {
  public:
 };
 
-SimulationEvaluationErrorResponseDTO::SimulationEvaluationErrorResponseDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
+SimulationEvaluationErrorResponseDTO::SimulationEvaluationErrorResponseDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
   SharedCtor();
-  RegisterArenaDtor(arena);
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
   // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.SimulationEvaluationErrorResponseDTO)
 }
 SimulationEvaluationErrorResponseDTO::SimulationEvaluationErrorResponseDTO(const SimulationEvaluationErrorResponseDTO& from)
@@ -2272,38 +8094,38 @@ SimulationEvaluationErrorResponseDTO::SimulationEvaluationErrorResponseDTO(const
   name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   if (!from._internal_name().empty()) {
     name_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_name(), 
-      GetArena());
+      GetArenaForAllocation());
   }
   message_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   if (!from._internal_message().empty()) {
     message_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_message(), 
-      GetArena());
+      GetArenaForAllocation());
   }
   exception_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   if (!from._internal_exception().empty()) {
     exception_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_exception(), 
-      GetArena());
+      GetArenaForAllocation());
   }
   abort_optimization_ = from.abort_optimization_;
   // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.SimulationEvaluationErrorResponseDTO)
 }
 
 void SimulationEvaluationErrorResponseDTO::SharedCtor() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_SimulationEvaluationErrorResponseDTO_optimizer_2eproto.base);
-  name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  message_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  exception_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  abort_optimization_ = false;
+name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+message_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+exception_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+abort_optimization_ = false;
 }
 
 SimulationEvaluationErrorResponseDTO::~SimulationEvaluationErrorResponseDTO() {
   // @@protoc_insertion_point(destructor:empowerops.volition.dto.SimulationEvaluationErrorResponseDTO)
+  if (GetArenaForAllocation() != nullptr) return;
   SharedDtor();
   _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-void SimulationEvaluationErrorResponseDTO::SharedDtor() {
-  GOOGLE_DCHECK(GetArena() == nullptr);
+inline void SimulationEvaluationErrorResponseDTO::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
   name_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   message_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   exception_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
@@ -2318,20 +8140,247 @@ void SimulationEvaluationErrorResponseDTO::RegisterArenaDtor(::PROTOBUF_NAMESPAC
 void SimulationEvaluationErrorResponseDTO::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const SimulationEvaluationErrorResponseDTO& SimulationEvaluationErrorResponseDTO::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_SimulationEvaluationErrorResponseDTO_optimizer_2eproto.base);
-  return *internal_default_instance();
+
+void SimulationEvaluationErrorResponseDTO::Clear() {
+// @@protoc_insertion_point(message_clear_start:empowerops.volition.dto.SimulationEvaluationErrorResponseDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  name_.ClearToEmpty();
+  message_.ClearToEmpty();
+  exception_.ClearToEmpty();
+  abort_optimization_ = false;
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
+const char* SimulationEvaluationErrorResponseDTO::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // string name = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          auto str = _internal_mutable_name();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "empowerops.volition.dto.SimulationEvaluationErrorResponseDTO.name"));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // string message = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
+          auto str = _internal_mutable_message();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "empowerops.volition.dto.SimulationEvaluationErrorResponseDTO.message"));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // string exception = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 26)) {
+          auto str = _internal_mutable_exception();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "empowerops.volition.dto.SimulationEvaluationErrorResponseDTO.exception"));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // bool abort_optimization = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 32)) {
+          abort_optimization_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* SimulationEvaluationErrorResponseDTO::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:empowerops.volition.dto.SimulationEvaluationErrorResponseDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // string name = 1;
+  if (!this->_internal_name().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_name().data(), static_cast<int>(this->_internal_name().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "empowerops.volition.dto.SimulationEvaluationErrorResponseDTO.name");
+    target = stream->WriteStringMaybeAliased(
+        1, this->_internal_name(), target);
+  }
+
+  // string message = 2;
+  if (!this->_internal_message().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_message().data(), static_cast<int>(this->_internal_message().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "empowerops.volition.dto.SimulationEvaluationErrorResponseDTO.message");
+    target = stream->WriteStringMaybeAliased(
+        2, this->_internal_message(), target);
+  }
+
+  // string exception = 3;
+  if (!this->_internal_exception().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_exception().data(), static_cast<int>(this->_internal_exception().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "empowerops.volition.dto.SimulationEvaluationErrorResponseDTO.exception");
+    target = stream->WriteStringMaybeAliased(
+        3, this->_internal_exception(), target);
+  }
+
+  // bool abort_optimization = 4;
+  if (this->_internal_abort_optimization() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteBoolToArray(4, this->_internal_abort_optimization(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:empowerops.volition.dto.SimulationEvaluationErrorResponseDTO)
+  return target;
+}
+
+size_t SimulationEvaluationErrorResponseDTO::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:empowerops.volition.dto.SimulationEvaluationErrorResponseDTO)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // string name = 1;
+  if (!this->_internal_name().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_name());
+  }
+
+  // string message = 2;
+  if (!this->_internal_message().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_message());
+  }
+
+  // string exception = 3;
+  if (!this->_internal_exception().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_exception());
+  }
+
+  // bool abort_optimization = 4;
+  if (this->_internal_abort_optimization() != 0) {
+    total_size += 1 + 1;
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData SimulationEvaluationErrorResponseDTO::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    SimulationEvaluationErrorResponseDTO::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*SimulationEvaluationErrorResponseDTO::GetClassData() const { return &_class_data_; }
+
+void SimulationEvaluationErrorResponseDTO::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<SimulationEvaluationErrorResponseDTO *>(to)->MergeFrom(
+      static_cast<const SimulationEvaluationErrorResponseDTO &>(from));
+}
+
+
+void SimulationEvaluationErrorResponseDTO::MergeFrom(const SimulationEvaluationErrorResponseDTO& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:empowerops.volition.dto.SimulationEvaluationErrorResponseDTO)
+  GOOGLE_DCHECK_NE(&from, this);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (!from._internal_name().empty()) {
+    _internal_set_name(from._internal_name());
+  }
+  if (!from._internal_message().empty()) {
+    _internal_set_message(from._internal_message());
+  }
+  if (!from._internal_exception().empty()) {
+    _internal_set_exception(from._internal_exception());
+  }
+  if (from._internal_abort_optimization() != 0) {
+    _internal_set_abort_optimization(from._internal_abort_optimization());
+  }
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void SimulationEvaluationErrorResponseDTO::CopyFrom(const SimulationEvaluationErrorResponseDTO& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:empowerops.volition.dto.SimulationEvaluationErrorResponseDTO)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool SimulationEvaluationErrorResponseDTO::IsInitialized() const {
+  return true;
+}
 
 void SimulationEvaluationErrorResponseDTO::InternalSwap(SimulationEvaluationErrorResponseDTO* other) {
   using std::swap;
-  GetReflection()->Swap(this, other);}
-
-::PROTOBUF_NAMESPACE_ID::Metadata SimulationEvaluationErrorResponseDTO::GetMetadata() const {
-  return GetMetadataStatic();
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      &name_, lhs_arena,
+      &other->name_, rhs_arena
+  );
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      &message_, lhs_arena,
+      &other->message_, rhs_arena
+  );
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      &exception_, lhs_arena,
+      &other->exception_, rhs_arena
+  );
+  swap(abort_optimization_, other->abort_optimization_);
 }
 
+::PROTOBUF_NAMESPACE_ID::Metadata SimulationEvaluationErrorResponseDTO::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_optimizer_2eproto_getter, &descriptor_table_optimizer_2eproto_once,
+      file_level_metadata_optimizer_2eproto[27]);
+}
 
 // ===================================================================
 
@@ -2339,54 +8388,38 @@ class SimulationEvaluationErrorConfirmDTO::_Internal {
  public:
 };
 
-SimulationEvaluationErrorConfirmDTO::SimulationEvaluationErrorConfirmDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
-  SharedCtor();
-  RegisterArenaDtor(arena);
+SimulationEvaluationErrorConfirmDTO::SimulationEvaluationErrorConfirmDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase(arena, is_message_owned) {
   // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.SimulationEvaluationErrorConfirmDTO)
 }
 SimulationEvaluationErrorConfirmDTO::SimulationEvaluationErrorConfirmDTO(const SimulationEvaluationErrorConfirmDTO& from)
-  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  : ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase() {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.SimulationEvaluationErrorConfirmDTO)
 }
 
-void SimulationEvaluationErrorConfirmDTO::SharedCtor() {
-}
-
-SimulationEvaluationErrorConfirmDTO::~SimulationEvaluationErrorConfirmDTO() {
-  // @@protoc_insertion_point(destructor:empowerops.volition.dto.SimulationEvaluationErrorConfirmDTO)
-  SharedDtor();
-  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-}
-
-void SimulationEvaluationErrorConfirmDTO::SharedDtor() {
-  GOOGLE_DCHECK(GetArena() == nullptr);
-}
-
-void SimulationEvaluationErrorConfirmDTO::ArenaDtor(void* object) {
-  SimulationEvaluationErrorConfirmDTO* _this = reinterpret_cast< SimulationEvaluationErrorConfirmDTO* >(object);
-  (void)_this;
-}
-void SimulationEvaluationErrorConfirmDTO::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
-}
-void SimulationEvaluationErrorConfirmDTO::SetCachedSize(int size) const {
-  _cached_size_.Set(size);
-}
-const SimulationEvaluationErrorConfirmDTO& SimulationEvaluationErrorConfirmDTO::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_SimulationEvaluationErrorConfirmDTO_optimizer_2eproto.base);
-  return *internal_default_instance();
-}
 
 
-void SimulationEvaluationErrorConfirmDTO::InternalSwap(SimulationEvaluationErrorConfirmDTO* other) {
-  using std::swap;
-  GetReflection()->Swap(this, other);}
+
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData SimulationEvaluationErrorConfirmDTO::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyImpl,
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeImpl,
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*SimulationEvaluationErrorConfirmDTO::GetClassData() const { return &_class_data_; }
+
+
+
+
+
+
 
 ::PROTOBUF_NAMESPACE_ID::Metadata SimulationEvaluationErrorConfirmDTO::GetMetadata() const {
-  return GetMetadataStatic();
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_optimizer_2eproto_getter, &descriptor_table_optimizer_2eproto_once,
+      file_level_metadata_optimizer_2eproto[28]);
 }
-
 
 // ===================================================================
 
@@ -2394,10 +8427,13 @@ class StatusMessageCommandDTO::_Internal {
  public:
 };
 
-StatusMessageCommandDTO::StatusMessageCommandDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
+StatusMessageCommandDTO::StatusMessageCommandDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
   SharedCtor();
-  RegisterArenaDtor(arena);
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
   // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.StatusMessageCommandDTO)
 }
 StatusMessageCommandDTO::StatusMessageCommandDTO(const StatusMessageCommandDTO& from)
@@ -2406,30 +8442,30 @@ StatusMessageCommandDTO::StatusMessageCommandDTO(const StatusMessageCommandDTO& 
   name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   if (!from._internal_name().empty()) {
     name_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_name(), 
-      GetArena());
+      GetArenaForAllocation());
   }
   message_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   if (!from._internal_message().empty()) {
     message_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_message(), 
-      GetArena());
+      GetArenaForAllocation());
   }
   // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.StatusMessageCommandDTO)
 }
 
 void StatusMessageCommandDTO::SharedCtor() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_StatusMessageCommandDTO_optimizer_2eproto.base);
-  name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  message_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+message_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
 }
 
 StatusMessageCommandDTO::~StatusMessageCommandDTO() {
   // @@protoc_insertion_point(destructor:empowerops.volition.dto.StatusMessageCommandDTO)
+  if (GetArenaForAllocation() != nullptr) return;
   SharedDtor();
   _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-void StatusMessageCommandDTO::SharedDtor() {
-  GOOGLE_DCHECK(GetArena() == nullptr);
+inline void StatusMessageCommandDTO::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
   name_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   message_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
 }
@@ -2443,20 +8479,187 @@ void StatusMessageCommandDTO::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*)
 void StatusMessageCommandDTO::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const StatusMessageCommandDTO& StatusMessageCommandDTO::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_StatusMessageCommandDTO_optimizer_2eproto.base);
-  return *internal_default_instance();
+
+void StatusMessageCommandDTO::Clear() {
+// @@protoc_insertion_point(message_clear_start:empowerops.volition.dto.StatusMessageCommandDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  name_.ClearToEmpty();
+  message_.ClearToEmpty();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
+const char* StatusMessageCommandDTO::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // string name = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          auto str = _internal_mutable_name();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "empowerops.volition.dto.StatusMessageCommandDTO.name"));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // string message = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
+          auto str = _internal_mutable_message();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "empowerops.volition.dto.StatusMessageCommandDTO.message"));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* StatusMessageCommandDTO::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:empowerops.volition.dto.StatusMessageCommandDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // string name = 1;
+  if (!this->_internal_name().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_name().data(), static_cast<int>(this->_internal_name().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "empowerops.volition.dto.StatusMessageCommandDTO.name");
+    target = stream->WriteStringMaybeAliased(
+        1, this->_internal_name(), target);
+  }
+
+  // string message = 2;
+  if (!this->_internal_message().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_message().data(), static_cast<int>(this->_internal_message().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "empowerops.volition.dto.StatusMessageCommandDTO.message");
+    target = stream->WriteStringMaybeAliased(
+        2, this->_internal_message(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:empowerops.volition.dto.StatusMessageCommandDTO)
+  return target;
+}
+
+size_t StatusMessageCommandDTO::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:empowerops.volition.dto.StatusMessageCommandDTO)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // string name = 1;
+  if (!this->_internal_name().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_name());
+  }
+
+  // string message = 2;
+  if (!this->_internal_message().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_message());
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData StatusMessageCommandDTO::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    StatusMessageCommandDTO::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*StatusMessageCommandDTO::GetClassData() const { return &_class_data_; }
+
+void StatusMessageCommandDTO::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<StatusMessageCommandDTO *>(to)->MergeFrom(
+      static_cast<const StatusMessageCommandDTO &>(from));
+}
+
+
+void StatusMessageCommandDTO::MergeFrom(const StatusMessageCommandDTO& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:empowerops.volition.dto.StatusMessageCommandDTO)
+  GOOGLE_DCHECK_NE(&from, this);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (!from._internal_name().empty()) {
+    _internal_set_name(from._internal_name());
+  }
+  if (!from._internal_message().empty()) {
+    _internal_set_message(from._internal_message());
+  }
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void StatusMessageCommandDTO::CopyFrom(const StatusMessageCommandDTO& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:empowerops.volition.dto.StatusMessageCommandDTO)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool StatusMessageCommandDTO::IsInitialized() const {
+  return true;
+}
 
 void StatusMessageCommandDTO::InternalSwap(StatusMessageCommandDTO* other) {
   using std::swap;
-  GetReflection()->Swap(this, other);}
-
-::PROTOBUF_NAMESPACE_ID::Metadata StatusMessageCommandDTO::GetMetadata() const {
-  return GetMetadataStatic();
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      &name_, lhs_arena,
+      &other->name_, rhs_arena
+  );
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      &message_, lhs_arena,
+      &other->message_, rhs_arena
+  );
 }
 
+::PROTOBUF_NAMESPACE_ID::Metadata StatusMessageCommandDTO::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_optimizer_2eproto_getter, &descriptor_table_optimizer_2eproto_once,
+      file_level_metadata_optimizer_2eproto[29]);
+}
 
 // ===================================================================
 
@@ -2464,70 +8667,57 @@ class StatusMessageConfirmDTO::_Internal {
  public:
 };
 
-StatusMessageConfirmDTO::StatusMessageConfirmDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
-  SharedCtor();
-  RegisterArenaDtor(arena);
+StatusMessageConfirmDTO::StatusMessageConfirmDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase(arena, is_message_owned) {
   // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.StatusMessageConfirmDTO)
 }
 StatusMessageConfirmDTO::StatusMessageConfirmDTO(const StatusMessageConfirmDTO& from)
-  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  : ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase() {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.StatusMessageConfirmDTO)
 }
 
-void StatusMessageConfirmDTO::SharedCtor() {
-}
-
-StatusMessageConfirmDTO::~StatusMessageConfirmDTO() {
-  // @@protoc_insertion_point(destructor:empowerops.volition.dto.StatusMessageConfirmDTO)
-  SharedDtor();
-  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-}
-
-void StatusMessageConfirmDTO::SharedDtor() {
-  GOOGLE_DCHECK(GetArena() == nullptr);
-}
-
-void StatusMessageConfirmDTO::ArenaDtor(void* object) {
-  StatusMessageConfirmDTO* _this = reinterpret_cast< StatusMessageConfirmDTO* >(object);
-  (void)_this;
-}
-void StatusMessageConfirmDTO::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
-}
-void StatusMessageConfirmDTO::SetCachedSize(int size) const {
-  _cached_size_.Set(size);
-}
-const StatusMessageConfirmDTO& StatusMessageConfirmDTO::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_StatusMessageConfirmDTO_optimizer_2eproto.base);
-  return *internal_default_instance();
-}
 
 
-void StatusMessageConfirmDTO::InternalSwap(StatusMessageConfirmDTO* other) {
-  using std::swap;
-  GetReflection()->Swap(this, other);}
+
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData StatusMessageConfirmDTO::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyImpl,
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeImpl,
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*StatusMessageConfirmDTO::GetClassData() const { return &_class_data_; }
+
+
+
+
+
+
 
 ::PROTOBUF_NAMESPACE_ID::Metadata StatusMessageConfirmDTO::GetMetadata() const {
-  return GetMetadataStatic();
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_optimizer_2eproto_getter, &descriptor_table_optimizer_2eproto_once,
+      file_level_metadata_optimizer_2eproto[30]);
 }
-
 
 // ===================================================================
 
 class StopOptimizationCommandDTO::_Internal {
  public:
-  static const ::empowerops::volition::dto::UUID& run_id(const StopOptimizationCommandDTO* msg);
+  static const ::empowerops::volition::dto::UUIDDTO& run_id(const StopOptimizationCommandDTO* msg);
 };
 
-const ::empowerops::volition::dto::UUID&
+const ::empowerops::volition::dto::UUIDDTO&
 StopOptimizationCommandDTO::_Internal::run_id(const StopOptimizationCommandDTO* msg) {
   return *msg->run_id_;
 }
-StopOptimizationCommandDTO::StopOptimizationCommandDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
+StopOptimizationCommandDTO::StopOptimizationCommandDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
   SharedCtor();
-  RegisterArenaDtor(arena);
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
   // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.StopOptimizationCommandDTO)
 }
 StopOptimizationCommandDTO::StopOptimizationCommandDTO(const StopOptimizationCommandDTO& from)
@@ -2536,10 +8726,10 @@ StopOptimizationCommandDTO::StopOptimizationCommandDTO(const StopOptimizationCom
   name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   if (!from._internal_name().empty()) {
     name_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_name(), 
-      GetArena());
+      GetArenaForAllocation());
   }
   if (from._internal_has_run_id()) {
-    run_id_ = new ::empowerops::volition::dto::UUID(*from.run_id_);
+    run_id_ = new ::empowerops::volition::dto::UUIDDTO(*from.run_id_);
   } else {
     run_id_ = nullptr;
   }
@@ -2547,19 +8737,19 @@ StopOptimizationCommandDTO::StopOptimizationCommandDTO(const StopOptimizationCom
 }
 
 void StopOptimizationCommandDTO::SharedCtor() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_StopOptimizationCommandDTO_optimizer_2eproto.base);
-  name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  run_id_ = nullptr;
+name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+run_id_ = nullptr;
 }
 
 StopOptimizationCommandDTO::~StopOptimizationCommandDTO() {
   // @@protoc_insertion_point(destructor:empowerops.volition.dto.StopOptimizationCommandDTO)
+  if (GetArenaForAllocation() != nullptr) return;
   SharedDtor();
   _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-void StopOptimizationCommandDTO::SharedDtor() {
-  GOOGLE_DCHECK(GetArena() == nullptr);
+inline void StopOptimizationCommandDTO::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
   name_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   if (this != internal_default_instance()) delete run_id_;
 }
@@ -2573,43 +8763,208 @@ void StopOptimizationCommandDTO::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Aren
 void StopOptimizationCommandDTO::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const StopOptimizationCommandDTO& StopOptimizationCommandDTO::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_StopOptimizationCommandDTO_optimizer_2eproto.base);
-  return *internal_default_instance();
+
+void StopOptimizationCommandDTO::Clear() {
+// @@protoc_insertion_point(message_clear_start:empowerops.volition.dto.StopOptimizationCommandDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  name_.ClearToEmpty();
+  if (GetArenaForAllocation() == nullptr && run_id_ != nullptr) {
+    delete run_id_;
+  }
+  run_id_ = nullptr;
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
+const char* StopOptimizationCommandDTO::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // string name = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          auto str = _internal_mutable_name();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "empowerops.volition.dto.StopOptimizationCommandDTO.name"));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // .empowerops.volition.dto.UUIDDTO run_ID = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
+          ptr = ctx->ParseMessage(_internal_mutable_run_id(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* StopOptimizationCommandDTO::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:empowerops.volition.dto.StopOptimizationCommandDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // string name = 1;
+  if (!this->_internal_name().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_name().data(), static_cast<int>(this->_internal_name().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "empowerops.volition.dto.StopOptimizationCommandDTO.name");
+    target = stream->WriteStringMaybeAliased(
+        1, this->_internal_name(), target);
+  }
+
+  // .empowerops.volition.dto.UUIDDTO run_ID = 2;
+  if (this->_internal_has_run_id()) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(
+        2, _Internal::run_id(this), target, stream);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:empowerops.volition.dto.StopOptimizationCommandDTO)
+  return target;
+}
+
+size_t StopOptimizationCommandDTO::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:empowerops.volition.dto.StopOptimizationCommandDTO)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // string name = 1;
+  if (!this->_internal_name().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_name());
+  }
+
+  // .empowerops.volition.dto.UUIDDTO run_ID = 2;
+  if (this->_internal_has_run_id()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+        *run_id_);
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData StopOptimizationCommandDTO::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    StopOptimizationCommandDTO::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*StopOptimizationCommandDTO::GetClassData() const { return &_class_data_; }
+
+void StopOptimizationCommandDTO::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<StopOptimizationCommandDTO *>(to)->MergeFrom(
+      static_cast<const StopOptimizationCommandDTO &>(from));
+}
+
+
+void StopOptimizationCommandDTO::MergeFrom(const StopOptimizationCommandDTO& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:empowerops.volition.dto.StopOptimizationCommandDTO)
+  GOOGLE_DCHECK_NE(&from, this);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (!from._internal_name().empty()) {
+    _internal_set_name(from._internal_name());
+  }
+  if (from._internal_has_run_id()) {
+    _internal_mutable_run_id()->::empowerops::volition::dto::UUIDDTO::MergeFrom(from._internal_run_id());
+  }
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void StopOptimizationCommandDTO::CopyFrom(const StopOptimizationCommandDTO& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:empowerops.volition.dto.StopOptimizationCommandDTO)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool StopOptimizationCommandDTO::IsInitialized() const {
+  return true;
+}
 
 void StopOptimizationCommandDTO::InternalSwap(StopOptimizationCommandDTO* other) {
   using std::swap;
-  GetReflection()->Swap(this, other);}
-
-::PROTOBUF_NAMESPACE_ID::Metadata StopOptimizationCommandDTO::GetMetadata() const {
-  return GetMetadataStatic();
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      &name_, lhs_arena,
+      &other->name_, rhs_arena
+  );
+  swap(run_id_, other->run_id_);
 }
 
+::PROTOBUF_NAMESPACE_ID::Metadata StopOptimizationCommandDTO::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_optimizer_2eproto_getter, &descriptor_table_optimizer_2eproto_once,
+      file_level_metadata_optimizer_2eproto[31]);
+}
 
 // ===================================================================
 
 class StopOptimizationConfirmDTO::_Internal {
  public:
-  static const ::empowerops::volition::dto::UUID& run_id(const StopOptimizationConfirmDTO* msg);
+  static const ::empowerops::volition::dto::UUIDDTO& run_id(const StopOptimizationConfirmDTO* msg);
 };
 
-const ::empowerops::volition::dto::UUID&
+const ::empowerops::volition::dto::UUIDDTO&
 StopOptimizationConfirmDTO::_Internal::run_id(const StopOptimizationConfirmDTO* msg) {
   return *msg->run_id_;
 }
-StopOptimizationConfirmDTO::StopOptimizationConfirmDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
+StopOptimizationConfirmDTO::StopOptimizationConfirmDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
   SharedCtor();
-  RegisterArenaDtor(arena);
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
   // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.StopOptimizationConfirmDTO)
 }
 StopOptimizationConfirmDTO::StopOptimizationConfirmDTO(const StopOptimizationConfirmDTO& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   if (from._internal_has_run_id()) {
-    run_id_ = new ::empowerops::volition::dto::UUID(*from.run_id_);
+    run_id_ = new ::empowerops::volition::dto::UUIDDTO(*from.run_id_);
   } else {
     run_id_ = nullptr;
   }
@@ -2617,18 +8972,18 @@ StopOptimizationConfirmDTO::StopOptimizationConfirmDTO(const StopOptimizationCon
 }
 
 void StopOptimizationConfirmDTO::SharedCtor() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_StopOptimizationConfirmDTO_optimizer_2eproto.base);
-  run_id_ = nullptr;
+run_id_ = nullptr;
 }
 
 StopOptimizationConfirmDTO::~StopOptimizationConfirmDTO() {
   // @@protoc_insertion_point(destructor:empowerops.volition.dto.StopOptimizationConfirmDTO)
+  if (GetArenaForAllocation() != nullptr) return;
   SharedDtor();
   _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-void StopOptimizationConfirmDTO::SharedDtor() {
-  GOOGLE_DCHECK(GetArena() == nullptr);
+inline void StopOptimizationConfirmDTO::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
   if (this != internal_default_instance()) delete run_id_;
 }
 
@@ -2641,48 +8996,170 @@ void StopOptimizationConfirmDTO::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Aren
 void StopOptimizationConfirmDTO::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const StopOptimizationConfirmDTO& StopOptimizationConfirmDTO::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_StopOptimizationConfirmDTO_optimizer_2eproto.base);
-  return *internal_default_instance();
+
+void StopOptimizationConfirmDTO::Clear() {
+// @@protoc_insertion_point(message_clear_start:empowerops.volition.dto.StopOptimizationConfirmDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  if (GetArenaForAllocation() == nullptr && run_id_ != nullptr) {
+    delete run_id_;
+  }
+  run_id_ = nullptr;
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
+const char* StopOptimizationConfirmDTO::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // .empowerops.volition.dto.UUIDDTO run_ID = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
+          ptr = ctx->ParseMessage(_internal_mutable_run_id(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* StopOptimizationConfirmDTO::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:empowerops.volition.dto.StopOptimizationConfirmDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // .empowerops.volition.dto.UUIDDTO run_ID = 2;
+  if (this->_internal_has_run_id()) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(
+        2, _Internal::run_id(this), target, stream);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:empowerops.volition.dto.StopOptimizationConfirmDTO)
+  return target;
+}
+
+size_t StopOptimizationConfirmDTO::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:empowerops.volition.dto.StopOptimizationConfirmDTO)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // .empowerops.volition.dto.UUIDDTO run_ID = 2;
+  if (this->_internal_has_run_id()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+        *run_id_);
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData StopOptimizationConfirmDTO::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    StopOptimizationConfirmDTO::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*StopOptimizationConfirmDTO::GetClassData() const { return &_class_data_; }
+
+void StopOptimizationConfirmDTO::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<StopOptimizationConfirmDTO *>(to)->MergeFrom(
+      static_cast<const StopOptimizationConfirmDTO &>(from));
+}
+
+
+void StopOptimizationConfirmDTO::MergeFrom(const StopOptimizationConfirmDTO& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:empowerops.volition.dto.StopOptimizationConfirmDTO)
+  GOOGLE_DCHECK_NE(&from, this);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from._internal_has_run_id()) {
+    _internal_mutable_run_id()->::empowerops::volition::dto::UUIDDTO::MergeFrom(from._internal_run_id());
+  }
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void StopOptimizationConfirmDTO::CopyFrom(const StopOptimizationConfirmDTO& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:empowerops.volition.dto.StopOptimizationConfirmDTO)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool StopOptimizationConfirmDTO::IsInitialized() const {
+  return true;
+}
 
 void StopOptimizationConfirmDTO::InternalSwap(StopOptimizationConfirmDTO* other) {
   using std::swap;
-  GetReflection()->Swap(this, other);}
-
-::PROTOBUF_NAMESPACE_ID::Metadata StopOptimizationConfirmDTO::GetMetadata() const {
-  return GetMetadataStatic();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(run_id_, other->run_id_);
 }
 
+::PROTOBUF_NAMESPACE_ID::Metadata StopOptimizationConfirmDTO::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_optimizer_2eproto_getter, &descriptor_table_optimizer_2eproto_once,
+      file_level_metadata_optimizer_2eproto[32]);
+}
 
 // ===================================================================
 
 class OptimizationResultsQueryDTO::_Internal {
  public:
-  static const ::empowerops::volition::dto::UUID& run_id(const OptimizationResultsQueryDTO* msg);
+  static const ::empowerops::volition::dto::UUIDDTO& run_id(const OptimizationResultsQueryDTO* msg);
 };
 
-const ::empowerops::volition::dto::UUID&
+const ::empowerops::volition::dto::UUIDDTO&
 OptimizationResultsQueryDTO::_Internal::run_id(const OptimizationResultsQueryDTO* msg) {
   return *msg->run_id_;
 }
-OptimizationResultsQueryDTO::OptimizationResultsQueryDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
+OptimizationResultsQueryDTO::OptimizationResultsQueryDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
   SharedCtor();
-  RegisterArenaDtor(arena);
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
   // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.OptimizationResultsQueryDTO)
 }
 OptimizationResultsQueryDTO::OptimizationResultsQueryDTO(const OptimizationResultsQueryDTO& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  if (!from._internal_name().empty()) {
-    name_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_name(), 
-      GetArena());
-  }
   if (from._internal_has_run_id()) {
-    run_id_ = new ::empowerops::volition::dto::UUID(*from.run_id_);
+    run_id_ = new ::empowerops::volition::dto::UUIDDTO(*from.run_id_);
   } else {
     run_id_ = nullptr;
   }
@@ -2690,20 +9167,18 @@ OptimizationResultsQueryDTO::OptimizationResultsQueryDTO(const OptimizationResul
 }
 
 void OptimizationResultsQueryDTO::SharedCtor() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_OptimizationResultsQueryDTO_optimizer_2eproto.base);
-  name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  run_id_ = nullptr;
+run_id_ = nullptr;
 }
 
 OptimizationResultsQueryDTO::~OptimizationResultsQueryDTO() {
   // @@protoc_insertion_point(destructor:empowerops.volition.dto.OptimizationResultsQueryDTO)
+  if (GetArenaForAllocation() != nullptr) return;
   SharedDtor();
   _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-void OptimizationResultsQueryDTO::SharedDtor() {
-  GOOGLE_DCHECK(GetArena() == nullptr);
-  name_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+inline void OptimizationResultsQueryDTO::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
   if (this != internal_default_instance()) delete run_id_;
 }
 
@@ -2716,51 +9191,176 @@ void OptimizationResultsQueryDTO::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Are
 void OptimizationResultsQueryDTO::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const OptimizationResultsQueryDTO& OptimizationResultsQueryDTO::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_OptimizationResultsQueryDTO_optimizer_2eproto.base);
-  return *internal_default_instance();
+
+void OptimizationResultsQueryDTO::Clear() {
+// @@protoc_insertion_point(message_clear_start:empowerops.volition.dto.OptimizationResultsQueryDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  if (GetArenaForAllocation() == nullptr && run_id_ != nullptr) {
+    delete run_id_;
+  }
+  run_id_ = nullptr;
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
+const char* OptimizationResultsQueryDTO::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // .empowerops.volition.dto.UUIDDTO run_ID = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
+          ptr = ctx->ParseMessage(_internal_mutable_run_id(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* OptimizationResultsQueryDTO::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:empowerops.volition.dto.OptimizationResultsQueryDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // .empowerops.volition.dto.UUIDDTO run_ID = 2;
+  if (this->_internal_has_run_id()) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(
+        2, _Internal::run_id(this), target, stream);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:empowerops.volition.dto.OptimizationResultsQueryDTO)
+  return target;
+}
+
+size_t OptimizationResultsQueryDTO::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:empowerops.volition.dto.OptimizationResultsQueryDTO)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // .empowerops.volition.dto.UUIDDTO run_ID = 2;
+  if (this->_internal_has_run_id()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+        *run_id_);
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData OptimizationResultsQueryDTO::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    OptimizationResultsQueryDTO::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*OptimizationResultsQueryDTO::GetClassData() const { return &_class_data_; }
+
+void OptimizationResultsQueryDTO::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<OptimizationResultsQueryDTO *>(to)->MergeFrom(
+      static_cast<const OptimizationResultsQueryDTO &>(from));
+}
+
+
+void OptimizationResultsQueryDTO::MergeFrom(const OptimizationResultsQueryDTO& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:empowerops.volition.dto.OptimizationResultsQueryDTO)
+  GOOGLE_DCHECK_NE(&from, this);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from._internal_has_run_id()) {
+    _internal_mutable_run_id()->::empowerops::volition::dto::UUIDDTO::MergeFrom(from._internal_run_id());
+  }
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void OptimizationResultsQueryDTO::CopyFrom(const OptimizationResultsQueryDTO& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:empowerops.volition.dto.OptimizationResultsQueryDTO)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool OptimizationResultsQueryDTO::IsInitialized() const {
+  return true;
+}
 
 void OptimizationResultsQueryDTO::InternalSwap(OptimizationResultsQueryDTO* other) {
   using std::swap;
-  GetReflection()->Swap(this, other);}
-
-::PROTOBUF_NAMESPACE_ID::Metadata OptimizationResultsQueryDTO::GetMetadata() const {
-  return GetMetadataStatic();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(run_id_, other->run_id_);
 }
 
+::PROTOBUF_NAMESPACE_ID::Metadata OptimizationResultsQueryDTO::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_optimizer_2eproto_getter, &descriptor_table_optimizer_2eproto_once,
+      file_level_metadata_optimizer_2eproto[33]);
+}
 
 // ===================================================================
 
 class OptimizationResultsResponseDTO::_Internal {
  public:
-  static const ::empowerops::volition::dto::UUID& run_id(const OptimizationResultsResponseDTO* msg);
+  static const ::empowerops::volition::dto::UUIDDTO& run_id(const OptimizationResultsResponseDTO* msg);
 };
 
-const ::empowerops::volition::dto::UUID&
+const ::empowerops::volition::dto::UUIDDTO&
 OptimizationResultsResponseDTO::_Internal::run_id(const OptimizationResultsResponseDTO* msg) {
   return *msg->run_id_;
 }
-OptimizationResultsResponseDTO::OptimizationResultsResponseDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena),
+OptimizationResultsResponseDTO::OptimizationResultsResponseDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned),
   input_columns_(arena),
   output_columns_(arena),
-  points_(arena),
-  frontier_(arena) {
+  points_(arena) {
   SharedCtor();
-  RegisterArenaDtor(arena);
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
   // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.OptimizationResultsResponseDTO)
 }
 OptimizationResultsResponseDTO::OptimizationResultsResponseDTO(const OptimizationResultsResponseDTO& from)
   : ::PROTOBUF_NAMESPACE_ID::Message(),
       input_columns_(from.input_columns_),
       output_columns_(from.output_columns_),
-      points_(from.points_),
-      frontier_(from.frontier_) {
+      points_(from.points_) {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   if (from._internal_has_run_id()) {
-    run_id_ = new ::empowerops::volition::dto::UUID(*from.run_id_);
+    run_id_ = new ::empowerops::volition::dto::UUIDDTO(*from.run_id_);
   } else {
     run_id_ = nullptr;
   }
@@ -2768,18 +9368,18 @@ OptimizationResultsResponseDTO::OptimizationResultsResponseDTO(const Optimizatio
 }
 
 void OptimizationResultsResponseDTO::SharedCtor() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_OptimizationResultsResponseDTO_optimizer_2eproto.base);
-  run_id_ = nullptr;
+run_id_ = nullptr;
 }
 
 OptimizationResultsResponseDTO::~OptimizationResultsResponseDTO() {
   // @@protoc_insertion_point(destructor:empowerops.volition.dto.OptimizationResultsResponseDTO)
+  if (GetArenaForAllocation() != nullptr) return;
   SharedDtor();
   _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-void OptimizationResultsResponseDTO::SharedDtor() {
-  GOOGLE_DCHECK(GetArena() == nullptr);
+inline void OptimizationResultsResponseDTO::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
   if (this != internal_default_instance()) delete run_id_;
 }
 
@@ -2792,167 +9392,270 @@ void OptimizationResultsResponseDTO::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::
 void OptimizationResultsResponseDTO::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const OptimizationResultsResponseDTO& OptimizationResultsResponseDTO::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_OptimizationResultsResponseDTO_optimizer_2eproto.base);
-  return *internal_default_instance();
+
+void OptimizationResultsResponseDTO::Clear() {
+// @@protoc_insertion_point(message_clear_start:empowerops.volition.dto.OptimizationResultsResponseDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  input_columns_.Clear();
+  output_columns_.Clear();
+  points_.Clear();
+  if (GetArenaForAllocation() == nullptr && run_id_ != nullptr) {
+    delete run_id_;
+  }
+  run_id_ = nullptr;
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
+const char* OptimizationResultsResponseDTO::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // .empowerops.volition.dto.UUIDDTO run_ID = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          ptr = ctx->ParseMessage(_internal_mutable_run_id(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated string input_columns = 7;
+      case 7:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 58)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            auto str = _internal_add_input_columns();
+            ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+            CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "empowerops.volition.dto.OptimizationResultsResponseDTO.input_columns"));
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<58>(ptr));
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated string output_columns = 8;
+      case 8:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 66)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            auto str = _internal_add_output_columns();
+            ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+            CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "empowerops.volition.dto.OptimizationResultsResponseDTO.output_columns"));
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<66>(ptr));
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated .empowerops.volition.dto.DesignRowDTO points = 9;
+      case 9:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 74)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            ptr = ctx->ParseMessage(_internal_add_points(), ptr);
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<74>(ptr));
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* OptimizationResultsResponseDTO::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:empowerops.volition.dto.OptimizationResultsResponseDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // .empowerops.volition.dto.UUIDDTO run_ID = 1;
+  if (this->_internal_has_run_id()) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(
+        1, _Internal::run_id(this), target, stream);
+  }
+
+  // repeated string input_columns = 7;
+  for (int i = 0, n = this->_internal_input_columns_size(); i < n; i++) {
+    const auto& s = this->_internal_input_columns(i);
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      s.data(), static_cast<int>(s.length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "empowerops.volition.dto.OptimizationResultsResponseDTO.input_columns");
+    target = stream->WriteString(7, s, target);
+  }
+
+  // repeated string output_columns = 8;
+  for (int i = 0, n = this->_internal_output_columns_size(); i < n; i++) {
+    const auto& s = this->_internal_output_columns(i);
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      s.data(), static_cast<int>(s.length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "empowerops.volition.dto.OptimizationResultsResponseDTO.output_columns");
+    target = stream->WriteString(8, s, target);
+  }
+
+  // repeated .empowerops.volition.dto.DesignRowDTO points = 9;
+  for (unsigned int i = 0,
+      n = static_cast<unsigned int>(this->_internal_points_size()); i < n; i++) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(9, this->_internal_points(i), target, stream);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:empowerops.volition.dto.OptimizationResultsResponseDTO)
+  return target;
+}
+
+size_t OptimizationResultsResponseDTO::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:empowerops.volition.dto.OptimizationResultsResponseDTO)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // repeated string input_columns = 7;
+  total_size += 1 *
+      ::PROTOBUF_NAMESPACE_ID::internal::FromIntSize(input_columns_.size());
+  for (int i = 0, n = input_columns_.size(); i < n; i++) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+      input_columns_.Get(i));
+  }
+
+  // repeated string output_columns = 8;
+  total_size += 1 *
+      ::PROTOBUF_NAMESPACE_ID::internal::FromIntSize(output_columns_.size());
+  for (int i = 0, n = output_columns_.size(); i < n; i++) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+      output_columns_.Get(i));
+  }
+
+  // repeated .empowerops.volition.dto.DesignRowDTO points = 9;
+  total_size += 1UL * this->_internal_points_size();
+  for (const auto& msg : this->points_) {
+    total_size +=
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
+  }
+
+  // .empowerops.volition.dto.UUIDDTO run_ID = 1;
+  if (this->_internal_has_run_id()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+        *run_id_);
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData OptimizationResultsResponseDTO::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    OptimizationResultsResponseDTO::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*OptimizationResultsResponseDTO::GetClassData() const { return &_class_data_; }
+
+void OptimizationResultsResponseDTO::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<OptimizationResultsResponseDTO *>(to)->MergeFrom(
+      static_cast<const OptimizationResultsResponseDTO &>(from));
+}
+
+
+void OptimizationResultsResponseDTO::MergeFrom(const OptimizationResultsResponseDTO& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:empowerops.volition.dto.OptimizationResultsResponseDTO)
+  GOOGLE_DCHECK_NE(&from, this);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  input_columns_.MergeFrom(from.input_columns_);
+  output_columns_.MergeFrom(from.output_columns_);
+  points_.MergeFrom(from.points_);
+  if (from._internal_has_run_id()) {
+    _internal_mutable_run_id()->::empowerops::volition::dto::UUIDDTO::MergeFrom(from._internal_run_id());
+  }
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void OptimizationResultsResponseDTO::CopyFrom(const OptimizationResultsResponseDTO& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:empowerops.volition.dto.OptimizationResultsResponseDTO)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool OptimizationResultsResponseDTO::IsInitialized() const {
+  return true;
+}
 
 void OptimizationResultsResponseDTO::InternalSwap(OptimizationResultsResponseDTO* other) {
   using std::swap;
-  GetReflection()->Swap(this, other);}
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  input_columns_.InternalSwap(&other->input_columns_);
+  output_columns_.InternalSwap(&other->output_columns_);
+  points_.InternalSwap(&other->points_);
+  swap(run_id_, other->run_id_);
+}
 
 ::PROTOBUF_NAMESPACE_ID::Metadata OptimizationResultsResponseDTO::GetMetadata() const {
-  return GetMetadataStatic();
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_optimizer_2eproto_getter, &descriptor_table_optimizer_2eproto_once,
+      file_level_metadata_optimizer_2eproto[34]);
 }
-
 
 // ===================================================================
 
-class PrototypeInputParameter_Continuous::_Internal {
+class InputParameterDTO::_Internal {
  public:
+  static const ::empowerops::volition::dto::ContinuousDTO& continuous(const InputParameterDTO* msg);
+  static const ::empowerops::volition::dto::DiscreteRangeDTO& discrete_range(const InputParameterDTO* msg);
 };
 
-PrototypeInputParameter_Continuous::PrototypeInputParameter_Continuous(::PROTOBUF_NAMESPACE_ID::Arena* arena)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
-  SharedCtor();
-  RegisterArenaDtor(arena);
-  // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.PrototypeInputParameter.Continuous)
-}
-PrototypeInputParameter_Continuous::PrototypeInputParameter_Continuous(const PrototypeInputParameter_Continuous& from)
-  : ::PROTOBUF_NAMESPACE_ID::Message() {
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  ::memcpy(&lower_bound_, &from.lower_bound_,
-    static_cast<size_t>(reinterpret_cast<char*>(&upper_bound_) -
-    reinterpret_cast<char*>(&lower_bound_)) + sizeof(upper_bound_));
-  // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.PrototypeInputParameter.Continuous)
-}
-
-void PrototypeInputParameter_Continuous::SharedCtor() {
-  ::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
-      reinterpret_cast<char*>(&lower_bound_) - reinterpret_cast<char*>(this)),
-      0, static_cast<size_t>(reinterpret_cast<char*>(&upper_bound_) -
-      reinterpret_cast<char*>(&lower_bound_)) + sizeof(upper_bound_));
-}
-
-PrototypeInputParameter_Continuous::~PrototypeInputParameter_Continuous() {
-  // @@protoc_insertion_point(destructor:empowerops.volition.dto.PrototypeInputParameter.Continuous)
-  SharedDtor();
-  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-}
-
-void PrototypeInputParameter_Continuous::SharedDtor() {
-  GOOGLE_DCHECK(GetArena() == nullptr);
-}
-
-void PrototypeInputParameter_Continuous::ArenaDtor(void* object) {
-  PrototypeInputParameter_Continuous* _this = reinterpret_cast< PrototypeInputParameter_Continuous* >(object);
-  (void)_this;
-}
-void PrototypeInputParameter_Continuous::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
-}
-void PrototypeInputParameter_Continuous::SetCachedSize(int size) const {
-  _cached_size_.Set(size);
-}
-const PrototypeInputParameter_Continuous& PrototypeInputParameter_Continuous::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_PrototypeInputParameter_Continuous_optimizer_2eproto.base);
-  return *internal_default_instance();
-}
-
-
-void PrototypeInputParameter_Continuous::InternalSwap(PrototypeInputParameter_Continuous* other) {
-  using std::swap;
-  GetReflection()->Swap(this, other);}
-
-::PROTOBUF_NAMESPACE_ID::Metadata PrototypeInputParameter_Continuous::GetMetadata() const {
-  return GetMetadataStatic();
-}
-
-
-// ===================================================================
-
-class PrototypeInputParameter_DiscreteRange::_Internal {
- public:
-};
-
-PrototypeInputParameter_DiscreteRange::PrototypeInputParameter_DiscreteRange(::PROTOBUF_NAMESPACE_ID::Arena* arena)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
-  SharedCtor();
-  RegisterArenaDtor(arena);
-  // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.PrototypeInputParameter.DiscreteRange)
-}
-PrototypeInputParameter_DiscreteRange::PrototypeInputParameter_DiscreteRange(const PrototypeInputParameter_DiscreteRange& from)
-  : ::PROTOBUF_NAMESPACE_ID::Message() {
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  ::memcpy(&lower_bound_, &from.lower_bound_,
-    static_cast<size_t>(reinterpret_cast<char*>(&step_size_) -
-    reinterpret_cast<char*>(&lower_bound_)) + sizeof(step_size_));
-  // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.PrototypeInputParameter.DiscreteRange)
-}
-
-void PrototypeInputParameter_DiscreteRange::SharedCtor() {
-  ::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
-      reinterpret_cast<char*>(&lower_bound_) - reinterpret_cast<char*>(this)),
-      0, static_cast<size_t>(reinterpret_cast<char*>(&step_size_) -
-      reinterpret_cast<char*>(&lower_bound_)) + sizeof(step_size_));
-}
-
-PrototypeInputParameter_DiscreteRange::~PrototypeInputParameter_DiscreteRange() {
-  // @@protoc_insertion_point(destructor:empowerops.volition.dto.PrototypeInputParameter.DiscreteRange)
-  SharedDtor();
-  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-}
-
-void PrototypeInputParameter_DiscreteRange::SharedDtor() {
-  GOOGLE_DCHECK(GetArena() == nullptr);
-}
-
-void PrototypeInputParameter_DiscreteRange::ArenaDtor(void* object) {
-  PrototypeInputParameter_DiscreteRange* _this = reinterpret_cast< PrototypeInputParameter_DiscreteRange* >(object);
-  (void)_this;
-}
-void PrototypeInputParameter_DiscreteRange::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
-}
-void PrototypeInputParameter_DiscreteRange::SetCachedSize(int size) const {
-  _cached_size_.Set(size);
-}
-const PrototypeInputParameter_DiscreteRange& PrototypeInputParameter_DiscreteRange::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_PrototypeInputParameter_DiscreteRange_optimizer_2eproto.base);
-  return *internal_default_instance();
-}
-
-
-void PrototypeInputParameter_DiscreteRange::InternalSwap(PrototypeInputParameter_DiscreteRange* other) {
-  using std::swap;
-  GetReflection()->Swap(this, other);}
-
-::PROTOBUF_NAMESPACE_ID::Metadata PrototypeInputParameter_DiscreteRange::GetMetadata() const {
-  return GetMetadataStatic();
-}
-
-
-// ===================================================================
-
-class PrototypeInputParameter::_Internal {
- public:
-  static const ::empowerops::volition::dto::PrototypeInputParameter_Continuous& continuous(const PrototypeInputParameter* msg);
-  static const ::empowerops::volition::dto::PrototypeInputParameter_DiscreteRange& discrete_range(const PrototypeInputParameter* msg);
-};
-
-const ::empowerops::volition::dto::PrototypeInputParameter_Continuous&
-PrototypeInputParameter::_Internal::continuous(const PrototypeInputParameter* msg) {
+const ::empowerops::volition::dto::ContinuousDTO&
+InputParameterDTO::_Internal::continuous(const InputParameterDTO* msg) {
   return *msg->domain_.continuous_;
 }
-const ::empowerops::volition::dto::PrototypeInputParameter_DiscreteRange&
-PrototypeInputParameter::_Internal::discrete_range(const PrototypeInputParameter* msg) {
+const ::empowerops::volition::dto::DiscreteRangeDTO&
+InputParameterDTO::_Internal::discrete_range(const InputParameterDTO* msg) {
   return *msg->domain_.discrete_range_;
 }
-void PrototypeInputParameter::set_allocated_continuous(::empowerops::volition::dto::PrototypeInputParameter_Continuous* continuous) {
-  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArena();
+void InputParameterDTO::set_allocated_continuous(::empowerops::volition::dto::ContinuousDTO* continuous) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
   clear_domain();
   if (continuous) {
     ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-      ::PROTOBUF_NAMESPACE_ID::Arena::GetArena(continuous);
+      ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper<::empowerops::volition::dto::ContinuousDTO>::GetOwningArena(continuous);
     if (message_arena != submessage_arena) {
       continuous = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
           message_arena, continuous, submessage_arena);
@@ -2960,14 +9663,14 @@ void PrototypeInputParameter::set_allocated_continuous(::empowerops::volition::d
     set_has_continuous();
     domain_.continuous_ = continuous;
   }
-  // @@protoc_insertion_point(field_set_allocated:empowerops.volition.dto.PrototypeInputParameter.continuous)
+  // @@protoc_insertion_point(field_set_allocated:empowerops.volition.dto.InputParameterDTO.continuous)
 }
-void PrototypeInputParameter::set_allocated_discrete_range(::empowerops::volition::dto::PrototypeInputParameter_DiscreteRange* discrete_range) {
-  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArena();
+void InputParameterDTO::set_allocated_discrete_range(::empowerops::volition::dto::DiscreteRangeDTO* discrete_range) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
   clear_domain();
   if (discrete_range) {
     ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-      ::PROTOBUF_NAMESPACE_ID::Arena::GetArena(discrete_range);
+      ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper<::empowerops::volition::dto::DiscreteRangeDTO>::GetOwningArena(discrete_range);
     if (message_arena != submessage_arena) {
       discrete_range = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
           message_arena, discrete_range, submessage_arena);
@@ -2975,85 +9678,83 @@ void PrototypeInputParameter::set_allocated_discrete_range(::empowerops::volitio
     set_has_discrete_range();
     domain_.discrete_range_ = discrete_range;
   }
-  // @@protoc_insertion_point(field_set_allocated:empowerops.volition.dto.PrototypeInputParameter.discrete_range)
+  // @@protoc_insertion_point(field_set_allocated:empowerops.volition.dto.InputParameterDTO.discrete_range)
 }
-PrototypeInputParameter::PrototypeInputParameter(::PROTOBUF_NAMESPACE_ID::Arena* arena)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
+InputParameterDTO::InputParameterDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
   SharedCtor();
-  RegisterArenaDtor(arena);
-  // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.PrototypeInputParameter)
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
+  // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.InputParameterDTO)
 }
-PrototypeInputParameter::PrototypeInputParameter(const PrototypeInputParameter& from)
+InputParameterDTO::InputParameterDTO(const InputParameterDTO& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   if (!from._internal_name().empty()) {
     name_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_name(), 
-      GetArena());
+      GetArenaForAllocation());
   }
   clear_has_domain();
   switch (from.domain_case()) {
     case kContinuous: {
-      _internal_mutable_continuous()->::empowerops::volition::dto::PrototypeInputParameter_Continuous::MergeFrom(from._internal_continuous());
+      _internal_mutable_continuous()->::empowerops::volition::dto::ContinuousDTO::MergeFrom(from._internal_continuous());
       break;
     }
     case kDiscreteRange: {
-      _internal_mutable_discrete_range()->::empowerops::volition::dto::PrototypeInputParameter_DiscreteRange::MergeFrom(from._internal_discrete_range());
+      _internal_mutable_discrete_range()->::empowerops::volition::dto::DiscreteRangeDTO::MergeFrom(from._internal_discrete_range());
       break;
     }
     case DOMAIN_NOT_SET: {
       break;
     }
   }
-  // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.PrototypeInputParameter)
+  // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.InputParameterDTO)
 }
 
-void PrototypeInputParameter::SharedCtor() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_PrototypeInputParameter_optimizer_2eproto.base);
-  name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  clear_has_domain();
+void InputParameterDTO::SharedCtor() {
+name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+clear_has_domain();
 }
 
-PrototypeInputParameter::~PrototypeInputParameter() {
-  // @@protoc_insertion_point(destructor:empowerops.volition.dto.PrototypeInputParameter)
+InputParameterDTO::~InputParameterDTO() {
+  // @@protoc_insertion_point(destructor:empowerops.volition.dto.InputParameterDTO)
+  if (GetArenaForAllocation() != nullptr) return;
   SharedDtor();
   _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-void PrototypeInputParameter::SharedDtor() {
-  GOOGLE_DCHECK(GetArena() == nullptr);
+inline void InputParameterDTO::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
   name_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   if (has_domain()) {
     clear_domain();
   }
 }
 
-void PrototypeInputParameter::ArenaDtor(void* object) {
-  PrototypeInputParameter* _this = reinterpret_cast< PrototypeInputParameter* >(object);
+void InputParameterDTO::ArenaDtor(void* object) {
+  InputParameterDTO* _this = reinterpret_cast< InputParameterDTO* >(object);
   (void)_this;
 }
-void PrototypeInputParameter::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+void InputParameterDTO::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
 }
-void PrototypeInputParameter::SetCachedSize(int size) const {
+void InputParameterDTO::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const PrototypeInputParameter& PrototypeInputParameter::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_PrototypeInputParameter_optimizer_2eproto.base);
-  return *internal_default_instance();
-}
 
-
-void PrototypeInputParameter::clear_domain() {
-// @@protoc_insertion_point(one_of_clear_start:empowerops.volition.dto.PrototypeInputParameter)
+void InputParameterDTO::clear_domain() {
+// @@protoc_insertion_point(one_of_clear_start:empowerops.volition.dto.InputParameterDTO)
   switch (domain_case()) {
     case kContinuous: {
-      if (GetArena() == nullptr) {
+      if (GetArenaForAllocation() == nullptr) {
         delete domain_.continuous_;
       }
       break;
     }
     case kDiscreteRange: {
-      if (GetArena() == nullptr) {
+      if (GetArenaForAllocation() == nullptr) {
         delete domain_.discrete_range_;
       }
       break;
@@ -3066,473 +9767,3369 @@ void PrototypeInputParameter::clear_domain() {
 }
 
 
-void PrototypeInputParameter::InternalSwap(PrototypeInputParameter* other) {
-  using std::swap;
-  GetReflection()->Swap(this, other);}
+void InputParameterDTO::Clear() {
+// @@protoc_insertion_point(message_clear_start:empowerops.volition.dto.InputParameterDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
 
-::PROTOBUF_NAMESPACE_ID::Metadata PrototypeInputParameter::GetMetadata() const {
-  return GetMetadataStatic();
+  name_.ClearToEmpty();
+  clear_domain();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
+const char* InputParameterDTO::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // string name = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          auto str = _internal_mutable_name();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "empowerops.volition.dto.InputParameterDTO.name"));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // .empowerops.volition.dto.ContinuousDTO continuous = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 34)) {
+          ptr = ctx->ParseMessage(_internal_mutable_continuous(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // .empowerops.volition.dto.DiscreteRangeDTO discrete_range = 5;
+      case 5:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 42)) {
+          ptr = ctx->ParseMessage(_internal_mutable_discrete_range(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* InputParameterDTO::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:empowerops.volition.dto.InputParameterDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // string name = 1;
+  if (!this->_internal_name().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_name().data(), static_cast<int>(this->_internal_name().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "empowerops.volition.dto.InputParameterDTO.name");
+    target = stream->WriteStringMaybeAliased(
+        1, this->_internal_name(), target);
+  }
+
+  // .empowerops.volition.dto.ContinuousDTO continuous = 4;
+  if (_internal_has_continuous()) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(
+        4, _Internal::continuous(this), target, stream);
+  }
+
+  // .empowerops.volition.dto.DiscreteRangeDTO discrete_range = 5;
+  if (_internal_has_discrete_range()) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(
+        5, _Internal::discrete_range(this), target, stream);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:empowerops.volition.dto.InputParameterDTO)
+  return target;
+}
+
+size_t InputParameterDTO::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:empowerops.volition.dto.InputParameterDTO)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // string name = 1;
+  if (!this->_internal_name().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_name());
+  }
+
+  switch (domain_case()) {
+    // .empowerops.volition.dto.ContinuousDTO continuous = 4;
+    case kContinuous: {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+          *domain_.continuous_);
+      break;
+    }
+    // .empowerops.volition.dto.DiscreteRangeDTO discrete_range = 5;
+    case kDiscreteRange: {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+          *domain_.discrete_range_);
+      break;
+    }
+    case DOMAIN_NOT_SET: {
+      break;
+    }
+  }
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData InputParameterDTO::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    InputParameterDTO::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*InputParameterDTO::GetClassData() const { return &_class_data_; }
+
+void InputParameterDTO::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<InputParameterDTO *>(to)->MergeFrom(
+      static_cast<const InputParameterDTO &>(from));
+}
+
+
+void InputParameterDTO::MergeFrom(const InputParameterDTO& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:empowerops.volition.dto.InputParameterDTO)
+  GOOGLE_DCHECK_NE(&from, this);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (!from._internal_name().empty()) {
+    _internal_set_name(from._internal_name());
+  }
+  switch (from.domain_case()) {
+    case kContinuous: {
+      _internal_mutable_continuous()->::empowerops::volition::dto::ContinuousDTO::MergeFrom(from._internal_continuous());
+      break;
+    }
+    case kDiscreteRange: {
+      _internal_mutable_discrete_range()->::empowerops::volition::dto::DiscreteRangeDTO::MergeFrom(from._internal_discrete_range());
+      break;
+    }
+    case DOMAIN_NOT_SET: {
+      break;
+    }
+  }
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void InputParameterDTO::CopyFrom(const InputParameterDTO& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:empowerops.volition.dto.InputParameterDTO)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool InputParameterDTO::IsInitialized() const {
+  return true;
+}
+
+void InputParameterDTO::InternalSwap(InputParameterDTO* other) {
+  using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      &name_, lhs_arena,
+      &other->name_, rhs_arena
+  );
+  swap(domain_, other->domain_);
+  swap(_oneof_case_[0], other->_oneof_case_[0]);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata InputParameterDTO::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_optimizer_2eproto_getter, &descriptor_table_optimizer_2eproto_once,
+      file_level_metadata_optimizer_2eproto[35]);
+}
 
 // ===================================================================
 
-class PrototypeOutputParameter::_Internal {
+class ContinuousDTO::_Internal {
  public:
 };
 
-PrototypeOutputParameter::PrototypeOutputParameter(::PROTOBUF_NAMESPACE_ID::Arena* arena)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
+ContinuousDTO::ContinuousDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
   SharedCtor();
-  RegisterArenaDtor(arena);
-  // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.PrototypeOutputParameter)
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
+  // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.ContinuousDTO)
 }
-PrototypeOutputParameter::PrototypeOutputParameter(const PrototypeOutputParameter& from)
+ContinuousDTO::ContinuousDTO(const ContinuousDTO& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  if (!from._internal_name().empty()) {
-    name_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_name(), 
-      GetArena());
-  }
-  // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.PrototypeOutputParameter)
+  ::memcpy(&lower_bound_, &from.lower_bound_,
+    static_cast<size_t>(reinterpret_cast<char*>(&upper_bound_) -
+    reinterpret_cast<char*>(&lower_bound_)) + sizeof(upper_bound_));
+  // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.ContinuousDTO)
 }
 
-void PrototypeOutputParameter::SharedCtor() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_PrototypeOutputParameter_optimizer_2eproto.base);
-  name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+void ContinuousDTO::SharedCtor() {
+::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
+    reinterpret_cast<char*>(&lower_bound_) - reinterpret_cast<char*>(this)),
+    0, static_cast<size_t>(reinterpret_cast<char*>(&upper_bound_) -
+    reinterpret_cast<char*>(&lower_bound_)) + sizeof(upper_bound_));
 }
 
-PrototypeOutputParameter::~PrototypeOutputParameter() {
-  // @@protoc_insertion_point(destructor:empowerops.volition.dto.PrototypeOutputParameter)
+ContinuousDTO::~ContinuousDTO() {
+  // @@protoc_insertion_point(destructor:empowerops.volition.dto.ContinuousDTO)
+  if (GetArenaForAllocation() != nullptr) return;
   SharedDtor();
   _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-void PrototypeOutputParameter::SharedDtor() {
-  GOOGLE_DCHECK(GetArena() == nullptr);
-  name_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+inline void ContinuousDTO::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
 }
 
-void PrototypeOutputParameter::ArenaDtor(void* object) {
-  PrototypeOutputParameter* _this = reinterpret_cast< PrototypeOutputParameter* >(object);
+void ContinuousDTO::ArenaDtor(void* object) {
+  ContinuousDTO* _this = reinterpret_cast< ContinuousDTO* >(object);
   (void)_this;
 }
-void PrototypeOutputParameter::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+void ContinuousDTO::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
 }
-void PrototypeOutputParameter::SetCachedSize(int size) const {
+void ContinuousDTO::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const PrototypeOutputParameter& PrototypeOutputParameter::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_PrototypeOutputParameter_optimizer_2eproto.base);
-  return *internal_default_instance();
+
+void ContinuousDTO::Clear() {
+// @@protoc_insertion_point(message_clear_start:empowerops.volition.dto.ContinuousDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  ::memset(&lower_bound_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&upper_bound_) -
+      reinterpret_cast<char*>(&lower_bound_)) + sizeof(upper_bound_));
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* ContinuousDTO::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // double lower_bound = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 17)) {
+          lower_bound_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<double>(ptr);
+          ptr += sizeof(double);
+        } else
+          goto handle_unusual;
+        continue;
+      // double upper_bound = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 25)) {
+          upper_bound_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<double>(ptr);
+          ptr += sizeof(double);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* ContinuousDTO::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:empowerops.volition.dto.ContinuousDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // double lower_bound = 2;
+  if (!(this->_internal_lower_bound() <= 0 && this->_internal_lower_bound() >= 0)) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteDoubleToArray(2, this->_internal_lower_bound(), target);
+  }
+
+  // double upper_bound = 3;
+  if (!(this->_internal_upper_bound() <= 0 && this->_internal_upper_bound() >= 0)) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteDoubleToArray(3, this->_internal_upper_bound(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:empowerops.volition.dto.ContinuousDTO)
+  return target;
+}
+
+size_t ContinuousDTO::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:empowerops.volition.dto.ContinuousDTO)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // double lower_bound = 2;
+  if (!(this->_internal_lower_bound() <= 0 && this->_internal_lower_bound() >= 0)) {
+    total_size += 1 + 8;
+  }
+
+  // double upper_bound = 3;
+  if (!(this->_internal_upper_bound() <= 0 && this->_internal_upper_bound() >= 0)) {
+    total_size += 1 + 8;
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData ContinuousDTO::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    ContinuousDTO::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*ContinuousDTO::GetClassData() const { return &_class_data_; }
+
+void ContinuousDTO::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<ContinuousDTO *>(to)->MergeFrom(
+      static_cast<const ContinuousDTO &>(from));
 }
 
 
-void PrototypeOutputParameter::InternalSwap(PrototypeOutputParameter* other) {
+void ContinuousDTO::MergeFrom(const ContinuousDTO& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:empowerops.volition.dto.ContinuousDTO)
+  GOOGLE_DCHECK_NE(&from, this);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (!(from._internal_lower_bound() <= 0 && from._internal_lower_bound() >= 0)) {
+    _internal_set_lower_bound(from._internal_lower_bound());
+  }
+  if (!(from._internal_upper_bound() <= 0 && from._internal_upper_bound() >= 0)) {
+    _internal_set_upper_bound(from._internal_upper_bound());
+  }
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void ContinuousDTO::CopyFrom(const ContinuousDTO& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:empowerops.volition.dto.ContinuousDTO)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool ContinuousDTO::IsInitialized() const {
+  return true;
+}
+
+void ContinuousDTO::InternalSwap(ContinuousDTO* other) {
   using std::swap;
-  GetReflection()->Swap(this, other);}
-
-::PROTOBUF_NAMESPACE_ID::Metadata PrototypeOutputParameter::GetMetadata() const {
-  return GetMetadataStatic();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(ContinuousDTO, upper_bound_)
+      + sizeof(ContinuousDTO::upper_bound_)
+      - PROTOBUF_FIELD_OFFSET(ContinuousDTO, lower_bound_)>(
+          reinterpret_cast<char*>(&lower_bound_),
+          reinterpret_cast<char*>(&other->lower_bound_));
 }
 
+::PROTOBUF_NAMESPACE_ID::Metadata ContinuousDTO::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_optimizer_2eproto_getter, &descriptor_table_optimizer_2eproto_once,
+      file_level_metadata_optimizer_2eproto[36]);
+}
 
 // ===================================================================
 
-VariableMapping_InputsEntry_DoNotUse::VariableMapping_InputsEntry_DoNotUse() {}
-VariableMapping_InputsEntry_DoNotUse::VariableMapping_InputsEntry_DoNotUse(::PROTOBUF_NAMESPACE_ID::Arena* arena)
-    : SuperType(arena) {}
-void VariableMapping_InputsEntry_DoNotUse::MergeFrom(const VariableMapping_InputsEntry_DoNotUse& other) {
-  MergeFromInternal(other);
-}
-::PROTOBUF_NAMESPACE_ID::Metadata VariableMapping_InputsEntry_DoNotUse::GetMetadata() const {
-  return GetMetadataStatic();
-}
-void VariableMapping_InputsEntry_DoNotUse::MergeFrom(
-    const ::PROTOBUF_NAMESPACE_ID::Message& other) {
-  ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom(other);
-}
-
-
-// ===================================================================
-
-VariableMapping_OutputsEntry_DoNotUse::VariableMapping_OutputsEntry_DoNotUse() {}
-VariableMapping_OutputsEntry_DoNotUse::VariableMapping_OutputsEntry_DoNotUse(::PROTOBUF_NAMESPACE_ID::Arena* arena)
-    : SuperType(arena) {}
-void VariableMapping_OutputsEntry_DoNotUse::MergeFrom(const VariableMapping_OutputsEntry_DoNotUse& other) {
-  MergeFromInternal(other);
-}
-::PROTOBUF_NAMESPACE_ID::Metadata VariableMapping_OutputsEntry_DoNotUse::GetMetadata() const {
-  return GetMetadataStatic();
-}
-void VariableMapping_OutputsEntry_DoNotUse::MergeFrom(
-    const ::PROTOBUF_NAMESPACE_ID::Message& other) {
-  ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom(other);
-}
-
-
-// ===================================================================
-
-class VariableMapping::_Internal {
+class DiscreteRangeDTO::_Internal {
  public:
 };
 
-VariableMapping::VariableMapping(::PROTOBUF_NAMESPACE_ID::Arena* arena)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena),
+DiscreteRangeDTO::DiscreteRangeDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor();
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
+  // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.DiscreteRangeDTO)
+}
+DiscreteRangeDTO::DiscreteRangeDTO(const DiscreteRangeDTO& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  ::memcpy(&lower_bound_, &from.lower_bound_,
+    static_cast<size_t>(reinterpret_cast<char*>(&step_size_) -
+    reinterpret_cast<char*>(&lower_bound_)) + sizeof(step_size_));
+  // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.DiscreteRangeDTO)
+}
+
+void DiscreteRangeDTO::SharedCtor() {
+::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
+    reinterpret_cast<char*>(&lower_bound_) - reinterpret_cast<char*>(this)),
+    0, static_cast<size_t>(reinterpret_cast<char*>(&step_size_) -
+    reinterpret_cast<char*>(&lower_bound_)) + sizeof(step_size_));
+}
+
+DiscreteRangeDTO::~DiscreteRangeDTO() {
+  // @@protoc_insertion_point(destructor:empowerops.volition.dto.DiscreteRangeDTO)
+  if (GetArenaForAllocation() != nullptr) return;
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+inline void DiscreteRangeDTO::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+}
+
+void DiscreteRangeDTO::ArenaDtor(void* object) {
+  DiscreteRangeDTO* _this = reinterpret_cast< DiscreteRangeDTO* >(object);
+  (void)_this;
+}
+void DiscreteRangeDTO::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void DiscreteRangeDTO::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+
+void DiscreteRangeDTO::Clear() {
+// @@protoc_insertion_point(message_clear_start:empowerops.volition.dto.DiscreteRangeDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  ::memset(&lower_bound_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&step_size_) -
+      reinterpret_cast<char*>(&lower_bound_)) + sizeof(step_size_));
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* DiscreteRangeDTO::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // double lower_bound = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 17)) {
+          lower_bound_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<double>(ptr);
+          ptr += sizeof(double);
+        } else
+          goto handle_unusual;
+        continue;
+      // double upper_bound = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 25)) {
+          upper_bound_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<double>(ptr);
+          ptr += sizeof(double);
+        } else
+          goto handle_unusual;
+        continue;
+      // double step_size = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 33)) {
+          step_size_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<double>(ptr);
+          ptr += sizeof(double);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* DiscreteRangeDTO::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:empowerops.volition.dto.DiscreteRangeDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // double lower_bound = 2;
+  if (!(this->_internal_lower_bound() <= 0 && this->_internal_lower_bound() >= 0)) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteDoubleToArray(2, this->_internal_lower_bound(), target);
+  }
+
+  // double upper_bound = 3;
+  if (!(this->_internal_upper_bound() <= 0 && this->_internal_upper_bound() >= 0)) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteDoubleToArray(3, this->_internal_upper_bound(), target);
+  }
+
+  // double step_size = 4;
+  if (!(this->_internal_step_size() <= 0 && this->_internal_step_size() >= 0)) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteDoubleToArray(4, this->_internal_step_size(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:empowerops.volition.dto.DiscreteRangeDTO)
+  return target;
+}
+
+size_t DiscreteRangeDTO::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:empowerops.volition.dto.DiscreteRangeDTO)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // double lower_bound = 2;
+  if (!(this->_internal_lower_bound() <= 0 && this->_internal_lower_bound() >= 0)) {
+    total_size += 1 + 8;
+  }
+
+  // double upper_bound = 3;
+  if (!(this->_internal_upper_bound() <= 0 && this->_internal_upper_bound() >= 0)) {
+    total_size += 1 + 8;
+  }
+
+  // double step_size = 4;
+  if (!(this->_internal_step_size() <= 0 && this->_internal_step_size() >= 0)) {
+    total_size += 1 + 8;
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData DiscreteRangeDTO::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    DiscreteRangeDTO::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*DiscreteRangeDTO::GetClassData() const { return &_class_data_; }
+
+void DiscreteRangeDTO::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<DiscreteRangeDTO *>(to)->MergeFrom(
+      static_cast<const DiscreteRangeDTO &>(from));
+}
+
+
+void DiscreteRangeDTO::MergeFrom(const DiscreteRangeDTO& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:empowerops.volition.dto.DiscreteRangeDTO)
+  GOOGLE_DCHECK_NE(&from, this);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (!(from._internal_lower_bound() <= 0 && from._internal_lower_bound() >= 0)) {
+    _internal_set_lower_bound(from._internal_lower_bound());
+  }
+  if (!(from._internal_upper_bound() <= 0 && from._internal_upper_bound() >= 0)) {
+    _internal_set_upper_bound(from._internal_upper_bound());
+  }
+  if (!(from._internal_step_size() <= 0 && from._internal_step_size() >= 0)) {
+    _internal_set_step_size(from._internal_step_size());
+  }
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void DiscreteRangeDTO::CopyFrom(const DiscreteRangeDTO& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:empowerops.volition.dto.DiscreteRangeDTO)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool DiscreteRangeDTO::IsInitialized() const {
+  return true;
+}
+
+void DiscreteRangeDTO::InternalSwap(DiscreteRangeDTO* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(DiscreteRangeDTO, step_size_)
+      + sizeof(DiscreteRangeDTO::step_size_)
+      - PROTOBUF_FIELD_OFFSET(DiscreteRangeDTO, lower_bound_)>(
+          reinterpret_cast<char*>(&lower_bound_),
+          reinterpret_cast<char*>(&other->lower_bound_));
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata DiscreteRangeDTO::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_optimizer_2eproto_getter, &descriptor_table_optimizer_2eproto_once,
+      file_level_metadata_optimizer_2eproto[37]);
+}
+
+// ===================================================================
+
+VariableMappingDTO_InputsEntry_DoNotUse::VariableMappingDTO_InputsEntry_DoNotUse() {}
+VariableMappingDTO_InputsEntry_DoNotUse::VariableMappingDTO_InputsEntry_DoNotUse(::PROTOBUF_NAMESPACE_ID::Arena* arena)
+    : SuperType(arena) {}
+void VariableMappingDTO_InputsEntry_DoNotUse::MergeFrom(const VariableMappingDTO_InputsEntry_DoNotUse& other) {
+  MergeFromInternal(other);
+}
+::PROTOBUF_NAMESPACE_ID::Metadata VariableMappingDTO_InputsEntry_DoNotUse::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_optimizer_2eproto_getter, &descriptor_table_optimizer_2eproto_once,
+      file_level_metadata_optimizer_2eproto[38]);
+}
+
+// ===================================================================
+
+VariableMappingDTO_OutputsEntry_DoNotUse::VariableMappingDTO_OutputsEntry_DoNotUse() {}
+VariableMappingDTO_OutputsEntry_DoNotUse::VariableMappingDTO_OutputsEntry_DoNotUse(::PROTOBUF_NAMESPACE_ID::Arena* arena)
+    : SuperType(arena) {}
+void VariableMappingDTO_OutputsEntry_DoNotUse::MergeFrom(const VariableMappingDTO_OutputsEntry_DoNotUse& other) {
+  MergeFromInternal(other);
+}
+::PROTOBUF_NAMESPACE_ID::Metadata VariableMappingDTO_OutputsEntry_DoNotUse::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_optimizer_2eproto_getter, &descriptor_table_optimizer_2eproto_once,
+      file_level_metadata_optimizer_2eproto[39]);
+}
+
+// ===================================================================
+
+class VariableMappingDTO::_Internal {
+ public:
+};
+
+VariableMappingDTO::VariableMappingDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned),
   inputs_(arena),
   outputs_(arena) {
   SharedCtor();
-  RegisterArenaDtor(arena);
-  // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.VariableMapping)
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
+  // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.VariableMappingDTO)
 }
-VariableMapping::VariableMapping(const VariableMapping& from)
+VariableMappingDTO::VariableMappingDTO(const VariableMappingDTO& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   inputs_.MergeFrom(from.inputs_);
   outputs_.MergeFrom(from.outputs_);
-  // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.VariableMapping)
+  // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.VariableMappingDTO)
 }
 
-void VariableMapping::SharedCtor() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_VariableMapping_optimizer_2eproto.base);
+void VariableMappingDTO::SharedCtor() {
 }
 
-VariableMapping::~VariableMapping() {
-  // @@protoc_insertion_point(destructor:empowerops.volition.dto.VariableMapping)
+VariableMappingDTO::~VariableMappingDTO() {
+  // @@protoc_insertion_point(destructor:empowerops.volition.dto.VariableMappingDTO)
+  if (GetArenaForAllocation() != nullptr) return;
   SharedDtor();
   _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-void VariableMapping::SharedDtor() {
-  GOOGLE_DCHECK(GetArena() == nullptr);
+inline void VariableMappingDTO::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
 }
 
-void VariableMapping::ArenaDtor(void* object) {
-  VariableMapping* _this = reinterpret_cast< VariableMapping* >(object);
+void VariableMappingDTO::ArenaDtor(void* object) {
+  VariableMappingDTO* _this = reinterpret_cast< VariableMappingDTO* >(object);
   (void)_this;
+  _this->inputs_. ~MapField();
+  _this->outputs_. ~MapField();
 }
-void VariableMapping::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+inline void VariableMappingDTO::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena) {
+  if (arena != nullptr) {
+    arena->OwnCustomDestructor(this, &VariableMappingDTO::ArenaDtor);
+  }
 }
-void VariableMapping::SetCachedSize(int size) const {
+void VariableMappingDTO::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const VariableMapping& VariableMapping::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_VariableMapping_optimizer_2eproto.base);
-  return *internal_default_instance();
+
+void VariableMappingDTO::Clear() {
+// @@protoc_insertion_point(message_clear_start:empowerops.volition.dto.VariableMappingDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  inputs_.Clear();
+  outputs_.Clear();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* VariableMappingDTO::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // map<string, .empowerops.volition.dto.VariableNameDTO> inputs = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            ptr = ctx->ParseMessage(&inputs_, ptr);
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<10>(ptr));
+        } else
+          goto handle_unusual;
+        continue;
+      // map<string, .empowerops.volition.dto.VariableNameDTO> outputs = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            ptr = ctx->ParseMessage(&outputs_, ptr);
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<18>(ptr));
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* VariableMappingDTO::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:empowerops.volition.dto.VariableMappingDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // map<string, .empowerops.volition.dto.VariableNameDTO> inputs = 1;
+  if (!this->_internal_inputs().empty()) {
+    typedef ::PROTOBUF_NAMESPACE_ID::Map< std::string, ::empowerops::volition::dto::VariableNameDTO >::const_pointer
+        ConstPtr;
+    typedef ConstPtr SortItem;
+    typedef ::PROTOBUF_NAMESPACE_ID::internal::CompareByDerefFirst<SortItem> Less;
+    struct Utf8Check {
+      static void Check(ConstPtr p) {
+        (void)p;
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+          p->first.data(), static_cast<int>(p->first.length()),
+          ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+          "empowerops.volition.dto.VariableMappingDTO.InputsEntry.key");
+      }
+    };
+
+    if (stream->IsSerializationDeterministic() &&
+        this->_internal_inputs().size() > 1) {
+      ::std::unique_ptr<SortItem[]> items(
+          new SortItem[this->_internal_inputs().size()]);
+      typedef ::PROTOBUF_NAMESPACE_ID::Map< std::string, ::empowerops::volition::dto::VariableNameDTO >::size_type size_type;
+      size_type n = 0;
+      for (::PROTOBUF_NAMESPACE_ID::Map< std::string, ::empowerops::volition::dto::VariableNameDTO >::const_iterator
+          it = this->_internal_inputs().begin();
+          it != this->_internal_inputs().end(); ++it, ++n) {
+        items[static_cast<ptrdiff_t>(n)] = SortItem(&*it);
+      }
+      ::std::sort(&items[0], &items[static_cast<ptrdiff_t>(n)], Less());
+      for (size_type i = 0; i < n; i++) {
+        target = VariableMappingDTO_InputsEntry_DoNotUse::Funcs::InternalSerialize(1, items[static_cast<ptrdiff_t>(i)]->first, items[static_cast<ptrdiff_t>(i)]->second, target, stream);
+        Utf8Check::Check(&(*items[static_cast<ptrdiff_t>(i)]));
+      }
+    } else {
+      for (::PROTOBUF_NAMESPACE_ID::Map< std::string, ::empowerops::volition::dto::VariableNameDTO >::const_iterator
+          it = this->_internal_inputs().begin();
+          it != this->_internal_inputs().end(); ++it) {
+        target = VariableMappingDTO_InputsEntry_DoNotUse::Funcs::InternalSerialize(1, it->first, it->second, target, stream);
+        Utf8Check::Check(&(*it));
+      }
+    }
+  }
+
+  // map<string, .empowerops.volition.dto.VariableNameDTO> outputs = 2;
+  if (!this->_internal_outputs().empty()) {
+    typedef ::PROTOBUF_NAMESPACE_ID::Map< std::string, ::empowerops::volition::dto::VariableNameDTO >::const_pointer
+        ConstPtr;
+    typedef ConstPtr SortItem;
+    typedef ::PROTOBUF_NAMESPACE_ID::internal::CompareByDerefFirst<SortItem> Less;
+    struct Utf8Check {
+      static void Check(ConstPtr p) {
+        (void)p;
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+          p->first.data(), static_cast<int>(p->first.length()),
+          ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+          "empowerops.volition.dto.VariableMappingDTO.OutputsEntry.key");
+      }
+    };
+
+    if (stream->IsSerializationDeterministic() &&
+        this->_internal_outputs().size() > 1) {
+      ::std::unique_ptr<SortItem[]> items(
+          new SortItem[this->_internal_outputs().size()]);
+      typedef ::PROTOBUF_NAMESPACE_ID::Map< std::string, ::empowerops::volition::dto::VariableNameDTO >::size_type size_type;
+      size_type n = 0;
+      for (::PROTOBUF_NAMESPACE_ID::Map< std::string, ::empowerops::volition::dto::VariableNameDTO >::const_iterator
+          it = this->_internal_outputs().begin();
+          it != this->_internal_outputs().end(); ++it, ++n) {
+        items[static_cast<ptrdiff_t>(n)] = SortItem(&*it);
+      }
+      ::std::sort(&items[0], &items[static_cast<ptrdiff_t>(n)], Less());
+      for (size_type i = 0; i < n; i++) {
+        target = VariableMappingDTO_OutputsEntry_DoNotUse::Funcs::InternalSerialize(2, items[static_cast<ptrdiff_t>(i)]->first, items[static_cast<ptrdiff_t>(i)]->second, target, stream);
+        Utf8Check::Check(&(*items[static_cast<ptrdiff_t>(i)]));
+      }
+    } else {
+      for (::PROTOBUF_NAMESPACE_ID::Map< std::string, ::empowerops::volition::dto::VariableNameDTO >::const_iterator
+          it = this->_internal_outputs().begin();
+          it != this->_internal_outputs().end(); ++it) {
+        target = VariableMappingDTO_OutputsEntry_DoNotUse::Funcs::InternalSerialize(2, it->first, it->second, target, stream);
+        Utf8Check::Check(&(*it));
+      }
+    }
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:empowerops.volition.dto.VariableMappingDTO)
+  return target;
+}
+
+size_t VariableMappingDTO::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:empowerops.volition.dto.VariableMappingDTO)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // map<string, .empowerops.volition.dto.VariableNameDTO> inputs = 1;
+  total_size += 1 *
+      ::PROTOBUF_NAMESPACE_ID::internal::FromIntSize(this->_internal_inputs_size());
+  for (::PROTOBUF_NAMESPACE_ID::Map< std::string, ::empowerops::volition::dto::VariableNameDTO >::const_iterator
+      it = this->_internal_inputs().begin();
+      it != this->_internal_inputs().end(); ++it) {
+    total_size += VariableMappingDTO_InputsEntry_DoNotUse::Funcs::ByteSizeLong(it->first, it->second);
+  }
+
+  // map<string, .empowerops.volition.dto.VariableNameDTO> outputs = 2;
+  total_size += 1 *
+      ::PROTOBUF_NAMESPACE_ID::internal::FromIntSize(this->_internal_outputs_size());
+  for (::PROTOBUF_NAMESPACE_ID::Map< std::string, ::empowerops::volition::dto::VariableNameDTO >::const_iterator
+      it = this->_internal_outputs().begin();
+      it != this->_internal_outputs().end(); ++it) {
+    total_size += VariableMappingDTO_OutputsEntry_DoNotUse::Funcs::ByteSizeLong(it->first, it->second);
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData VariableMappingDTO::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    VariableMappingDTO::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*VariableMappingDTO::GetClassData() const { return &_class_data_; }
+
+void VariableMappingDTO::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<VariableMappingDTO *>(to)->MergeFrom(
+      static_cast<const VariableMappingDTO &>(from));
 }
 
 
-void VariableMapping::InternalSwap(VariableMapping* other) {
+void VariableMappingDTO::MergeFrom(const VariableMappingDTO& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:empowerops.volition.dto.VariableMappingDTO)
+  GOOGLE_DCHECK_NE(&from, this);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  inputs_.MergeFrom(from.inputs_);
+  outputs_.MergeFrom(from.outputs_);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void VariableMappingDTO::CopyFrom(const VariableMappingDTO& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:empowerops.volition.dto.VariableMappingDTO)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool VariableMappingDTO::IsInitialized() const {
+  return true;
+}
+
+void VariableMappingDTO::InternalSwap(VariableMappingDTO* other) {
   using std::swap;
-  GetReflection()->Swap(this, other);}
-
-::PROTOBUF_NAMESPACE_ID::Metadata VariableMapping::GetMetadata() const {
-  return GetMetadataStatic();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  inputs_.InternalSwap(&other->inputs_);
+  outputs_.InternalSwap(&other->outputs_);
 }
 
+::PROTOBUF_NAMESPACE_ID::Metadata VariableMappingDTO::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_optimizer_2eproto_getter, &descriptor_table_optimizer_2eproto_once,
+      file_level_metadata_optimizer_2eproto[40]);
+}
 
 // ===================================================================
 
-class BabelConstraint::_Internal {
+class BabelConstraintNodeDTO::_Internal {
  public:
 };
 
-BabelConstraint::BabelConstraint(::PROTOBUF_NAMESPACE_ID::Arena* arena)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
+BabelConstraintNodeDTO::BabelConstraintNodeDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
   SharedCtor();
-  RegisterArenaDtor(arena);
-  // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.BabelConstraint)
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
+  // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.BabelConstraintNodeDTO)
 }
-BabelConstraint::BabelConstraint(const BabelConstraint& from)
+BabelConstraintNodeDTO::BabelConstraintNodeDTO(const BabelConstraintNodeDTO& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   output_name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   if (!from._internal_output_name().empty()) {
     output_name_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_output_name(), 
-      GetArena());
+      GetArenaForAllocation());
   }
   boolean_expression_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   if (!from._internal_boolean_expression().empty()) {
     boolean_expression_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_boolean_expression(), 
-      GetArena());
+      GetArenaForAllocation());
   }
-  // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.BabelConstraint)
+  // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.BabelConstraintNodeDTO)
 }
 
-void BabelConstraint::SharedCtor() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_BabelConstraint_optimizer_2eproto.base);
-  output_name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  boolean_expression_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+void BabelConstraintNodeDTO::SharedCtor() {
+output_name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+boolean_expression_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
 }
 
-BabelConstraint::~BabelConstraint() {
-  // @@protoc_insertion_point(destructor:empowerops.volition.dto.BabelConstraint)
+BabelConstraintNodeDTO::~BabelConstraintNodeDTO() {
+  // @@protoc_insertion_point(destructor:empowerops.volition.dto.BabelConstraintNodeDTO)
+  if (GetArenaForAllocation() != nullptr) return;
   SharedDtor();
   _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-void BabelConstraint::SharedDtor() {
-  GOOGLE_DCHECK(GetArena() == nullptr);
+inline void BabelConstraintNodeDTO::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
   output_name_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   boolean_expression_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
 }
 
-void BabelConstraint::ArenaDtor(void* object) {
-  BabelConstraint* _this = reinterpret_cast< BabelConstraint* >(object);
+void BabelConstraintNodeDTO::ArenaDtor(void* object) {
+  BabelConstraintNodeDTO* _this = reinterpret_cast< BabelConstraintNodeDTO* >(object);
   (void)_this;
 }
-void BabelConstraint::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+void BabelConstraintNodeDTO::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
 }
-void BabelConstraint::SetCachedSize(int size) const {
+void BabelConstraintNodeDTO::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const BabelConstraint& BabelConstraint::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_BabelConstraint_optimizer_2eproto.base);
-  return *internal_default_instance();
+
+void BabelConstraintNodeDTO::Clear() {
+// @@protoc_insertion_point(message_clear_start:empowerops.volition.dto.BabelConstraintNodeDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  output_name_.ClearToEmpty();
+  boolean_expression_.ClearToEmpty();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* BabelConstraintNodeDTO::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // string output_name = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          auto str = _internal_mutable_output_name();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "empowerops.volition.dto.BabelConstraintNodeDTO.output_name"));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // string boolean_expression = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
+          auto str = _internal_mutable_boolean_expression();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "empowerops.volition.dto.BabelConstraintNodeDTO.boolean_expression"));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* BabelConstraintNodeDTO::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:empowerops.volition.dto.BabelConstraintNodeDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // string output_name = 1;
+  if (!this->_internal_output_name().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_output_name().data(), static_cast<int>(this->_internal_output_name().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "empowerops.volition.dto.BabelConstraintNodeDTO.output_name");
+    target = stream->WriteStringMaybeAliased(
+        1, this->_internal_output_name(), target);
+  }
+
+  // string boolean_expression = 2;
+  if (!this->_internal_boolean_expression().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_boolean_expression().data(), static_cast<int>(this->_internal_boolean_expression().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "empowerops.volition.dto.BabelConstraintNodeDTO.boolean_expression");
+    target = stream->WriteStringMaybeAliased(
+        2, this->_internal_boolean_expression(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:empowerops.volition.dto.BabelConstraintNodeDTO)
+  return target;
+}
+
+size_t BabelConstraintNodeDTO::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:empowerops.volition.dto.BabelConstraintNodeDTO)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // string output_name = 1;
+  if (!this->_internal_output_name().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_output_name());
+  }
+
+  // string boolean_expression = 2;
+  if (!this->_internal_boolean_expression().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_boolean_expression());
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData BabelConstraintNodeDTO::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    BabelConstraintNodeDTO::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*BabelConstraintNodeDTO::GetClassData() const { return &_class_data_; }
+
+void BabelConstraintNodeDTO::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<BabelConstraintNodeDTO *>(to)->MergeFrom(
+      static_cast<const BabelConstraintNodeDTO &>(from));
 }
 
 
-void BabelConstraint::InternalSwap(BabelConstraint* other) {
+void BabelConstraintNodeDTO::MergeFrom(const BabelConstraintNodeDTO& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:empowerops.volition.dto.BabelConstraintNodeDTO)
+  GOOGLE_DCHECK_NE(&from, this);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (!from._internal_output_name().empty()) {
+    _internal_set_output_name(from._internal_output_name());
+  }
+  if (!from._internal_boolean_expression().empty()) {
+    _internal_set_boolean_expression(from._internal_boolean_expression());
+  }
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void BabelConstraintNodeDTO::CopyFrom(const BabelConstraintNodeDTO& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:empowerops.volition.dto.BabelConstraintNodeDTO)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool BabelConstraintNodeDTO::IsInitialized() const {
+  return true;
+}
+
+void BabelConstraintNodeDTO::InternalSwap(BabelConstraintNodeDTO* other) {
   using std::swap;
-  GetReflection()->Swap(this, other);}
-
-::PROTOBUF_NAMESPACE_ID::Metadata BabelConstraint::GetMetadata() const {
-  return GetMetadataStatic();
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      &output_name_, lhs_arena,
+      &other->output_name_, rhs_arena
+  );
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      &boolean_expression_, lhs_arena,
+      &other->boolean_expression_, rhs_arena
+  );
 }
 
+::PROTOBUF_NAMESPACE_ID::Metadata BabelConstraintNodeDTO::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_optimizer_2eproto_getter, &descriptor_table_optimizer_2eproto_once,
+      file_level_metadata_optimizer_2eproto[41]);
+}
 
 // ===================================================================
 
-class BabelScalar::_Internal {
+class BabelScalarNodeDTO::_Internal {
  public:
 };
 
-BabelScalar::BabelScalar(::PROTOBUF_NAMESPACE_ID::Arena* arena)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
+BabelScalarNodeDTO::BabelScalarNodeDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
   SharedCtor();
-  RegisterArenaDtor(arena);
-  // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.BabelScalar)
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
+  // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.BabelScalarNodeDTO)
 }
-BabelScalar::BabelScalar(const BabelScalar& from)
+BabelScalarNodeDTO::BabelScalarNodeDTO(const BabelScalarNodeDTO& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   output_name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   if (!from._internal_output_name().empty()) {
     output_name_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_output_name(), 
-      GetArena());
+      GetArenaForAllocation());
   }
   scalar_expression_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   if (!from._internal_scalar_expression().empty()) {
     scalar_expression_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_scalar_expression(), 
-      GetArena());
+      GetArenaForAllocation());
   }
-  // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.BabelScalar)
+  // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.BabelScalarNodeDTO)
 }
 
-void BabelScalar::SharedCtor() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_BabelScalar_optimizer_2eproto.base);
-  output_name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  scalar_expression_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+void BabelScalarNodeDTO::SharedCtor() {
+output_name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+scalar_expression_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
 }
 
-BabelScalar::~BabelScalar() {
-  // @@protoc_insertion_point(destructor:empowerops.volition.dto.BabelScalar)
+BabelScalarNodeDTO::~BabelScalarNodeDTO() {
+  // @@protoc_insertion_point(destructor:empowerops.volition.dto.BabelScalarNodeDTO)
+  if (GetArenaForAllocation() != nullptr) return;
   SharedDtor();
   _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-void BabelScalar::SharedDtor() {
-  GOOGLE_DCHECK(GetArena() == nullptr);
+inline void BabelScalarNodeDTO::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
   output_name_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   scalar_expression_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
 }
 
-void BabelScalar::ArenaDtor(void* object) {
-  BabelScalar* _this = reinterpret_cast< BabelScalar* >(object);
+void BabelScalarNodeDTO::ArenaDtor(void* object) {
+  BabelScalarNodeDTO* _this = reinterpret_cast< BabelScalarNodeDTO* >(object);
   (void)_this;
 }
-void BabelScalar::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+void BabelScalarNodeDTO::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
 }
-void BabelScalar::SetCachedSize(int size) const {
+void BabelScalarNodeDTO::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const BabelScalar& BabelScalar::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_BabelScalar_optimizer_2eproto.base);
-  return *internal_default_instance();
+
+void BabelScalarNodeDTO::Clear() {
+// @@protoc_insertion_point(message_clear_start:empowerops.volition.dto.BabelScalarNodeDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  output_name_.ClearToEmpty();
+  scalar_expression_.ClearToEmpty();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* BabelScalarNodeDTO::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // string output_name = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          auto str = _internal_mutable_output_name();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "empowerops.volition.dto.BabelScalarNodeDTO.output_name"));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // string scalar_expression = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
+          auto str = _internal_mutable_scalar_expression();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "empowerops.volition.dto.BabelScalarNodeDTO.scalar_expression"));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* BabelScalarNodeDTO::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:empowerops.volition.dto.BabelScalarNodeDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // string output_name = 1;
+  if (!this->_internal_output_name().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_output_name().data(), static_cast<int>(this->_internal_output_name().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "empowerops.volition.dto.BabelScalarNodeDTO.output_name");
+    target = stream->WriteStringMaybeAliased(
+        1, this->_internal_output_name(), target);
+  }
+
+  // string scalar_expression = 2;
+  if (!this->_internal_scalar_expression().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_scalar_expression().data(), static_cast<int>(this->_internal_scalar_expression().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "empowerops.volition.dto.BabelScalarNodeDTO.scalar_expression");
+    target = stream->WriteStringMaybeAliased(
+        2, this->_internal_scalar_expression(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:empowerops.volition.dto.BabelScalarNodeDTO)
+  return target;
+}
+
+size_t BabelScalarNodeDTO::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:empowerops.volition.dto.BabelScalarNodeDTO)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // string output_name = 1;
+  if (!this->_internal_output_name().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_output_name());
+  }
+
+  // string scalar_expression = 2;
+  if (!this->_internal_scalar_expression().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_scalar_expression());
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData BabelScalarNodeDTO::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    BabelScalarNodeDTO::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*BabelScalarNodeDTO::GetClassData() const { return &_class_data_; }
+
+void BabelScalarNodeDTO::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<BabelScalarNodeDTO *>(to)->MergeFrom(
+      static_cast<const BabelScalarNodeDTO &>(from));
 }
 
 
-void BabelScalar::InternalSwap(BabelScalar* other) {
+void BabelScalarNodeDTO::MergeFrom(const BabelScalarNodeDTO& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:empowerops.volition.dto.BabelScalarNodeDTO)
+  GOOGLE_DCHECK_NE(&from, this);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (!from._internal_output_name().empty()) {
+    _internal_set_output_name(from._internal_output_name());
+  }
+  if (!from._internal_scalar_expression().empty()) {
+    _internal_set_scalar_expression(from._internal_scalar_expression());
+  }
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void BabelScalarNodeDTO::CopyFrom(const BabelScalarNodeDTO& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:empowerops.volition.dto.BabelScalarNodeDTO)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool BabelScalarNodeDTO::IsInitialized() const {
+  return true;
+}
+
+void BabelScalarNodeDTO::InternalSwap(BabelScalarNodeDTO* other) {
   using std::swap;
-  GetReflection()->Swap(this, other);}
-
-::PROTOBUF_NAMESPACE_ID::Metadata BabelScalar::GetMetadata() const {
-  return GetMetadataStatic();
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      &output_name_, lhs_arena,
+      &other->output_name_, rhs_arena
+  );
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      &scalar_expression_, lhs_arena,
+      &other->scalar_expression_, rhs_arena
+  );
 }
 
+::PROTOBUF_NAMESPACE_ID::Metadata BabelScalarNodeDTO::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_optimizer_2eproto_getter, &descriptor_table_optimizer_2eproto_once,
+      file_level_metadata_optimizer_2eproto[42]);
+}
 
 // ===================================================================
 
-class DesignRow::_Internal {
+class SeedRowDTO::_Internal {
  public:
 };
 
-DesignRow::DesignRow(::PROTOBUF_NAMESPACE_ID::Arena* arena)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena),
+SeedRowDTO::SeedRowDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned),
   inputs_(arena),
   outputs_(arena) {
   SharedCtor();
-  RegisterArenaDtor(arena);
-  // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.DesignRow)
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
+  // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.SeedRowDTO)
 }
-DesignRow::DesignRow(const DesignRow& from)
+SeedRowDTO::SeedRowDTO(const SeedRowDTO& from)
   : ::PROTOBUF_NAMESPACE_ID::Message(),
       inputs_(from.inputs_),
       outputs_(from.outputs_) {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  is_feasible_ = from.is_feasible_;
-  // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.DesignRow)
+  // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.SeedRowDTO)
 }
 
-void DesignRow::SharedCtor() {
-  is_feasible_ = false;
+void SeedRowDTO::SharedCtor() {
 }
 
-DesignRow::~DesignRow() {
-  // @@protoc_insertion_point(destructor:empowerops.volition.dto.DesignRow)
+SeedRowDTO::~SeedRowDTO() {
+  // @@protoc_insertion_point(destructor:empowerops.volition.dto.SeedRowDTO)
+  if (GetArenaForAllocation() != nullptr) return;
   SharedDtor();
   _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-void DesignRow::SharedDtor() {
-  GOOGLE_DCHECK(GetArena() == nullptr);
+inline void SeedRowDTO::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
 }
 
-void DesignRow::ArenaDtor(void* object) {
-  DesignRow* _this = reinterpret_cast< DesignRow* >(object);
+void SeedRowDTO::ArenaDtor(void* object) {
+  SeedRowDTO* _this = reinterpret_cast< SeedRowDTO* >(object);
   (void)_this;
 }
-void DesignRow::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+void SeedRowDTO::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
 }
-void DesignRow::SetCachedSize(int size) const {
+void SeedRowDTO::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const DesignRow& DesignRow::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_DesignRow_optimizer_2eproto.base);
-  return *internal_default_instance();
+
+void SeedRowDTO::Clear() {
+// @@protoc_insertion_point(message_clear_start:empowerops.volition.dto.SeedRowDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  inputs_.Clear();
+  outputs_.Clear();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* SeedRowDTO::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // repeated double inputs = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::PackedDoubleParser(_internal_mutable_inputs(), ptr, ctx);
+          CHK_(ptr);
+        } else if (static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 9) {
+          _internal_add_inputs(::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<double>(ptr));
+          ptr += sizeof(double);
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated double outputs = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::PackedDoubleParser(_internal_mutable_outputs(), ptr, ctx);
+          CHK_(ptr);
+        } else if (static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 17) {
+          _internal_add_outputs(::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<double>(ptr));
+          ptr += sizeof(double);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* SeedRowDTO::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:empowerops.volition.dto.SeedRowDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // repeated double inputs = 1;
+  if (this->_internal_inputs_size() > 0) {
+    target = stream->WriteFixedPacked(1, _internal_inputs(), target);
+  }
+
+  // repeated double outputs = 2;
+  if (this->_internal_outputs_size() > 0) {
+    target = stream->WriteFixedPacked(2, _internal_outputs(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:empowerops.volition.dto.SeedRowDTO)
+  return target;
+}
+
+size_t SeedRowDTO::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:empowerops.volition.dto.SeedRowDTO)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // repeated double inputs = 1;
+  {
+    unsigned int count = static_cast<unsigned int>(this->_internal_inputs_size());
+    size_t data_size = 8UL * count;
+    if (data_size > 0) {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
+            static_cast<::PROTOBUF_NAMESPACE_ID::int32>(data_size));
+    }
+    total_size += data_size;
+  }
+
+  // repeated double outputs = 2;
+  {
+    unsigned int count = static_cast<unsigned int>(this->_internal_outputs_size());
+    size_t data_size = 8UL * count;
+    if (data_size > 0) {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
+            static_cast<::PROTOBUF_NAMESPACE_ID::int32>(data_size));
+    }
+    total_size += data_size;
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData SeedRowDTO::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    SeedRowDTO::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*SeedRowDTO::GetClassData() const { return &_class_data_; }
+
+void SeedRowDTO::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<SeedRowDTO *>(to)->MergeFrom(
+      static_cast<const SeedRowDTO &>(from));
 }
 
 
-void DesignRow::InternalSwap(DesignRow* other) {
+void SeedRowDTO::MergeFrom(const SeedRowDTO& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:empowerops.volition.dto.SeedRowDTO)
+  GOOGLE_DCHECK_NE(&from, this);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  inputs_.MergeFrom(from.inputs_);
+  outputs_.MergeFrom(from.outputs_);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void SeedRowDTO::CopyFrom(const SeedRowDTO& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:empowerops.volition.dto.SeedRowDTO)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool SeedRowDTO::IsInitialized() const {
+  return true;
+}
+
+void SeedRowDTO::InternalSwap(SeedRowDTO* other) {
   using std::swap;
-  GetReflection()->Swap(this, other);}
-
-::PROTOBUF_NAMESPACE_ID::Metadata DesignRow::GetMetadata() const {
-  return GetMetadataStatic();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  inputs_.InternalSwap(&other->inputs_);
+  outputs_.InternalSwap(&other->outputs_);
 }
 
+::PROTOBUF_NAMESPACE_ID::Metadata SeedRowDTO::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_optimizer_2eproto_getter, &descriptor_table_optimizer_2eproto_once,
+      file_level_metadata_optimizer_2eproto[43]);
+}
 
 // ===================================================================
 
-class UUID::_Internal {
+class DesignRowDTO::_Internal {
  public:
 };
 
-UUID::UUID(::PROTOBUF_NAMESPACE_ID::Arena* arena)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
+DesignRowDTO::DesignRowDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned),
+  inputs_(arena),
+  outputs_(arena) {
   SharedCtor();
-  RegisterArenaDtor(arena);
-  // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.UUID)
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
+  // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.DesignRowDTO)
 }
-UUID::UUID(const UUID& from)
+DesignRowDTO::DesignRowDTO(const DesignRowDTO& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message(),
+      inputs_(from.inputs_),
+      outputs_(from.outputs_) {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  ::memcpy(&is_feasible_, &from.is_feasible_,
+    static_cast<size_t>(reinterpret_cast<char*>(&is_frontier_) -
+    reinterpret_cast<char*>(&is_feasible_)) + sizeof(is_frontier_));
+  // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.DesignRowDTO)
+}
+
+void DesignRowDTO::SharedCtor() {
+::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
+    reinterpret_cast<char*>(&is_feasible_) - reinterpret_cast<char*>(this)),
+    0, static_cast<size_t>(reinterpret_cast<char*>(&is_frontier_) -
+    reinterpret_cast<char*>(&is_feasible_)) + sizeof(is_frontier_));
+}
+
+DesignRowDTO::~DesignRowDTO() {
+  // @@protoc_insertion_point(destructor:empowerops.volition.dto.DesignRowDTO)
+  if (GetArenaForAllocation() != nullptr) return;
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+inline void DesignRowDTO::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+}
+
+void DesignRowDTO::ArenaDtor(void* object) {
+  DesignRowDTO* _this = reinterpret_cast< DesignRowDTO* >(object);
+  (void)_this;
+}
+void DesignRowDTO::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void DesignRowDTO::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+
+void DesignRowDTO::Clear() {
+// @@protoc_insertion_point(message_clear_start:empowerops.volition.dto.DesignRowDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  inputs_.Clear();
+  outputs_.Clear();
+  ::memset(&is_feasible_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&is_frontier_) -
+      reinterpret_cast<char*>(&is_feasible_)) + sizeof(is_frontier_));
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* DesignRowDTO::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // repeated double inputs = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::PackedDoubleParser(_internal_mutable_inputs(), ptr, ctx);
+          CHK_(ptr);
+        } else if (static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 9) {
+          _internal_add_inputs(::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<double>(ptr));
+          ptr += sizeof(double);
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated double outputs = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::PackedDoubleParser(_internal_mutable_outputs(), ptr, ctx);
+          CHK_(ptr);
+        } else if (static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 17) {
+          _internal_add_outputs(::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<double>(ptr));
+          ptr += sizeof(double);
+        } else
+          goto handle_unusual;
+        continue;
+      // bool is_feasible = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 24)) {
+          is_feasible_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // bool is_frontier = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 32)) {
+          is_frontier_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* DesignRowDTO::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:empowerops.volition.dto.DesignRowDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // repeated double inputs = 1;
+  if (this->_internal_inputs_size() > 0) {
+    target = stream->WriteFixedPacked(1, _internal_inputs(), target);
+  }
+
+  // repeated double outputs = 2;
+  if (this->_internal_outputs_size() > 0) {
+    target = stream->WriteFixedPacked(2, _internal_outputs(), target);
+  }
+
+  // bool is_feasible = 3;
+  if (this->_internal_is_feasible() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteBoolToArray(3, this->_internal_is_feasible(), target);
+  }
+
+  // bool is_frontier = 4;
+  if (this->_internal_is_frontier() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteBoolToArray(4, this->_internal_is_frontier(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:empowerops.volition.dto.DesignRowDTO)
+  return target;
+}
+
+size_t DesignRowDTO::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:empowerops.volition.dto.DesignRowDTO)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // repeated double inputs = 1;
+  {
+    unsigned int count = static_cast<unsigned int>(this->_internal_inputs_size());
+    size_t data_size = 8UL * count;
+    if (data_size > 0) {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
+            static_cast<::PROTOBUF_NAMESPACE_ID::int32>(data_size));
+    }
+    total_size += data_size;
+  }
+
+  // repeated double outputs = 2;
+  {
+    unsigned int count = static_cast<unsigned int>(this->_internal_outputs_size());
+    size_t data_size = 8UL * count;
+    if (data_size > 0) {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
+            static_cast<::PROTOBUF_NAMESPACE_ID::int32>(data_size));
+    }
+    total_size += data_size;
+  }
+
+  // bool is_feasible = 3;
+  if (this->_internal_is_feasible() != 0) {
+    total_size += 1 + 1;
+  }
+
+  // bool is_frontier = 4;
+  if (this->_internal_is_frontier() != 0) {
+    total_size += 1 + 1;
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData DesignRowDTO::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    DesignRowDTO::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*DesignRowDTO::GetClassData() const { return &_class_data_; }
+
+void DesignRowDTO::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<DesignRowDTO *>(to)->MergeFrom(
+      static_cast<const DesignRowDTO &>(from));
+}
+
+
+void DesignRowDTO::MergeFrom(const DesignRowDTO& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:empowerops.volition.dto.DesignRowDTO)
+  GOOGLE_DCHECK_NE(&from, this);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  inputs_.MergeFrom(from.inputs_);
+  outputs_.MergeFrom(from.outputs_);
+  if (from._internal_is_feasible() != 0) {
+    _internal_set_is_feasible(from._internal_is_feasible());
+  }
+  if (from._internal_is_frontier() != 0) {
+    _internal_set_is_frontier(from._internal_is_frontier());
+  }
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void DesignRowDTO::CopyFrom(const DesignRowDTO& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:empowerops.volition.dto.DesignRowDTO)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool DesignRowDTO::IsInitialized() const {
+  return true;
+}
+
+void DesignRowDTO::InternalSwap(DesignRowDTO* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  inputs_.InternalSwap(&other->inputs_);
+  outputs_.InternalSwap(&other->outputs_);
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(DesignRowDTO, is_frontier_)
+      + sizeof(DesignRowDTO::is_frontier_)
+      - PROTOBUF_FIELD_OFFSET(DesignRowDTO, is_feasible_)>(
+          reinterpret_cast<char*>(&is_feasible_),
+          reinterpret_cast<char*>(&other->is_feasible_));
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata DesignRowDTO::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_optimizer_2eproto_getter, &descriptor_table_optimizer_2eproto_once,
+      file_level_metadata_optimizer_2eproto[44]);
+}
+
+// ===================================================================
+
+class UUIDDTO::_Internal {
+ public:
+};
+
+UUIDDTO::UUIDDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor();
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
+  // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.UUIDDTO)
+}
+UUIDDTO::UUIDDTO(const UUIDDTO& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   value_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   if (!from._internal_value().empty()) {
     value_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_value(), 
-      GetArena());
+      GetArenaForAllocation());
   }
-  // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.UUID)
+  // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.UUIDDTO)
 }
 
-void UUID::SharedCtor() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_UUID_optimizer_2eproto.base);
-  value_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+void UUIDDTO::SharedCtor() {
+value_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
 }
 
-UUID::~UUID() {
-  // @@protoc_insertion_point(destructor:empowerops.volition.dto.UUID)
+UUIDDTO::~UUIDDTO() {
+  // @@protoc_insertion_point(destructor:empowerops.volition.dto.UUIDDTO)
+  if (GetArenaForAllocation() != nullptr) return;
   SharedDtor();
   _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-void UUID::SharedDtor() {
-  GOOGLE_DCHECK(GetArena() == nullptr);
+inline void UUIDDTO::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
   value_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
 }
 
-void UUID::ArenaDtor(void* object) {
-  UUID* _this = reinterpret_cast< UUID* >(object);
+void UUIDDTO::ArenaDtor(void* object) {
+  UUIDDTO* _this = reinterpret_cast< UUIDDTO* >(object);
   (void)_this;
 }
-void UUID::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+void UUIDDTO::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
 }
-void UUID::SetCachedSize(int size) const {
+void UUIDDTO::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const UUID& UUID::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_UUID_optimizer_2eproto.base);
-  return *internal_default_instance();
+
+void UUIDDTO::Clear() {
+// @@protoc_insertion_point(message_clear_start:empowerops.volition.dto.UUIDDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  value_.ClearToEmpty();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* UUIDDTO::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // string value = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          auto str = _internal_mutable_value();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "empowerops.volition.dto.UUIDDTO.value"));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* UUIDDTO::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:empowerops.volition.dto.UUIDDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // string value = 1;
+  if (!this->_internal_value().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_value().data(), static_cast<int>(this->_internal_value().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "empowerops.volition.dto.UUIDDTO.value");
+    target = stream->WriteStringMaybeAliased(
+        1, this->_internal_value(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:empowerops.volition.dto.UUIDDTO)
+  return target;
+}
+
+size_t UUIDDTO::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:empowerops.volition.dto.UUIDDTO)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // string value = 1;
+  if (!this->_internal_value().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_value());
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData UUIDDTO::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    UUIDDTO::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*UUIDDTO::GetClassData() const { return &_class_data_; }
+
+void UUIDDTO::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<UUIDDTO *>(to)->MergeFrom(
+      static_cast<const UUIDDTO &>(from));
 }
 
 
-void UUID::InternalSwap(UUID* other) {
+void UUIDDTO::MergeFrom(const UUIDDTO& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:empowerops.volition.dto.UUIDDTO)
+  GOOGLE_DCHECK_NE(&from, this);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (!from._internal_value().empty()) {
+    _internal_set_value(from._internal_value());
+  }
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void UUIDDTO::CopyFrom(const UUIDDTO& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:empowerops.volition.dto.UUIDDTO)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool UUIDDTO::IsInitialized() const {
+  return true;
+}
+
+void UUIDDTO::InternalSwap(UUIDDTO* other) {
   using std::swap;
-  GetReflection()->Swap(this, other);}
-
-::PROTOBUF_NAMESPACE_ID::Metadata UUID::GetMetadata() const {
-  return GetMetadataStatic();
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      &value_, lhs_arena,
+      &other->value_, rhs_arena
+  );
 }
 
+::PROTOBUF_NAMESPACE_ID::Metadata UUIDDTO::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_optimizer_2eproto_getter, &descriptor_table_optimizer_2eproto_once,
+      file_level_metadata_optimizer_2eproto[45]);
+}
+
+// ===================================================================
+
+class PathDTO::_Internal {
+ public:
+};
+
+PathDTO::PathDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor();
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
+  // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.PathDTO)
+}
+PathDTO::PathDTO(const PathDTO& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  value_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (!from._internal_value().empty()) {
+    value_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_value(), 
+      GetArenaForAllocation());
+  }
+  // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.PathDTO)
+}
+
+void PathDTO::SharedCtor() {
+value_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+
+PathDTO::~PathDTO() {
+  // @@protoc_insertion_point(destructor:empowerops.volition.dto.PathDTO)
+  if (GetArenaForAllocation() != nullptr) return;
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+inline void PathDTO::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  value_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+
+void PathDTO::ArenaDtor(void* object) {
+  PathDTO* _this = reinterpret_cast< PathDTO* >(object);
+  (void)_this;
+}
+void PathDTO::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void PathDTO::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+
+void PathDTO::Clear() {
+// @@protoc_insertion_point(message_clear_start:empowerops.volition.dto.PathDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  value_.ClearToEmpty();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* PathDTO::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // string value = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          auto str = _internal_mutable_value();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "empowerops.volition.dto.PathDTO.value"));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* PathDTO::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:empowerops.volition.dto.PathDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // string value = 1;
+  if (!this->_internal_value().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_value().data(), static_cast<int>(this->_internal_value().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "empowerops.volition.dto.PathDTO.value");
+    target = stream->WriteStringMaybeAliased(
+        1, this->_internal_value(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:empowerops.volition.dto.PathDTO)
+  return target;
+}
+
+size_t PathDTO::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:empowerops.volition.dto.PathDTO)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // string value = 1;
+  if (!this->_internal_value().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_value());
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData PathDTO::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    PathDTO::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*PathDTO::GetClassData() const { return &_class_data_; }
+
+void PathDTO::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<PathDTO *>(to)->MergeFrom(
+      static_cast<const PathDTO &>(from));
+}
+
+
+void PathDTO::MergeFrom(const PathDTO& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:empowerops.volition.dto.PathDTO)
+  GOOGLE_DCHECK_NE(&from, this);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (!from._internal_value().empty()) {
+    _internal_set_value(from._internal_value());
+  }
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void PathDTO::CopyFrom(const PathDTO& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:empowerops.volition.dto.PathDTO)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool PathDTO::IsInitialized() const {
+  return true;
+}
+
+void PathDTO::InternalSwap(PathDTO* other) {
+  using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      &value_, lhs_arena,
+      &other->value_, rhs_arena
+  );
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata PathDTO::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_optimizer_2eproto_getter, &descriptor_table_optimizer_2eproto_once,
+      file_level_metadata_optimizer_2eproto[46]);
+}
+
+// ===================================================================
+
+class ErrorResponseDTO::_Internal {
+ public:
+  static const ::empowerops::volition::dto::InternalErrorDTO& internal_error(const ErrorResponseDTO* msg);
+  static const ::empowerops::volition::dto::NoSuchOptimizationRunDTO& no_such_optimization_run(const ErrorResponseDTO* msg);
+};
+
+const ::empowerops::volition::dto::InternalErrorDTO&
+ErrorResponseDTO::_Internal::internal_error(const ErrorResponseDTO* msg) {
+  return *msg->value_.internal_error_;
+}
+const ::empowerops::volition::dto::NoSuchOptimizationRunDTO&
+ErrorResponseDTO::_Internal::no_such_optimization_run(const ErrorResponseDTO* msg) {
+  return *msg->value_.no_such_optimization_run_;
+}
+void ErrorResponseDTO::set_allocated_internal_error(::empowerops::volition::dto::InternalErrorDTO* internal_error) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  clear_value();
+  if (internal_error) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+      ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper<::empowerops::volition::dto::InternalErrorDTO>::GetOwningArena(internal_error);
+    if (message_arena != submessage_arena) {
+      internal_error = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, internal_error, submessage_arena);
+    }
+    set_has_internal_error();
+    value_.internal_error_ = internal_error;
+  }
+  // @@protoc_insertion_point(field_set_allocated:empowerops.volition.dto.ErrorResponseDTO.internal_error)
+}
+void ErrorResponseDTO::set_allocated_no_such_optimization_run(::empowerops::volition::dto::NoSuchOptimizationRunDTO* no_such_optimization_run) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  clear_value();
+  if (no_such_optimization_run) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+      ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper<::empowerops::volition::dto::NoSuchOptimizationRunDTO>::GetOwningArena(no_such_optimization_run);
+    if (message_arena != submessage_arena) {
+      no_such_optimization_run = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, no_such_optimization_run, submessage_arena);
+    }
+    set_has_no_such_optimization_run();
+    value_.no_such_optimization_run_ = no_such_optimization_run;
+  }
+  // @@protoc_insertion_point(field_set_allocated:empowerops.volition.dto.ErrorResponseDTO.no_such_optimization_run)
+}
+ErrorResponseDTO::ErrorResponseDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor();
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
+  // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.ErrorResponseDTO)
+}
+ErrorResponseDTO::ErrorResponseDTO(const ErrorResponseDTO& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  clear_has_value();
+  switch (from.value_case()) {
+    case kInternalError: {
+      _internal_mutable_internal_error()->::empowerops::volition::dto::InternalErrorDTO::MergeFrom(from._internal_internal_error());
+      break;
+    }
+    case kNoSuchOptimizationRun: {
+      _internal_mutable_no_such_optimization_run()->::empowerops::volition::dto::NoSuchOptimizationRunDTO::MergeFrom(from._internal_no_such_optimization_run());
+      break;
+    }
+    case VALUE_NOT_SET: {
+      break;
+    }
+  }
+  // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.ErrorResponseDTO)
+}
+
+void ErrorResponseDTO::SharedCtor() {
+clear_has_value();
+}
+
+ErrorResponseDTO::~ErrorResponseDTO() {
+  // @@protoc_insertion_point(destructor:empowerops.volition.dto.ErrorResponseDTO)
+  if (GetArenaForAllocation() != nullptr) return;
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+inline void ErrorResponseDTO::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  if (has_value()) {
+    clear_value();
+  }
+}
+
+void ErrorResponseDTO::ArenaDtor(void* object) {
+  ErrorResponseDTO* _this = reinterpret_cast< ErrorResponseDTO* >(object);
+  (void)_this;
+}
+void ErrorResponseDTO::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void ErrorResponseDTO::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+
+void ErrorResponseDTO::clear_value() {
+// @@protoc_insertion_point(one_of_clear_start:empowerops.volition.dto.ErrorResponseDTO)
+  switch (value_case()) {
+    case kInternalError: {
+      if (GetArenaForAllocation() == nullptr) {
+        delete value_.internal_error_;
+      }
+      break;
+    }
+    case kNoSuchOptimizationRun: {
+      if (GetArenaForAllocation() == nullptr) {
+        delete value_.no_such_optimization_run_;
+      }
+      break;
+    }
+    case VALUE_NOT_SET: {
+      break;
+    }
+  }
+  _oneof_case_[0] = VALUE_NOT_SET;
+}
+
+
+void ErrorResponseDTO::Clear() {
+// @@protoc_insertion_point(message_clear_start:empowerops.volition.dto.ErrorResponseDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  clear_value();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* ErrorResponseDTO::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // .empowerops.volition.dto.InternalErrorDTO internal_error = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          ptr = ctx->ParseMessage(_internal_mutable_internal_error(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // .empowerops.volition.dto.NoSuchOptimizationRunDTO no_such_optimization_run = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
+          ptr = ctx->ParseMessage(_internal_mutable_no_such_optimization_run(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* ErrorResponseDTO::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:empowerops.volition.dto.ErrorResponseDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // .empowerops.volition.dto.InternalErrorDTO internal_error = 1;
+  if (_internal_has_internal_error()) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(
+        1, _Internal::internal_error(this), target, stream);
+  }
+
+  // .empowerops.volition.dto.NoSuchOptimizationRunDTO no_such_optimization_run = 2;
+  if (_internal_has_no_such_optimization_run()) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(
+        2, _Internal::no_such_optimization_run(this), target, stream);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:empowerops.volition.dto.ErrorResponseDTO)
+  return target;
+}
+
+size_t ErrorResponseDTO::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:empowerops.volition.dto.ErrorResponseDTO)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  switch (value_case()) {
+    // .empowerops.volition.dto.InternalErrorDTO internal_error = 1;
+    case kInternalError: {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+          *value_.internal_error_);
+      break;
+    }
+    // .empowerops.volition.dto.NoSuchOptimizationRunDTO no_such_optimization_run = 2;
+    case kNoSuchOptimizationRun: {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+          *value_.no_such_optimization_run_);
+      break;
+    }
+    case VALUE_NOT_SET: {
+      break;
+    }
+  }
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData ErrorResponseDTO::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    ErrorResponseDTO::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*ErrorResponseDTO::GetClassData() const { return &_class_data_; }
+
+void ErrorResponseDTO::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<ErrorResponseDTO *>(to)->MergeFrom(
+      static_cast<const ErrorResponseDTO &>(from));
+}
+
+
+void ErrorResponseDTO::MergeFrom(const ErrorResponseDTO& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:empowerops.volition.dto.ErrorResponseDTO)
+  GOOGLE_DCHECK_NE(&from, this);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  switch (from.value_case()) {
+    case kInternalError: {
+      _internal_mutable_internal_error()->::empowerops::volition::dto::InternalErrorDTO::MergeFrom(from._internal_internal_error());
+      break;
+    }
+    case kNoSuchOptimizationRun: {
+      _internal_mutable_no_such_optimization_run()->::empowerops::volition::dto::NoSuchOptimizationRunDTO::MergeFrom(from._internal_no_such_optimization_run());
+      break;
+    }
+    case VALUE_NOT_SET: {
+      break;
+    }
+  }
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void ErrorResponseDTO::CopyFrom(const ErrorResponseDTO& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:empowerops.volition.dto.ErrorResponseDTO)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool ErrorResponseDTO::IsInitialized() const {
+  return true;
+}
+
+void ErrorResponseDTO::InternalSwap(ErrorResponseDTO* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(value_, other->value_);
+  swap(_oneof_case_[0], other->_oneof_case_[0]);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata ErrorResponseDTO::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_optimizer_2eproto_getter, &descriptor_table_optimizer_2eproto_once,
+      file_level_metadata_optimizer_2eproto[47]);
+}
+
+// ===================================================================
+
+class InternalErrorDTO::_Internal {
+ public:
+};
+
+InternalErrorDTO::InternalErrorDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor();
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
+  // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.InternalErrorDTO)
+}
+InternalErrorDTO::InternalErrorDTO(const InternalErrorDTO& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  message_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (!from._internal_message().empty()) {
+    message_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_message(), 
+      GetArenaForAllocation());
+  }
+  trace_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (!from._internal_trace().empty()) {
+    trace_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_trace(), 
+      GetArenaForAllocation());
+  }
+  // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.InternalErrorDTO)
+}
+
+void InternalErrorDTO::SharedCtor() {
+message_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+trace_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+
+InternalErrorDTO::~InternalErrorDTO() {
+  // @@protoc_insertion_point(destructor:empowerops.volition.dto.InternalErrorDTO)
+  if (GetArenaForAllocation() != nullptr) return;
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+inline void InternalErrorDTO::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  message_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  trace_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+
+void InternalErrorDTO::ArenaDtor(void* object) {
+  InternalErrorDTO* _this = reinterpret_cast< InternalErrorDTO* >(object);
+  (void)_this;
+}
+void InternalErrorDTO::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void InternalErrorDTO::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+
+void InternalErrorDTO::Clear() {
+// @@protoc_insertion_point(message_clear_start:empowerops.volition.dto.InternalErrorDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  message_.ClearToEmpty();
+  trace_.ClearToEmpty();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* InternalErrorDTO::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // string message = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          auto str = _internal_mutable_message();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "empowerops.volition.dto.InternalErrorDTO.message"));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // string trace = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
+          auto str = _internal_mutable_trace();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "empowerops.volition.dto.InternalErrorDTO.trace"));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* InternalErrorDTO::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:empowerops.volition.dto.InternalErrorDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // string message = 1;
+  if (!this->_internal_message().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_message().data(), static_cast<int>(this->_internal_message().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "empowerops.volition.dto.InternalErrorDTO.message");
+    target = stream->WriteStringMaybeAliased(
+        1, this->_internal_message(), target);
+  }
+
+  // string trace = 2;
+  if (!this->_internal_trace().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_trace().data(), static_cast<int>(this->_internal_trace().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "empowerops.volition.dto.InternalErrorDTO.trace");
+    target = stream->WriteStringMaybeAliased(
+        2, this->_internal_trace(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:empowerops.volition.dto.InternalErrorDTO)
+  return target;
+}
+
+size_t InternalErrorDTO::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:empowerops.volition.dto.InternalErrorDTO)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // string message = 1;
+  if (!this->_internal_message().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_message());
+  }
+
+  // string trace = 2;
+  if (!this->_internal_trace().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_trace());
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData InternalErrorDTO::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    InternalErrorDTO::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*InternalErrorDTO::GetClassData() const { return &_class_data_; }
+
+void InternalErrorDTO::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<InternalErrorDTO *>(to)->MergeFrom(
+      static_cast<const InternalErrorDTO &>(from));
+}
+
+
+void InternalErrorDTO::MergeFrom(const InternalErrorDTO& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:empowerops.volition.dto.InternalErrorDTO)
+  GOOGLE_DCHECK_NE(&from, this);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (!from._internal_message().empty()) {
+    _internal_set_message(from._internal_message());
+  }
+  if (!from._internal_trace().empty()) {
+    _internal_set_trace(from._internal_trace());
+  }
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void InternalErrorDTO::CopyFrom(const InternalErrorDTO& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:empowerops.volition.dto.InternalErrorDTO)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool InternalErrorDTO::IsInitialized() const {
+  return true;
+}
+
+void InternalErrorDTO::InternalSwap(InternalErrorDTO* other) {
+  using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      &message_, lhs_arena,
+      &other->message_, rhs_arena
+  );
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      &trace_, lhs_arena,
+      &other->trace_, rhs_arena
+  );
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata InternalErrorDTO::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_optimizer_2eproto_getter, &descriptor_table_optimizer_2eproto_once,
+      file_level_metadata_optimizer_2eproto[48]);
+}
+
+// ===================================================================
+
+class NoSuchOptimizationRunDTO::_Internal {
+ public:
+  static const ::empowerops::volition::dto::UUIDDTO& run_id(const NoSuchOptimizationRunDTO* msg);
+};
+
+const ::empowerops::volition::dto::UUIDDTO&
+NoSuchOptimizationRunDTO::_Internal::run_id(const NoSuchOptimizationRunDTO* msg) {
+  return *msg->run_id_;
+}
+NoSuchOptimizationRunDTO::NoSuchOptimizationRunDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor();
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
+  // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.NoSuchOptimizationRunDTO)
+}
+NoSuchOptimizationRunDTO::NoSuchOptimizationRunDTO(const NoSuchOptimizationRunDTO& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  if (from._internal_has_run_id()) {
+    run_id_ = new ::empowerops::volition::dto::UUIDDTO(*from.run_id_);
+  } else {
+    run_id_ = nullptr;
+  }
+  // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.NoSuchOptimizationRunDTO)
+}
+
+void NoSuchOptimizationRunDTO::SharedCtor() {
+run_id_ = nullptr;
+}
+
+NoSuchOptimizationRunDTO::~NoSuchOptimizationRunDTO() {
+  // @@protoc_insertion_point(destructor:empowerops.volition.dto.NoSuchOptimizationRunDTO)
+  if (GetArenaForAllocation() != nullptr) return;
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+inline void NoSuchOptimizationRunDTO::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  if (this != internal_default_instance()) delete run_id_;
+}
+
+void NoSuchOptimizationRunDTO::ArenaDtor(void* object) {
+  NoSuchOptimizationRunDTO* _this = reinterpret_cast< NoSuchOptimizationRunDTO* >(object);
+  (void)_this;
+}
+void NoSuchOptimizationRunDTO::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void NoSuchOptimizationRunDTO::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+
+void NoSuchOptimizationRunDTO::Clear() {
+// @@protoc_insertion_point(message_clear_start:empowerops.volition.dto.NoSuchOptimizationRunDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  if (GetArenaForAllocation() == nullptr && run_id_ != nullptr) {
+    delete run_id_;
+  }
+  run_id_ = nullptr;
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* NoSuchOptimizationRunDTO::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // .empowerops.volition.dto.UUIDDTO run_ID = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          ptr = ctx->ParseMessage(_internal_mutable_run_id(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* NoSuchOptimizationRunDTO::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:empowerops.volition.dto.NoSuchOptimizationRunDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // .empowerops.volition.dto.UUIDDTO run_ID = 1;
+  if (this->_internal_has_run_id()) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(
+        1, _Internal::run_id(this), target, stream);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:empowerops.volition.dto.NoSuchOptimizationRunDTO)
+  return target;
+}
+
+size_t NoSuchOptimizationRunDTO::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:empowerops.volition.dto.NoSuchOptimizationRunDTO)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // .empowerops.volition.dto.UUIDDTO run_ID = 1;
+  if (this->_internal_has_run_id()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+        *run_id_);
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData NoSuchOptimizationRunDTO::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    NoSuchOptimizationRunDTO::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*NoSuchOptimizationRunDTO::GetClassData() const { return &_class_data_; }
+
+void NoSuchOptimizationRunDTO::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<NoSuchOptimizationRunDTO *>(to)->MergeFrom(
+      static_cast<const NoSuchOptimizationRunDTO &>(from));
+}
+
+
+void NoSuchOptimizationRunDTO::MergeFrom(const NoSuchOptimizationRunDTO& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:empowerops.volition.dto.NoSuchOptimizationRunDTO)
+  GOOGLE_DCHECK_NE(&from, this);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from._internal_has_run_id()) {
+    _internal_mutable_run_id()->::empowerops::volition::dto::UUIDDTO::MergeFrom(from._internal_run_id());
+  }
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void NoSuchOptimizationRunDTO::CopyFrom(const NoSuchOptimizationRunDTO& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:empowerops.volition.dto.NoSuchOptimizationRunDTO)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool NoSuchOptimizationRunDTO::IsInitialized() const {
+  return true;
+}
+
+void NoSuchOptimizationRunDTO::InternalSwap(NoSuchOptimizationRunDTO* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(run_id_, other->run_id_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata NoSuchOptimizationRunDTO::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_optimizer_2eproto_getter, &descriptor_table_optimizer_2eproto_once,
+      file_level_metadata_optimizer_2eproto[49]);
+}
+
+// ===================================================================
+
+class VariableNameDTO::_Internal {
+ public:
+};
+
+VariableNameDTO::VariableNameDTO(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor();
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
+  // @@protoc_insertion_point(arena_constructor:empowerops.volition.dto.VariableNameDTO)
+}
+VariableNameDTO::VariableNameDTO(const VariableNameDTO& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  value_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (!from._internal_value().empty()) {
+    value_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_value(), 
+      GetArenaForAllocation());
+  }
+  // @@protoc_insertion_point(copy_constructor:empowerops.volition.dto.VariableNameDTO)
+}
+
+void VariableNameDTO::SharedCtor() {
+value_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+
+VariableNameDTO::~VariableNameDTO() {
+  // @@protoc_insertion_point(destructor:empowerops.volition.dto.VariableNameDTO)
+  if (GetArenaForAllocation() != nullptr) return;
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+inline void VariableNameDTO::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  value_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+
+void VariableNameDTO::ArenaDtor(void* object) {
+  VariableNameDTO* _this = reinterpret_cast< VariableNameDTO* >(object);
+  (void)_this;
+}
+void VariableNameDTO::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void VariableNameDTO::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+
+void VariableNameDTO::Clear() {
+// @@protoc_insertion_point(message_clear_start:empowerops.volition.dto.VariableNameDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  value_.ClearToEmpty();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* VariableNameDTO::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // string value = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          auto str = _internal_mutable_value();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "empowerops.volition.dto.VariableNameDTO.value"));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* VariableNameDTO::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:empowerops.volition.dto.VariableNameDTO)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // string value = 1;
+  if (!this->_internal_value().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_value().data(), static_cast<int>(this->_internal_value().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "empowerops.volition.dto.VariableNameDTO.value");
+    target = stream->WriteStringMaybeAliased(
+        1, this->_internal_value(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:empowerops.volition.dto.VariableNameDTO)
+  return target;
+}
+
+size_t VariableNameDTO::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:empowerops.volition.dto.VariableNameDTO)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // string value = 1;
+  if (!this->_internal_value().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_value());
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData VariableNameDTO::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    VariableNameDTO::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*VariableNameDTO::GetClassData() const { return &_class_data_; }
+
+void VariableNameDTO::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<VariableNameDTO *>(to)->MergeFrom(
+      static_cast<const VariableNameDTO &>(from));
+}
+
+
+void VariableNameDTO::MergeFrom(const VariableNameDTO& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:empowerops.volition.dto.VariableNameDTO)
+  GOOGLE_DCHECK_NE(&from, this);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (!from._internal_value().empty()) {
+    _internal_set_value(from._internal_value());
+  }
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void VariableNameDTO::CopyFrom(const VariableNameDTO& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:empowerops.volition.dto.VariableNameDTO)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool VariableNameDTO::IsInitialized() const {
+  return true;
+}
+
+void VariableNameDTO::InternalSwap(VariableNameDTO* other) {
+  using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      &value_, lhs_arena,
+      &other->value_, rhs_arena
+  );
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata VariableNameDTO::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_optimizer_2eproto_getter, &descriptor_table_optimizer_2eproto_once,
+      file_level_metadata_optimizer_2eproto[50]);
+}
+const std::string potential_message_size_default("");
+PROTOBUF_ATTRIBUTE_INIT_PRIORITY ::PROTOBUF_NAMESPACE_ID::internal::ExtensionIdentifier< ::google::protobuf::MessageOptions,
+    ::PROTOBUF_NAMESPACE_ID::internal::StringTypeTraits, 9, false >
+  potential_message_size(kPotentialMessageSizeFieldNumber, potential_message_size_default);
 
 // @@protoc_insertion_point(namespace_scope)
 }  // namespace dto
 }  // namespace volition
 }  // namespace empowerops
 PROTOBUF_NAMESPACE_OPEN
-template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::StartOptimizationCommandDTO_ProblemDefinition* Arena::CreateMaybeMessage< ::empowerops::volition::dto::StartOptimizationCommandDTO_ProblemDefinition >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::empowerops::volition::dto::StartOptimizationCommandDTO_ProblemDefinition >(arena);
-}
-template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::StartOptimizationCommandDTO_SimulationNode* Arena::CreateMaybeMessage< ::empowerops::volition::dto::StartOptimizationCommandDTO_SimulationNode >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::empowerops::volition::dto::StartOptimizationCommandDTO_SimulationNode >(arena);
-}
-template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::StartOptimizationCommandDTO_OptimizationSettings* Arena::CreateMaybeMessage< ::empowerops::volition::dto::StartOptimizationCommandDTO_OptimizationSettings >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::empowerops::volition::dto::StartOptimizationCommandDTO_OptimizationSettings >(arena);
-}
 template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::StartOptimizationCommandDTO* Arena::CreateMaybeMessage< ::empowerops::volition::dto::StartOptimizationCommandDTO >(Arena* arena) {
   return Arena::CreateMessageInternal< ::empowerops::volition::dto::StartOptimizationCommandDTO >(arena);
 }
-template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::OptimizerGeneratedQueryDTO_SimulationEvaluationRequest_InputVectorEntry_DoNotUse* Arena::CreateMaybeMessage< ::empowerops::volition::dto::OptimizerGeneratedQueryDTO_SimulationEvaluationRequest_InputVectorEntry_DoNotUse >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::empowerops::volition::dto::OptimizerGeneratedQueryDTO_SimulationEvaluationRequest_InputVectorEntry_DoNotUse >(arena);
+template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::ProblemDefinitionDTO* Arena::CreateMaybeMessage< ::empowerops::volition::dto::ProblemDefinitionDTO >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::empowerops::volition::dto::ProblemDefinitionDTO >(arena);
 }
-template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::OptimizerGeneratedQueryDTO_SimulationEvaluationRequest* Arena::CreateMaybeMessage< ::empowerops::volition::dto::OptimizerGeneratedQueryDTO_SimulationEvaluationRequest >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::empowerops::volition::dto::OptimizerGeneratedQueryDTO_SimulationEvaluationRequest >(arena);
+template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::EvaluableNodeDTO* Arena::CreateMaybeMessage< ::empowerops::volition::dto::EvaluableNodeDTO >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::empowerops::volition::dto::EvaluableNodeDTO >(arena);
 }
-template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::OptimizerGeneratedQueryDTO_SimulationCancelRequest* Arena::CreateMaybeMessage< ::empowerops::volition::dto::OptimizerGeneratedQueryDTO_SimulationCancelRequest >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::empowerops::volition::dto::OptimizerGeneratedQueryDTO_SimulationCancelRequest >(arena);
+template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::SimulationNodeDTO* Arena::CreateMaybeMessage< ::empowerops::volition::dto::SimulationNodeDTO >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::empowerops::volition::dto::SimulationNodeDTO >(arena);
 }
-template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::OptimizerGeneratedQueryDTO_OptimizationStartedNotification* Arena::CreateMaybeMessage< ::empowerops::volition::dto::OptimizerGeneratedQueryDTO_OptimizationStartedNotification >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::empowerops::volition::dto::OptimizerGeneratedQueryDTO_OptimizationStartedNotification >(arena);
+template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::SimulationInputParameterDTO* Arena::CreateMaybeMessage< ::empowerops::volition::dto::SimulationInputParameterDTO >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::empowerops::volition::dto::SimulationInputParameterDTO >(arena);
 }
-template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::OptimizerGeneratedQueryDTO_OptimizationFinishedNotification* Arena::CreateMaybeMessage< ::empowerops::volition::dto::OptimizerGeneratedQueryDTO_OptimizationFinishedNotification >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::empowerops::volition::dto::OptimizerGeneratedQueryDTO_OptimizationFinishedNotification >(arena);
+template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::SimulationOutputParameterDTO* Arena::CreateMaybeMessage< ::empowerops::volition::dto::SimulationOutputParameterDTO >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::empowerops::volition::dto::SimulationOutputParameterDTO >(arena);
 }
-template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::OptimizerGeneratedQueryDTO_OptimizationFailedToStartNotification* Arena::CreateMaybeMessage< ::empowerops::volition::dto::OptimizerGeneratedQueryDTO_OptimizationFailedToStartNotification >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::empowerops::volition::dto::OptimizerGeneratedQueryDTO_OptimizationFailedToStartNotification >(arena);
+template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::SuspendAndCallbackConfigurationDTO* Arena::CreateMaybeMessage< ::empowerops::volition::dto::SuspendAndCallbackConfigurationDTO >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::empowerops::volition::dto::SuspendAndCallbackConfigurationDTO >(arena);
+}
+template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::ExternalSimulationExecConfigurationDTO* Arena::CreateMaybeMessage< ::empowerops::volition::dto::ExternalSimulationExecConfigurationDTO >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::empowerops::volition::dto::ExternalSimulationExecConfigurationDTO >(arena);
+}
+template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::ExecOptionDTO* Arena::CreateMaybeMessage< ::empowerops::volition::dto::ExecOptionDTO >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::empowerops::volition::dto::ExecOptionDTO >(arena);
+}
+template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::OutputParameterLocationStepSequenceDTO* Arena::CreateMaybeMessage< ::empowerops::volition::dto::OutputParameterLocationStepSequenceDTO >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::empowerops::volition::dto::OutputParameterLocationStepSequenceDTO >(arena);
+}
+template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::InputParameterDetectionStepSetDTO* Arena::CreateMaybeMessage< ::empowerops::volition::dto::InputParameterDetectionStepSetDTO >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::empowerops::volition::dto::InputParameterDetectionStepSetDTO >(arena);
+}
+template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::OutputParameterLocationStepDTO* Arena::CreateMaybeMessage< ::empowerops::volition::dto::OutputParameterLocationStepDTO >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::empowerops::volition::dto::OutputParameterLocationStepDTO >(arena);
+}
+template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::InputParameterLocationStepDTO* Arena::CreateMaybeMessage< ::empowerops::volition::dto::InputParameterLocationStepDTO >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::empowerops::volition::dto::InputParameterLocationStepDTO >(arena);
+}
+template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::RowColumnLengthLocationDTO* Arena::CreateMaybeMessage< ::empowerops::volition::dto::RowColumnLengthLocationDTO >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::empowerops::volition::dto::RowColumnLengthLocationDTO >(arena);
+}
+template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::AnchorLocationDTO* Arena::CreateMaybeMessage< ::empowerops::volition::dto::AnchorLocationDTO >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::empowerops::volition::dto::AnchorLocationDTO >(arena);
+}
+template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::OptimizationSettingsDTO* Arena::CreateMaybeMessage< ::empowerops::volition::dto::OptimizationSettingsDTO >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::empowerops::volition::dto::OptimizationSettingsDTO >(arena);
 }
 template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::OptimizerGeneratedQueryDTO* Arena::CreateMaybeMessage< ::empowerops::volition::dto::OptimizerGeneratedQueryDTO >(Arena* arena) {
   return Arena::CreateMessageInternal< ::empowerops::volition::dto::OptimizerGeneratedQueryDTO >(arena);
+}
+template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::SimulationEvaluationRequestDTO_InputVectorEntry_DoNotUse* Arena::CreateMaybeMessage< ::empowerops::volition::dto::SimulationEvaluationRequestDTO_InputVectorEntry_DoNotUse >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::empowerops::volition::dto::SimulationEvaluationRequestDTO_InputVectorEntry_DoNotUse >(arena);
+}
+template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::SimulationEvaluationRequestDTO* Arena::CreateMaybeMessage< ::empowerops::volition::dto::SimulationEvaluationRequestDTO >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::empowerops::volition::dto::SimulationEvaluationRequestDTO >(arena);
+}
+template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::SimulationCancelRequestDTO* Arena::CreateMaybeMessage< ::empowerops::volition::dto::SimulationCancelRequestDTO >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::empowerops::volition::dto::SimulationCancelRequestDTO >(arena);
+}
+template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::OptimizationStartedNotificationDTO* Arena::CreateMaybeMessage< ::empowerops::volition::dto::OptimizationStartedNotificationDTO >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::empowerops::volition::dto::OptimizationStartedNotificationDTO >(arena);
+}
+template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::OptimizationFinishedNotificationDTO* Arena::CreateMaybeMessage< ::empowerops::volition::dto::OptimizationFinishedNotificationDTO >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::empowerops::volition::dto::OptimizationFinishedNotificationDTO >(arena);
+}
+template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::OptimizationNotStartedNotificationDTO* Arena::CreateMaybeMessage< ::empowerops::volition::dto::OptimizationNotStartedNotificationDTO >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::empowerops::volition::dto::OptimizationNotStartedNotificationDTO >(arena);
+}
+template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::DesignIterationCompletedNotificationDTO* Arena::CreateMaybeMessage< ::empowerops::volition::dto::DesignIterationCompletedNotificationDTO >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::empowerops::volition::dto::DesignIterationCompletedNotificationDTO >(arena);
 }
 template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::SimulationEvaluationCompletedResponseDTO_OutputVectorEntry_DoNotUse* Arena::CreateMaybeMessage< ::empowerops::volition::dto::SimulationEvaluationCompletedResponseDTO_OutputVectorEntry_DoNotUse >(Arena* arena) {
   return Arena::CreateMessageInternal< ::empowerops::volition::dto::SimulationEvaluationCompletedResponseDTO_OutputVectorEntry_DoNotUse >(arena);
@@ -3567,38 +13164,53 @@ template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::OptimizationResultsQue
 template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::OptimizationResultsResponseDTO* Arena::CreateMaybeMessage< ::empowerops::volition::dto::OptimizationResultsResponseDTO >(Arena* arena) {
   return Arena::CreateMessageInternal< ::empowerops::volition::dto::OptimizationResultsResponseDTO >(arena);
 }
-template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::PrototypeInputParameter_Continuous* Arena::CreateMaybeMessage< ::empowerops::volition::dto::PrototypeInputParameter_Continuous >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::empowerops::volition::dto::PrototypeInputParameter_Continuous >(arena);
+template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::InputParameterDTO* Arena::CreateMaybeMessage< ::empowerops::volition::dto::InputParameterDTO >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::empowerops::volition::dto::InputParameterDTO >(arena);
 }
-template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::PrototypeInputParameter_DiscreteRange* Arena::CreateMaybeMessage< ::empowerops::volition::dto::PrototypeInputParameter_DiscreteRange >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::empowerops::volition::dto::PrototypeInputParameter_DiscreteRange >(arena);
+template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::ContinuousDTO* Arena::CreateMaybeMessage< ::empowerops::volition::dto::ContinuousDTO >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::empowerops::volition::dto::ContinuousDTO >(arena);
 }
-template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::PrototypeInputParameter* Arena::CreateMaybeMessage< ::empowerops::volition::dto::PrototypeInputParameter >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::empowerops::volition::dto::PrototypeInputParameter >(arena);
+template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::DiscreteRangeDTO* Arena::CreateMaybeMessage< ::empowerops::volition::dto::DiscreteRangeDTO >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::empowerops::volition::dto::DiscreteRangeDTO >(arena);
 }
-template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::PrototypeOutputParameter* Arena::CreateMaybeMessage< ::empowerops::volition::dto::PrototypeOutputParameter >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::empowerops::volition::dto::PrototypeOutputParameter >(arena);
+template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::VariableMappingDTO_InputsEntry_DoNotUse* Arena::CreateMaybeMessage< ::empowerops::volition::dto::VariableMappingDTO_InputsEntry_DoNotUse >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::empowerops::volition::dto::VariableMappingDTO_InputsEntry_DoNotUse >(arena);
 }
-template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::VariableMapping_InputsEntry_DoNotUse* Arena::CreateMaybeMessage< ::empowerops::volition::dto::VariableMapping_InputsEntry_DoNotUse >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::empowerops::volition::dto::VariableMapping_InputsEntry_DoNotUse >(arena);
+template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::VariableMappingDTO_OutputsEntry_DoNotUse* Arena::CreateMaybeMessage< ::empowerops::volition::dto::VariableMappingDTO_OutputsEntry_DoNotUse >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::empowerops::volition::dto::VariableMappingDTO_OutputsEntry_DoNotUse >(arena);
 }
-template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::VariableMapping_OutputsEntry_DoNotUse* Arena::CreateMaybeMessage< ::empowerops::volition::dto::VariableMapping_OutputsEntry_DoNotUse >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::empowerops::volition::dto::VariableMapping_OutputsEntry_DoNotUse >(arena);
+template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::VariableMappingDTO* Arena::CreateMaybeMessage< ::empowerops::volition::dto::VariableMappingDTO >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::empowerops::volition::dto::VariableMappingDTO >(arena);
 }
-template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::VariableMapping* Arena::CreateMaybeMessage< ::empowerops::volition::dto::VariableMapping >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::empowerops::volition::dto::VariableMapping >(arena);
+template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::BabelConstraintNodeDTO* Arena::CreateMaybeMessage< ::empowerops::volition::dto::BabelConstraintNodeDTO >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::empowerops::volition::dto::BabelConstraintNodeDTO >(arena);
 }
-template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::BabelConstraint* Arena::CreateMaybeMessage< ::empowerops::volition::dto::BabelConstraint >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::empowerops::volition::dto::BabelConstraint >(arena);
+template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::BabelScalarNodeDTO* Arena::CreateMaybeMessage< ::empowerops::volition::dto::BabelScalarNodeDTO >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::empowerops::volition::dto::BabelScalarNodeDTO >(arena);
 }
-template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::BabelScalar* Arena::CreateMaybeMessage< ::empowerops::volition::dto::BabelScalar >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::empowerops::volition::dto::BabelScalar >(arena);
+template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::SeedRowDTO* Arena::CreateMaybeMessage< ::empowerops::volition::dto::SeedRowDTO >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::empowerops::volition::dto::SeedRowDTO >(arena);
 }
-template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::DesignRow* Arena::CreateMaybeMessage< ::empowerops::volition::dto::DesignRow >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::empowerops::volition::dto::DesignRow >(arena);
+template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::DesignRowDTO* Arena::CreateMaybeMessage< ::empowerops::volition::dto::DesignRowDTO >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::empowerops::volition::dto::DesignRowDTO >(arena);
 }
-template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::UUID* Arena::CreateMaybeMessage< ::empowerops::volition::dto::UUID >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::empowerops::volition::dto::UUID >(arena);
+template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::UUIDDTO* Arena::CreateMaybeMessage< ::empowerops::volition::dto::UUIDDTO >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::empowerops::volition::dto::UUIDDTO >(arena);
+}
+template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::PathDTO* Arena::CreateMaybeMessage< ::empowerops::volition::dto::PathDTO >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::empowerops::volition::dto::PathDTO >(arena);
+}
+template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::ErrorResponseDTO* Arena::CreateMaybeMessage< ::empowerops::volition::dto::ErrorResponseDTO >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::empowerops::volition::dto::ErrorResponseDTO >(arena);
+}
+template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::InternalErrorDTO* Arena::CreateMaybeMessage< ::empowerops::volition::dto::InternalErrorDTO >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::empowerops::volition::dto::InternalErrorDTO >(arena);
+}
+template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::NoSuchOptimizationRunDTO* Arena::CreateMaybeMessage< ::empowerops::volition::dto::NoSuchOptimizationRunDTO >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::empowerops::volition::dto::NoSuchOptimizationRunDTO >(arena);
+}
+template<> PROTOBUF_NOINLINE ::empowerops::volition::dto::VariableNameDTO* Arena::CreateMaybeMessage< ::empowerops::volition::dto::VariableNameDTO >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::empowerops::volition::dto::VariableNameDTO >(arena);
 }
 PROTOBUF_NAMESPACE_CLOSE
 

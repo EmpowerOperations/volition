@@ -216,9 +216,9 @@ class UnaryOptimizer final {
       // OptimizationFailedToStartNotification -- will contain a list of issues indicating why the optimization was not started.
       // [stream completed]
       #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
-      virtual void StartOptimization(::grpc::ClientContext* context, ::empowerops::volition::dto::StartOptimizationCommandDTO* request, ::grpc::ClientReadReactor< ::empowerops::volition::dto::OptimizerGeneratedQueryDTO>* reactor) = 0;
+      virtual void StartOptimization(::grpc::ClientContext* context, const ::empowerops::volition::dto::StartOptimizationCommandDTO* request, ::grpc::ClientReadReactor< ::empowerops::volition::dto::OptimizerGeneratedQueryDTO>* reactor) = 0;
       #else
-      virtual void StartOptimization(::grpc::ClientContext* context, ::empowerops::volition::dto::StartOptimizationCommandDTO* request, ::grpc::experimental::ClientReadReactor< ::empowerops::volition::dto::OptimizerGeneratedQueryDTO>* reactor) = 0;
+      virtual void StartOptimization(::grpc::ClientContext* context, const ::empowerops::volition::dto::StartOptimizationCommandDTO* request, ::grpc::experimental::ClientReadReactor< ::empowerops::volition::dto::OptimizerGeneratedQueryDTO>* reactor) = 0;
       #endif
       // Responses to OASIS supplied queries,
       // these should be called by the simulator in response to OptimizerGeneratedQueryDTO messages.
@@ -342,9 +342,9 @@ class UnaryOptimizer final {
       public StubInterface::experimental_async_interface {
      public:
       #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
-      void StartOptimization(::grpc::ClientContext* context, ::empowerops::volition::dto::StartOptimizationCommandDTO* request, ::grpc::ClientReadReactor< ::empowerops::volition::dto::OptimizerGeneratedQueryDTO>* reactor) override;
+      void StartOptimization(::grpc::ClientContext* context, const ::empowerops::volition::dto::StartOptimizationCommandDTO* request, ::grpc::ClientReadReactor< ::empowerops::volition::dto::OptimizerGeneratedQueryDTO>* reactor) override;
       #else
-      void StartOptimization(::grpc::ClientContext* context, ::empowerops::volition::dto::StartOptimizationCommandDTO* request, ::grpc::experimental::ClientReadReactor< ::empowerops::volition::dto::OptimizerGeneratedQueryDTO>* reactor) override;
+      void StartOptimization(::grpc::ClientContext* context, const ::empowerops::volition::dto::StartOptimizationCommandDTO* request, ::grpc::experimental::ClientReadReactor< ::empowerops::volition::dto::OptimizerGeneratedQueryDTO>* reactor) override;
       #endif
       void OfferSimulationResult(::grpc::ClientContext* context, const ::empowerops::volition::dto::SimulationEvaluationCompletedResponseDTO* request, ::empowerops::volition::dto::SimulationEvaluationResultConfirmDTO* response, std::function<void(::grpc::Status)>) override;
       #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL

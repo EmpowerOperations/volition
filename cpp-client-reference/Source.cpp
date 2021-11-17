@@ -1,6 +1,7 @@
 #pragma once
 
 #include <random>
+#include <iostream>
 
 #include "optimizer.pb.h"
 #include "optimizer.grpc.pb.h"
@@ -17,9 +18,6 @@ using grpc::ClientContext;
 using grpc::Status;
 using empowerops::volition::dto::UnaryOptimizer;
 using empowerops::volition::dto::StartOptimizationCommandDTO;
-using empowerops::volition::dto::StartOptimizationCommandDTO_SimulationNode;
-using empowerops::volition::dto::PrototypeInputParameter;
-using empowerops::volition::dto::PrototypeInputParameter_Continuous;
 using empowerops::volition::dto::OptimizerGeneratedQueryDTO;
 using empowerops::volition::dto::SimulationEvaluationResultConfirmDTO;
 using empowerops::volition::dto::SimulationEvaluationCompletedResponseDTO;
@@ -33,24 +31,33 @@ int main() {
 
 	auto context = new ClientContext();
 	auto start = new StartOptimizationCommandDTO();
-	start->mutable_settings()->mutable_iteration_count()->set_value(5);
+	start->mutable_settings()->set_iteration_count(5);
 
 	auto input = start->mutable_problem_definition()->mutable_inputs()->Add();
 	input->set_name("x1");
+
 	auto bounds = input->continuous();
 	bounds.set_lower_bound(0.5);
 	bounds.set_upper_bound(1.5);
 
-	auto output = start->mutable_problem_definition()->mutable_objectives()->Add();
-	output->set_name("f1");
+	auto evaluable = start->mutable_problem_definition()->mutable_evaluables()->Add();
 
-	auto sim = start->mutable_nodes()->Add();
-	sim->set_auto_map(true);
-	sim->add_inputs("x1");
-	sim->add_outputs("f1");
+	auto simulation = evaluable->mutable_simulation();
+	simulation->set_auto_map(true);
+
+	auto inputParam = simulation->mutable_inputs()->Add();
+	inputParam->set_name("x1");
+
+	auto outputParam = simulation->mutable_outputs()->Add();
+	outputParam->set_name("f1");
 
 	OptimizerGeneratedQueryDTO optimizerQuery;
 	auto reader = stub->StartOptimization(context, *start);
+
+	if(channel->GetState(true) != GRPC_CHANNEL_READY)
+	{
+		std::cout << "couldn't connect!" << std::endl;
+	}
 
 	// std::default_random_engine randSrc(std::random_device());
 	// auto distr = std::uniform_real_distribution<double>(0.0, 10.0);

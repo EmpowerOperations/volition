@@ -96,8 +96,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="BeforeBuild">
-    <Message Text="Running gradlew..." />
-    <Exec Command="../gradlew.bat generateProto" />
+    <!-- <Message Text="Running gradlew..."/> -->
+    <!-- after some thinking, Im inverting this dependency: Gradle will call msbuild/dotnet-build. -->
+    <!-- Visual studio should not depend on gradle since users opening this project probably wont have gradle or know what it does.-->
+    <!-- <Exec Command="../gradlew.bat generateProto" /> -->
   </Target>
   <Import Project="..\packages\Grpc.Core.2.35.0\build\net45\Grpc.Core.targets" Condition="Exists('..\packages\Grpc.Core.2.35.0\build\net45\Grpc.Core.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmpowerOps.Volition.ClientR
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmpowerOps.Volition.Api", "api\EmpowerOps.Volition.Api.csproj", "{1AC199B1-9D40-42E6-B124-74E8EE4B8C71}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cpp-client-reference", "cpp-client-reference\cpp-client-reference.vcxproj", "{0D219477-F7B3-45DD-9ABF-0D25130897EB}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cpp-client-reference", "cpp-client-reference\cpp-client-reference.vcxproj", "{4ADF65BE-7AF0-4E2A-9D45-ADAD8657DCD9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,20 +63,20 @@ Global
 		{1AC199B1-9D40-42E6-B124-74E8EE4B8C71}.Release|x64.Build.0 = Release|Any CPU
 		{1AC199B1-9D40-42E6-B124-74E8EE4B8C71}.Release|x86.ActiveCfg = Release|Any CPU
 		{1AC199B1-9D40-42E6-B124-74E8EE4B8C71}.Release|x86.Build.0 = Release|Any CPU
-		{0D219477-F7B3-45DD-9ABF-0D25130897EB}.Debug|Any CPU.ActiveCfg = Debug|Win32
-		{0D219477-F7B3-45DD-9ABF-0D25130897EB}.Debug|ARM.ActiveCfg = Debug|Win32
-		{0D219477-F7B3-45DD-9ABF-0D25130897EB}.Debug|ARM64.ActiveCfg = Debug|Win32
-		{0D219477-F7B3-45DD-9ABF-0D25130897EB}.Debug|x64.ActiveCfg = Debug|x64
-		{0D219477-F7B3-45DD-9ABF-0D25130897EB}.Debug|x64.Build.0 = Debug|x64
-		{0D219477-F7B3-45DD-9ABF-0D25130897EB}.Debug|x86.ActiveCfg = Debug|Win32
-		{0D219477-F7B3-45DD-9ABF-0D25130897EB}.Debug|x86.Build.0 = Debug|Win32
-		{0D219477-F7B3-45DD-9ABF-0D25130897EB}.Release|Any CPU.ActiveCfg = Release|Win32
-		{0D219477-F7B3-45DD-9ABF-0D25130897EB}.Release|ARM.ActiveCfg = Release|Win32
-		{0D219477-F7B3-45DD-9ABF-0D25130897EB}.Release|ARM64.ActiveCfg = Release|Win32
-		{0D219477-F7B3-45DD-9ABF-0D25130897EB}.Release|x64.ActiveCfg = Release|x64
-		{0D219477-F7B3-45DD-9ABF-0D25130897EB}.Release|x64.Build.0 = Release|x64
-		{0D219477-F7B3-45DD-9ABF-0D25130897EB}.Release|x86.ActiveCfg = Release|Win32
-		{0D219477-F7B3-45DD-9ABF-0D25130897EB}.Release|x86.Build.0 = Release|Win32
+		{4ADF65BE-7AF0-4E2A-9D45-ADAD8657DCD9}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{4ADF65BE-7AF0-4E2A-9D45-ADAD8657DCD9}.Debug|ARM.ActiveCfg = Debug|Win32
+		{4ADF65BE-7AF0-4E2A-9D45-ADAD8657DCD9}.Debug|ARM64.ActiveCfg = Debug|Win32
+		{4ADF65BE-7AF0-4E2A-9D45-ADAD8657DCD9}.Debug|x64.ActiveCfg = Debug|x64
+		{4ADF65BE-7AF0-4E2A-9D45-ADAD8657DCD9}.Debug|x64.Build.0 = Debug|x64
+		{4ADF65BE-7AF0-4E2A-9D45-ADAD8657DCD9}.Debug|x86.ActiveCfg = Debug|Win32
+		{4ADF65BE-7AF0-4E2A-9D45-ADAD8657DCD9}.Debug|x86.Build.0 = Debug|Win32
+		{4ADF65BE-7AF0-4E2A-9D45-ADAD8657DCD9}.Release|Any CPU.ActiveCfg = Release|Win32
+		{4ADF65BE-7AF0-4E2A-9D45-ADAD8657DCD9}.Release|ARM.ActiveCfg = Release|Win32
+		{4ADF65BE-7AF0-4E2A-9D45-ADAD8657DCD9}.Release|ARM64.ActiveCfg = Release|Win32
+		{4ADF65BE-7AF0-4E2A-9D45-ADAD8657DCD9}.Release|x64.ActiveCfg = Release|x64
+		{4ADF65BE-7AF0-4E2A-9D45-ADAD8657DCD9}.Release|x64.Build.0 = Release|x64
+		{4ADF65BE-7AF0-4E2A-9D45-ADAD8657DCD9}.Release|x86.ActiveCfg = Release|Win32
+		{4ADF65BE-7AF0-4E2A-9D45-ADAD8657DCD9}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

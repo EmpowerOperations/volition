@@ -1,9 +1,12 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg/master/scripts/vcpkg.schema.json",
   "name": "volition",
-  "version": "1.2.306",
+  "version": "1.3.309",
   "description": "A cpp shim library for the volition API",
-  "dependencies": [ "grpc", "protobuf" ],
+  "dependencies": [ 
+	"grpc", 
+	"protobuf" 
+  ],
   "builtin-baseline": "975822a2a2b28cb4451aeb5209d7262996310dbc",
   "overrides": [
     { "name": "grpc", "version": "1.37.0" },

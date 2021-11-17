@@ -3,21 +3,19 @@ package com.empowerops.volition.ref_oasis
 import com.empowerops.volition.dto.*
 import com.empowerops.volition.dto.OptimizerGeneratedQueryDTO.PurposeCase.*
 import io.grpc.ManagedChannelBuilder
-import io.grpc.stub.StreamObserver
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combineTransform
+import kotlinx.coroutines.sync.Mutex
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.lang.IllegalStateException
-import java.lang.RuntimeException
 import java.net.ServerSocket
+import java.text.DecimalFormat
 import java.util.*
-import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
-import kotlin.reflect.KFunction2
+import kotlin.math.exp
 
 class Tests {
 
@@ -67,7 +65,7 @@ class Tests {
 
         val str = consoleAltBytes.toString("utf-8")
 
-        assertThat(str.trim()).contains("Volition API 1.2")
+        assertThat(str.trim()).contains("Volition API 1.3")
     }
 
     @Test
@@ -674,104 +672,166 @@ class Tests {
         assertThat(results.size).isGreaterThanOrEqualTo(iterationNo)
     }
 
-    @Test fun `when calling startOptimization when previous optimization is not completed should provide good error message`(){
-        TODO()
-        // given that an optimiziation is already running
-        // when a user calls start optimization
-        // the result should be a RunNotStartedNotification issues=optimization ABCD1234 is already running.
+    @Test
+    fun `when calling startOptimization when previous optimization is not completed should provide good error message`() = runBlocking<Unit> {
+
+        val startOptimizationRequest = startOptimizationCommandDTO {
+            problemDefinition = problemDefinitionDTO {
+                inputs += inputParameterDTO {
+                    name = "x1"
+                    continuous = continuousDTO {
+                        lowerBound = 1.0
+                        upperBound = 5.0
+                    }
+                }
+                evaluables += evaluableNodeDTO {
+                    simulation = simulationNodeDTO {
+                        autoMap = true
+                        inputs += simulationInputParameterDTO { name = "x1" }
+                        outputs += simulationOutputParameterDTO { name = "f1" }
+                    }
+                }
+            }
+        }
+
+        val startedMutex = Mutex(true)
+        val messages = mutableListOf<String>()
+
+        launch {
+            // act 1: seetup an actually running optimization;
+            // we'll just hang it on the first evaluation
+            service.startOptimization(startOptimizationRequest).collect { optimizerMessage ->
+                when(optimizerMessage.purposeCase) {
+                    OPTIMIZATION_STARTED_NOTIFICATION -> startedMutex.unlock()
+                    OPTIMIZATION_FINISHED_NOTIFICATION -> Unit
+                    EVALUATION_REQUEST -> {
+                        //we'll actually let it hang on the first iteration
+                    }
+                    CANCEL_REQUEST -> {
+                        // when we get a cancellation, which we get from stop, I'll stop it
+                        service.offerErrorResult(simulationEvaluationErrorResponseDTO{})
+                    }
+                    else -> TODO("unknown $optimizerMessage")
+                }
+            }
+        }
+        startedMutex.lock()
+        // act 2: attempt to start a second optimization. It should return with NOT_STARTED
+        service.startOptimization(startOptimizationRequest).collect { optimizerMessage ->
+            when(optimizerMessage.purposeCase){
+                OPTIMIZATION_NOT_STARTED_NOTIFICATION -> {
+                    messages += optimizerMessage.optimizationNotStartedNotification.issuesList
+                }
+                else -> TODO("expected not started, but got $optimizerMessage")
+            }
+        }
+        service.stopOptimization(stopOptimizationCommandDTO{})
+
+        assertThat(messages).isEqualTo(listOf("Optimization already running"))
     }
 
-    @Test fun `should backpresure on iteration completed event`(){
+    @Test
+    fun `when using postprocessing on simulation output and also an expensive constraint should work properly`() = runBlocking<Unit> {
+        val startOptimizationRequest = startOptimizationCommandDTO {
+            problemDefinition = problemDefinitionDTO {
+                inputs += inputParameterDTO {
+                    name = "x1"
+                    continuous = continuousDTO {
+                        lowerBound = 0.0
+                        upperBound = 1.0
+                    }
+                }
+                evaluables += evaluableNodeDTO {
+                    simulation = simulationNodeDTO {
+                        autoMap = true
+                        inputs += simulationInputParameterDTO { name = "x1" }
+                        outputs += simulationOutputParameterDTO { name = "i1" }
+                    }
+                }
+                evaluables += evaluableNodeDTO {
+                    transform = babelScalarNodeDTO {
+                        outputName = "f1"
+                        scalarExpression = "i1 + 1.0"
+                    }
+                }
+                evaluables += evaluableNodeDTO {
+                    constraint = babelConstraintNodeDTO {
+                        outputName = "c1"
+                        booleanExpression = "f1 <= 2.5"
+                    }
+                }
+            }
+
+            settings = optimizationSettingsDTO {
+                iterationCount = 5
+            }
+        }
+
+        val designs = mutableListOf<DesignRowDTO>()
+
+        service.startOptimization(startOptimizationRequest).collect { optimizerMessage ->
+            when(optimizerMessage.purposeCase){
+                EVALUATION_REQUEST -> {
+                    service.offerSimulationResult(simulationEvaluationCompletedResponseDTO {
+                        val x1 = optimizerMessage.evaluationRequest.inputVectorMap.values.single()
+                        outputVector["i1"] = 1.0 + x1
+                    })
+
+                    Unit
+                }
+                CANCEL_REQUEST -> Unit
+                OPTIMIZATION_STARTED_NOTIFICATION -> Unit
+                OPTIMIZATION_FINISHED_NOTIFICATION -> Unit
+                OPTIMIZATION_NOT_STARTED_NOTIFICATION -> Unit
+                DESIGN_ITERATION_COMPLETED_NOTIFICATION -> {
+                    designs += optimizerMessage.designIterationCompletedNotification.designPoint
+                }
+                null, PURPOSE_NOT_SET -> TODO()
+            } as Any
+        }
+
+        val constraintRange = /* c1: f1 <= 2.5 -> c1 := f1-2.5<=0 -> c1 = f1-2.5, which is [2.0..3.0]-2.5, */ 0.5..+0.5
+        assertThat(designs.all { it.matches(listOf(0.0..1.0, 1.0..2.0, 2.0..3.0, constraintRange)) })
+            .describedAs("the table:\n${designs.printTable()}\n matches the expected ranges")
+            .isTrue()
+
+    }
+
+    @Test
+    fun `should backpressure on iteration completed event`(){
         TODO()
         // ook this ones tricky,
         // basically in the parallel optimizer i need a back pressure device
         // IE, if we run a pure math function, the stream is flooded with designCompletedEvent.
         //
-        // this seems to indicate we _might_ get it for free https://medium.com/@georgeleung_7777/seamless-backpressure-handling-with-grpc-kotlin-a6f99cab4b95
+        // this seems to indicate we _might_ get it for free
+        // https://medium.com/@georgeleung_7777/seamless-backpressure-handling-with-grpc-kotlin-a6f99cab4b95
         // another option is to add a confirm to the
         //
         // ok, similarly, we could interpret a stopOptimization call as an evaluation cancellation.
         // BUT: we would need some mechanism to identify a straggler-evaluation completed response.
         // one solution could be to have each EvaluationCompleted have both a runID and an iterationID.
         // THIS ALSO ENABLES PARALLELISM, since each evaluation response would have an effective composite primary key
+        //
+        // worth noting, one natural back pressure device we have is simulation evaluations cna stall the optimization
+        // but for pure math functions, there is no backpressure
     }
 
-    @Test fun `when using post-processing on simulation output and also an expensive constraint should work properly`() {
-        TODO()
-        // this is an API fault I found with the structure of intermediates et al.
-        //in
-//        message ProblemDefinitionDTO {
-//            repeated PrototypeInputParameterDTO inputs = 1;
-//            repeated BabelScalarDTO intermediate_transforms = 5;
-//            repeated PrototypeOutputParameterDTO objectives = 2;
-//            repeated BabelConstraintDTO constraints = 3;
-//        }
+    @Test
+    fun `other things todo`() {
+        TODO("environment parameter for the volition port; clients should also listen to that parameter -- you should probably also add 'default' option to run oasis.cli.exe --volition default")
+        TODO("move the logs to %programdata% so that the svc produces some useful output --what are a NetworkServices permissions regarding logging?")
+    }
 
-        // how does one express an intermediate that uses the output from a simulation as input?
-        // does that simulation produce an 'objective'?
-
-        //change to maybe:
-//        message ProblemDefinitionDTO {
-//
-//            repeated OptimizationParameterDTO parameters
-//
-//        }
-//        message OptimizationParameterDTO {
-//            oneof value {
-//                PrototypeInputParameterDTO input = 1;
-//                BabelScalarDTO intermediate_transform = 5;
-//                PrototypeOutputParameterDTO intermediate_simulation_output = 7;
-//                PrototypeOutputParameterDTO objective = 2;
-//                BabelConstraintDTO constraint = 3;
-//            }
-//        }
-
-        // but that begs the question: why dont we just infer the entire thing?
-        // if you change the problem definition such that it simply has
-        // inputs, babel scalars, babel constraints, and simulations
-        // can you not infer the objectiveness?
-        // => yes, but then your column order is complex.
-
-        // you could simply copy repeated OptimizationParam parameters as columns around on each message
-        // we also dont need to pass the babel scalars here, thus
-//        message ProblemDefinitionDTO {
-//            repeated BabelScalar intermediate_transforms = 1;
-//            repeated BabelConstraint constraints = 2;
-
-//            repeated OptimizationParameterDTO parameters = 3;
-
-//            Inference output_inference_policy = 4;
-//            enum Inference {
-//                EVERYTHING = 0;             //<--- also note, you're not following protobuf enum conventions in optimizer.proto, should be CAPSLOCK_CAMEL_CASE, but is UpperCamelCase
-//                INTERMEDIATES_ONLY = 1;
-//                OBJECTIVES_ONLY = 2;
-//            }
-//        }
-//        message OptimizationParameterDTO {
-//            oneof value {
-//                PrototypeInputParameterDTO input = 1;
-//                PrototypeOutputParameterDTO intermediate = 2;
-//                PrototypeOutputParameterDTO objective = 3;
-//                PrototypeOutputParameterDTO constraints = 4;
-//            }
-//        }
-
-        @Test
-        fun `other things todo`() {
-            TODO("environment parameter for the volition port; clients should also listen to that parameter -- you should probably also add 'default' option to run oasis.cli.exe --volition default")
-            TODO("move the logs to %programdata% so that the svc produces some useful output --what are a NetworkServices permissions regarding logging?")
-        }
-
-        @Test
-        fun `when offering a simulation result with an incorrect number of columns should fail on unary call`(){
-            TODO("this was discovered in testing ")
+    @Test
+    fun `when offering a simulation result with an incorrect number of columns should fail on unary call`(){
+        TODO("this was discovered in testing ")
 //            fail; // we should validate the schema of that message here.
 //            // in your test, the client is failing to include a value for c1.
 //            // that should error here.
 //            // design decision: should you put the response on the mssage
 //            // or demux it from the output channel?
 //            // another decision: do we need to do the same validation for the error result?
-        }
     }
 
     @Test fun `when call throws exception should be printed`(){
@@ -803,68 +863,23 @@ class Tests {
 
         TODO()
     }
-}
 
-private sealed class ResponseState<out R> {
-    object NoValue: ResponseState<Nothing>()
-    data class Failure(val throwable: Throwable): ResponseState<Nothing>()
-    data class Result<R>(val result: Any?): ResponseState<R>()
-}
-
-
-suspend fun <M, R> KFunction2<M, StreamObserver<R>, Unit>.send(request: M): R = sendAndAwaitResponse(this, request)
-fun <M, R> sendAndAwaitResponse(func: KFunction2<M, StreamObserver<R>, Unit>): suspend (request: M) -> R = { request: M -> sendAndAwaitResponse(func, request) }
-
-// sends a message, and converts the response observer to kotlin suspension (and exception) semantics
-// assumes a unary call (that is, a call with one value given to the response observer)
-suspend fun <M, R> sendAndAwaitResponse(func: KFunction2<M, StreamObserver<R>, Unit>, request: M): R {
-    val source = RuntimeException("server replied with error on call to ${func.name} with $request")
-
-    return suspendCoroutine<R> { continuation ->
-        func(request, object: StreamObserver<R> {
-            var result: ResponseState<R> = ResponseState.NoValue
-
-            override fun onNext(value: R) {
-                if(result != ResponseState.NoValue) {
-                    continuation.resumeWithException(IllegalStateException(
-                            "received 2 or more responses, now $value, previously $result. Are you that ${func.name} is unary?"
-                    ))
-                }
-                result = ResponseState.Result(value)
-            }
-
-            override fun onError(thrown: Throwable) {
-                if(result is ResponseState.Result){
-                    source.addSuppressed(RuntimeException("rpc call completed previously with $result"))
-                }
-                source.initCause(thrown)
-                continuation.resumeWithException(source)
-            }
-
-            override fun onCompleted() {
-                val result: Result<R> = when(val state = result){
-                    is ResponseState.NoValue -> Result.failure(IllegalStateException("no response received"))
-                    is ResponseState.Failure -> Result.failure(RuntimeException("exception generated by server", state.throwable))
-                    is ResponseState.Result -> Result.success(state.result as R)
-                }
-
-                continuation.resumeWith(result)
-            }
-        })
+    @Test fun `when calling offerResult with point that doesnt fit should return error`(){
+        TODO()
+        //also, we should probably unify offerErrorResult and offerSimulationResult into a single funciton
+        // maybe "offerIterationResult". 
     }
 }
 
-private fun <R> CoroutineScope.cancelOnException(block: () -> R): Unit {
-    try {
-        block()
-    }
-    catch(ex: Throwable){
-        coroutineContext[Job]?.cancel()
-                ?: ex.addSuppressed(RuntimeException("exception did not cancel any coroutines (when it probably should have)"))
+private val FourSigFigFixedPointFormat = DecimalFormat("##.##")
 
-        RuntimeException("client-side exception cancelled the tests", ex).printStackTrace()
-    }
-}
+fun List<DesignRowDTO>.printTable(): String = joinToString("\n") { row -> buildString {
+    append("inputs: ")
+    append(row.inputsList.joinToString(", ", transform = FourSigFigFixedPointFormat::format))
+    append(", ")
+    append("outputs: ")
+    append(row.outputsList.joinToString(", ", transform = FourSigFigFixedPointFormat::format))
+}}
 
 private fun DesignRowDTO.matches(ranges: List<ClosedRange<Double>>): Boolean {
     val fullCoordinatesList = inputsList + outputsList

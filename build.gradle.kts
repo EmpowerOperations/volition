@@ -2,6 +2,9 @@ import com.google.protobuf.gradle.*
 import com.google.protobuf.gradle.id
 import com.google.protobuf.gradle.plugins
 import org.gradle.kotlin.dsl.protobuf
+import java.nio.file.Paths
+import java.nio.file.Files
+import java.nio.file.StandardOpenOption
 
 val kotlin_version = "1.4.32"
 
@@ -157,21 +160,25 @@ project("api") {
     }
 
     tasks.register<Exec>("vcpkgBootstrap") {
+        // regarding 'working dir',
+        // the --X-install-path is experimental,
+        // some of the vcpkg docs (sorry I cant remember where)
+        // sait it was important to start vcpkg in the vcpkg root;
+        // this is apparently what is commonly tested for so
+        // rather than get creative, I'm simply going to dump my files into their default folders,
+        // and manage this under a gitignore.
         workingDir("$rootDir/vcpkg")
         commandLine("$rootDir/vcpkg/bootstrap-vcpkg.bat", "-disableMetrics")
     }
 
-    tasks.register<Copy>("vcpkgMakeManifest") {
-        dependsOn(":api:vcpkgBootstrap")
-
-        from("vcpkg.template.json")
-        rename("vcpkg\\.template\\.json", "vcpkg.json") //TODO: is this a regex?
-        into("$rootDir/vcpkg")
-        filter { line ->
-            line.replace("%volitionFullVersion%", volitionFullVersion)
-                .replace("%protobufVersion%", protobufVersion)
-                .replace("%grpcVersion%", grpcVersion)
+    tasks.register("vcpkgMakeManifest") {
+        val lines = Files.readAllLines(Paths.get("$rootDir/vcpkg.template.json"))
+        val updatedLines = lines.map { it
+            .replace("%volitionFullVersion%", volitionFullVersion)
+            .replace("%protobufVersion%", protobufVersion)
+            .replace("%grpcVersion%", grpcVersion)
         }
+        Files.write(Paths.get("$rootDir/vcpkg/vcpkg.json"), updatedLines, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)
     }
 
     tasks.register<Exec>("vcpkgInstall") {
@@ -211,6 +218,7 @@ project("api") {
     tasks.compileJava {
         dependsOn(":api:vcpkgInstall")
     }
+
 }
 
 project("oasis-reference"){
@@ -269,6 +277,7 @@ project("oasis-reference"){
     }
 
     tasks.register<Zip>("deliverable") {
+        group = "build"
         dependsOn(":oasis-reference:assemble")
 
         from("$buildDir/libs")
@@ -277,11 +286,23 @@ project("oasis-reference"){
         include("*.exe")
         include("*.jar")
 
-        archiveFileName.set("optimizer-reference-${archiveVersion}.zip")
+        archiveFileName.set("optimizer-reference-${volitionFullVersion}.zip")
         destinationDirectory.set(file("$buildDir/deliverable"))
     }
 
     tasks.test {
         useJUnitPlatform()
+    }
+
+    //https://stackoverflow.com/questions/41794914/how-to-create-the-fat-jar-with-gradle-kotlin-script
+    val fatJar = task("fatJar", type = Jar::class) {
+        archiveBaseName.set("${project.name}-fat")
+        from(configurations.runtimeClasspath.get().map({ if (it.isDirectory) it else zipTree(it) }))
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    }
+    tasks {
+        "assemble" {
+            dependsOn(fatJar)
+        }
     }
 }

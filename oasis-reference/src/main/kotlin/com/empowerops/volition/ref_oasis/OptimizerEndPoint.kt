@@ -7,6 +7,7 @@ import com.empowerops.volition.dto.toDTO
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import java.time.Duration
 import java.util.*
@@ -61,6 +62,14 @@ class OptimizerEndpoint(
     }
 
     override fun startOptimization(request: StartOptimizationCommandDTO): Flow<OptimizerGeneratedQueryDTO> {
+
+        if(state !is State.Idle) return flow<OptimizerGeneratedQueryDTO> {
+            emit(optimizerGeneratedQueryDTO {
+                optimizationNotStartedNotification = optimizationNotStartedNotificationDTO {
+                    issues += "Optimization already running"
+                }
+            })
+        }
         val idleState = checkIs<State.Idle>(state)
 
         val channel = Channel<SimulationProvidedMessage>(Channel.RENDEZVOUS)

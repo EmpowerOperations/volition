@@ -53,5 +53,5 @@ using System.Windows;
 // [assembly: AssemblyVersion("1.0.*")]
 
 // updated by teamcity
-[assembly: AssemblyVersion("1.3.0.309")]
-[assembly: AssemblyFileVersion("1.3.0.309")]
+[assembly: AssemblyVersion("1.3.0.310")]
+[assembly: AssemblyFileVersion("1.3.0.310")]

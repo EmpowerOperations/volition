@@ -7,10 +7,12 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combineTransform
+import kotlinx.coroutines.selects.select
 import kotlinx.coroutines.sync.Mutex
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.net.ServerSocket
 import java.text.DecimalFormat
@@ -605,6 +607,7 @@ class Tests {
 
         // assert
         val matcher = listOf(1.0 .. 2.0, 2.0 .. 3.0, 3.0 .. 4.0, 4.0 .. 5.0, 5.0 .. 6.0, Double.MIN_VALUE .. 0.0)
+
         for(point in results.pointsList){
             assertThat(point.matches(matcher)).describedAs("$point matches $matcher")
         }
@@ -790,23 +793,27 @@ class Tests {
             } as Any
         }
 
-        val constraintRange = /* c1: f1 <= 2.5 -> c1 := f1-2.5<=0 -> c1 = f1-2.5, which is [2.0..3.0]-2.5, */ 0.5..+0.5
-        assertThat(designs.all { it.matches(listOf(0.0..1.0, 1.0..2.0, 2.0..3.0, constraintRange)) })
-            .describedAs("the table:\n${designs.printTable()}\n matches the expected ranges")
-            .isTrue()
+        val constraintRange = /* c1: f1 <= 2.5 -> c1 := f1-2.5<=0 -> c1 = f1-2.5, which is [2.0..3.0]-2.5, */ -0.5..+0.5
+        val expectedRanges = listOf(0.0..1.0, 1.0..2.0, 2.0..3.0, constraintRange)
+        val firstMissmatchingDesign = designs.firstOrNull { !it.matches(expectedRanges) }
 
+        assertThat(firstMissmatchingDesign)
+            .isNull()
     }
 
     @Test
-    fun `should backpressure on iteration completed event`(){
-        TODO()
+//    @Disabled("this is only to be run functionally")
+    fun `should backpressure on iteration completed event`() = runBlocking<Unit> {
+
         // ook this ones tricky,
-        // basically in the parallel optimizer i need a back pressure device
-        // IE, if we run a pure math function, the stream is flooded with designCompletedEvent.
+        // basically if we dont have backpressure through simulations,
+        // IE: if we're running a pure math optimization,
+        // and we cant slow the optimizer down waiting for a simulation,
+        // the optimizer can run while the client takes a long time to update.
+        // in this situation the optimizer will generate more points than the
         //
         // this seems to indicate we _might_ get it for free
         // https://medium.com/@georgeleung_7777/seamless-backpressure-handling-with-grpc-kotlin-a6f99cab4b95
-        // another option is to add a confirm to the
         //
         // ok, similarly, we could interpret a stopOptimization call as an evaluation cancellation.
         // BUT: we would need some mechanism to identify a straggler-evaluation completed response.
@@ -815,17 +822,81 @@ class Tests {
         //
         // worth noting, one natural back pressure device we have is simulation evaluations cna stall the optimization
         // but for pure math functions, there is no backpressure
-    }
 
-    @Test
-    fun `other things todo`() {
-        TODO("environment parameter for the volition port; clients should also listen to that parameter -- you should probably also add 'default' option to run oasis.cli.exe --volition default")
-        TODO("move the logs to %programdata% so that the svc produces some useful output --what are a NetworkServices permissions regarding logging?")
+        val startOptimizationRequest = startOptimizationCommandDTO {
+            problemDefinition = problemDefinitionDTO {
+                inputs += inputParameterDTO {
+                    name = "x1"
+                    continuous = continuousDTO {
+                        lowerBound = 1.0
+                        upperBound = 5.0
+                    }
+                }
+                evaluables += evaluableNodeDTO {
+                    transform = babelScalarNodeDTO {
+                        scalarExpression = "x1 + 1.0"
+                    }
+                }
+            }
+        }
+
+        val mutex = Mutex(locked = true)
+        val startedOptimization: Flow<OptimizerGeneratedQueryDTO> = service.startOptimization(startOptimizationRequest)
+
+        var iterationCount = 0
+        val messages = mutableListOf<String>()
+        var stopped = false
+
+        startedOptimization.collect { optimizerMessage ->
+            when(optimizerMessage.purposeCase){
+                EVALUATION_REQUEST -> { TODO() }
+                CANCEL_REQUEST -> Unit
+                OPTIMIZATION_STARTED_NOTIFICATION -> Unit
+                OPTIMIZATION_FINISHED_NOTIFICATION -> {
+                    messages += "optimization finished"
+                }
+                OPTIMIZATION_NOT_STARTED_NOTIFICATION -> Unit
+                DESIGN_ITERATION_COMPLETED_NOTIFICATION -> {
+                    messages += "notified of completion"
+                    if(!stopped) {
+                        val message = withTimeoutOrNull(20) { mutex.lock(); "acquired-lock" } ?: "timed-out."
+                        messages += message
+                    }
+
+                    Unit
+                }
+                null, PURPOSE_NOT_SET -> TODO()
+            } as Any
+
+            iterationCount += 1
+
+            if(iterationCount == 5) {
+                stopped = true
+                messages += "stop-optimization"
+                service.stopOptimization(stopOptimizationCommandDTO{})
+            }
+        }
+
+        // note coming up with an oracle here is really hard,
+        // but the thing to note is that after the stop optimization
+        // **we continue to receive new points**
+        // even after the stop optimization
+        assertThat(messages.size).isGreaterThanOrEqualTo(100) //the optimizer ran _way_ ahead of us
+        assertThat(messages).contains("stop-optimization")
+        assertThat(messages.takeLast(5)).isEqualTo(listOf(
+            "notified of completion",
+            "notified of completion",
+            "notified of completion",
+            "notified of completion",
+            "optimization finished"
+        ))
     }
 
     @Test
     fun `when offering a simulation result with an incorrect number of columns should fail on unary call`(){
         TODO("this was discovered in testing ")
+        //requires API change
+
 //            fail; // we should validate the schema of that message here.
 //            // in your test, the client is failing to include a value for c1.
 //            // that should error here.
@@ -834,7 +905,8 @@ class Tests {
 //            // another decision: do we need to do the same validation for the error result?
     }
 
-    @Test fun `when call throws exception should be printed`(){
+    @Test
+    fun `when call throws exception should be printed`(){
         // soo kotlin grpc is swallowing exceptions
         // this issue is to insert someting that wraps our implementation calls
         // to catch and print excpetions
@@ -862,12 +934,6 @@ class Tests {
 //    }
 
         TODO()
-    }
-
-    @Test fun `when calling offerResult with point that doesnt fit should return error`(){
-        TODO()
-        //also, we should probably unify offerErrorResult and offerSimulationResult into a single funciton
-        // maybe "offerIterationResult". 
     }
 }
 

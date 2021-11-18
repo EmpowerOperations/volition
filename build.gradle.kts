@@ -16,7 +16,7 @@ plugins {
 val protobufVersion = "3.18.0"
 val grpcVersion = "1.37.0"
 val volitionSpecVersion = "1.3"
-val volitionBuildNumber = System.getenv("BUILD_NUMBER") ?: "309"
+val volitionBuildNumber = System.getenv("BUILD_NUMBER") ?: "310"
 val volitionFullVersion = "$volitionSpecVersion.$volitionBuildNumber"
 val volitionName = "volition-api"
 
@@ -214,11 +214,6 @@ project("api") {
         workingDir("$rootDir/vcpkg")
         commandLine("$rootDir/vcpkg/vcpkg.exe", "--feature-flags=manifests,versions", "--triplet=x64-windows", "list")
     }
-
-    tasks.compileJava {
-        dependsOn(":api:vcpkgInstall")
-    }
-
 }
 
 project("oasis-reference"){

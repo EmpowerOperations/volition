@@ -1,8 +1,8 @@
-#pragma once
+// pragma once
 
 #include <random>
 #include <sstream>
-#include <windows.h>
+// include <windows.h>
 
 #include "optimizer.pb.h"
 #include "optimizer.grpc.pb.h"

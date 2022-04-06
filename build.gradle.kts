@@ -178,7 +178,7 @@ project("api") {
             .replace("%protobufVersion%", protobufVersion)
             .replace("%grpcVersion%", grpcVersion)
         }
-        Files.write(Paths.get("$rootDir/vcpkg/vcpkg.json"), updatedLines, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)
+        Files.write(Paths.get("$rootDir/vcpkg.json"), updatedLines, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)
     }
 
     tasks.register<Exec>("vcpkgInstall") {

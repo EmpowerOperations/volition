@@ -16,7 +16,7 @@ plugins {
 val protobufVersion = "3.18.0"
 val grpcVersion = "1.37.0"
 val volitionSpecVersion = "1.3"
-val volitionBuildNumber = System.getenv("BUILD_NUMBER") ?: "310"
+val volitionBuildNumber = System.getenv("BUILD_NUMBER") ?: "311"
 val volitionFullVersion = "$volitionSpecVersion.$volitionBuildNumber"
 val volitionName = "volition-api"
 
@@ -35,6 +35,13 @@ allprojects {
         //functionale-all 1.2 not available... but is is? https://mvnrepository.com/artifact/org.funktionale/funktionale-all/1.2
         jcenter()
     }
+}
+
+//this is to disable the root project
+// note that artifacts will be in ./api/build or ./oasis-reference/build,
+// NOT in the ./build folder
+gradle.buildFinished {
+    project.buildDir.deleteRecursively()
 }
 
 subprojects {
@@ -64,6 +71,11 @@ project("api") {
                 srcDirs("build/generated/source/proto/main/grpc_kt")
             }
         }
+    }
+
+    java {
+        withJavadocJar()
+        withSourcesJar()
     }
 
     java.toolchain.languageVersion.set(JavaLanguageVersion.of(11))
@@ -152,11 +164,6 @@ project("api") {
                 )
             )
         }
-    }
-
-    java {
-        withJavadocJar()
-        withSourcesJar()
     }
 
     tasks.register<Exec>("vcpkgBootstrap") {

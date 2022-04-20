@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+option optimize_for = SPEED;
+
+option java_multiple_files = true;
+
+option java_package = "com.empowerops.volition.dto";
+option csharp_namespace = "EmpowerOps.Volition.Dto";
+package empowerops.volition.dto;
+
+
+service Licensor {
+
+    rpc RequestHardwareId(HardwareIdentifierRequestDTO) returns (HardwareIdentifierResponseDTO) {}
+    rpc OfferLicense(InstallLicenseCommandDTO) returns (InstallLicenseResponseDTO) {}
+}
+
+message HardwareIdentifierRequestDTO {}
+
+message HardwareIdentifierResponseDTO {
+    string lines = 1;
+}
+
+message InstallLicenseCommandDTO {
+    string licenseText = 1;
+}
+
+message InstallLicenseResponseDTO {}

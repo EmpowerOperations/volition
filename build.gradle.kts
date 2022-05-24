@@ -190,7 +190,7 @@ project("api") {
 
     tasks.register<Exec>("vcpkgInstall") {
         group = "vcpkg"
-        dependsOn(":api:vcpkgMakeManifest")
+        dependsOn(":api:vcpkgMakeManifest", ":api:vcpkgBootstrap")
 
         workingDir("$rootDir/vcpkg")
         commandLine(

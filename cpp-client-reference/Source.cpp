@@ -4,8 +4,9 @@
 #include <sstream>
 #include <windows.h>
 
-#include "optimizer.pb.h"
-#include "optimizer.grpc.pb.h"
+// TODO: bad practice to reach to other directories? Maybe have build system make a local copy?
+#include "../api/build/generated/source/proto/main/cpp/optimizer.pb.h"
+#include "../api/build/generated/source/proto/main/grpc_cpp/optimizer.grpc.pb.h"
 
 #include <google/protobuf/text_format.h>
 #include <grpcpp/grpcpp.h>

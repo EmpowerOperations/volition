@@ -6,18 +6,18 @@ import java.nio.file.Paths
 import java.nio.file.Files
 import java.nio.file.StandardOpenOption
 
-val kotlin_version = "1.4.32"
+val kotlin_version = "1.6.20"
 
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "1.4.32"
+    id("org.jetbrains.kotlin.jvm") version "1.6.20"
     id("com.google.protobuf") version "0.8.17"
 }
 
 val protobufVersion = "3.18.0"
 val grpcVersion = "1.37.0"
-val volitionSpecVersion = "1.3"
-val volitionBuildNumber = System.getenv("BUILD_NUMBER") ?: "311"
-val volitionFullVersion = "$volitionSpecVersion.$volitionBuildNumber"
+val volitionSpecVersion = "1.4.0"
+val buildNumber = "313"
+val volitionFullVersion = "$volitionSpecVersion.$buildNumber"
 val volitionName = "volition-api"
 
 repositories {
@@ -86,7 +86,8 @@ project("api") {
 
     dependencies {
         implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version")
-        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3")
+        implementation("org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version")
+        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
 
         implementation("javax.annotation:javax.annotation-api:1.3.2")
 
@@ -111,15 +112,15 @@ project("api") {
             id("grpc_java") {
                 artifact = "io.grpc:protoc-gen-grpc-java:$grpcVersion"
             }
-            id("grpc_csharp") {
-                path = "$rootDir/vcpkg/packages/grpc_x64-windows/tools/grpc/grpc_csharp_plugin.exe"
-            }
-            id("grpc_cpp") {
-                path = "$rootDir/vcpkg/packages/grpc_x64-windows/tools/grpc/grpc_cpp_plugin.exe"
-            }
-            id("grpc_python") {
-                path = "$rootDir/vcpkg/packages/grpc_x64-windows/tools/grpc/grpc_python_plugin.exe"
-            }
+//            id("grpc_csharp") {
+//                path = "$rootDir/vcpkg/packages/grpc_x64-windows/tools/grpc/grpc_csharp_plugin.exe"
+//            }
+//            id("grpc_cpp") {
+//                path = "$rootDir/vcpkg/packages/grpc_x64-windows/tools/grpc/grpc_cpp_plugin.exe"
+//            }
+//            id("grpc_python") {
+//                path = "$rootDir/vcpkg/packages/grpc_x64-windows/tools/grpc/grpc_python_plugin.exe"
+//            }
             id("grpc_kt") {
                 artifact = "io.grpc:protoc-gen-grpc-kotlin:1.2.0:jdk7@jar"
             }
@@ -129,15 +130,15 @@ project("api") {
             ofSourceSet("main").forEach {
                 it.plugins {
                     id("grpc_java")
-                    id("grpc_csharp")
-                    id("grpc_cpp")
-                    id("grpc_python")
+//                    id("grpc_csharp")
+//                    id("grpc_cpp")
+//                    id("grpc_python")
                     id("grpc_kt")
                 }
                 it.builtins {
 //                    id("java") //builtin, gets angry when I repeat it
-                    id("csharp")
-                    id("cpp")
+//                    id("csharp")
+//                    id("cpp")
                     id("python")
                     id("kotlin")
                 }
@@ -149,6 +150,14 @@ project("api") {
 //    tasks.named("generateProto") {
 //        dependsOn(":api:deleteProto")
 //    }
+
+    tasks.register<Exec>("updateDotnetVersionString") {
+        commandLine("powershell.exe", "-File", "UpdateVersionProperties.ps1", "-VersionString", volitionFullVersion)
+    }
+
+    tasks.getByName("assemble"){
+        dependsOn(":api:updateDotnetVersionString")
+    }
 
     tasks.withType<Jar>().configureEach {
         archiveBaseName.set("volition-api")
@@ -166,61 +175,61 @@ project("api") {
         }
     }
 
-    tasks.register<Exec>("vcpkgBootstrap") {
-        // regarding 'working dir',
-        // the --X-install-path is experimental,
-        // some of the vcpkg docs (sorry I cant remember where)
-        // sait it was important to start vcpkg in the vcpkg root;
-        // this is apparently what is commonly tested for so
-        // rather than get creative, I'm simply going to dump my files into their default folders,
-        // and manage this under a gitignore.
-        workingDir("$rootDir/vcpkg")
-        commandLine("$rootDir/vcpkg/bootstrap-vcpkg.bat", "-disableMetrics")
-    }
+//    tasks.register<Exec>("vcpkgBootstrap") {
+//        // regarding 'working dir',
+//        // the --X-install-path is experimental,
+//        // some of the vcpkg docs (sorry I cant remember where)
+//        // sait it was important to start vcpkg in the vcpkg root;
+//        // this is apparently what is commonly tested for so
+//        // rather than get creative, I'm simply going to dump my files into their default folders,
+//        // and manage this under a gitignore.
+//        workingDir("$rootDir/vcpkg")
+//        commandLine("$rootDir/vcpkg/bootstrap-vcpkg.bat", "-disableMetrics")
+//    }
 
-    tasks.register("vcpkgMakeManifest") {
-        val lines = Files.readAllLines(Paths.get("$rootDir/vcpkg.template.json"))
-        val updatedLines = lines.map { it
-            .replace("%volitionFullVersion%", volitionFullVersion)
-            .replace("%protobufVersion%", protobufVersion)
-            .replace("%grpcVersion%", grpcVersion)
-        }
-        Files.write(Paths.get("$rootDir/vcpkg.json"), updatedLines, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)
-    }
+//    tasks.register("vcpkgMakeManifest") {
+//        val lines = Files.readAllLines(Paths.get("$rootDir/vcpp-client-reference/vcpkg.template.json"))
+//        val updatedLines = lines.map { it
+//            .replace("%volitionFullVersion%", volitionFullVersion)
+//            .replace("%protobufVersion%", protobufVersion)
+//            .replace("%grpcVersion%", grpcVersion)
+//        }
+//        Files.write(Paths.get("$rootDir/vcpp-client-reference/vcpkg.json"), updatedLines, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)
+//    }
 
-    tasks.register<Exec>("vcpkgInstall") {
-        group = "vcpkg"
-        dependsOn(":api:vcpkgMakeManifest", ":api:vcpkgBootstrap")
-
-        workingDir("$rootDir/vcpkg")
-        commandLine(
-            "$rootDir/vcpkg/vcpkg.exe",
-            "--feature-flags=manifests,versions",
-            "--triplet=x64-windows",
-            "install"
-        )
-    }
-
-    tasks.register<Exec>("vcpkgIntegrate") {
-        group = "vcpkg"
-        dependsOn(":api:vcpkgInstall")
-
-        workingDir("$rootDir/vcpkg")
-        commandLine(
-            "$rootDir/vcpkg/vcpkg.exe",
-            "--feature-flags=manifests,versions",
-            "--triplet=x64-windows",
-            "integrate",
-            "install"
-        )
-    }
-
-    tasks.register<Exec>("vcpkgList") {
-        group = "vcpkg"
-
-        workingDir("$rootDir/vcpkg")
-        commandLine("$rootDir/vcpkg/vcpkg.exe", "--feature-flags=manifests,versions", "--triplet=x64-windows", "list")
-    }
+//    tasks.register<Exec>("vcpkgInstall") {
+//        group = "vcpkg"
+//        dependsOn(":api:vcpkgMakeManifest", ":api:vcpkgBootstrap")
+//
+//        workingDir("$rootDir/vcpkg")
+//        commandLine(
+//            "$rootDir/vcpkg/vcpkg.exe",
+//            "--feature-flags=manifests,versions",
+//            "--triplet=x64-windows",
+//            "install"
+//        )
+//    }
+//
+//    tasks.register<Exec>("vcpkgIntegrate") {
+//        group = "vcpkg"
+//        dependsOn(":api:vcpkgInstall")
+//
+//        workingDir("$rootDir/vcpkg")
+//        commandLine(
+//            "$rootDir/vcpkg/vcpkg.exe",
+//            "--feature-flags=manifests,versions",
+//            "--triplet=x64-windows",
+//            "integrate",
+//            "install"
+//        )
+//    }
+//
+//    tasks.register<Exec>("vcpkgList") {
+//        group = "vcpkg"
+//
+//        workingDir("$rootDir/vcpkg")
+//        commandLine("$rootDir/vcpkg/vcpkg.exe", "--feature-flags=manifests,versions", "--triplet=x64-windows", "list")
+//    }
 }
 
 project("oasis-reference"){
@@ -249,9 +258,9 @@ project("oasis-reference"){
         implementation("com.google.protobuf:protobuf-kotlin:$protobufVersion") //<--- this depends on kotlin 1.5
         implementation(group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version = "0.1")
 
-        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3")
-        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.4.3")
+        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version")
+        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
+        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.6.1")
 
         implementation("no.tornado:tornadofx:1.7.17")
         implementation("info.picocli:picocli:3.9.5")
@@ -260,7 +269,7 @@ project("oasis-reference"){
         testImplementation("org.junit.jupiter:junit-jupiter-api:5.3.1")
         testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0")
         testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.3.1")
-        testCompile("org.assertj:assertj-core:3.11.1")
+        testImplementation("org.assertj:assertj-core:3.11.1")
 
 //        compile group: "org.funktionale", name: "funktionale-all", version: "1.2"
     }
@@ -283,7 +292,7 @@ project("oasis-reference"){
         dependsOn(":oasis-reference:assemble")
 
         from("$buildDir/libs")
-        from(configurations.runtime)
+        from(configurations.runtimeOnly)
         from("$projectDir")
         include("*.exe")
         include("*.jar")
@@ -297,14 +306,14 @@ project("oasis-reference"){
     }
 
     //https://stackoverflow.com/questions/41794914/how-to-create-the-fat-jar-with-gradle-kotlin-script
-    val fatJar = task("fatJar", type = Jar::class) {
-        archiveBaseName.set("${project.name}-fat")
-        from(configurations.runtimeClasspath.get().map({ if (it.isDirectory) it else zipTree(it) }))
-        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    }
-    tasks {
-        "assemble" {
-            dependsOn(fatJar)
-        }
-    }
+//    val fatJar = task("fatJar", type = Jar::class) {
+//        archiveBaseName.set("${project.name}-fat")
+//        from(configurations.runtimeClasspath.get().map({ if (it.isDirectory) it else zipTree(it) }))
+//        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+//    }
+//    tasks {
+//        "assemble" {
+//            dependsOn(fatJar)
+//        }
+//    }
 }

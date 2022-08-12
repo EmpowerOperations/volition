@@ -72,11 +72,7 @@ service UnaryOptimizer {
     // Offers an error to describe the completion of the last provided SimulationEvaluationRequest
     // internally, the optimizer is likely to avoid areas it encounters errors,
     // the optimizer will not try to evaluate the same point again.
-    //
-    //
-    rpc OfferErrorResult (SimulationEvaluationErrorResponseDTO) returns (SimulationEvaluationErrorConfirmDTO) {
-        option deprecated = true;
-    }
+    rpc OfferErrorResult (SimulationEvaluationErrorResponseDTO) returns (SimulationEvaluationErrorConfirmDTO) {}
 
     // Offers a status update for the current running simulation evaluation.
     // these messages are important for user experience in that they re-assure the user that the
@@ -445,44 +441,8 @@ message SimulationEvaluationCompletedResponseDTO {
 
     oneof output {
         OutputVectorDTO vector = 5;
-        SimulationFailureDTO failure = 6;
-
-        // optional check for correct protocol state
-        //
-        // usage: in languages that offer either try-finally, disposable, or RAII concepts
-        // this field can be used as a terminating signal to an evaluation request,
-        // pushing protocol errors from hanging to crashing.
-        // thus:
-        // let channel = optimizer.startOptimization
-        // for each (message in channel) {
-        //   switch when (message) {
-        //     case message is EvaluationRequest: {
-        //       try {
-        //         // complex control flow may go here
-        //         optimizer.offerSimulationResult(new SimulationEvaluationCompletedResponseDTO {
-        //           output = ...
-        //         })
-        //       }
-        //       finally {
-        //         optimizer.offerSimulationResult(new SimulationEvaluationCompletedResponseDTO {
-        //           iterationIndex = message.iterationIndex
-        //           finally = true
-        //         })
-        //       }
-        //     }
-        //     case message is Something-Else ...
-        //   }
-        // }
-        //
-        // in the event that there is a mistake in the complex control flow,
-        // which will often involve asynchronous code,
-        // this method can be used to check that either a failure result or a successful result was already given
-        // if it has not, a failure will be returned which in most C-like languages will be raised as an exception
-        bool finally = 7;
+        SimulationEvaluationErrorResponseDTO failure = 6;
     }
-}
-message SimulationFailureDTO {
-    string message = 2;
 }
 message SimulationEvaluationResultConfirmDTO {}
 

@@ -1,8 +1,10 @@
 package com.empowerops.volition.ref_oasis
 
 import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flow
 import java.time.Duration
 import java.time.Instant
@@ -15,8 +17,8 @@ typealias OutputVector = Map<String, Double> //would an inline class actually he
 
 sealed class OptimizerRequestMessage {
 
-    data class SimulationEvaluationRequest(val name: String, val inputVector: InputVector): OptimizerRequestMessage()
-    data class SimulationCancelRequest(val name: String): OptimizerRequestMessage()
+    data class SimulationEvaluationRequest(val name: String, val pointID: UInt, val inputVector: InputVector): OptimizerRequestMessage()
+    data class SimulationCancelRequest(val name: String, val pointID: UInt): OptimizerRequestMessage()
 
     data class RunStartedNotification(val runID: UUID): OptimizerRequestMessage()
     data class RunFinishedNotification(val runID: UUID): OptimizerRequestMessage()
@@ -27,16 +29,19 @@ sealed class OptimizerRequestMessage {
 
 sealed class SimulationProvidedMessage {
     data class EvaluationResult(
+            val pointID: UInt,
             val outputVector: OutputVector
     ): SimulationProvidedMessage()
 
     data class ErrorResponse(
             val name: String,
+            val pointID: UInt,
             val message: String
     ) : SimulationProvidedMessage()
 
     data class Message(
             val name: String,
+            val pointID: UInt,
             val message: String
     ) : SimulationProvidedMessage()
 
@@ -57,7 +62,8 @@ sealed class SimulationProvidedMessage {
 data class OptimizationSettings(
         val runtime: Duration?,
         val iterationCount: Int?,
-        val targetObjectiveValue: Double?
+        val targetObjectiveValue: Double?,
+        val concurrentRunCount: UInt
 )
 
 typealias OptimizationActor = Flow<OptimizerRequestMessage>
@@ -174,11 +180,21 @@ class OptimizationActorFactory(
 
                 model[runID] = RunResult(runID, orderedInputColumns, orderedOutputColumns, completedDesigns)
 
-                val targetIterationCount = startMessage.settings.iterationCount ?: Int.MAX_VALUE
-                var iterationCount = 0
+                val targetIterationCount: UInt = startMessage.settings.iterationCount?.toUInt() ?: UInt.MAX_VALUE
+                var iterationCount: UInt = 0u;
 
                 val endTime = Instant.now() + (startMessage.settings.runtime ?: Duration.ofSeconds(9_999_999))
                 var stopRequest: SimulationProvidedMessage.StopOptimization? = null
+
+//                val evaluator: List<(InputVector) -> OutputVector> = TODO()
+                val inputs = Channel<InputVector>(startMessage.settings.concurrentRunCount.toInt())
+                val outputs = Channel<ExpensivePointRow>(startMessage.settings.concurrentRunCount.toInt())
+
+//                for (parallelID in 0 .. startMessage.settings.concurrentRunCount){
+//                    scope.launch {
+//                        val inputVector = inputs.receive()
+//                    }
+//                }
 
                 optimizing@ while (stopRequest == null
                     && iterationCount < targetIterationCount
@@ -187,7 +203,7 @@ class OptimizationActorFactory(
 
                     // before we start an iteration, poll (check without blocking) our message box
                     // for a stop-optimization request.
-                    when(val response = channel.poll()) {
+                    when(val response = channel.tryReceive().getOrNull()) {
                         is SimulationProvidedMessage.StopOptimization -> {
                             stopRequest = response
                             break@optimizing
@@ -198,8 +214,9 @@ class OptimizationActorFactory(
 
                     try {
                         // otherwise start a simulation evaluation
-                        val inputs = optimizer.generateInputs(startMessage.inputs, inputConstraints)
-                        val evaluationVector: MutableMap<String, Double> = orderedInputColumns.associateWith { inputs.getValue(it) }.toMutableMap()
+                        val pointCount: UInt = startMessage.settings.concurrentRunCount.coerceAtMost(iterationCount - targetIterationCount)
+                        val inputVector = optimizer.generateInputs(startMessage.inputs, inputConstraints)
+                        val evaluationVector = orderedInputColumns.associateWith { inputVector.getValue(it) }.toMutableMap()
 
                         val remaining = successorsByEvaluable.keys.toQueue()
 
@@ -212,8 +229,12 @@ class OptimizationActorFactory(
                         if (nextEvaluable is Simulation) {
                             emit(OptimizerRequestMessage.SimulationEvaluationRequest(
                                 sim!!.name,
+                                iterationCount.toUInt(),
                                 evaluationVector.filterKeys { it in sim.inputs }
                             ))
+
+                            fail; so, i could build some kind of fan-in channel here
+                            // is there any other solution?
 
                             //read the response
                             decodeResponse@while(true) when (val response = channel.receive()) {
@@ -225,7 +246,7 @@ class OptimizationActorFactory(
                                     // if we get a stop request now, cancel the existing simulation request
                                     // **BUT DO NOT STOP OPTIMIZATION** until the simulation evaluation completes
                                     // (below, with either an ErrorResponse or a EvaluationResult)
-                                    emit(OptimizerRequestMessage.SimulationCancelRequest(sim.name))
+                                    emit(OptimizerRequestMessage.SimulationCancelRequest(sim.name, TODO("need point IDs")))
                                     stopRequest = response
                                 }
                                 is SimulationProvidedMessage.EvaluationResult -> {
@@ -265,11 +286,11 @@ class OptimizationActorFactory(
                         }
                     }
                     catch (ex: CancellationException) {
-                        if(sim != null) emit(OptimizerRequestMessage.SimulationCancelRequest(sim.name))
+                        if(sim != null) emit(OptimizerRequestMessage.SimulationCancelRequest(sim.name, iterationCount))
                         throw ex
                     }
 
-                    iterationCount += 1
+                    iterationCount += 1u
                 }
 
                 model[runID] = RunResult(runID, orderedInputColumns, orderedOutputColumns, completedDesigns)

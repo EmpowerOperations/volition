@@ -6,7 +6,7 @@
         mc:Ignorable="d"
         Name="Window"
         Title="CANSYS Simulator by Empower Operations"
-        Height="550" Width="800">
+        Height="600" Width="800">
     <DockPanel>
         <StatusBar Name="StatusBar" DockPanel.Dock="Bottom">
             <StatusBarItem>
@@ -27,6 +27,8 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="88*"/>
                 <RowDefinition Height="88*"/>
                 <RowDefinition Height="88*"/>
@@ -36,15 +38,27 @@
                     <ColumnDefinition Width="150"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="80"/>
                 </Grid.ColumnDefinitions>
                 <TextBox Name="RegName" TextWrapping="Wrap" Text="Node1" Grid.Column="0" />
                 <Label Name="RegisterLabel" Grid.Column="1" Content="Status: Idle" />
-                <Label Name="PortLabel" Grid.Column="3" Content="Port:" />
-                <TextBox Name="Port" TextWrapping="Wrap" Text="5500" Grid.Column="4" />
             </Grid>
             <Grid Grid.Row="1" Margin="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="150"/>
+                </Grid.ColumnDefinitions>
+                <Label Name="PortLabel" Grid.Column="0" Content="Port:" />
+                <TextBox Name="Port" TextWrapping="Wrap" Text="5500" Grid.Column="1" />
+            </Grid>
+            <Grid Grid.Row="2" Margin="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="150"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Content="Concurrent Runs:" />
+                <TextBox Name="ConcurrentRuns" TextWrapping="Wrap" Text="1" Grid.Column="1" />
+            </Grid>
+            <Grid Grid.Row="3" Margin="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
@@ -54,7 +68,7 @@
                 <Button Name="StartOptimization" Content="Start Optimization" Grid.Column="0" Click="StartOptimization_Click" Height="19" Margin="0,0,0,0.2" VerticalAlignment="Bottom"/>
                 <Button Name="StopOptimization" Content="Stop Optimization" Grid.Column="1" Click="StopOptimization_Click"/>
             </Grid>
-            <Grid Grid.Row="2" Margin="2">
+            <Grid Grid.Row="4" Margin="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
@@ -66,7 +80,7 @@
                 <TextBox Name ="TimeoutTextBox" Grid.Column="1" HorizontalAlignment="Left" TextWrapping="Wrap" Width="120"/>
                 <Label Content="Timeout (in seconds)" Grid.Column="0" HorizontalAlignment="Left" />
             </Grid>
-            <Grid Grid.Row="3" Margin="2">
+            <Grid Grid.Row="5" Margin="2">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition/>
@@ -91,7 +105,7 @@
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>
-            <Grid Grid.Row="4" Margin="2">
+            <Grid Grid.Row="6" Margin="2">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition/>
@@ -113,7 +127,7 @@
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>
-            <Grid Grid.Row="5" Margin="2">
+            <Grid Grid.Row="7" Margin="2">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition/>

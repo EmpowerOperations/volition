@@ -1,13 +1,17 @@
-# Volition C++ reference client
+# C++ Volition API
 
-This is a simple CMake project to help you get started with building your Volition client in C++. You should be able to modify the C++ client reference as you see fit and follow these steps with your own code.
+This is a simple CMake project to help you get started with building the Volition Client API for your C++ Application. This CMake project will use vcpkg to pull the necessary GRPC dependencies, use `protoc` with `optimizer.proto` to generate the necessary client-side code, and use the `Source.cpp` C++ reference client application to build a stub CPP application that demonstrates an Optimization with the Volition C++ API.
 
 ## Dependencies
 
 This project includes Vcpkg as a Git submodule to download dependencies such as gRPC. 
 > Note: it is not sufficient to use the "Download Code" Button on github as this will not download the necessary submodule `microsoft/vcpkg`.
+> if you used git to clone this repository, you can initialize the vcpkg repository with
+> ```
+> cd .../vcpp-client-reference/vcpkg
+> git submodule init
 
-## Building on Windows
+## Building on Windows  
 
 Pre-requisites:
 - A recent version of Visual Studio such as 2019 or 2022 with C++ tooling installed.
@@ -15,6 +19,11 @@ Pre-requisites:
 ### Building in Visual Studio
 
 Recent versions of Visual C++ natively support CMake projects. Open this directory, and Visual Studio should recognize this as a CMake project and configure accordingly.
+
+> Note you may also use cmake to generate visual studio project files by calling cmake with the appropriate generator:
+> ```
+> cmake -G "Visual Studio 17 2022"
+> ```
 
 #### Configure the CMake project
 

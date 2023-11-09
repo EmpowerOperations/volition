@@ -1,22 +1,15 @@
 #pragma once
 
-#include <windows.h>
-
-#include <random>
-#include <sstream>
-#include <future>
-#include <chrono>
-#include <thread>
+#include "optimizer.grpc.pb.h"
 
 #include <google/protobuf/text_format.h>
 #include <grpcpp/grpcpp.h>
 
-// TODO: bad practice to reach to other directories? Maybe have build system make a local copy?
-#include "gen-src/optimizer.grpc.pb.h"
-#include "gen-src/optimizer.pb.h"
-
-//winsock2 needed by grpc
-#pragma comment(lib, "Ws2_32.lib")
+#include <chrono>
+#include <future>
+#include <random>
+#include <sstream>
+#include <thread>
 
 using grpc::Channel;
 using grpc::ClientContext;

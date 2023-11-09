@@ -11,7 +11,7 @@ find_package(Protobuf REQUIRED)
 
 add_library(optimizer-proto optimizer.proto)
 # Include the generated header files
-target_include_directories(optimizer-proto PUBLIC "${CMAKE_CURRENT_BINARY_DIR}")
+target_include_directories(optimizer-proto INTERFACE "${CMAKE_CURRENT_BINARY_DIR}")
 target_link_libraries(optimizer-proto PUBLIC gRPC::grpc++)
 # Generate Protobuf files
 protobuf_generate(TARGET optimizer-proto)

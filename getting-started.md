@@ -65,8 +65,7 @@ To integrate your application with the volition server we saw running, you must:
 
 The following guides will walk you through that process
 
-- [Getting started with Visual Studio C++](cpp-client-reference/getting-started-vs.md)
-- [Getting started with GNU C++](cpp-client-reference/getting-started-gcc.md)
+- [Getting started with C++](cpp-client-reference/README.md)
 - [Getting started with dotnet](csharp-client-reference/getting-started-cs.md) 
 
 Once finished, you will be able to run the reference client with your local toolchain.

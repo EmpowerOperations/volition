@@ -1,0 +1,50 @@
+name: CMake on multiple platforms
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        build_type: [Release]
+        preset:
+          - x64-windows-msvc-release
+          - x64-linux-gcc-release
+          - x64-linux-clang-release
+        include:
+          - os: windows-latest
+            preset: x64-windows-msvc-release
+          - os: ubuntu-latest
+            preset: x64-linux-gcc-release
+          - os: ubuntu-latest
+            preset: x64-linux-clang-release
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: recursive
+
+    - name: Set reusable strings
+      # Turn repeated input strings (such as the source directory) into step outputs. These step outputs can be used throughout the workflow file.
+      id: strings
+      shell: bash
+      run: |
+        echo "source-dir=${{ github.workspace }}/cpp-client-reference" >> "$GITHUB_OUTPUT"
+
+    - name: Configure CMake
+      run: >
+        cmake
+        -S ${{ steps.strings.outputs.source-dir }}
+        -B ${{ steps.strings.outputs.source-dir }}/out
+        --preset=${{ matrix.preset }}
+
+    - name: Build
+      # Note: --config is needed for multi-config generators such as the Visual Studio ones.
+      run: cmake --build ${{ steps.strings.outputs.source-dir }}/out --config ${{ matrix.build_type }}
+

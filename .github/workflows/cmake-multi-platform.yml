@@ -43,7 +43,6 @@ jobs:
         -S ${{ steps.strings.outputs.source-dir }}
         -B ${{ steps.strings.outputs.source-dir }}/out
         --preset=${{ matrix.preset }}
-        -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
 
     - name: Build
       # Note: --config is needed for multi-config generators such as the Visual Studio ones.

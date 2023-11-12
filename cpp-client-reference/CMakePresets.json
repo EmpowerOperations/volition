@@ -2,16 +2,6 @@
   "version": 3,
   "configurePresets": [
     {
-      "name": "debug",
-      "hidden": true,
-      "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" }
-    },
-    {
-      "name": "release",
-      "hidden": true,
-      "cacheVariables": { "CMAKE_BUILD_TYPE": "Release" }
-    },
-    {
       "name": "x64",
       "hidden": true,
       "architecture": {
@@ -43,13 +33,15 @@
       "name": "x64-windows-msvc-debug",
       "displayName": "x64 MSVC Debug",
       "description": "Target Windows (64-bit) with the Visual Studio development environment. (Debug)",
-      "inherits": ["debug", "x64-windows-msvc"]
+      "inherits": "x64-windows-msvc",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" }
     },
     {
       "name": "x64-windows-msvc-release",
       "displayName": "x64 MSVC Release",
       "description": "Target Windows (64-bit) with the Visual Studio development environment. (Release)",
-      "inherits": ["release", "x64-windows-msvc"]
+      "inherits": "x64-windows-msvc",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Release" }
     },
     {
       "name": "linux",
@@ -73,13 +65,15 @@
       "name": "x64-linux-gcc-debug",
       "displayName": "x64 GCC Debug",
       "description": "Target Linux (64-bit) with the GCC toolchain. (Debug)",
-      "inherits": ["debug", "x64-linux-gcc"]
+      "inherits": "x64-linux-gcc",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" }
     },
     {
       "name": "x64-linux-gcc-release",
       "displayName": "x64 GCC Release",
       "description": "Target Linux (64-bit) with the GCC toolchain. (Release)",
-      "inherits": ["release", "x64-linux-gcc"]
+      "inherits": "x64-linux-gcc",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Release" }
     },
     {
       "name": "x64-linux-clang",
@@ -94,13 +88,15 @@
       "name": "x64-linux-clang-debug",
       "displayName": "x64 Clang Debug",
       "description": "Target Linux (64-bit) with the Clang toolchain. (Debug)",
-      "inherits": ["debug", "x64-linux-clang"]
+      "inherits": "x64-linux-clang",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" }
     },
     {
       "name": "x64-linux-clang-release",
       "displayName": "x64 Clang Release",
       "description": "Target Linux (64-bit) with the Clang toolchain. (Release)",
-      "inherits": ["release", "x64-linux-clang"]
+      "inherits": "x64-linux-clang",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Release" }
     }
   ]
 }

@@ -12,7 +12,6 @@ jobs:
 
     strategy:
       matrix:
-        build_type: [Release]
         preset:
           - x64-windows-msvc-release
           - x64-linux-gcc-release
@@ -20,10 +19,13 @@ jobs:
         include:
           - os: windows-latest
             preset: x64-windows-msvc-release
+            build_type: Release
           - os: ubuntu-latest
             preset: x64-linux-gcc-release
+            build_type: Release
           - os: ubuntu-latest
             preset: x64-linux-clang-release
+            build_type: Release
 
     steps:
     - uses: actions/checkout@v3
@@ -40,11 +42,10 @@ jobs:
     - name: Configure CMake
       run: >
         cmake
-        -S ${{ steps.strings.outputs.source-dir }}
-        -B ${{ steps.strings.outputs.source-dir }}/out
+        -S "${{ steps.strings.outputs.source-dir }}"
+        -B "${{ steps.strings.outputs.source-dir }}/out"
         --preset=${{ matrix.preset }}
 
     - name: Build
       # Note: --config is needed for multi-config generators such as the Visual Studio ones.
-      run: cmake --build ${{ steps.strings.outputs.source-dir }}/out --config ${{ matrix.build_type }}
-
+      run: cmake --build "${{ steps.strings.outputs.source-dir }}/out" --config ${{ matrix.build_type }}

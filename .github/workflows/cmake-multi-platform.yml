@@ -37,11 +37,16 @@ jobs:
       with:
         submodules: recursive
 
-    - name: Cache Vcpkg artifacts 
+    - name: Cache Vcpkg archives
+      id: cache-vcpkg-archives
       uses: actions/cache@v3
       with:
         key: ${{ matrix.os }}
         path: "$VCPKG_ARCHIVE_PATH"
+
+    - if: ${{ steps.cache-vcpkg-archives.outputs.cache-hit != 'true' }}
+      name: Show output
+      continue-on-error: true
 
     - name: Configure CMake
       run: >

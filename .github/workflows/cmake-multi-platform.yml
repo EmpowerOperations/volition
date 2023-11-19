@@ -35,12 +35,16 @@ jobs:
         SOURCE_PATH="${{ github.workspace }}/cpp-client-reference";
         VCPKG_ARCHIVE_PATH="$SOURCE_PATH/vcpkg_archives";
         cat << EOF >> "$GITHUB_OUTPUT"
-        source-path=$SOURCE_PATH
+        source-path=$SOURCE_PATH f
         vcpkg-archive-path=$VCPKG_ARCHIVE_PATH
         EOF
 
-    - shell: bash
-      run: echo "VCPKG_BINARY_SOURCES=files,${{ steps.strings.outputs.vcpkg-archive-path }},readwrite" >> "$GITHUB_ENV"
+    - name: Set environment variables
+      shell: bash
+      run: |
+        cat << EOF >> "$GITHUB_ENV"
+        VCPKG_BINARY_SOURCES=files,${{ steps.strings.outputs.vcpkg-archive-path }},readwrite
+        EOF
 
     - name: List environment variables
       run: env

@@ -28,12 +28,14 @@ jobs:
             build_type: Release
 
     steps:
+    - id: set-source-path
+      shell: bash
+      run: echo "source-path=${{ github.workspace }}/cpp-client-reference" >> "$GITHUB_OUTPUT"
+    - id: set-vcpkg-archive-path
+      shell: bash
+      run: echo "vcpkg-archive-path=${{ steps.set-source-path.outputs.source-path }}/vcpkg_archives" >> "$GITHUB_OUTPUT"
     - shell: bash
-      run: echo "SOURCE_PATH=${{ github.workspace }}/cpp-client-reference" >> "$GITHUB_ENV"
-    - shell: bash
-      run: echo "VCPKG_ARCHIVE_PATH=$SOURCE_PATH/vcpkg_archives" >> "$GITHUB_ENV"
-    - shell: bash
-      run: echo "VCPKG_BINARY_SOURCES=files,$VCPKG_ARCHIVE_PATH,readwrite" >> "$GITHUB_ENV"
+      run: echo "VCPKG_BINARY_SOURCES=files,${{ steps.set-vcpkg-archive-path.outputs.vcpkg-archive-path }},readwrite" >> "$GITHUB_ENV"
 
     - name: List environment variables
       run: env
@@ -47,15 +49,15 @@ jobs:
       uses: actions/cache@v3
       with:
         key: ${{ matrix.os }}
-        path: "$VCPKG_ARCHIVE_PATH"
+        path: "${{ steps.set-vcpkg-archive-path.outputs.vcpkg-archive-path }}"
 
     - name: Configure CMake
       run: >
         cmake
-        -S "$SOURCE_PATH"
-        -B "$SOURCE_PATH/out"
+        -S "${{ steps.set-source-path.outputs.source-path }}"
+        -B "${{ steps.set-source-path.outputs.source-path }}/out"
         --preset=${{ matrix.preset }}
 
     - name: Build
       # Note: --config is needed for multi-config generators such as the Visual Studio ones.
-      run: cmake --build "$SOURCE_PATH/out" --config ${{ matrix.build_type }}
+      run: cmake --build "${{ steps.set-source-path.outputs.source-path }}/out" --config ${{ matrix.build_type }}

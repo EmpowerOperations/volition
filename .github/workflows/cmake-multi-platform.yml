@@ -17,14 +17,14 @@ jobs:
           - x64-linux-gcc-release
           - x64-linux-clang-release
         include:
-          - os: windows-latest
-            preset: x64-windows-msvc-release
+          - preset: x64-windows-msvc-release
+            os: windows-latest
             build_type: Release
-          - os: ubuntu-latest
-            preset: x64-linux-gcc-release
+          - preset: x64-linux-gcc-release
+            os: ubuntu-latest
             build_type: Release
-          - os: ubuntu-latest
-            preset: x64-linux-clang-release
+          - preset: x64-linux-clang-release
+            os: ubuntu-latest
             build_type: Release
 
     steps:
@@ -57,7 +57,7 @@ jobs:
       id: cache-vcpkg-archives
       uses: actions/cache@v3
       with:
-        key: ${{ matrix.os }}
+        key: ${{ matrix.preset }}
         path: "${{ steps.strings.outputs.vcpkg-archive-path }}"
 
     - name: Configure CMake

@@ -32,9 +32,9 @@ jobs:
       id: strings
       shell: bash
       run: >
-        SOURCE_PATH="${{ github.workspace }}/cpp-client-reference"
-        VCPKG_ARCHIVE_PATH="$SOURCE_PATH/vcpkg_archives"
-        echo "source-path=$SOURCE_PATH" >> "$GITHUB_OUTPUT"
+        SOURCE_PATH="${{ github.workspace }}/cpp-client-reference";
+        VCPKG_ARCHIVE_PATH="$SOURCE_PATH/vcpkg_archives";
+        echo "source-path=$SOURCE_PATH" >> "$GITHUB_OUTPUT";
         echo "vcpkg-archive-path=$VCPKG_ARCHIVE_PATH" >> "$GITHUB_OUTPUT"
 
     - shell: bash

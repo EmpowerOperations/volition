@@ -8,7 +8,7 @@ on:
 
 env:
   SOURCE_PATH: "${{ github.workspace }}/cpp-client-reference"
-  VCPKG_ARCHIVE_PATH: "$SOURCE_PATH/vcpkg_archives"
+  VCPKG_ARCHIVE_PATH: "${{ env.SOURCE_PATH }}/vcpkg_archives"
 
 jobs:
   build:

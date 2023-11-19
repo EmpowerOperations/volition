@@ -46,6 +46,7 @@ jobs:
 
     - if: ${{ steps.cache-vcpkg-archives.outputs.cache-hit != 'true' }}
       name: Show output
+      run: echo "TODO"
       continue-on-error: true
 
     - name: Configure CMake

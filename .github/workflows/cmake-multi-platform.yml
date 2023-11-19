@@ -28,14 +28,17 @@ jobs:
             build_type: Release
 
     steps:
-    - id: set-source-path
+    - name: Set reusable strings
+      id: strings
       shell: bash
-      run: echo "source-path=${{ github.workspace }}/cpp-client-reference" >> "$GITHUB_OUTPUT"
-    - id: set-vcpkg-archive-path
-      shell: bash
-      run: echo "vcpkg-archive-path=${{ steps.set-source-path.outputs.source-path }}/vcpkg_archives" >> "$GITHUB_OUTPUT"
+      run: >
+        SOURCE_PATH="${{ github.workspace }}/cpp-client-reference"
+        VCPKG_ARCHIVE_PATH="$SOURCE_PATH/vcpkg_archives"
+        echo "source-path=$SOURCE_PATH" >> "$GITHUB_OUTPUT"
+        echo "vcpkg-archive-path=$VCPKG_ARCHIVE_PATH" >> "$GITHUB_OUTPUT"
+
     - shell: bash
-      run: echo "VCPKG_BINARY_SOURCES=files,${{ steps.set-vcpkg-archive-path.outputs.vcpkg-archive-path }},readwrite" >> "$GITHUB_ENV"
+      run: echo "VCPKG_BINARY_SOURCES=files,${{ steps.strings.outputs.vcpkg-archive-path }},readwrite" >> "$GITHUB_ENV"
 
     - name: List environment variables
       run: env
@@ -49,13 +52,13 @@ jobs:
       uses: actions/cache@v3
       with:
         key: ${{ matrix.os }}
-        path: "${{ steps.set-vcpkg-archive-path.outputs.vcpkg-archive-path }}"
+        path: "${{ steps.strings.outputs.vcpkg-archive-path }}"
 
     - name: Configure CMake
       run: >
         cmake
-        -S "${{ steps.set-source-path.outputs.source-path }}"
-        -B "${{ steps.set-source-path.outputs.source-path }}/out"
+        -S "${{ steps.strings.outputs.source-path }}"
+        -B "${{ steps.strings.outputs.source-path }}/out"
         --preset=${{ matrix.preset }}
 
     - name: Build

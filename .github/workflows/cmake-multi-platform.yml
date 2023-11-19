@@ -28,13 +28,13 @@ jobs:
             build_type: Release
 
     steps:
-    - name: Set environment variables
-      shell: bash
-      run: |
-        echo "SOURCE_PATH=${{ github.workspace }}/cpp-client-reference" >> "$GITHUB_ENV"
-        echo "VCPKG_ARCHIVE_PATH=$SOURCE_PATH/vcpkg_archives" >> "$GITHUB_ENV"
-        echo "VCPKG_BINARY_SOURCES=files,$VCPKG_ARCHIVE_PATH,readwrite" >> "$GITHUB_ENV"
-    
+    - shell: bash
+      run: echo "SOURCE_PATH=${{ github.workspace }}/cpp-client-reference" >> "$GITHUB_ENV"
+    - shell: bash
+      run: echo "VCPKG_ARCHIVE_PATH=$SOURCE_PATH/vcpkg_archives" >> "$GITHUB_ENV"
+    - shell: bash
+      run: echo "VCPKG_BINARY_SOURCES=files,$VCPKG_ARCHIVE_PATH,readwrite" >> "$GITHUB_ENV"
+
     - name: List environment variables
       run: env
 

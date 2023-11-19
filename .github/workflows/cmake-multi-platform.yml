@@ -6,9 +6,6 @@ on:
   pull_request:
     branches: [ "master" ]
 
-env:
-  SOURCE_PATH: "${{ github.workspace }}/cpp-client-reference"
-
 jobs:
   build:
     runs-on: ${{ matrix.os }}
@@ -30,10 +27,14 @@ jobs:
             preset: x64-linux-clang-release
             build_type: Release
 
-    env:
-      VCPKG_BINARY_SOURCES: "files,${{ env.SOURCE_PATH }}/vcpkg_archives,readwrite"
-
     steps:
+    - name: Set environment variables
+      shell: bash
+      run: |
+        echo "SOURCE_PATH=${{ github.workspace }}/cpp-client-reference" >> "$GITHUB_ENV"
+        echo "VCPKG_ARCHIVE_PATH=$SOURCE_PATH/vcpkg_archives" >> "$GITHUB_ENV"
+        echo "VCPKG_BINARY_SOURCES=files,$VCPKG_ARCHIVE_PATH,readwrite" >> "$GITHUB_ENV"
+    
     - name: List environment variables
       run: env
 
@@ -46,7 +47,7 @@ jobs:
       uses: actions/cache@v3
       with:
         key: ${{ matrix.os }}
-        path: "${{ env.SOURCE_PATH }}/vcpkg_archives"
+        path: "$VCPKG_ARCHIVE_PATH"
 
     - name: Configure CMake
       run: >

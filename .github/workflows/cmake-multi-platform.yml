@@ -27,25 +27,29 @@ jobs:
             preset: x64-linux-clang-release
             build_type: Release
 
+    env:
+      SOURCE_PATH: "${{ github.workspace }}/cpp-client-reference"
+      VCPKG_ARCHIVE_PATH: "$SOURCE_PATH/vcpkg_archives"
+      VCPKG_BINARY_SOURCES: "files,$VCPKG_ARCHIVE_PATH,readwrite"
+
     steps:
     - uses: actions/checkout@v3
       with:
         submodules: recursive
 
-    - name: Set reusable strings
-      # Turn repeated input strings (such as the source directory) into step outputs. These step outputs can be used throughout the workflow file.
-      id: strings
-      shell: bash
-      run: |
-        echo "source-dir=${{ github.workspace }}/cpp-client-reference" >> "$GITHUB_OUTPUT"
+    - name: Cache Vcpkg artifacts 
+      uses: actions/cache@v3
+      with:
+        key: ${{ matrix.os }}
+        path: "$VCPKG_ARCHIVE_PATH"
 
     - name: Configure CMake
       run: >
         cmake
-        -S "${{ steps.strings.outputs.source-dir }}"
-        -B "${{ steps.strings.outputs.source-dir }}/out"
+        -S "$SOURCE_PATH"
+        -B "$SOURCE_PATH/out"
         --preset=${{ matrix.preset }}
 
     - name: Build
       # Note: --config is needed for multi-config generators such as the Visual Studio ones.
-      run: cmake --build "${{ steps.strings.outputs.source-dir }}/out" --config ${{ matrix.build_type }}
+      run: cmake --build "$SOURCE_PATH/out" --config ${{ matrix.build_type }}

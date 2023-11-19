@@ -32,7 +32,7 @@ jobs:
             build_type: Release
 
     env:
-      VCPKG_BINARY_SOURCES: "files,${{ env.VCPKG_ARCHIVE_PATH }},readwrite"
+      VCPKG_BINARY_SOURCES: "files,$VCPKG_ARCHIVE_PATH,readwrite"
 
     steps:
     - uses: actions/checkout@v3

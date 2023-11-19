@@ -31,7 +31,7 @@ jobs:
     - name: Set reusable strings
       id: strings
       shell: bash
-      run: >
+      run: |
         SOURCE_PATH="${{ github.workspace }}/cpp-client-reference";
         VCPKG_ARCHIVE_PATH="$SOURCE_PATH/vcpkg_archives";
         echo "source-path=$SOURCE_PATH" >> "$GITHUB_OUTPUT";
@@ -63,4 +63,4 @@ jobs:
 
     - name: Build
       # Note: --config is needed for multi-config generators such as the Visual Studio ones.
-      run: cmake --build "${{ steps.set-source-path.outputs.source-path }}/out" --config ${{ matrix.build_type }}
+      run: cmake --build "${{ steps.strings.outputs.source-path }}/out" --config ${{ matrix.build_type }}

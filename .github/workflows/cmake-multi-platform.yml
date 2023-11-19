@@ -46,11 +46,6 @@ jobs:
         key: ${{ matrix.os }}
         path: "$VCPKG_ARCHIVE_PATH"
 
-    - if: ${{ steps.cache-vcpkg-archives.outputs.cache-hit != 'true' }}
-      name: Show output
-      run: echo "TODO"
-      continue-on-error: true
-
     - name: Configure CMake
       run: >
         cmake

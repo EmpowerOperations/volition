@@ -11,24 +11,24 @@ on:
 
 jobs:
   build:
+    strategy:
+      matrix:
+        configuration: [Debug, Release]
+    
+    runs-on: windows-latest
 
-    runs-on: ubuntu-latest
+    env:
+      Project_file: "csharp-client-reference/csharp-client-reference.csproj"
 
     steps:
-    - uses: actions/github-script@v7
-      with:
-        script: |
-          core.exportVariable("projectFile", "csharp-client-reference/csharp-client-reference.csproj")
-
     - uses: actions/checkout@v3
-    - name: Setup .NET
+
+    - name: Install .NET Core
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 6.0.x
-
-    - name: Restore dependencies
-      run: dotnet restore "${{ env.projectFile }}"
+    
     - name: Build
-      run: dotnet build --no-restore "${{ env.projectFile }}"
+      run: dotnet build --configuration ${{ matrix.configuration }} "${{ env.Project_path }}"
     - name: Test
-      run: dotnet test --no-build --verbosity normal "${{ env.projectFile }}"
+      run: dotnet test --no-build --verbosity normal "${{ env.Project_path }}"

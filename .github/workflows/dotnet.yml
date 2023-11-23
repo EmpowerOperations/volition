@@ -18,7 +18,7 @@ jobs:
     runs-on: windows-latest
 
     env:
-      Project_file: "csharp-client-reference/csharp-client-reference.csproj"
+      Project_path: "csharp-client-reference/csharp-client-reference.csproj"
 
     steps:
     - uses: actions/checkout@v3

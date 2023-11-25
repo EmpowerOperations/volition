@@ -22,5 +22,5 @@ protobuf_generate(
     PLUGIN protoc-gen-grpc=$<TARGET_FILE:gRPC::grpc_cpp_plugin>
     GENERATE_EXTENSIONS .grpc.pb.h .grpc.pb.cc)
 
-add_executable(vcpp-client-reference Source.cpp)
-target_link_libraries(vcpp-client-reference PRIVATE optimizer-proto)
+add_executable(cpp-client-reference Source.cpp)
+target_link_libraries(cpp-client-reference PRIVATE optimizer-proto)

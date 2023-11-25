@@ -1,0 +1,72 @@
+name: C++
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        preset:
+          - x64-windows-msvc-release
+          - x64-linux-gcc-release
+          - x64-linux-clang-release
+        include:
+          - preset: x64-windows-msvc-release
+            os: windows-latest
+            build_type: Release
+          - preset: x64-linux-gcc-release
+            os: ubuntu-latest
+            build_type: Release
+          - preset: x64-linux-clang-release
+            os: ubuntu-latest
+            build_type: Release
+
+    steps:
+    - name: Set reusable strings
+      id: strings
+      shell: bash
+      run: |
+        SOURCE_PATH="${{ github.workspace }}/cpp-client-reference";
+        VCPKG_ARCHIVE_PATH="$SOURCE_PATH/vcpkg_archives";
+        cat << EOF >> "$GITHUB_OUTPUT"
+        source-path=$SOURCE_PATH
+        vcpkg-archive-path=$VCPKG_ARCHIVE_PATH
+        EOF
+
+    - name: Set environment variables
+      shell: bash
+      run: |
+        cat << EOF >> "$GITHUB_ENV"
+        VCPKG_BINARY_SOURCES=files,${{ steps.strings.outputs.vcpkg-archive-path }},readwrite
+        EOF
+
+    - name: List environment variables
+      run: env
+
+    - uses: actions/checkout@v3
+      with:
+        submodules: recursive
+
+    - name: Cache Vcpkg archives
+      id: cache-vcpkg-archives
+      uses: actions/cache@v3
+      with:
+        key: ${{ matrix.preset }}
+        path: "${{ steps.strings.outputs.vcpkg-archive-path }}"
+
+    - name: Configure CMake
+      run: >
+        cmake
+        -S "${{ steps.strings.outputs.source-path }}"
+        -B "${{ steps.strings.outputs.source-path }}/out"
+        --preset=${{ matrix.preset }}
+
+    - name: Build
+      # Note: --config is needed for multi-config generators such as the Visual Studio ones.
+      run: cmake --build "${{ steps.strings.outputs.source-path }}/out" --config ${{ matrix.build_type }}

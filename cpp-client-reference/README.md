@@ -8,8 +8,9 @@ This project includes Vcpkg as a Git submodule to download dependencies such as 
 > Note: it is not sufficient to use the "Download Code" Button on github as this will not download the necessary submodule `microsoft/vcpkg`.
 > if you used git to clone this repository, you can initialize the vcpkg repository with
 > ```
-> cd .../vcpp-client-reference/vcpkg
+> cd .../cpp-client-reference/vcpkg
 > git submodule init
+> git submodule update
 
 ## Building on Windows  
 
@@ -20,14 +21,14 @@ Pre-requisites:
 
 Recent versions of Visual C++ natively support CMake projects. Open this directory, and Visual Studio should recognize this as a CMake project and configure accordingly.
 
-> Note you may also use cmake to generate visual studio project files by calling cmake with the appropriate generator:
+> Note you may also use CMake to generate visual studio project files by calling cmake with the appropriate generator:
 > ```
 > cmake -G "Visual Studio 17 2022"
 > ```
 
 #### Configure the CMake project
 
-Next, in Visual Studio, select the desired build mode or add one such as `x64 Debug` or `x64 Release`. Next, select `Project > Configure volition`. Visual Studio will invoke CMake to pull the project dependencies using Vcpkg and build them. 
+Next, in Visual Studio, select the desired build mode or add one such as `x64 MSVC Debug` or `x64 MSVC Release`. Next, select `Project > Configure volition`. Visual Studio will invoke CMake to pull the project dependencies using Vcpkg and build them. 
 
 > Behind the scenes, CMake bootstraps Vcpkg and runs `vcpkg install` for the detected triplet `x64-windows`. This has the same effect as if the following command were entered manually:
 > ```
@@ -49,7 +50,7 @@ Click on `Build > Build All` to build the reference client executable. Visual St
 
 #### Running the reference client
 
-From here you should be able to run the vcpp-client-reference project. In Visual Studio you should be able to right-click `vcpp-client-reference` project and select `Set as Startup Project` and then simply hit the Run Button in Visual Studio.
+From here you should be able to run the cpp-client-reference project. In Visual Studio you should be able to right-click `cpp-client-reference` project and select `Set as Startup Project` and then simply hit the Run Button in Visual Studio.
 
 > By default, the reference client uses port `27016`. If you are not running `oasis.cli.exe --volition 27016` or the reference optimizer on the specified port, then nothing will happen and the reference client will quit shortly.
 
@@ -59,10 +60,27 @@ With your optimization service running, you should see the reference client run 
 
 This project can also be built from the command line on Windows. First, launch `Developer Powershell for VS2022` (or VS2019), and then run the following:
 ```
-cmake -S . -B out --preset x64-release
+cmake -S . -B out --preset x64-windows-msvc-release
+cmake --build out --config Release
+```
+> Note:
+> - Substitute the preset above as appropriate.
+> - On Windows, CMake defaults to a Visual Studio multi-config generator. So `--config` (CMake build type) needs to be specified at the build step above.
+
+## Building on Linux
+
+Pre-requisites:
+- GCC (`g++`) or Clang
+
+Run the following in the current directory:
+```
+cmake -S . -B out --preset x64-linux-gcc-release
 cmake --build out
 ```
-> Note: Substitute the preset above as appropriate.
+
+> Note:
+> - Clang presets are also available. Run `cmake --list-presets` to see all the available presets on the current platform.
+> - By default, CMake generates `Unix Makefiles` on Linux. To use `Ninja`, pass `-G Ninja` at the CMake configuration step.   
 
 ## Next steps
 

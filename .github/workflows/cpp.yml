@@ -28,37 +28,25 @@ jobs:
             build_type: Release
 
     steps:
-    - name: Set reusable strings
-      id: strings
-      shell: bash
-      run: |
-        SOURCE_PATH="${{ github.workspace }}/cpp-client-reference";
-        VCPKG_ARCHIVE_PATH="$SOURCE_PATH/vcpkg_archives";
-        cat << EOF >> "$GITHUB_OUTPUT"
-        source-path=$SOURCE_PATH
-        vcpkg-archive-path=$VCPKG_ARCHIVE_PATH
-        EOF
-
-    - name: Set environment variables
-      shell: bash
-      run: |
-        cat << EOF >> "$GITHUB_ENV"
-        VCPKG_BINARY_SOURCES=files,${{ steps.strings.outputs.vcpkg-archive-path }},readwrite
-        EOF
-
-    - name: List environment variables
-      run: env
-
     - uses: actions/checkout@v3
       with:
         submodules: recursive
 
-    - name: Cache Vcpkg archives
-      id: cache-vcpkg-archives
-      uses: actions/cache@v3
+    - name: Set environment variables
+      uses: actions/github-script@v7
       with:
-        key: ${{ matrix.preset }}
-        path: "${{ steps.strings.outputs.vcpkg-archive-path }}"
+        script: |
+          core.exportVariable("ACTIONS_CACHE_URL", process.env.ACTIONS_CACHE_URL || "");
+          core.exportVariable("ACTIONS_RUNTIME_TOKEN", process.env.ACTIONS_RUNTIME_TOKEN || "");
+          core.exportVariable("VCPKG_BINARY_SOURCES", "clear;x-gha,readwrite");
+
+    - name: Set reusable strings
+      id: strings
+      shell: bash
+      run: |
+        cat << EOF >> "$GITHUB_OUTPUT"
+        source-path=${{ github.workspace }}/cpp-client-reference
+        EOF
 
     - name: Configure CMake
       run: >

@@ -1,5 +1,7 @@
 # C++ Volition API
 
+[![C++](https://github.com/EmpowerOperations/volition/actions/workflows/cpp.yml/badge.svg)](https://github.com/EmpowerOperations/volition/actions/workflows/cpp.yml)
+
 This is a simple CMake project to help you get started with building the Volition Client API for your C++ Application. This CMake project will use vcpkg to pull the necessary GRPC dependencies, use `protoc` with `optimizer.proto` to generate the necessary client-side code, and use the `Source.cpp` C++ reference client application to build a stub CPP application that demonstrates an Optimization with the Volition C++ API.
 
 ## Dependencies

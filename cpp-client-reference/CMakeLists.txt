@@ -30,10 +30,33 @@ add_executable(cpp-client-reference Source.cpp)
 target_link_libraries(cpp-client-reference PRIVATE optimizer-proto)
 
 add_library(volition SHARED
+    src/volition_core.cpp
     src/volition_shim.cpp)
-set_target_properties(volition PROPERTIES
-    CXX_EXTENSIONS OFF
-    CXX_STANDARD 20)
+target_compile_features(volition PUBLIC cxx_std_20)
+if (CMAKE_CXX_COMPILER_ID MATCHES ".*Clang|GNU")
+    target_compile_definitions(volition
+        PUBLIC
+        $<$<NOT:$<CONFIG:Debug>>:_FORTIFY_SOURCE=2>
+        _GLIBCXX_ASSERTIONS)
+    target_compile_options(volition
+        PUBLIC
+        $<$<NOT:$<CONFIG:Debug>>:-O2>
+        # TODO: -fvisibility=?
+        -fasynchronous-unwind-tables
+        #-fcf-protection
+        -fexceptions
+        -fno-rtti
+        -fno-semantic-interposition
+        $<$<CXX_COMPILER_ID:Clang>:-fsized-deallocation>
+        -fstack-clash-protection
+        -fstack-protector-strong
+        PRIVATE
+        -Wall -Wcast-align -Wconversion -Werror -Wextra -Wshadow -Wsign-conversion
+        -pipe)
+    target_link_options(volition
+        PUBLIC
+        "LINKER:-z,defs,-z,now,-z,relro")
+endif()
 target_include_directories(volition PUBLIC include)
 target_link_libraries(volition PRIVATE optimizer-proto)
 

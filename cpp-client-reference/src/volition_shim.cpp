@@ -1,68 +1,73 @@
-#include "volition.h"
+#include "volition_api.h"
 
-struct vl_optimizer_s {};
+#include "optimizer.grpc.pb.h"
+#include "optimizer.pb.h"
 
-vl_optimizer vl_create_optimizer(char const* connection, vl_status* status) noexcept {
-    return nullptr;
+#include <bit>
+#include <memory>
+#include <utility>
+
+using namespace empowerops::volition::dto;
+using namespace google;
+
+template<class T>
+constexpr auto into_unique(auto& p) noexcept -> std::unique_ptr<T> {
+    // TODO: Zero out `p`?
+    return std::unique_ptr<T>{std::bit_cast<T*>(p)};
 }
 
-void vl_destroy_optimizer(vl_optimizer optimizer) noexcept {}
+struct continuous final {
+    ContinuousDTO inner{};
+};
 
-vl_input
-vl_create_continuous_input(char const* name, double lower_bound, double upper_bound) noexcept {
-    return nullptr;
+auto create_continuous(continuous_params const* params) noexcept -> continuous* {
+    try {
+        auto p = std::make_unique<continuous>();
+        p->inner.set_lower_bound(params->lower_bound);
+        p->inner.set_upper_bound(params->upper_bound);
+        return p.release();
+    } catch (...) {
+        return nullptr;
+    }
 }
 
-vl_input vl_create_step_input(
-    char const* name,
-    double lower_bound,
-    double upper_bound,
-    double step_size) noexcept {
-    return nullptr;
+struct discrete_range final {
+    DiscreteRangeDTO inner{};
+};
+
+struct input_parameter final {
+    InputParameterDTO inner{};
+};
+
+auto create_input_parameter(input_parameter_params const* params) noexcept -> input_parameter* {
+    try {
+        auto p = std::make_unique<input_parameter>();
+        p->inner.set_name(params->name);
+        auto domain = into_unique<protobuf::Message>(params->domain);
+        if (auto* m = protobuf::DynamicCastToGenerated<ContinuousDTO>(domain.get())) {
+            *p->inner.mutable_continuous() = std::move(*m);
+        } else if (auto* m = protobuf::DynamicCastToGenerated<DiscreteRangeDTO>(domain.get())) {
+            *p->inner.mutable_discrete_range() = std::move(*m);
+        } else {
+            // TODO: Assert
+        }
+        return p.release();
+    } catch (...) {
+        return nullptr;
+    }
 }
 
-vl_evaluable vl_create_babel_constraint_evaluable(
-    char const* output_name,
-    char const* expr) noexcept {
-    return nullptr;
-}
+auto destroy_input_parameter(input_parameter* obj) noexcept -> void { delete obj; }
 
-vl_evaluable vl_create_babel_scalar_evaluable(char const* output_name, char const* expr) noexcept {
-    return nullptr;
-}
+struct optimizer_generated_query_stream final {};
 
-vl_evaluable vl_create_client_simulation_evaluable(
-    char const* name,
-    vl_client_input const* inputs,
-    size_t input_count,
-    vl_client_output const* outputs,
-    size_t output_count,
-    vl_duration timeout) noexcept {
-    return nullptr;
-}
-
-struct vl_event_stream_s {};
-
-vl_event_stream vl_create_event_stream(
-    vl_optimizer optimizer,
-    vl_optimization_settings const* settings,
-    vl_problem_definition const* problem_definition,
-    vl_seed_point const* seed_points,
-    size_t point_count,
-    vl_status* status) noexcept {
-    return nullptr;
-}
-
-void vl_destroy_event_stream(vl_event_stream event_stream) noexcept {}
-
-vl_status vl_wait_event(vl_event_stream event_stream, vl_event_callbacks* callbacks) {
-    return VL_SUCCESS;
-}
-
-vl_status vl_stop_optimization(vl_event_stream events) noexcept { return VL_SUCCESS; }
-
-vl_status vl_send_evaluation_result(
-    vl_evaluation_token token,
-    vl_evaluation_result const* result) noexcept {
-    return VL_SUCCESS;
+auto unary_optimizer_start_optimitzation(
+    unary_optimizer* optimizer,
+    start_optimization_command const* cmd) noexcept -> optimizer_generated_query_stream* {
+    try {
+        auto p = std::make_unique<optimizer_generated_query_stream>();
+        return p.release();
+    } catch (...) {
+        return nullptr;
+    }
 }

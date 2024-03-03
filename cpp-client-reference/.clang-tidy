@@ -1,0 +1,16 @@
+Checks: >
+    -*,
+    bugprone-*,
+    cert-*,
+    clang-analyzer-*,
+    concurrency-*,
+    cppcoreguidelines-*,-cppcoreguidelines-owning-memory,
+    misc-*,
+    modernize-*,
+    performance-*,
+    portability-*,
+    readability-*,-readability-braces-around-statements,-readability-identifier-length,
+
+CheckOptions:
+    - key: cppcoreguidelines-special-member-functions.AllowSoleDefaultDtor
+      value: true

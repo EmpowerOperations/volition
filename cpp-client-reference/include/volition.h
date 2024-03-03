@@ -2,34 +2,23 @@
 #ifndef VOLITION_H
 #define VOLITION_H
 
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdint.h>
+#include "volition_api.h"
 
-#ifdef __cplusplus
-#if __cplusplus >= 201103L || _MSVC_LANG >= 201103L
+#if defined(__cplusplus) && (__cplusplus >= 201103L || _MSVC_LANG >= 201103L)
 #define VL_NULL_HANDLE nullptr
-#define VLAPI_NOEXCEPT noexcept
 #else
 #define VL_NULL_HANDLE NULL
-#define VLAPI_NOEXCEPT throw()
-#endif
-#else
-#define VL_NULL_HANDLE NULL
-#define VLAPI_NOEXCEPT
 #endif
 
-#ifdef _WIN32
-#define VLAPI_PUBLIC __declspec(dllexport)
-#elif __GNUC__ >= 4
-#define VLAPI_PUBLIC __attribute__((visibility("default")))
-#else
-#define VLAPI_PUBLIC
-#endif
+#define vl_create(type, ...) create_##type(&(struct type##_params)__VA_ARGS__)
+#define vl_destroy(type, obj) destroy_##type(obj)
+#define vl_count(arr) (sizeof(arr) / sizeof(arr[0]))
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#if 0
 
 // Handle types.
 typedef struct vl_evaluable_s* vl_evaluable;
@@ -215,6 +204,8 @@ VLAPI_PUBLIC void vl_destroy_result_stream(vl_result_stream) VLAPI_NOEXCEPT;
 // May propagate exceptions from callbacks.
 VLAPI_PUBLIC vl_status
 vl_wait_result(vl_result_stream results, void* user_data, vl_result_callback on_result);
+
+#endif
 
 #ifdef __cplusplus
 }

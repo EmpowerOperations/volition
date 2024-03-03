@@ -1,29 +1,21 @@
 #include "volition.h"
 
-#include <math.h>
 #include <stdio.h>
-
-#define COUNT(arr) (sizeof(arr) / sizeof(arr[0]))
 
 typedef struct {
     double last_value;
 } simulation_state;
 
-void on_evaluation_request(void* user_data, vl_evaluation_token token, double const* input) {
-    simulation_state* state = (simulation_state*)user_data;
-    double const x1 = input[0];
-    vl_evaluation_result const result = {
-        .output = (double[]){x1 * x1 * state->last_value},
-    };
-    vl_send_evaluation_result(token, &result);
-    state->last_value -= 0.1;
-}
-
-void on_optimization_complete(void* user_data, vl_completion_token token) {
-    printf("optimization complete.\n");
-}
-
 int main() {
+    unary_optimizer_t optimizer = create_unary_optimizer("localhost:27016");
+    input_parameter_t input = vl_create(
+        input_parameter,
+        {.name = "x1",
+         .domain.continuous = vl_create(continuous, {.lower_bound = 0.5, .upper_bound = 5.0})});
+    vl_destroy(input_parameter, input);
+
+    destroy_unary_optimizer(optimizer);
+#if 0
     vl_optimizer const optimizer = vl_create_optimizer("localhost:27016", NULL);
     if (!optimizer) return -1;
     vl_optimization_settings const settings = {
@@ -68,5 +60,6 @@ int main() {
 
     vl_destroy_event_stream(event_stream);
     vl_destroy_optimizer(optimizer);
+#endif
     return 0;
 }

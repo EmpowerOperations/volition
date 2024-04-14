@@ -28,235 +28,184 @@
 extern "C" {
 #endif
 
-typedef struct duration {
+typedef struct duration const* duration_t;
+struct duration {
     int64_t seconds;
     int32_t nanos;
-} duration_t;
+};
 
 #define UUID_BYTES (128 / 8)
 
 typedef uint8_t uuid_t[UUID_BYTES];
 
 typedef struct continuous* continuous_t;
-struct continuous_params {
-    double lower_bound;
-    double upper_bound;
-};
-
-VLAPI_PUBLIC
-continuous_t create_continuous(struct continuous_params const* params) VLAPI_NOEXCEPT;
+VLAPI_PUBLIC continuous_t continuous_create() VLAPI_NOEXCEPT;
+VLAPI_PUBLIC void continuous_set_lower_bound(continuous_t continuous, double lower_bound)
+    VLAPI_NOEXCEPT;
+VLAPI_PUBLIC void continuous_set_upper_bound(continuous_t continuous, double upper_bound)
+    VLAPI_NOEXCEPT;
 
 typedef struct discrete_range* discrete_range_t;
-struct discrete_range_params {
-    double lower_bound;
-    double upper_bound;
-    double step_size;
-};
-
-VLAPI_PUBLIC
-discrete_range_t create_discrete_range(struct discrete_range_params const* params) VLAPI_NOEXCEPT;
 
 typedef struct input_parameter* input_parameter_t;
-struct input_parameter_params {
-    char const* name;
-    union {
-        continuous_t continuous;
-        discrete_range_t discrete_range;
-    } domain;
-};
-
-VLAPI_PUBLIC input_parameter_t create_input_parameter(struct input_parameter_params const* params)
+VLAPI_PUBLIC input_parameter_t input_parameter_create() VLAPI_NOEXCEPT;
+VLAPI_PUBLIC void input_parameter_set_name(input_parameter_t input, char const* name)
     VLAPI_NOEXCEPT;
-VLAPI_PUBLIC void destroy_input_parameter(input_parameter_t obj) VLAPI_NOEXCEPT;
+VLAPI_PUBLIC void input_parameter_set_continuous(input_parameter_t input, continuous_t continuous)
+    VLAPI_NOEXCEPT;
 
 typedef struct babel_scalar_node* babel_scalar_node_t;
-struct babel_scalar_node_params {
-    char const* output_name;
-    char const* scalar_expression;
-};
-
-typedef struct variable_name* variable_name_t;
-struct variable_name_params {
-    char const* value;
-};
-
-struct string_to_variable_name {
-    char const* key;
-    variable_name_t value;
-};
 
 typedef struct variable_mapping* variable_mapping_t;
-struct variable_mapping_params {
-    struct string_to_variable_name const* inputs;
-    size_t input_count;
-    struct string_to_variable_name const* outputs;
-    size_t output_count;
-};
+VLAPI_PUBLIC variable_mapping_t variable_mapping_create() VLAPI_NOEXCEPT;
+VLAPI_PUBLIC void variable_mapping_set_inputs(
+    variable_mapping_t mapping,
+    char const* simulation_name,
+    char const* optimization_name) VLAPI_NOEXCEPT;
+VLAPI_PUBLIC void variable_mapping_set_outputs(
+    variable_mapping_t mapping,
+    char const* simulation_name,
+    char const* optimization_name) VLAPI_NOEXCEPT;
 
 typedef struct simulation_input_parameter* simulation_input_parameter_t;
-struct simulation_input_parameter_params {
-    char const* name;
-};
+VLAPI_PUBLIC simulation_input_parameter_t simulation_input_parameter_create() VLAPI_NOEXCEPT;
+VLAPI_PUBLIC void simulation_input_parameter_set_name(
+    simulation_input_parameter_t input,
+    char const* name) VLAPI_NOEXCEPT;
 
 typedef struct simulation_output_parameter* simulation_output_parameter_t;
-struct simulation_output_parameter_params {
-    char const* name;
-    bool is_boolean;
-};
+VLAPI_PUBLIC simulation_output_parameter_t simulation_output_parameter_create() VLAPI_NOEXCEPT;
+VLAPI_PUBLIC void simulation_output_parameter_set_name(
+    simulation_output_parameter_t output,
+    char const* name) VLAPI_NOEXCEPT;
+VLAPI_PUBLIC void simulation_output_parameter_set_is_boolean(
+    simulation_output_parameter_t output,
+    bool boolean) VLAPI_NOEXCEPT;
 
 typedef struct simulation_node* simulation_node_t;
-struct simulation_node_params {
-    char const* name;
-    variable_mapping_t mapping_table;
-    simulation_input_parameter_t inputs;
-    size_t input_count;
-    simulation_output_parameter_t outputs;
-    size_t output_count;
-    duration_t timeout;
-};
+VLAPI_PUBLIC simulation_node_t simulation_node_create() VLAPI_NOEXCEPT;
+VLAPI_PUBLIC void simulation_node_set_mapping_table(
+    simulation_node_t node,
+    variable_mapping_t mapping) VLAPI_NOEXCEPT;
+VLAPI_PUBLIC void simulation_node_add_inputs(
+    simulation_node_t node,
+    simulation_input_parameter_t input) VLAPI_NOEXCEPT;
+VLAPI_PUBLIC void simulation_node_add_outputs(
+    simulation_node_t node,
+    simulation_output_parameter_t output) VLAPI_NOEXCEPT;
+VLAPI_PUBLIC void simulation_node_set_timeout(simulation_node_t node, duration_t timeout)
+    VLAPI_NOEXCEPT;
 
 typedef struct babel_constraint_node* babel_constraint_node_t;
-struct babel_constraint_node_params {
-    char const* output_name;
-    char const* boolean_expression;
-};
 
 typedef struct evaluable_node* evaluable_node_t;
-struct evaluable_node_params {
-    union {
-        babel_scalar_node_t transform;
-        simulation_node_t simulation;
-        babel_constraint_node_t constraint;
-    } value;
-};
+VLAPI_PUBLIC evaluable_node_t evaluable_node_create() VLAPI_NOEXCEPT;
+VLAPI_PUBLIC void evaluable_node_set_transform(evaluable_node_t node, babel_scalar_node_t transform)
+    VLAPI_NOEXCEPT;
+VLAPI_PUBLIC void evaluable_node_set_simulation(evaluable_node_t node, simulation_node_t simulation)
+    VLAPI_NOEXCEPT;
+VLAPI_PUBLIC void evaluable_node_set_constraint(
+    evaluable_node_t node,
+    babel_constraint_node_t constraint) VLAPI_NOEXCEPT;
 
 typedef struct problem_definition* problem_definition_t;
-struct problem_definition_params {
-    input_parameter_t const* inputs;
-    size_t input_count;
-    evaluable_node_t const* evaluables;
-    size_t evaluable_count;
-};
+VLAPI_PUBLIC problem_definition_t problem_definition_create() VLAPI_NOEXCEPT;
+VLAPI_PUBLIC void problem_definition_add_inputs(
+    problem_definition_t problem,
+    input_parameter_t input) VLAPI_NOEXCEPT;
+VLAPI_PUBLIC void problem_definition_add_evaluables(
+    problem_definition_t problem,
+    evaluable_node_t evaluable) VLAPI_NOEXCEPT;
 
 typedef struct optimization_settings* optimization_settings_t;
-struct optimization_settings_params {
-    duration_t const* run_time;
-    uint32_t const* iteration_count;
-    double const* target_objective_value;
-    uint32_t const* concurrent_run_count;
-};
+VLAPI_PUBLIC optimization_settings_t optimization_settings_create() VLAPI_NOEXCEPT;
+VLAPI_PUBLIC void optimization_settings_set_run_time(
+    optimization_settings_t settings,
+    duration_t time) VLAPI_NOEXCEPT;
+VLAPI_PUBLIC void optimization_settings_set_iteration_count(
+    optimization_settings_t settings,
+    uint32_t count) VLAPI_NOEXCEPT;
+VLAPI_PUBLIC void optimization_settings_set_target_objective_value(
+    optimization_settings_t settings,
+    double objective) VLAPI_NOEXCEPT;
+VLAPI_PUBLIC void optimization_settings_set_concurrent_run_count(
+    optimization_settings_t settings,
+    uint32_t count) VLAPI_NOEXCEPT;
 
 typedef struct seed_row* seed_row_t;
-struct seed_row_params {
-    double const* inputs;
-    size_t input_count;
-    double const* outputs;
-    size_t output_count;
-};
+VLAPI_PUBLIC seed_row_t seed_row_create() VLAPI_NOEXCEPT;
+VLAPI_PUBLIC void seed_row_add_inputs(seed_row_t row, double input) VLAPI_NOEXCEPT;
+VLAPI_PUBLIC void seed_row_add_outputs(seed_row_t row, double output) VLAPI_NOEXCEPT;
 
 typedef struct start_optimization_command* start_optimization_command_t;
-struct start_optimization_command_params {
-    problem_definition_t problem_definition;
-    optimization_settings_t settings;
-    seed_row_t const* seed_points;
-    size_t seed_point_count;
-};
-
-VLAPI_PUBLIC
-start_optimization_command_t create_start_optimization_command(
-    struct start_optimization_command_params const* params) VLAPI_NOEXCEPT;
-
-struct string_to_double {
-    char const* key;
-    double value;
-};
-
-typedef struct simulation_evaluation_request* simulation_evaluation_request_t;
-struct simulation_evaluation_request_params {
-    char const* name;
-    struct string_to_double const* input_vector;
-    size_t input_vector_len;
-    uint32_t iteration_index;
-};
-
-typedef struct simulation_cancel_request* simulation_cancel_request_t;
-struct simulation_cancel_request_params {
-    char const* name;
-    uint32_t iteration_index;
-};
-
-typedef struct optimizer_generated_query* optimization_generated_query_t;
-struct optimizer_generated_query_params {
-    union optimizer_generated_query_purpose {
-        simulation_evaluation_request_t evaluation_request;
-        simulation_cancel_request_t cancel_request;
-    } purpose;
-};
-
-struct optimizer_generated_query_purpose_callbacks {
-    void (*on_evaluation_request)(
-        void* user_data,
-        struct simulation_evaluation_request_params const* params);
-    void (
-        *on_cancel_request)(void* user_data, struct simulation_cancel_request_params const* params);
-};
-
-VLAPI_PUBLIC void visit_optimizer_generated_query_purpose(
-    void* user_data,
-    union optimizer_generated_query_purpose purpose,
-    struct optimizer_generated_query_purpose_callbacks const* callbacks);
-
-typedef struct optimizer_generated_query_stream* optimizer_generated_query_stream_t;
+VLAPI_PUBLIC start_optimization_command_t start_optimization_command_create() VLAPI_NOEXCEPT;
+VLAPI_PUBLIC void start_optimization_command_destroy(start_optimization_command_t command)
+    VLAPI_NOEXCEPT;
+VLAPI_PUBLIC void start_optimization_command_set_problem_definition(
+    start_optimization_command_t command,
+    problem_definition_t problem) VLAPI_NOEXCEPT;
+VLAPI_PUBLIC void start_optimization_command_set_settings(
+    start_optimization_command_t command,
+    optimization_settings_t settings) VLAPI_NOEXCEPT;
+VLAPI_PUBLIC void start_optimization_command_add_seed_points(
+    start_optimization_command_t command,
+    seed_row_t row) VLAPI_NOEXCEPT;
 
 typedef struct unary_optimizer* unary_optimizer_t;
+VLAPI_PUBLIC unary_optimizer_t unary_optimizer_create(char const* connection) VLAPI_NOEXCEPT;
+VLAPI_PUBLIC void unary_optimizer_destroy(unary_optimizer_t optimizer) VLAPI_NOEXCEPT;
 
-VLAPI_PUBLIC unary_optimizer_t create_unary_optimizer(char const* connection) VLAPI_NOEXCEPT;
-VLAPI_PUBLIC void destroy_unary_optimizer(unary_optimizer_t optimizer) VLAPI_NOEXCEPT;
+typedef struct simulation_evaluation_request* simulation_evaluation_request_t;
+VLAPI_PUBLIC char const* simulation_evaluation_request_get_name(
+    simulation_evaluation_request_t request) VLAPI_NOEXCEPT;
+VLAPI_PUBLIC double simulation_evaluation_request_get_input_vector(
+    simulation_evaluation_request_t request,
+    char const* name) VLAPI_NOEXCEPT;
+VLAPI_PUBLIC uint32_t simulation_evaluation_request_get_iteration_index(
+    simulation_evaluation_request_t request) VLAPI_NOEXCEPT;
 
-VLAPI_PUBLIC
-optimizer_generated_query_stream_t unary_optimizer_start_optimitzation(
+typedef struct optimizer_generated_query* optimizer_generated_query_t;
+VLAPI_PUBLIC void optimizer_generated_query_destroy(optimizer_generated_query_t query)
+    VLAPI_NOEXCEPT;
+
+VLAPI_PUBLIC simulation_evaluation_request_t
+optimizer_generated_query_get_simulation_evaluation_request(optimizer_generated_query_t query)
+    VLAPI_NOEXCEPT;
+
+typedef struct optimizer_generated_query_stream* optimizer_generated_query_stream_t;
+VLAPI_PUBLIC void optimizer_generated_query_stream_destroy(
+    optimizer_generated_query_stream_t stream) VLAPI_NOEXCEPT;
+VLAPI_PUBLIC optimizer_generated_query_t
+optimizer_generated_query_stream_wait(optimizer_generated_query_stream_t stream) VLAPI_NOEXCEPT;
+
+VLAPI_PUBLIC optimizer_generated_query_stream_t unary_optimizer_start_optimization(
     unary_optimizer_t optimizer,
-    start_optimization_command_t cmd) VLAPI_NOEXCEPT;
+    start_optimization_command_t command) VLAPI_NOEXCEPT;
+
+typedef struct output_vector* output_vector_t;
+VLAPI_PUBLIC output_vector_t output_vector_create() VLAPI_NOEXCEPT;
+VLAPI_PUBLIC void output_vector_set_entries(output_vector_t output, char const* name, double value)
+    VLAPI_NOEXCEPT;
 
 typedef struct simulation_evaluation_completed_response* simulation_evaluation_completed_response_t;
-typedef struct simulation_evaluation_result_confirm* simulation_evaluation_result_confirm_t;
+VLAPI_PUBLIC simulation_evaluation_completed_response_t
+simulation_evaluation_completed_response_create() VLAPI_NOEXCEPT;
+VLAPI_PUBLIC void simulation_evaluation_completed_response_set_name(
+    simulation_evaluation_completed_response_t response,
+    char const* name) VLAPI_NOEXCEPT;
+VLAPI_PUBLIC void simulation_evaluation_completed_response_set_iteration_index(
+    simulation_evaluation_completed_response_t response,
+    uint32_t index) VLAPI_NOEXCEPT;
+VLAPI_PUBLIC void simulation_evaluation_completed_response_set_abort_optimization(
+    simulation_evaluation_completed_response_t response,
+    bool abort) VLAPI_NOEXCEPT;
+VLAPI_PUBLIC void simulation_evaluation_completed_response_set_vector(
+    simulation_evaluation_completed_response_t response,
+    output_vector_t output) VLAPI_NOEXCEPT;
 
-VLAPI_PUBLIC
-simulation_evaluation_result_confirm_t unary_optimizer_offer_simulation_result(
+VLAPI_PUBLIC void unary_optimizer_offer_simulation_result(
     unary_optimizer_t optimizer,
     simulation_evaluation_completed_response_t response) VLAPI_NOEXCEPT;
-
-typedef struct simulation_evaluation_error_response* simulation_evaluation_error_response_t;
-typedef struct simulation_evaluation_error_confirm* simulation_evaluation_error_confirm_t;
-
-VLAPI_PUBLIC
-simulation_evaluation_error_confirm_t unary_optimizer_offer_error_result(
-    unary_optimizer_t optimizer,
-    simulation_evaluation_error_response_t response) VLAPI_NOEXCEPT;
-
-typedef struct status_message_command* status_message_command_t;
-typedef struct status_message_confirm* status_message_confirm_t;
-
-VLAPI_PUBLIC
-status_message_confirm_t unary_optimizer_offer_evaluation_status_message(
-    unary_optimizer_t optimizer,
-    status_message_command_t cmd) VLAPI_NOEXCEPT;
-
-typedef struct stop_optimization_command* stop_optimization_command_t;
-typedef struct stop_optimization_confirm* stop_optimization_confirm_t;
-
-VLAPI_PUBLIC
-stop_optimization_confirm_t unary_optimizer_stop_optimization(
-    unary_optimizer_t optimizer,
-    stop_optimization_command_t cmd) VLAPI_NOEXCEPT;
-
-typedef struct optimization_results_query* optimization_results_query_t;
-typedef struct optimization_results_response* optimization_results_response_t;
-
-VLAPI_PUBLIC
-optimization_results_response_t unary_optimizer_request_run_result(
-    unary_optimizer_t optimizer,
-    optimization_results_query_t query) VLAPI_NOEXCEPT;
 
 #ifdef __cplusplus
 }

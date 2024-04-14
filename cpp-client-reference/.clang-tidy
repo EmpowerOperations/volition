@@ -4,13 +4,22 @@ Checks: >
     cert-*,
     clang-analyzer-*,
     concurrency-*,
-    cppcoreguidelines-*,-cppcoreguidelines-owning-memory,
+    cppcoreguidelines-*,
+    -cppcoreguidelines-avoid-magic-numbers,
+    -cppcoreguidelines-owning-memory,
+    -cppcoreguidelines-pro-type-reinterpret-cast,
     misc-*,
     modernize-*,
     performance-*,
     portability-*,
-    readability-*,-readability-braces-around-statements,-readability-identifier-length,
+    readability-*,
+    -readability-braces-around-statements,
+    -readability-identifier-length,
+    -readability-implicit-bool-conversion,
+    -readability-magic-numbers
 
 CheckOptions:
+    - key: cppcoreguidelines-macro-usage.CheckCapsOnly
+      value: true
     - key: cppcoreguidelines-special-member-functions.AllowSoleDefaultDtor
       value: true

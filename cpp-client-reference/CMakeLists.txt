@@ -26,7 +26,7 @@ target_compile_options(common_config INTERFACE
     -O2
     -Wall -Wconversion -Wformat -Wformat=2 -Wimplicit-fallthrough
     -fno-rtti
-    -fsanitize=address
+    -fsanitize=address,undefined
     -fstack-clash-protection
     #-fstrict-flex-arrays=3
     -fstack-protector-strong>)

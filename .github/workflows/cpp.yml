@@ -1,0 +1,61 @@
+name: C++
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        preset:
+          - x64-windows-msvc-release
+          - x64-linux-gcc-release
+          - x64-linux-clang-release
+        include:
+          - preset: x64-windows-msvc-release
+            os: windows-latest
+            build_type: Release
+          - preset: x64-linux-gcc-release
+            os: ubuntu-latest
+            build_type: Release
+          - preset: x64-linux-clang-release
+            os: ubuntu-latest
+            build_type: Release
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: recursive
+
+    - name: Set environment variables
+      uses: actions/github-script@v7
+      with:
+        script: |
+          core.exportVariable("ACTIONS_CACHE_URL", process.env.ACTIONS_CACHE_URL || "");
+          core.exportVariable("ACTIONS_RUNTIME_TOKEN", process.env.ACTIONS_RUNTIME_TOKEN || "");
+          core.exportVariable("VCPKG_BINARY_SOURCES", "clear;x-gha,readwrite");
+
+    - name: Set reusable strings
+      id: strings
+      shell: bash
+      run: |
+        cat << EOF >> "$GITHUB_OUTPUT"
+        source-path=${{ github.workspace }}/cpp-client-reference
+        EOF
+
+    - name: Configure CMake
+      run: >
+        cmake
+        -S "${{ steps.strings.outputs.source-path }}"
+        -B "${{ steps.strings.outputs.source-path }}/out"
+        --preset=${{ matrix.preset }}
+
+    - name: Build
+      # Note: --config is needed for multi-config generators such as the Visual Studio ones.
+      run: cmake --build "${{ steps.strings.outputs.source-path }}/out" --config ${{ matrix.build_type }}

@@ -9,6 +9,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Reflection;
+//ook,
+// heres my thinking: create a ".net" windows form app, taqke a look at iots references
+// try to make this projects references look like that?
 using System.Windows.Forms;
 using EmpowerOps.Volition.Api;
 using MessageBox = System.Windows.MessageBox;
@@ -120,7 +123,10 @@ namespace EmpowerOps.Volition.RefClient
                     }
                 };
 
-                var settings = new OptimizationSettingsDTO();
+                var settings = new OptimizationSettingsDTO()
+                {
+                    ConcurrentRunCount = Convert.ToUInt32(ConcurrentRuns.Text)
+                };
 
                 if(_timeoutSecs != null)
                 {
@@ -251,7 +257,7 @@ namespace EmpowerOps.Volition.RefClient
             {
                 while (await requestsResponseStream.MoveNext(CancellationToken.None))
                 {
-                    await HandleRequestAsync(requestsResponseStream.Current);
+                    HandleRequestAsync(requestsResponseStream.Current);
                 }
 
                 await Log($"{CommandPrefix} Query Closed, plugin has been unregistered by server");
@@ -353,6 +359,7 @@ namespace EmpowerOps.Volition.RefClient
                     SimulationEvaluationCompletedResponseDTO request1 = new SimulationEvaluationCompletedResponseDTO
                     {
                         Name = _name,
+                        IterationIndex = request.EvaluationRequest.IterationIndex,
                         OutputVector = { result.Output }
                     };
                     await _client.OfferSimulationResultAsync(request1);
@@ -362,8 +369,9 @@ namespace EmpowerOps.Volition.RefClient
                     await _client.OfferErrorResultAsync(new SimulationEvaluationErrorResponseDTO()
                     {
                         Name = _name,
+                        IterationIndex = request.EvaluationRequest.IterationIndex,
                         Message = $"{CommandPrefix} Evaluation Failed when evaluating [{inputs}]",
-                        Exception = result.Exception.ToString()
+                        Exception = result.Exception.ToString(),
                     });
                     break;
                 case EvaluationResult.ResultStatus.Canceled:
@@ -371,6 +379,7 @@ namespace EmpowerOps.Volition.RefClient
                     await _client.OfferSimulationResultAsync(new SimulationEvaluationCompletedResponseDTO
                     {
                         Name = _name,
+                        IterationIndex = request.EvaluationRequest.IterationIndex,
                         OutputVector = { result.Output }
                     });
                     break;

@@ -5,6 +5,7 @@ import com.empowerops.volition.dto.OptimizerGeneratedQueryDTO.PurposeCase.*
 import io.grpc.ManagedChannelBuilder
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combineTransform
 import kotlinx.coroutines.selects.select
@@ -225,7 +226,7 @@ class Tests {
         var iterationNo = 0
 
         //act
-        val collector: suspend (value: OptimizerGeneratedQueryDTO) -> Unit = { optimizerRequest ->
+        val collector = FlowCollector<OptimizerGeneratedQueryDTO> { optimizerRequest ->
             val dc: Unit = when (optimizerRequest.purposeCase!!) {
                 EVALUATION_REQUEST -> {
 
@@ -511,7 +512,7 @@ class Tests {
         val iterations = ArrayList<DesignRowDTO>()
 
         //act
-        val collector: suspend (value: OptimizerGeneratedQueryDTO) -> Unit = { optimizerMessage ->
+        val collector = FlowCollector<OptimizerGeneratedQueryDTO> { optimizerMessage ->
             when (optimizerMessage.purposeCase) {
                 EVALUATION_REQUEST -> TODO("$optimizerMessage")
                 CANCEL_REQUEST -> TODO("$optimizerMessage")

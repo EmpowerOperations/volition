@@ -39,9 +39,9 @@ class OptimizerCLI(val console: PrintStream) : Callable<Job> {
     @Option(
         names = ["-p", "--port"],
         paramLabel = "PORT",
-        description = ["Run optimizer with specified port, when not specified, port number will default to 5550"]
+        description = ["Run optimizer with specified port, when not specified, port number will default to 27016"]
     )
-    var port: Int = 5550
+    var port: Int = 27016
 
     private val scope: CoroutineScope = OptimizerCLICoroutineScope()
 

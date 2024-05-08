@@ -45,13 +45,19 @@ class LoggingInterceptor(val logger: (String) -> Unit): ServerInterceptor {
 
         val outboundInterceptor = object: ServerCall<T, R>(){
 
-            private val direction: String = when(type){
+            private val direction: String get() = when(type){
                 MethodDescriptor.MethodType.UNARY -> "OUTBOUND"
-                MethodDescriptor.MethodType.CLIENT_STREAMING -> "OUTBOUND"
+                MethodDescriptor.MethodType.CLIENT_STREAMING -> TODO("outbound interceptor got an input message?")
                 MethodDescriptor.MethodType.SERVER_STREAMING -> "OUTBOUND-ITEM"
                 MethodDescriptor.MethodType.BIDI_STREAMING -> "OUTBOUND-ITEM"
-                MethodDescriptor.MethodType.UNKNOWN -> "OUTBOUND-?"
-                null -> TODO()
+                null, MethodDescriptor.MethodType.UNKNOWN -> "???"
+            }
+            private val verb: String get() = when(type) {
+                MethodDescriptor.MethodType.UNARY -> "returned"
+                MethodDescriptor.MethodType.CLIENT_STREAMING -> TODO("outbound interceptor got an input message?")
+                MethodDescriptor.MethodType.SERVER_STREAMING -> "yielded"
+                MethodDescriptor.MethodType.BIDI_STREAMING -> "yielded"
+                null, MethodDescriptor.MethodType.UNKNOWN -> "???"
             }
 
             override fun request(numMessages: Int) { call.request(numMessages) }
@@ -59,7 +65,7 @@ class LoggingInterceptor(val logger: (String) -> Unit): ServerInterceptor {
             override fun isReady(): Boolean = call.isReady
             override fun close(status: Status, trailers: Metadata?) {
                 if( ! status.isOk){
-                    logger("SERVER SIDE ERROR > " + status.asException().stackTraceToString())
+                    logger("API BAD CLOSE > $fullMethodName closed (${status.code}) '${status.description}'")
                 }
 
                 call.close(status, trailers)
@@ -72,10 +78,8 @@ class LoggingInterceptor(val logger: (String) -> Unit): ServerInterceptor {
             override fun getMethodDescriptor(): MethodDescriptor<T, R> = call.methodDescriptor
 
             override fun sendMessage(message: R) {
-                val messageType = (message ?: Any())::class.simpleName
-                val messageString = message.toString().let { if(it.isBlank()) "[empty $messageType]" else "\n$it"}
-
-                logger("API $direction > $fullMethodName $messageString".trim())
+                val loggingMessage = formatMessage("API $direction >", fullMethodName, verb, message)
+                logger(loggingMessage)
                 call.sendMessage(message)
             }
         }
@@ -102,12 +106,40 @@ class LoggingInterceptor(val logger: (String) -> Unit): ServerInterceptor {
                 actual.onComplete()
             }
             override fun onMessage(message: T) {
-                val messageType = (message ?: Any())::class.simpleName
-                val messageString = message.toString().let { if(it.isBlank()) "[empty $messageType]" else "\n$it" }
-                logger("API INBOUND > $fullMethodName $messageString".trim())
 
+                val loggingMessage = formatMessage("API INBOUND >", fullMethodName, "received", message)
+
+                logger(loggingMessage)
                 actual.onMessage(message)
             }
         }
+    }
+
+    private fun <T : Any?> formatMessage(
+        direction: String,
+        fullMethodName: String?,
+        verb: String,
+        message: T
+    ): String {
+
+        val messageType = (message ?: Any())::class.simpleName
+
+        val loggingMessage = buildString {
+            append("$direction $fullMethodName $verb")
+            append(" ")
+
+            val messageStringRaw = message.toString()
+            if (messageStringRaw.isNullOrBlank()) {
+                append("[empty $messageType]")
+                appendLine()
+            } else {
+                append(messageType).append(" {").appendLine()
+                for (messageLine in messageStringRaw.trim().lines()) {
+                    append("  ").append(messageLine).appendLine()
+                }
+                append("}").appendLine()
+            }
+        }
+        return loggingMessage
     }
 }

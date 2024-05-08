@@ -37,7 +37,7 @@ class OptimizerEndpoint(
     override suspend fun offerSimulationResult(request: SimulationEvaluationCompletedResponseDTO): SimulationEvaluationResultConfirmDTO {
         val state = checkIs<State.Optimizing>(state)
 
-        val message = SimulationProvidedMessage.EvaluationResult(request.outputVectorMap)
+        val message = SimulationProvidedMessage.EvaluationResult(request.iterationIndex.toUInt(), request.outputVectorMap)
         state.optimizerBoundMessages.send(message)
 
         return SimulationEvaluationResultConfirmDTO.newBuilder().build()
@@ -46,7 +46,7 @@ class OptimizerEndpoint(
     override suspend fun offerErrorResult(request: SimulationEvaluationErrorResponseDTO): SimulationEvaluationErrorConfirmDTO {
         val state = checkIs<State.Optimizing>(state)
 
-        val element = SimulationProvidedMessage.ErrorResponse(request.name, request.message)
+        val element = SimulationProvidedMessage.ErrorResponse(request.name, request.iterationIndex.toUInt(), request.message)
         state.optimizerBoundMessages.send(element)
 
         return simulationEvaluationErrorConfirmDTO {  }
@@ -55,7 +55,7 @@ class OptimizerEndpoint(
     override suspend fun offerEvaluationStatusMessage(request: StatusMessageCommandDTO): StatusMessageConfirmDTO {
         val state = checkIs<State.Optimizing>(state)
 
-        val element = SimulationProvidedMessage.Message(request.name, request.message)
+        val element = SimulationProvidedMessage.Message(request.name, request.iterationIndex.toUInt(), request.message)
         state.optimizerBoundMessages.send(element)
 
         return statusMessageConfirmDTO {  }
@@ -145,7 +145,8 @@ class OptimizerEndpoint(
                 OptimizationSettings(
                     runtime = if (hasRunTime()) Duration.ofSeconds(runTime.seconds) else null,
                     iterationCount = if (hasIterationCount()) iterationCount else null,
-                    targetObjectiveValue = if (hasTargetObjectiveValue()) targetObjectiveValue else null
+                    targetObjectiveValue = if (hasTargetObjectiveValue()) targetObjectiveValue else null,
+                    concurrentRunCount = concurrentRunCount.toUInt()
                 )
             },
             seedPoints = request.seedPointsList.map { ExpensivePointRow(it.inputsList, it.outputsList, null, null) }
@@ -245,7 +246,6 @@ class OptimizerEndpoint(
             }
         }
     }
-
 }
 
 private inline fun <reified T> checkIs(instance: Any): T {

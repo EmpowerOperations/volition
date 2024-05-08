@@ -1,17 +1,15 @@
 #pragma once
 
-#include <random>
-#include <sstream>
-#include <windows.h>
-
-#include "optimizer.pb.h"
 #include "optimizer.grpc.pb.h"
 
 #include <google/protobuf/text_format.h>
 #include <grpcpp/grpcpp.h>
 
-//winsock2 needed by grpc
-#pragma comment(lib, "Ws2_32.lib")
+#include <chrono>
+#include <future>
+#include <random>
+#include <sstream>
+#include <thread>
 
 using grpc::Channel;
 using grpc::ClientContext;
@@ -43,6 +41,7 @@ int main(int argCount, char** argValues) {
 
 	auto start = new StartOptimizationCommandDTO();
 	start->mutable_settings()->set_iteration_count(5);
+	start->mutable_settings()->set_concurrent_run_count(2);
 
 	auto input = start->mutable_problem_definition()->mutable_inputs()->Add();
 	input->set_name("x1");
@@ -69,6 +68,7 @@ int main(int argCount, char** argValues) {
 	if(channel->GetState(true) != GRPC_CHANNEL_READY)
 	{
 		std::cout << "couldn't connect!" << std::endl;
+		return 2;
 	}
 
 	auto formatter = google::protobuf::TextFormat::Printer();
@@ -83,27 +83,38 @@ int main(int argCount, char** argValues) {
 
 		std::cout << "got request:" << std::endl
 			<< messageAsString << std::endl;
-		
+
+		auto futures = new std::vector<std::future<void>>();
+		double lastValue = 42.0;
+
 		if (optimizerQuery.has_evaluation_request()) {
-			auto result = SimulationEvaluationCompletedResponseDTO();
 
-			// result.mutable_output_vector()->at("f1") = distr(randSrc);
-			(*result.mutable_output_vector())["f1"] = 42.0;
+			futures->push_back(std::async(std::launch::async,
+				[&formatter, &stub, optimizerQuery, &lastValue]
+				{
+					std::this_thread::sleep_for(std::chrono::milliseconds(200));
 
-			std::string temp;
-			formatter.PrintToString(result, &temp);
+					auto result = SimulationEvaluationCompletedResponseDTO();
 
-			std::cout << "trying " << temp << std::endl;
+					// result.mutable_output_vector()->at("f1") = distr(randSrc);
+					(*result.mutable_vector()->mutable_entries())["f1"] = lastValue;
+					lastValue -= 0.1;
+					result.set_iteration_index(optimizerQuery.evaluation_request().iteration_index());
 
-			auto confirm = SimulationEvaluationResultConfirmDTO();
-			auto context = new ClientContext();
-			stub->OfferSimulationResult(context, result, &confirm);
+					std::string temp;
+					formatter.PrintToString(result, &temp);
 
-			std::string resultAsString;
-			formatter.PrintToString(result, &resultAsString);
+					auto confirm = SimulationEvaluationResultConfirmDTO();
+					auto context = new ClientContext();
+					stub->OfferSimulationResult(context, result, &confirm);
 
-			std::cout << "send result:" << std::endl
-				<< resultAsString << std::endl;
+					std::string resultAsString;
+					formatter.PrintToString(result, &resultAsString);
+
+					std::cout << "send result:" << std::endl
+						<< resultAsString << std::endl;
+				}
+			));
 		}
 		else
 		{
@@ -111,15 +122,16 @@ int main(int argCount, char** argValues) {
 		}
 	}
 
+	std::cout << "channel hit EOF!" << std::endl;
 
-	return 4;
+	return 0;
 }
 
 int getPortFromArgs(int argCount, char** argValues, int& portOutput)
 {
 	if (argCount == 1)
 	{
-		portOutput = 5550;
+		portOutput = 27016;
 		return 0;
 	}
 	if (argCount == 2)

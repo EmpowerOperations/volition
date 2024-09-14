@@ -2,21 +2,18 @@ import com.google.protobuf.gradle.*
 import com.google.protobuf.gradle.id
 import com.google.protobuf.gradle.plugins
 import org.gradle.kotlin.dsl.protobuf
-import java.nio.file.Paths
-import java.nio.file.Files
-import java.nio.file.StandardOpenOption
 
 val kotlin_version = "1.6.20"
 
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "1.6.20"
-    id("com.google.protobuf") version "0.8.17"
+    id("org.jetbrains.kotlin.jvm") version "1.9.25"
+    id("com.google.protobuf") version "0.9.4"
 }
 
-val protobufVersion = "3.18.0"
-val grpcVersion = "1.37.0"
-val volitionSpecVersion = "1.4.0"
-val buildNumber = "313"
+val protobufVersion = "4.28.1"
+val grpcVersion = "1.66.0"
+val volitionSpecVersion = "1.4.1"
+val buildNumber = "314"
 val volitionFullVersion = "$volitionSpecVersion.$buildNumber"
 val volitionName = "volition-api"
 

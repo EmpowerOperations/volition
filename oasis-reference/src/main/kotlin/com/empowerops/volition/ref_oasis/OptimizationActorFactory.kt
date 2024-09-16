@@ -233,7 +233,7 @@ class OptimizationActorFactory(
                                 evaluationVector.filterKeys { it in sim.inputs }
                             ))
 
-                            fail; so, i could build some kind of fan-in channel here
+//                            fail; so, i could build some kind of fan-in channel here
                             // is there any other solution?
 
                             //read the response

@@ -581,6 +581,7 @@ message InputParameterDTO {
     oneof domain {
         ContinuousDTO continuous = 4;
         DiscreteRangeDTO discrete_range = 5;
+        ValueSetDTO values_set = 6;
     }
 }
 
@@ -597,6 +598,12 @@ message DiscreteRangeDTO {
     double lower_bound = 2;
     double upper_bound = 3;
     double step_size = 4;
+}
+
+// an enumerated set of discrete values
+// (that typically dont conform to being expressed as lower-upper-stepped set of bounds)
+message ValueSetDTO {
+    repeated double values = 1;
 }
 
 // A definition of an output that participates in an optimization.

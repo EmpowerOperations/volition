@@ -15,8 +15,8 @@ plugins {
 
 val protobufVersion = "3.18.0"
 val grpcVersion = "1.37.0"
-val volitionSpecVersion = "1.4.0"
-val buildNumber = "313"
+val volitionSpecVersion = "1.5.0"
+val buildNumber = "315"
 val volitionFullVersion = "$volitionSpecVersion.$buildNumber"
 val volitionName = "volition-api"
 
@@ -90,6 +90,8 @@ project("api") {
         implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
 
         implementation("javax.annotation:javax.annotation-api:1.3.2")
+
+//        implementation("org.jetbrains.kotlinx:kotlinx.collections.immutable:0.1")
 
         implementation("com.google.guava:guava:27.0.1-jre")
 
@@ -256,7 +258,7 @@ project("oasis-reference"){
         implementation("io.grpc:grpc-kotlin-stub:1.1.0")
 
         implementation("com.google.protobuf:protobuf-kotlin:$protobufVersion") //<--- this depends on kotlin 1.5
-        implementation(group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version = "0.1")
+//        implementation(group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version = "0.1")
 
         implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version")
         implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")

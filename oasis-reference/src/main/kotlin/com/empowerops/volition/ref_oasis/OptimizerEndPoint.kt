@@ -82,16 +82,19 @@ class OptimizerEndpoint(
                     InputParameterDTO.DomainCase.CONTINUOUS -> inputDTO.continuous.lowerBound
                     InputParameterDTO.DomainCase.DISCRETE_RANGE -> inputDTO.discreteRange.lowerBound
                     InputParameterDTO.DomainCase.DOMAIN_NOT_SET -> TODO()
+                    InputParameterDTO.DomainCase.VALUES_SET -> TODO()
                 }
                 val upperBound = when (inputDTO.domainCase!!) {
                     InputParameterDTO.DomainCase.CONTINUOUS -> inputDTO.continuous.upperBound
                     InputParameterDTO.DomainCase.DISCRETE_RANGE -> inputDTO.discreteRange.upperBound
                     InputParameterDTO.DomainCase.DOMAIN_NOT_SET -> TODO()
+                    InputParameterDTO.DomainCase.VALUES_SET -> TODO()
                 }
                 val stepSize = when (inputDTO.domainCase!!) {
                     InputParameterDTO.DomainCase.CONTINUOUS -> null
                     InputParameterDTO.DomainCase.DISCRETE_RANGE -> inputDTO.discreteRange.stepSize
                     InputParameterDTO.DomainCase.DOMAIN_NOT_SET -> TODO()
+                    InputParameterDTO.DomainCase.VALUES_SET -> TODO()
                 }
 
                 Input(

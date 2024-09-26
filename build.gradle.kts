@@ -5,6 +5,9 @@ import org.gradle.kotlin.dsl.protobuf
 import java.nio.file.Paths
 import java.nio.file.Files
 import java.nio.file.StandardOpenOption
+import java.io.FileInputStream
+import java.io.FileNotFoundException
+import java.util.*
 
 val kotlin_version = "1.6.20"
 
@@ -13,10 +16,20 @@ plugins {
     id("com.google.protobuf") version "0.8.17"
 }
 
-val protobufVersion = "3.18.0"
-val grpcVersion = "1.37.0"
-val volitionSpecVersion = "1.5.0"
-val buildNumber = "315"
+val versionProps = Properties().apply {
+    try { load(FileInputStream(layout.projectDirectory.file("versions.properties").asFile)) }
+    catch(ex: FileNotFoundException){
+        error("failed to read 'versions.properties' file: ${ex.message}")
+    }
+}
+
+val protobufVersion = versionProps["protobuf_kt"] ?: "3.21.12"
+val grpcVersion = versionProps["grpc_kt"] ?: "1.68.0"
+val grpcKotlinPluginVersion = "1.4.1" //im sorry, i dont know how to find this number. trial and error?
+// I think its one of https://mvnrepository.com/artifact/io.grpc/protoc-gen-grpc-kotlin
+
+val volitionSpecVersion = versionProps["volition"] ?: "0.0.0"
+val buildNumber = "316"
 val volitionFullVersion = "$volitionSpecVersion.$buildNumber"
 val volitionName = "volition-api"
 
@@ -153,13 +166,13 @@ project("api") {
 //        dependsOn(":api:deleteProto")
 //    }
 
-    tasks.register<Exec>("updateDotnetVersionString") {
-        commandLine("powershell.exe", "-File", "UpdateVersionProperties.ps1", "-VersionString", volitionFullVersion)
-    }
+//    tasks.register<Exec>("updateDotnetVersionString") {
+//        commandLine("powershell.exe", "-File", "UpdateVersionProperties.ps1", "-VersionString", volitionFullVersion)
+//    }
 
-    tasks.getByName("assemble"){
-        dependsOn(":api:updateDotnetVersionString")
-    }
+//    tasks.getByName("assemble"){
+//        dependsOn(":api:updateDotnetVersionString")
+//    }
 
     tasks.withType<Jar>().configureEach {
         archiveBaseName.set("volition-api")

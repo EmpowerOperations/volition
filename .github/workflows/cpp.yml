@@ -2,9 +2,9 @@ name: C++
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "${{ github.event.repository.default_branch }}" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "${{ github.event.repository.default_branch }}" ]
 
 jobs:
   build:

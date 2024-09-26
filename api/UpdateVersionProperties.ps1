@@ -4,6 +4,10 @@ Param(
     $versionString
 )
 
+# TODO: this was removed from build.gradle
+# because its wierd that gradle would fiddle with dotnet's bits.
+# make this a dotnet build task, that reads from a shared file
+
 $pathToEdit = "./Properties/AssemblyInfo.cs"
 
 $assemblyInfoCsContent = Get-Content $pathToEdit

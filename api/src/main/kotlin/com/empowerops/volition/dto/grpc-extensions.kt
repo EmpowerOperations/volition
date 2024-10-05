@@ -16,22 +16,6 @@ fun UUIDDTO.toUUIDOrNull(): UUID? = if(value.isNullOrBlank()) null else UUID.fro
 fun UUIDDTO.toUUID(): UUID = UUID.fromString(value)
 fun UUID.toDTO(): UUIDDTO = com.empowerops.volition.dto.uUIDDTO { value = this@toDTO.toString() }
 
-fun <T> CoroutineScope.consumeSingleAsync(streamObserver: StreamObserver<T>, message: Message, block: suspend () -> T) {
-    val sourceEx = Exception("server error while processing request=${message.toString().trim()}")
-    launch {
-        try {
-            val result = block()
-            streamObserver.onNext(result)
-            streamObserver.onCompleted()
-        }
-        catch(ex: Throwable){
-            sourceEx.initCause(ex)
-            streamObserver.onError(sourceEx)
-            throw sourceEx
-        }
-    }
-}
-
 class LoggingInterceptor(val logger: (String) -> Unit): ServerInterceptor {
 
     override fun <T : Any?, R : Any?> interceptCall(
@@ -65,7 +49,11 @@ class LoggingInterceptor(val logger: (String) -> Unit): ServerInterceptor {
             override fun isReady(): Boolean = call.isReady
             override fun close(status: Status, trailers: Metadata?) {
                 if( ! status.isOk){
-                    logger("API BAD CLOSE > $fullMethodName closed (${status.code}) '${status.description}'")
+                    val message = buildString {
+                        append("API BAD CLOSE > $fullMethodName closed (${status.code}) '${status.description}'")
+                        status.cause?.let { appendLine(); append(it.stackTraceToString())}
+                    }
+                    logger(message)
                 }
 
                 call.close(status, trailers)

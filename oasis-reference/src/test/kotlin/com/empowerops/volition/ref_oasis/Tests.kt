@@ -6,19 +6,15 @@ import io.grpc.ManagedChannelBuilder
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.combineTransform
-import kotlinx.coroutines.selects.select
 import kotlinx.coroutines.sync.Mutex
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.net.ServerSocket
 import java.text.DecimalFormat
 import java.util.*
-import kotlin.math.exp
+
 
 class Tests {
 
@@ -34,7 +30,6 @@ class Tests {
         val port = findAvailablePort()
 
         server = mainAsync(arrayOf("--port", port.toString()))!!
-
 
         val channel = ManagedChannelBuilder
                 .forAddress("localhost", port)
@@ -59,6 +54,7 @@ class Tests {
         }
         catch(ex: Throwable){
             val x = 4;
+            throw ex
         }
     }
 
@@ -761,7 +757,7 @@ class Tests {
                 evaluables += evaluableNodeDTO {
                     constraint = babelConstraintNodeDTO {
                         outputName = "c1"
-                        booleanExpression = "f1 <= 2.5"
+                        booleanExpression = "i1 <= 2.5"
                     }
                 }
             }
@@ -776,10 +772,16 @@ class Tests {
         service.startOptimization(startOptimizationRequest).collect { optimizerMessage ->
             when(optimizerMessage.purposeCase){
                 EVALUATION_REQUEST -> {
-                    service.offerSimulationResult(simulationEvaluationCompletedResponseDTO {
+                    val response = simulationEvaluationCompletedResponseDTO {
                         val x1 = optimizerMessage.evaluationRequest.inputVectorMap.values.single()
-                        outputVector["i1"] = 1.0 + x1
-                    })
+                        vector = outputVectorDTO {
+                            entries["i1"] = x1 + 1.0
+
+//                            fail; //urgh, linkage errors in bable => kotlinx.collections.immutable
+                            // go update babel to use 0.3.8 of kotlinx.
+                        }
+                    }
+                    service.offerSimulationResult(response)
 
                     Unit
                 }

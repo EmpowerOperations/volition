@@ -14,7 +14,18 @@ class RandomNumberOptimizer : Optimizer {
         //just guess & check, works well enough for cheap constraints at roughly ~100k evals/sec
         do {
             result = inputs.associate {
-                it.name to Random.nextDouble(it.lowerBound, it.upperBound)
+                it.name to when(it) {
+                    is Input.Continuous -> Random.nextDouble(it.lowerBound, it.upperBound)
+                    is Input.DiscreteRange -> {
+                        val maxSteps = ((it.upperBound - it.lowerBound) / it.stepSize).toInt()
+                        val steps = Random.nextInt(maxSteps+1)
+                        it.lowerBound + (steps * it.stepSize)
+                    }
+                    is Input.ValueSet -> {
+                        val pickedIndex = Random.nextInt(it.valuesSet.size)
+                        it.valuesSet[pickedIndex]
+                    }
+                }
             }
         } while(constraints.any { it.evaluate(result) > 0.0 })
 

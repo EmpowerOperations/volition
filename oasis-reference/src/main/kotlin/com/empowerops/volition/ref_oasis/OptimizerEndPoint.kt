@@ -3,15 +3,14 @@ package com.empowerops.volition.ref_oasis
 import com.empowerops.babel.BabelCompiler
 import com.empowerops.babel.BabelExpression
 import com.empowerops.volition.dto.*
+import com.empowerops.volition.dto.SimulationEvaluationCompletedResponseDTO.OutputCase
 import com.empowerops.volition.dto.toDTO
-import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import java.time.Duration
 import java.util.*
-import java.util.logging.Logger
 
 typealias ParameterName = String
 
@@ -20,15 +19,12 @@ sealed class State {
     data class Optimizing(val optimizerBoundMessages: Channel<SimulationProvidedMessage>, val previous: Idle): State()
 }
 
-@Suppress("UsePropertyAccessSyntax") //for idiomatic protobuf use
 class OptimizerEndpoint(
         private val model: Map<UUID, RunResult>,
         private val optimizationActorFactory: OptimizationActorFactory
 ) : UnaryOptimizerGrpcKt.UnaryOptimizerCoroutineImplBase() {
 
     val compiler = BabelCompiler
-    val logger = Logger.getLogger(OptimizerEndpoint::class.qualifiedName)
-    val scope = GlobalScope //TODO
 
     private var state: State = State.Idle
         get() = field
@@ -37,16 +33,30 @@ class OptimizerEndpoint(
     override suspend fun offerSimulationResult(request: SimulationEvaluationCompletedResponseDTO): SimulationEvaluationResultConfirmDTO {
         val state = checkIs<State.Optimizing>(state)
 
-        val message = SimulationProvidedMessage.EvaluationResult(request.iterationIndex.toUInt(), request.outputVectorMap)
+        val iterationIdx = request.iterationIndex.toUInt()
+        val message = when {
+            request.outputVectorMap.isNotEmpty() -> {
+                SimulationProvidedMessage.EvaluationResult(iterationIdx, request.outputVectorMap)
+            }
+            request.outputCase == OutputCase.VECTOR -> {
+                SimulationProvidedMessage.EvaluationResult(iterationIdx, request.vector.entriesMap)
+            }
+            request.outputCase == OutputCase.FAILURE -> {
+                SimulationProvidedMessage.ErrorResponse(iterationIdx, "user offered error result")
+            }
+            else -> TODO("no error result, no outputVector, and no vector.entries?")
+        }
         state.optimizerBoundMessages.send(message)
 
         return SimulationEvaluationResultConfirmDTO.newBuilder().build()
+
     }
 
+    @Deprecated("The underlying service method is marked deprecated.")
     override suspend fun offerErrorResult(request: SimulationEvaluationErrorResponseDTO): SimulationEvaluationErrorConfirmDTO {
         val state = checkIs<State.Optimizing>(state)
 
-        val element = SimulationProvidedMessage.ErrorResponse(request.name, request.iterationIndex.toUInt(), request.message)
+        val element = SimulationProvidedMessage.ErrorResponse(request.iterationIndex.toUInt(), request.message)
         state.optimizerBoundMessages.send(element)
 
         return simulationEvaluationErrorConfirmDTO {  }
@@ -77,32 +87,30 @@ class OptimizerEndpoint(
 
         val startMessage = SimulationProvidedMessage.StartOptimizationRequest(
             inputs = request.problemDefinition.inputsList.map { inputDTO ->
-
-                val lowerBound = when (inputDTO.domainCase!!) {
-                    InputParameterDTO.DomainCase.CONTINUOUS -> inputDTO.continuous.lowerBound
-                    InputParameterDTO.DomainCase.DISCRETE_RANGE -> inputDTO.discreteRange.lowerBound
+                when (inputDTO.domainCase!!) {
+                    InputParameterDTO.DomainCase.CONTINUOUS -> inputDTO.continuous.let {
+                        Input.Continuous(
+                            inputDTO.name,
+                            it.lowerBound,
+                            it.upperBound
+                        )
+                    }
+                    InputParameterDTO.DomainCase.DISCRETE_RANGE -> inputDTO.discreteRange.let {
+                        Input.DiscreteRange(
+                            inputDTO.name,
+                            it.lowerBound,
+                            it.upperBound,
+                            it.stepSize
+                        )
+                    }
+                    InputParameterDTO.DomainCase.VALUES_SET -> inputDTO.valuesSet.let {
+                        Input.ValueSet(
+                            inputDTO.name,
+                            it.valuesList.toList() // just to remove grpc dsl list wierdness
+                        )
+                    }
                     InputParameterDTO.DomainCase.DOMAIN_NOT_SET -> TODO()
-                    InputParameterDTO.DomainCase.VALUES_SET -> TODO()
                 }
-                val upperBound = when (inputDTO.domainCase!!) {
-                    InputParameterDTO.DomainCase.CONTINUOUS -> inputDTO.continuous.upperBound
-                    InputParameterDTO.DomainCase.DISCRETE_RANGE -> inputDTO.discreteRange.upperBound
-                    InputParameterDTO.DomainCase.DOMAIN_NOT_SET -> TODO()
-                    InputParameterDTO.DomainCase.VALUES_SET -> TODO()
-                }
-                val stepSize = when (inputDTO.domainCase!!) {
-                    InputParameterDTO.DomainCase.CONTINUOUS -> null
-                    InputParameterDTO.DomainCase.DISCRETE_RANGE -> inputDTO.discreteRange.stepSize
-                    InputParameterDTO.DomainCase.DOMAIN_NOT_SET -> TODO()
-                    InputParameterDTO.DomainCase.VALUES_SET -> TODO()
-                }
-
-                Input(
-                    name = inputDTO.name,
-                    lowerBound = lowerBound,
-                    upperBound = upperBound,
-                    stepSize = stepSize
-                )
             },
             transforms = request.problemDefinition.evaluablesList.map { node ->
                 val evaluable = when (node.valueCase) {
@@ -152,7 +160,9 @@ class OptimizerEndpoint(
                     concurrentRunCount = concurrentRunCount.toUInt()
                 )
             },
-            seedPoints = request.seedPointsList.map { ExpensivePointRow(it.inputsList, it.outputsList, null, null) }
+            seedPoints = request.seedPointsList.map {
+                ExpensivePointRow(it.inputsList, it.outputsList, null, null)
+            }
         )
 
         val optimizationActor = optimizationActorFactory.make(startMessage, channel)

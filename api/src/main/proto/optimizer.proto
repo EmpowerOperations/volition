@@ -9,7 +9,7 @@ option csharp_namespace = "EmpowerOps.Volition.Dto";
 package empowerops.volition.dto;
 
 import "google/protobuf/duration.proto";
-import "google/protobuf/wrappers.proto";
+//import "google/protobuf/wrappers.proto";
 import "google/protobuf/descriptor.proto";
 
 extend google.protobuf.MessageOptions {
@@ -446,39 +446,6 @@ message SimulationEvaluationCompletedResponseDTO {
     oneof output {
         OutputVectorDTO vector = 5;
         SimulationFailureDTO failure = 6;
-
-        // optional check for correct protocol state
-        //
-        // usage: in languages that offer either try-finally, disposable, or RAII concepts
-        // this field can be used as a terminating signal to an evaluation request,
-        // pushing protocol errors from hanging to crashing.
-        // thus:
-        // let channel = optimizer.startOptimization
-        // for each (message in channel) {
-        //   switch when (message) {
-        //     case message is EvaluationRequest: {
-        //       try {
-        //         // complex control flow may go here
-        //         optimizer.offerSimulationResult(new SimulationEvaluationCompletedResponseDTO {
-        //           output = ...
-        //         })
-        //       }
-        //       finally {
-        //         optimizer.offerSimulationResult(new SimulationEvaluationCompletedResponseDTO {
-        //           iterationIndex = message.iterationIndex
-        //           finally = true
-        //         })
-        //       }
-        //     }
-        //     case message is Something-Else ...
-        //   }
-        // }
-        //
-        // in the event that there is a mistake in the complex control flow,
-        // which will often involve asynchronous code,
-        // this method can be used to check that either a failure result or a successful result was already given
-        // if it has not, a failure will be returned which in most C-like languages will be raised as an exception
-        bool finally = 7;
     }
 }
 message SimulationFailureDTO {

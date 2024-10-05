@@ -8,10 +8,6 @@ import java.util.*
 import java.util.logging.Level
 import kotlin.math.exp
 
-interface IssueFinder{
-    fun findIssues() : List<Issue>
-}
-
 class RunResult(
         val uuid : UUID,
         val inputs: List<String>,
@@ -25,12 +21,28 @@ data class ExpensivePointRow(
         var isFrontier: Boolean? //mutable to save a bunch of copying
 )
 
-data class Input(
-        val name: String,
+sealed interface Input {
+
+    val name: String
+
+    data class Continuous(
+        override val name: String,
+        val lowerBound: Double,
+        val upperBound: Double
+    ): Input
+
+    data class DiscreteRange(
+        override val name: String,
         val lowerBound: Double,
         val upperBound: Double,
-        val stepSize: Double?
-)
+        val stepSize: Double
+    ): Input
+
+    data class ValueSet(
+        override val name: String,
+        val valuesSet: List<Double>
+    ): Input
+}
 
 data class Output(
         val name: String

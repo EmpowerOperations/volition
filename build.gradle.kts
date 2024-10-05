@@ -1,23 +1,17 @@
-import com.google.protobuf.gradle.*
-import com.google.protobuf.gradle.id
-import com.google.protobuf.gradle.plugins
 import org.gradle.kotlin.dsl.protobuf
-import java.nio.file.Paths
-import java.nio.file.Files
-import java.nio.file.StandardOpenOption
 import java.io.FileInputStream
 import java.io.FileNotFoundException
 import java.util.*
 
-val kotlin_version = "1.6.20"
+val kotlin_version = "2.0.20"
 
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "1.6.20"
-    id("com.google.protobuf") version "0.8.17"
+    id("org.jetbrains.kotlin.jvm") version "2.0.20"
+    id("com.google.protobuf") version "0.9.4"
 }
 
 val versionProps = Properties().apply {
-    try { load(FileInputStream(layout.projectDirectory.file("versions.properties").asFile)) }
+    try { load(FileInputStream(layout.projectDirectory.file("api/versions.properties").asFile)) }
     catch(ex: FileNotFoundException){
         error("failed to read 'versions.properties' file: ${ex.message}")
     }
@@ -29,7 +23,7 @@ val grpcKotlinPluginVersion = "1.4.1" //im sorry, i dont know how to find this n
 // I think its one of https://mvnrepository.com/artifact/io.grpc/protoc-gen-grpc-kotlin
 
 val volitionSpecVersion = versionProps["volition"] ?: "0.0.0"
-val buildNumber = "316"
+val buildNumber = System.getenv("VOLITION_BUILD_NUMBER")?.toInt() ?: 0
 val volitionFullVersion = "$volitionSpecVersion.$buildNumber"
 val volitionName = "volition-api"
 
@@ -78,10 +72,16 @@ project("api") {
     sourceSets {
         main {
             java {
-                srcDirs("build/generated/source/proto/main/java")
-                srcDirs("build/generated/source/proto/main/grpc_java")
-                srcDirs("build/generated/source/proto/main/kotlin")
-                srcDirs("build/generated/source/proto/main/grpc_kt")
+                // already added by plugin
+//                srcDirs("build/generated/source/proto/main/java")
+//                srcDirs("build/generated/source/proto/main/grpc_java")
+//                srcDirs("build/generated/source/proto/main/kotlin")
+//                srcDirs("build/generated/source/proto/main/grpc_kt")
+            }
+        }
+        test {
+            kotlin {
+                srcDirs("src/test/kotlin")
             }
         }
     }
@@ -91,11 +91,12 @@ project("api") {
         withSourcesJar()
     }
 
-    java.toolchain.languageVersion.set(JavaLanguageVersion.of(11))
-    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-        kotlinOptions.jvmTarget = "11"
-        sourceCompatibility = "11"
-    }
+//    java.toolchain.languageVersion.set(JavaLanguageVersion.of(11))
+//
+//    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+////        kotlinOptions.jvmTarget = "11"
+//        //sourceCompatibility = "11"
+//    }
 
     dependencies {
         implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version")
@@ -120,42 +121,26 @@ project("api") {
 
     protobuf {
 
-        protobuf.protoc {
+        protoc {
             artifact = "com.google.protobuf:protoc:$protobufVersion"
         }
-        protobuf.plugins {
-            id("grpc_java") {
+        plugins {
+            create("grpc") {
                 artifact = "io.grpc:protoc-gen-grpc-java:$grpcVersion"
             }
-//            id("grpc_csharp") {
-//                path = "$rootDir/vcpkg/packages/grpc_x64-windows/tools/grpc/grpc_csharp_plugin.exe"
-//            }
-//            id("grpc_cpp") {
-//                path = "$rootDir/vcpkg/packages/grpc_x64-windows/tools/grpc/grpc_cpp_plugin.exe"
-//            }
-//            id("grpc_python") {
-//                path = "$rootDir/vcpkg/packages/grpc_x64-windows/tools/grpc/grpc_python_plugin.exe"
-//            }
-            id("grpc_kt") {
-                artifact = "io.grpc:protoc-gen-grpc-kotlin:1.2.0:jdk7@jar"
+            create("grpckt") {
+                artifact = "io.grpc:protoc-gen-grpc-kotlin:$grpcKotlinPluginVersion:jdk8@jar"
             }
         }
 
-        protobuf.generateProtoTasks {
-            ofSourceSet("main").forEach {
+        generateProtoTasks {
+            all().forEach {
                 it.plugins {
-                    id("grpc_java")
-//                    id("grpc_csharp")
-//                    id("grpc_cpp")
-//                    id("grpc_python")
-                    id("grpc_kt")
+                    create("grpc")
+                    create("grpckt")
                 }
                 it.builtins {
-//                    id("java") //builtin, gets angry when I repeat it
-//                    id("csharp")
-//                    id("cpp")
-                    id("python")
-                    id("kotlin")
+                    create("kotlin")
                 }
             }
         }
@@ -252,18 +237,22 @@ project("oasis-reference"){
     apply(plugin = "java")
     apply(plugin = "kotlin")
 
-    java.toolchain.languageVersion.set(JavaLanguageVersion.of(11))
-    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-        kotlinOptions.jvmTarget = "11"
-        sourceCompatibility = "11"
+//    java.toolchain.languageVersion.set(JavaLanguageVersion.of(11))
+//    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+//        kotlinOptions.jvmTarget = "11"
+//        sourceCompatibility = "11"
+//    }
+
+    repositories {
+
     }
 
     dependencies {
 
         implementation(project(":api"))
-        implementation(files("babel-0.18.jar"))
+        implementation(files("babel-0.20.jar"))
 
-        implementation(group = "org.antlr", name = "antlr4-runtime", version = "4.9.1")
+        implementation(group = "org.antlr", name = "antlr4-runtime", version = "4.13.2")
 
         implementation("io.grpc:grpc-netty-shaded:$grpcVersion")
         implementation("io.grpc:grpc-protobuf:$grpcVersion")
@@ -271,7 +260,7 @@ project("oasis-reference"){
         implementation("io.grpc:grpc-kotlin-stub:1.1.0")
 
         implementation("com.google.protobuf:protobuf-kotlin:$protobufVersion") //<--- this depends on kotlin 1.5
-//        implementation(group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version = "0.1")
+        implementation(group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version = "0.3.8")
 
         implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version")
         implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
@@ -281,9 +270,9 @@ project("oasis-reference"){
         implementation("info.picocli:picocli:3.9.5")
         implementation("org.antlr:antlr4-runtime:4.8-1")
 
-        testImplementation("org.junit.jupiter:junit-jupiter-api:5.3.1")
+        testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
         testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0")
-        testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.3.1")
+        testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
         testImplementation("org.assertj:assertj-core:3.11.1")
 
 //        compile group: "org.funktionale", name: "funktionale-all", version: "1.2"

@@ -4,7 +4,6 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flow
 import java.time.Duration
 import java.time.Instant
@@ -34,7 +33,6 @@ sealed class SimulationProvidedMessage {
     ): SimulationProvidedMessage()
 
     data class ErrorResponse(
-            val name: String,
             val pointID: UInt,
             val message: String
     ) : SimulationProvidedMessage()
@@ -65,6 +63,16 @@ data class OptimizationSettings(
         val targetObjectiveValue: Double?,
         val concurrentRunCount: UInt
 )
+
+data class ExpensivePointMatrixHeader(
+    val orderedInputColumns: List<String>,
+    val orderedOutputColumns: List<String>,
+    val terminalObjectives: List<String>,
+    val constraintNames: List<String>
+) {
+
+    val terminalObjectiveIndicies = terminalObjectives.map { orderedOutputColumns.indexOf(it) }
+}
 
 typealias OptimizationActor = Flow<OptimizerRequestMessage>
 
@@ -105,6 +113,7 @@ class OptimizationActorFactory(
             // grrr, went through several versions, finally gonna give it a very cheap
             // implementation of the whole thing.
             // Adjacency list style:
+
             val successorsByEvaluable: Map<Evaluable, List<Evaluable>> = startMessage.transforms.associateWith { entry ->
                 startMessage.transforms.mapNotNull { potentialSuccessor ->
                     when {
@@ -127,29 +136,24 @@ class OptimizationActorFactory(
                 .filter { it !in constraintNames }
                 .orderedBy(orderedOutputColumns)
 
-            val terminalObjectiveIndicies = terminalObjectives.map { orderedOutputColumns.indexOf(it) }
-
-            fun ExpensivePointRow.dominates(right: ExpensivePointRow): Boolean {
-
-                require(this.outputs.size == right.outputs.size)
-
-                val leftObjectives = this.outputs.getAll(terminalObjectiveIndicies)
-                val rightObjectives = right.outputs.getAll(terminalObjectiveIndicies)
-
-                for(index in leftObjectives.indices){
-                    if(leftObjectives[index] >= rightObjectives[index]) {
-                        return false
-                    }
-                }
-
-                return true
-            }
+            val meta = ExpensivePointMatrixHeader(
+                orderedInputColumns,
+                orderedOutputColumns,
+                terminalObjectives,
+                constraintNames,
+            )
 
             val issues = ArrayList<String>()
 //            if(sim == null){
 //                issues += "no simulation registered on start message -- this optimizer does not support math-only optimizations"
 //            }
-            val badVars = startMessage.inputs.filter { it.lowerBound > it.upperBound }
+            val badVars = startMessage.inputs
+                .filter { when(it){
+                    is Input.DiscreteRange -> it.lowerBound > it.upperBound
+                    is Input.Continuous -> it.lowerBound > it.upperBound
+                    is Input.ValueSet -> false
+                }}
+
             if(badVars.any()){
                 issues += "the variables ${badVars.joinToString { it.name }} must have a lower bound less than the upper bound"
             }
@@ -173,7 +177,7 @@ class OptimizationActorFactory(
                         val inputVector = orderedInputColumns.zip(seed.inputs).toMap()
                         val outputVector = orderedOutputColumns.zip(seed.outputs).toMap()
                         val isActuallyFeasible = constraints.all { it.expression.evaluate(inputVector) <= 0.0 }
-                        val isActuallyFrontier = ! startMessage.seedPoints.any { it.dominates(seed) }
+                        val isActuallyFrontier = ! startMessage.seedPoints.any { dominates(meta, it, seed) }
                         ExpensivePointRow(seed.inputs, seed.outputs, isActuallyFeasible, isActuallyFrontier)
                     }
                     .toList()
@@ -187,8 +191,8 @@ class OptimizationActorFactory(
                 var stopRequest: SimulationProvidedMessage.StopOptimization? = null
 
 //                val evaluator: List<(InputVector) -> OutputVector> = TODO()
-                val inputs = Channel<InputVector>(startMessage.settings.concurrentRunCount.toInt())
-                val outputs = Channel<ExpensivePointRow>(startMessage.settings.concurrentRunCount.toInt())
+//                val inputs = Channel<InputVector>(startMessage.settings.concurrentRunCount.toInt())
+//                val outputs = Channel<ExpensivePointRow>(startMessage.settings.concurrentRunCount.toInt())
 
 //                for (parallelID in 0 .. startMessage.settings.concurrentRunCount){
 //                    scope.launch {
@@ -222,14 +226,41 @@ class OptimizationActorFactory(
 
                         val nextEvaluable = evaluateUntilSimulation(remaining, evaluationVector)
 
+//                        fail; // ookie, so to parallelize this, some changes are needed
+                        // XX the ExpensivePointRow class is a little funky.
+                        //    extracting the `dominates` method out of this method is hard because it needs
+                        //    some contenxt about which outputs are terminal objectives from this method.
+                        //    so do that: extract a class called like `PointMetadata` or something.
+                        //
+                        // 2. I dont know the best device for parellelizing here.
+                        //    a List<AsyncJob> kinda does it, but remember we haver to demux the
+                        //    offerSimResult to the right Job.
+                        //    so in that sense its a List<ReceiveChannel> which is pretty wierd.
+                        //    maybe for shits and giggles you could create a custom Job overload?
+                        //    i donno
+                        //    alternatively, its not really that hard to just keep a table in play and update it
+                        //    as I believe this function once did.
+
+
+                        // regarding back pressure:
+                        //    my plan was to simply have OASIS use stdin & stdout to its workers to offer an
+                        //    off-channel backpressure device. It'l be ugly but it should work.
+                        //    alternatively you could hard-code a wait :(
+
+                        // longer term:
+                        //    how fast can you spin up a GRPC interface for LGO.dll?
+                        //    how fast can you do it in rust?
+
+
                         if (nextEvaluable == null) {
                             // this is a pure math problem,
                             // so we dont need any evaluation code
                         }
                         if (nextEvaluable is Simulation) {
+                            val pointID = iterationCount.toUInt()
                             emit(OptimizerRequestMessage.SimulationEvaluationRequest(
                                 sim!!.name,
-                                iterationCount.toUInt(),
+                                pointID,
                                 evaluationVector.filterKeys { it in sim.inputs }
                             ))
 
@@ -246,10 +277,11 @@ class OptimizationActorFactory(
                                     // if we get a stop request now, cancel the existing simulation request
                                     // **BUT DO NOT STOP OPTIMIZATION** until the simulation evaluation completes
                                     // (below, with either an ErrorResponse or a EvaluationResult)
-                                    emit(OptimizerRequestMessage.SimulationCancelRequest(sim.name, TODO("need point IDs")))
+                                    emit(OptimizerRequestMessage.SimulationCancelRequest(sim.name, pointID))
                                     stopRequest = response
                                 }
                                 is SimulationProvidedMessage.EvaluationResult -> {
+                                    require(response.outputVector.isNotEmpty())
                                     evaluationVector += response.outputVector
                                     break@decodeResponse
                                 }
@@ -277,7 +309,7 @@ class OptimizationActorFactory(
                             completedDesigns += newPoint
 
                             for (design in completedDesigns) {
-                                design.isFrontier = completedDesigns.none { it.dominates(design) }
+                                design.isFrontier = completedDesigns.none { dominates(meta, it, design) }
                             }
 
                             model[runID] = RunResult(runID, orderedInputColumns, orderedOutputColumns, completedDesigns)
@@ -313,7 +345,10 @@ class OptimizationActorFactory(
 
             val satisfiable = remaining.removeFirstOrNull { eval -> inputVector.keys.containsAll(eval.inputs) }
 
-            if(satisfiable == null && remaining.isNotEmpty()) throw IllegalStateException("cant satisfy any of ${remaining.joinToString()}")
+            if(satisfiable == null && remaining.isNotEmpty()) {
+                val x = 4;
+                throw IllegalStateException("cant satisfy any of ${remaining.joinToString()}")
+            }
 
             inputVector += when (satisfiable) {
                 is Simulation -> {
@@ -351,4 +386,20 @@ fun <K, V> Map<K, V>.getAll(keys: Collection<K>): List<V> = keys.map { getValue(
 
 fun String.toProtobufAny(): com.google.protobuf.Any {
     return com.google.protobuf.Any.pack(com.google.protobuf.stringValue { value = this@toProtobufAny })
+}
+
+fun dominates(meta: ExpensivePointMatrixHeader, left: ExpensivePointRow, right: ExpensivePointRow): Boolean {
+
+    require(left.outputs.size == right.outputs.size)
+
+    val leftObjectives = left.outputs.getAll(meta.terminalObjectiveIndicies)
+    val rightObjectives = right.outputs.getAll(meta.terminalObjectiveIndicies)
+
+    for(index in leftObjectives.indices){
+        if(leftObjectives[index] >= rightObjectives[index]) {
+            return false
+        }
+    }
+
+    return true
 }

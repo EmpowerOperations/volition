@@ -1,7 +1,10 @@
 package com.empowerops.volition.ref_oasis
 
-import com.empowerops.volition.dto.LoggingInterceptor
-import com.google.common.eventbus.EventBus
+import com.empowerops.volition.BetterExceptionsInterceptor
+import com.empowerops.volition.DEFAULT_MAX_HEADER_SIZE
+import com.empowerops.volition.LoggingInterceptor
+import com.empowerops.volition.dto.RecommendedMaxHeaderSize
+import com.empowerops.volition.dto.RecommendedMaxMessageSize
 import io.grpc.ServerInterceptors
 import io.grpc.netty.shaded.io.grpc.netty.NettyServerBuilder
 import kotlinx.coroutines.*
@@ -18,7 +21,7 @@ import kotlin.collections.LinkedHashMap
 fun main(args: Array<String>) = runBlocking<Unit> { mainAsync(args)?.job?.join() }
 
 fun mainAsync(args: Array<String>): OptimizerCLI? {
-    val console: PrintStream = if(System.getProperty("com.empowerops.volition.ref_oasis.useConsoleAlt")?.toLowerCase() == "true") consoleAlt else System.out
+    val console: PrintStream = if(System.getProperty("com.empowerops.volition.ref_oasis.useConsoleAlt")?.lowercase() == "true") consoleAlt else System.out
     val cli = OptimizerCLI(console)
     val result = call(cli, console, *args)
     return if(result != null) cli else null
@@ -55,10 +58,21 @@ class OptimizerCLI(val console: PrintStream) : Callable<Job> {
     }
 
     private val server by lazy {
+
+//        val maxMetadataSize = 10_000_000;
+
+        val services = ServerInterceptors.intercept(
+            optimizerEndpoint,
+            LoggingInterceptor(System.out::println),
+            BetterExceptionsInterceptor(DEFAULT_MAX_HEADER_SIZE)
+        )
+
         NettyServerBuilder
             .forPort(port)
             .keepAliveTime(12, TimeUnit.HOURS)
-            .addService(ServerInterceptors.intercept(optimizerEndpoint, LoggingInterceptor(System.out::println)))
+            .maxInboundMetadataSize(RecommendedMaxHeaderSize)
+            .maxInboundMessageSize(RecommendedMaxMessageSize)
+            .addService(services)
             .build()
     }
 

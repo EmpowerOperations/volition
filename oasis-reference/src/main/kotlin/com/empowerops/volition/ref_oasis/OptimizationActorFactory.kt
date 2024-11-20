@@ -1,7 +1,6 @@
 package com.empowerops.volition.ref_oasis
 
 import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -84,12 +83,17 @@ class OptimizationActorFactory(
 //        val eventBus: EventBus
 ) {
 
+    private fun recurseStupidly(){
+        recurseStupidly()
+    }
+
     private val logger = Logger.getLogger(OptimizationActorFactory::class.qualifiedName)
 
     fun make(
         startMessage: SimulationProvidedMessage.StartOptimizationRequest,
         channel: ReceiveChannel<SimulationProvidedMessage>
     ): OptimizationActor {
+
         return flow<OptimizerRequestMessage> {
 
             val runID = UUID.randomUUID()
@@ -114,15 +118,16 @@ class OptimizationActorFactory(
             // implementation of the whole thing.
             // Adjacency list style:
 
-            val successorsByEvaluable: Map<Evaluable, List<Evaluable>> = startMessage.transforms.associateWith { entry ->
-                startMessage.transforms.mapNotNull { potentialSuccessor ->
-                    when {
-                        potentialSuccessor == entry -> null
-                        potentialSuccessor.inputs.any { it in entry.outputs } -> potentialSuccessor
-                        else /*not us and no outputs in our inputs -> not a predecessor*/ -> null
+            val successorsByEvaluable: Map<Evaluable, List<Evaluable>> =
+                startMessage.transforms.associateWith { entry ->
+                    startMessage.transforms.mapNotNull { potentialSuccessor ->
+                        when {
+                            potentialSuccessor == entry -> null
+                            potentialSuccessor.inputs.any { it in entry.outputs } -> potentialSuccessor
+                            else /*not us and no outputs in our inputs -> not a predecessor*/ -> null
+                        }
                     }
                 }
-            }
 
             val inputConstraints = startMessage.transforms
                 .filterIsInstance<MathExpression>()
@@ -148,28 +153,29 @@ class OptimizationActorFactory(
 //                issues += "no simulation registered on start message -- this optimizer does not support math-only optimizations"
 //            }
             val badVars = startMessage.inputs
-                .filter { when(it){
-                    is Input.DiscreteRange -> it.lowerBound > it.upperBound
-                    is Input.Continuous -> it.lowerBound > it.upperBound
-                    is Input.ValueSet -> false
-                }}
+                .filter {
+                    when (it) {
+                        is Input.DiscreteRange -> it.lowerBound > it.upperBound
+                        is Input.Continuous -> it.lowerBound > it.upperBound
+                        is Input.ValueSet -> false
+                    }
+                }
 
-            if(badVars.any()){
+            if (badVars.any()) {
                 issues += "the variables ${badVars.joinToString { it.name }} must have a lower bound less than the upper bound"
             }
-            if(startMessage.seedPoints.any { it.inputs.size != orderedInputColumns.size }){
+            if (startMessage.seedPoints.any { it.inputs.size != orderedInputColumns.size }) {
                 issues += "some seed points dont match the number of input parameters"
             }
-            if(startMessage.seedPoints.any { it.outputs.size != orderedOutputColumns.size }){
+            if (startMessage.seedPoints.any { it.outputs.size != orderedOutputColumns.size }) {
                 issues += "some seed points dont match the number of output parameters"
             }
             //...etc
             // TODO: implement more validation
-            if(issues.any()){
+            if (issues.any()) {
                 emit(OptimizerRequestMessage.RunNotStartedNotification(issues))
                 return@flow
-            }
-            else try {
+            } else try {
                 emit(OptimizerRequestMessage.RunStartedNotification(runID))
 
                 var completedDesigns = startMessage.seedPoints
@@ -177,7 +183,7 @@ class OptimizationActorFactory(
                         val inputVector = orderedInputColumns.zip(seed.inputs).toMap()
                         val outputVector = orderedOutputColumns.zip(seed.outputs).toMap()
                         val isActuallyFeasible = constraints.all { it.expression.evaluate(inputVector) <= 0.0 }
-                        val isActuallyFrontier = ! startMessage.seedPoints.any { dominates(meta, it, seed) }
+                        val isActuallyFrontier = !startMessage.seedPoints.any { dominates(meta, it, seed) }
                         ExpensivePointRow(seed.inputs, seed.outputs, isActuallyFeasible, isActuallyFrontier)
                     }
                     .toList()
@@ -207,20 +213,23 @@ class OptimizationActorFactory(
 
                     // before we start an iteration, poll (check without blocking) our message box
                     // for a stop-optimization request.
-                    when(val response = channel.tryReceive().getOrNull()) {
+                    when (val response = channel.tryReceive().getOrNull()) {
                         is SimulationProvidedMessage.StopOptimization -> {
                             stopRequest = response
                             break@optimizing
                         }
+
                         null -> Unit //noop,
                         else -> throw IllegalStateException("unexpected early message $response")
                     } as Any
 
                     try {
                         // otherwise start a simulation evaluation
-                        val pointCount: UInt = startMessage.settings.concurrentRunCount.coerceAtMost(iterationCount - targetIterationCount)
+                        val pointCount: UInt =
+                            startMessage.settings.concurrentRunCount.coerceAtMost(iterationCount - targetIterationCount)
                         val inputVector = optimizer.generateInputs(startMessage.inputs, inputConstraints)
-                        val evaluationVector = orderedInputColumns.associateWith { inputVector.getValue(it) }.toMutableMap()
+                        val evaluationVector =
+                            orderedInputColumns.associateWith { inputVector.getValue(it) }.toMutableMap()
 
                         val remaining = successorsByEvaluable.keys.toQueue()
 
@@ -268,10 +277,11 @@ class OptimizationActorFactory(
                             // is there any other solution?
 
                             //read the response
-                            decodeResponse@while(true) when (val response = channel.receive()) {
+                            decodeResponse@ while (true) when (val response = channel.receive()) {
                                 is SimulationProvidedMessage.Message -> {
                                     //nothing to do
                                 }
+
                                 is SimulationProvidedMessage.StopOptimization -> {
 
                                     // if we get a stop request now, cancel the existing simulation request
@@ -280,22 +290,25 @@ class OptimizationActorFactory(
                                     emit(OptimizerRequestMessage.SimulationCancelRequest(sim.name, pointID))
                                     stopRequest = response
                                 }
+
                                 is SimulationProvidedMessage.EvaluationResult -> {
                                     require(response.outputVector.isNotEmpty())
                                     evaluationVector += response.outputVector
                                     break@decodeResponse
                                 }
+
                                 is SimulationProvidedMessage.ErrorResponse -> {
                                     // we dont update the optimizer state when the evaluation encounters an error
                                     // -- this is approximately true for both this implementation and Empower commercial optimizers
                                     break@decodeResponse
                                 }
+
                                 is SimulationProvidedMessage.SimulationConfiguration,
                                 is SimulationProvidedMessage.StartOptimizationRequest -> TODO("$response")
                             } as Any
                         }
 
-                        if(stopRequest == null) {
+                        if (stopRequest == null) {
                             val remainingEvaluable = evaluateUntilSimulation(remaining, evaluationVector)
                             check(remainingEvaluable == null) { "after 3 step iteration still had work=$remainingEvaluable" }
 
@@ -316,9 +329,8 @@ class OptimizationActorFactory(
 
                             emit(OptimizerRequestMessage.ExpensivePointFoundNotification(newPoint))
                         }
-                    }
-                    catch (ex: CancellationException) {
-                        if(sim != null) emit(OptimizerRequestMessage.SimulationCancelRequest(sim.name, iterationCount))
+                    } catch (ex: CancellationException) {
+                        if (sim != null) emit(OptimizerRequestMessage.SimulationCancelRequest(sim.name, iterationCount))
                         throw ex
                     }
 
@@ -326,12 +338,12 @@ class OptimizationActorFactory(
                 }
 
                 model[runID] = RunResult(runID, orderedInputColumns, orderedOutputColumns, completedDesigns)
-            }
-            catch (ex: CancellationException) {
+            } catch (ex: CancellationException) {
                 logger.warning("optimization actor was cancelled, and is now quitting.")
                 throw ex
-            }
-            finally {
+            } finally {
+                // FIXME: cant do this. Flows dont support `emit` from a finally block. super duper lame.
+                // see kotlinx.coroutines.flow.internal.SafeCollector.exceptionTransparencyViolated
                 emit(OptimizerRequestMessage.RunFinishedNotification(runID))
             }
         }
@@ -346,7 +358,6 @@ class OptimizationActorFactory(
             val satisfiable = remaining.removeFirstOrNull { eval -> inputVector.keys.containsAll(eval.inputs) }
 
             if(satisfiable == null && remaining.isNotEmpty()) {
-                val x = 4;
                 throw IllegalStateException("cant satisfy any of ${remaining.joinToString()}")
             }
 
@@ -383,10 +394,6 @@ fun <T> Queue<T>.removeFirstOrNull(predicate: (T) -> Boolean): T? {
     return null
 }
 fun <K, V> Map<K, V>.getAll(keys: Collection<K>): List<V> = keys.map { getValue(it) }
-
-fun String.toProtobufAny(): com.google.protobuf.Any {
-    return com.google.protobuf.Any.pack(com.google.protobuf.stringValue { value = this@toProtobufAny })
-}
 
 fun dominates(meta: ExpensivePointMatrixHeader, left: ExpensivePointRow, right: ExpensivePointRow): Boolean {
 

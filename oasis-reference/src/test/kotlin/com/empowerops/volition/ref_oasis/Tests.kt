@@ -1,7 +1,10 @@
 package com.empowerops.volition.ref_oasis
 
+import com.empowerops.volition.BetterExceptionsInterceptor
+import com.empowerops.volition.DEFAULT_MAX_HEADER_SIZE
 import com.empowerops.volition.dto.*
 import com.empowerops.volition.dto.OptimizerGeneratedQueryDTO.PurposeCase.*
+import io.grpc.ClientInterceptors
 import io.grpc.ManagedChannelBuilder
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
@@ -31,12 +34,17 @@ class Tests {
 
         server = mainAsync(arrayOf("--port", port.toString()))!!
 
-        val channel = ManagedChannelBuilder
-                .forAddress("localhost", port)
-                .usePlaintext()
-                .build()
+        val builder = ManagedChannelBuilder
+            .forAddress("localhost", port)
+            .maxInboundMetadataSize(RecommendedMaxHeaderSize)
+            .maxInboundMessageSize(RecommendedMaxMessageSize)
+            .usePlaintext()
 
-        service = UnaryOptimizerGrpcKt.UnaryOptimizerCoroutineStub(channel)
+        val channel = builder.build()
+
+        val intercepted = ClientInterceptors.intercept(channel, BetterExceptionsInterceptor(DEFAULT_MAX_HEADER_SIZE))
+
+        service = UnaryOptimizerGrpcKt.UnaryOptimizerCoroutineStub(intercepted)
     }
 
     private fun findAvailablePort(): Int {
@@ -64,7 +72,7 @@ class Tests {
 
         val str = consoleAltBytes.toString("utf-8")
 
-        assertThat(str.trim()).contains("Volition API 1.3")
+        assertThat(str.trim()).contains("Volition API 1.6")
     }
 
     @Test
@@ -167,7 +175,7 @@ class Tests {
         // note: with this implementation there is a race condition here.
         // The simulator will release the fifth-iteration lock while (concurrently) moving on to the 6th iteration.
         // thus, you may see a 6th iteration before the stopOptimization call is processed.
-        val runIDDTO = runID!!.toDTO()
+        val runIDDTO = runID!!.toRunIDDTO()
         service.stopOptimization(stopOptimizationCommandDTO{
             this.runID = runIDDTO
         })
@@ -372,7 +380,7 @@ class Tests {
 
         //assert
         val request = optimizationResultsQueryDTO {
-            runID = id.toDTO()
+            runID = id.toRunIDDTO()
         }
         val results = service.requestRunResult(request)
 
@@ -600,7 +608,7 @@ class Tests {
             }
         }
 
-        val results = service.requestRunResult(optimizationResultsQueryDTO { runID = givenRunId!!.toDTO() })
+        val results = service.requestRunResult(optimizationResultsQueryDTO { runID = givenRunId!!.toRunIDDTO() })
 
         // assert
         val matcher = listOf(1.0 .. 2.0, 2.0 .. 3.0, 3.0 .. 4.0, 4.0 .. 5.0, 5.0 .. 6.0, Double.MIN_VALUE .. 0.0)
@@ -643,7 +651,7 @@ class Tests {
                     givenRunId = optimizerMessage.optimizationStartedNotification.runID.toUUID()
                 }
                 EVALUATION_REQUEST -> {
-                    val response = service.requestRunResult(optimizationResultsQueryDTO { runID = givenRunId!!.toDTO() })
+                    val response = service.requestRunResult(optimizationResultsQueryDTO { runID = givenRunId!!.toRunIDDTO() })
                     results = results.plusElement(response.pointsList.toList())
 
                     service.offerSimulationResult(simulationEvaluationCompletedResponseDTO {

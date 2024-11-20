@@ -17,10 +17,9 @@ val versionProps = Properties().apply {
     }
 }
 
-val protobufVersion = versionProps["protobuf_kt"] ?: "3.21.12"
-val grpcVersion = versionProps["grpc_kt"] ?: "1.68.0"
-val grpcKotlinPluginVersion = "1.4.1" //im sorry, i dont know how to find this number. trial and error?
-// I think its one of https://mvnrepository.com/artifact/io.grpc/protoc-gen-grpc-kotlin
+val protobufVersion = versionProps["protobuf"] ?: "3.21.12"
+val grpcVersion = versionProps["grpc"] ?: "1.68.0"
+val grpcKotlinStubsVersion = versionProps["grpc_kt_stub"] ?: "1.4.1"
 
 val volitionSpecVersion = versionProps["volition"] ?: "0.0.0"
 val buildNumber = System.getenv("VOLITION_BUILD_NUMBER")?.toInt() ?: 0
@@ -42,13 +41,6 @@ allprojects {
         //functionale-all 1.2 not available... but is is? https://mvnrepository.com/artifact/org.funktionale/funktionale-all/1.2
         jcenter()
     }
-}
-
-//this is to disable the root project
-// note that artifacts will be in ./api/build or ./oasis-reference/build,
-// NOT in the ./build folder
-gradle.buildFinished {
-    project.buildDir.deleteRecursively()
 }
 
 subprojects {
@@ -112,7 +104,9 @@ project("api") {
         implementation("io.grpc:grpc-netty-shaded:$grpcVersion")
         implementation("io.grpc:grpc-protobuf:$grpcVersion")
         implementation("io.grpc:grpc-stub:$grpcVersion")
-        implementation("io.grpc:grpc-kotlin-stub:1.1.0")
+        implementation("io.grpc:grpc-kotlin-stub:$grpcKotlinStubsVersion")
+        implementation("io.grpc:grpc-protobuf-lite:$grpcVersion") // transitive dependency; for error handling
+        implementation("com.google.api.grpc:proto-google-common-protos:2.49.0") // used for error handling
         implementation("com.google.protobuf:protobuf-kotlin:$protobufVersion")
 //        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.4.3")
 
@@ -129,7 +123,7 @@ project("api") {
                 artifact = "io.grpc:protoc-gen-grpc-java:$grpcVersion"
             }
             create("grpckt") {
-                artifact = "io.grpc:protoc-gen-grpc-kotlin:$grpcKotlinPluginVersion:jdk8@jar"
+                artifact = "io.grpc:protoc-gen-grpc-kotlin:$grpcKotlinStubsVersion:jdk8@jar"
             }
         }
 
@@ -257,7 +251,7 @@ project("oasis-reference"){
         implementation("io.grpc:grpc-netty-shaded:$grpcVersion")
         implementation("io.grpc:grpc-protobuf:$grpcVersion")
         implementation("io.grpc:grpc-stub:$grpcVersion")
-        implementation("io.grpc:grpc-kotlin-stub:1.1.0")
+        implementation("io.grpc:grpc-kotlin-stub:$grpcKotlinStubsVersion")
 
         implementation("com.google.protobuf:protobuf-kotlin:$protobufVersion") //<--- this depends on kotlin 1.5
         implementation(group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version = "0.3.8")

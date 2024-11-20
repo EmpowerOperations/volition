@@ -4,9 +4,10 @@ import com.empowerops.babel.BabelCompiler
 import com.empowerops.babel.BabelExpression
 import com.empowerops.volition.dto.*
 import com.empowerops.volition.dto.SimulationEvaluationCompletedResponseDTO.OutputCase
-import com.empowerops.volition.dto.toDTO
+import com.empowerops.volition.dto.toRunIDDTO
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import java.time.Duration
@@ -185,7 +186,7 @@ class OptimizerEndpoint(
                         state = (state as? State.Optimizing)?.previous ?: state
 
                         optimizationFinishedNotification = optimizationFinishedNotificationDTO {
-                            runID = message.runID.toDTO()
+                            runID = message.runID.toRunIDDTO()
                         }
                     }
                     is OptimizerRequestMessage.RunNotStartedNotification -> {
@@ -196,7 +197,7 @@ class OptimizerEndpoint(
                     }
                     is OptimizerRequestMessage.RunStartedNotification -> {
                         optimizationStartedNotification = optimizationStartedNotificationDTO {
-                            runID = message.runID.toDTO()
+                            runID = message.runID.toRunIDDTO()
                         }
                     }
                     is OptimizerRequestMessage.SimulationCancelRequest -> {
@@ -223,7 +224,7 @@ class OptimizerEndpoint(
                 check(parsedID == null || parsedID in model) { "id=$parsedID is not a recognized run ID" }
 
                 stopOptimizationConfirmDTO {
-                    runID = parsedID?.toDTO() ?: runID
+                    runID = parsedID?.toRunIDDTO() ?: runID
                 }
             }
             is State.Optimizing -> {
@@ -236,7 +237,7 @@ class OptimizerEndpoint(
                 check(specifiedRunIDOrNull == null || runningID == specifiedRunIDOrNull)
 
                 stopOptimizationConfirmDTO {
-                    runID = runningID.toDTO()
+                    runID = runningID.toRunIDDTO()
                 }
             }
         }
@@ -246,7 +247,7 @@ class OptimizerEndpoint(
         val result: RunResult = model.getValue(UUID.fromString(request.runID.value))
 
         return optimizationResultsResponseDTO {
-            runID = result.uuid.toDTO()
+            runID = result.uuid.toRunIDDTO()
             inputColumns += result.inputs
             outputColumns += result.outputs
             points += result.points.map { point ->

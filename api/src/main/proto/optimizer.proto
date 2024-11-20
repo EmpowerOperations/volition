@@ -6,6 +6,7 @@ option java_multiple_files = true;
 
 option java_package = "com.empowerops.volition.dto";
 option csharp_namespace = "EmpowerOps.Volition.Dto";
+
 package empowerops.volition.dto;
 
 import "google/protobuf/duration.proto";
@@ -16,10 +17,17 @@ extend google.protobuf.MessageOptions {
     optional string potential_message_size = 50001;
 }
 
+//extend google.protobuf.ServiceOptions {
+//    uint32 source_version = 50002;
+//}
+
 
 // An optimizer that is updated by multiple different clients,
 // who synchronize on the optimization and jointly manage its life cycle.
 service FederatedOptimizer {
+//    option (source_version) = 010600;
+
+
     // TBD: the key feature this optimizer will export is that it will accept multiple tools registering at once
     // this was the original goal of the API, and has prooven to be very complex.
     // the idea is that multiple simulation clients can all access the same optimization at the same time,
@@ -40,6 +48,7 @@ service FederatedOptimizer {
 
 // An optimizer that is started and stopped by a single client.
 service UnaryOptimizer {
+//    option (source_version) = 010600; // TODO: cant figure out how to read this value
 
     // Starts an optimization of the specified problem definition and simulation nodes,
     // and returns a stream of evaluation requests and other messages pertaining to the optimization.
@@ -73,10 +82,22 @@ service UnaryOptimizer {
     // internally, the optimizer is likely to avoid areas it encounters errors,
     // the optimizer will not try to evaluate the same point again.
     //
-    //
+    // This RPC call is deprecated; use OfferSimulationResult with a SimulationEvaluationCompletedResponseDTO
+    // that has a 'failure' value set to an instance of SimulationFailureDTO
     rpc OfferErrorResult (SimulationEvaluationErrorResponseDTO) returns (SimulationEvaluationErrorConfirmDTO) {
-        option deprecated = true;
+        option deprecated = true; // since <= 1.5
     }
+
+    // Offers an acknowledgement of a notification provided
+    // by the StartOptimization stream.
+    //
+    // This method exists to allow clients to synchronize (namely: back-pressure) the optimizer
+    // when it is generating points (and other notifications) faster than a client can consume them.
+    //
+    // This is likely to happen in cases where the optimization doesnt contain any simulations
+    // (IE: is purely mathematical)
+    rpc OfferNotificationAcknowledgement (NotificationAcknowledgementDTO) returns (AcknowledgementConfirmDTO) {}
+
 
     // Offers a status update for the current running simulation evaluation.
     // these messages are important for user experience in that they re-assure the user that the
@@ -91,7 +112,13 @@ service UnaryOptimizer {
     
     // Gets the results from a completed optimization 
     // (that is, an optimization for which a OptimizationFinishedNotification has been sent)
-    rpc RequestRunResult (OptimizationResultsQueryDTO) returns (OptimizationResultsResponseDTO) {}
+    rpc RequestRunResult (OptimizationResultsQueryDTO) returns (OptimizationResultsResponseDTO) {
+        // this method can overflow the GRPC/protobuf maximum message size fairly easily;
+        // Use `RequestRunResultStream` as its results do not overflow and do not require custom message sizes.
+        option deprecated = true; // since 1.6
+    }
+
+    rpc RequestRunResultStream (OptimizationResultsQueryDTO) returns (stream OptimizationResultsPageResponseDTO) {}
 }
 
 // A request to start an optimization and the associated information necessary 
@@ -193,41 +220,116 @@ message EvaluableNodeDTO {
         // { length, width, height } => { max_stress }
         SimulationNodeDTO simulation = 3;
 
-        // the set of constraints that the optimizer must attempt to satisfy for each design
-        // note that constraints are 'cheap' if they operate only on inputs
-        // (or use inputs from intermediate transforms that themselves only use inputs)
-        // a constraint is 'expensive' if it has inputs that are produced from the outputs of simulations.
+        // a constraint that the optimizer must attempt to satisfy for each design.
+        //
+        // if the constraint only operates on optimizer provided input variables,
+        // the constraint is classified as "cheap",
+        // and OASIS will only generate input vectors that satisfy the constraint.
+        // if the constraint operates on output variables,
+        // then the constraint is called "expensive",
+        // and may generate designs that do not pass the provided constraint
         BabelConstraintNodeDTO constraint = 4;
     }
 }
 
-// Defines a simulation that must be evaluated to complete an iteration
+// Defines a simulation that will be evaluated once at each iteration,
+// when all of its inputs are available.
 message SimulationNodeDTO {
 
     string name = 1;
 
-    // The strategy used to map optimization generated input variables to the simulation
-    oneof mapping {
-        bool auto_map = 2;
-        VariableMappingDTO mapping_table = 3;
+    // a table of optimization variables to simulation input parameters.
+    oneof input_table {
+        // a simple list of input variable names that
+        // match the names of variables declared in the optimization,
+        // and whose values at evaluation time should thus be the values
+        // provided from those optimization variables.
+        SimulationInputParametersDTO input_list = 10;
+        // a table that maps from optimization variables to simulation variables,
+        // typically used when the simulation parameter names do not match the optimization variable names.
+        //
+        // for example, if one of the output parameters is named
+        // "AN-OUTPUT", (the hyphen making it an illegal variable name in OASIS)
+        // then you can declare an input called ANOUTPUT and map it here with an entry
+        // input_mapping_table = { SimulationInputMapEntryDTO(sim_parameter = "AN-OUTPUT", optimization_variable_name = "ANOUTPUT") }
+        SimulationInputMappingDTO input_mapping_table = 11;
     }
 
-    repeated SimulationInputParameterDTO inputs = 4;
-    repeated SimulationOutputParameterDTO outputs = 5;
+    // a table of (ordered) simulation output parameters to optimization output variables.
+    oneof output_table {
+        // a simple list of output variable names that
+        // match the names of variables declared as outputs in the optimization,
+        // and whose values well be sent to the optimizer as the values of the corresponding optimization variables.
+        SimulationOutputParametersDTO output_list = 12;
+        // a table that maps from output simulation parameters to optimization output variables
+        // (typically objectives). This mapping table is useful when the declared simulation outputs
+        // do not exactly match the optimization declared variables.
+        SimulationOutputMappingDTO output_mapping_table = 13;
+    }
+
+    // a timeout value for when a simulation should be cancelled.
+    // if the simulation is running for more than the provided time,
+    // a cancellation message will be sent from the optimizer to the client.
     google.protobuf.Duration time_out = 6;
 
+    // the style of evaluation for the simulation
     oneof strategy {
         SuspendAndCallbackConfigurationDTO suspend_and_callback = 7;
-        ExternalSimulationExecConfigurationDTO external_simulation_exec = 8;
+
+        // a non-simulation style tool.
+        // Do not use. For internal use only.
+        ExternalSimulationExecConfigurationDTO external_simulation_exec = 8 [deprecated = true];
     }
+
+    // strategy for mapping all variables defined in the `inputs` and `outputs` section.
+    // depricated: use input_table or output_table
+    oneof mapping {
+        // a flag to indicate whether the the simulation input names and output names
+        // exactly match names in the optimization definition, and should receive their values.
+        // deprecated: use automapped_inputs and automapped_outputs
+        bool auto_map = 2 [deprecated = true]; // since 1.6
+        // (explicit) variable mapping, where variable names and simulation parameter names dont match,
+        // and which simulation parameter maps to which optimization variable needs to be explicitly denoted
+        // deprecated; use input_mapping_table and output_mapping_table
+        VariableMappingDTO mapping_table = 3 [deprecated = true]; // since 1.6
+    }
+
+    // simulations declared inputs for use with automapping.
+    // deprecated; use input.entries.add(...)
+    repeated SimulationInputParameterDTO inputs = 4 [deprecated = true]; // since 1.6
+    // simulations declared outputs for use with automapping.
+    // deprecated; use output.entries.add(...)
+    repeated SimulationOutputParameterDTO outputs = 5 [deprecated = true]; // since 1.6
 }
 
+//...
+message SimulationInputParametersDTO {
+    repeated SimulationInputParameterDTO entries = 1;
+}
 message SimulationInputParameterDTO {
     string name = 1;
+}
+message SimulationInputMappingDTO {
+    repeated SimulationInputMapEntryDTO entries = 1;
+}
+message SimulationInputMapEntryDTO {
+    VariableNameDTO optimization_variable_name = 1;
+    SimulationInputParameterDTO sim_input_parameter = 2;
+}
+
+message SimulationOutputParametersDTO {
+    repeated SimulationOutputParameterDTO entries = 1;
 }
 message SimulationOutputParameterDTO {
     string name = 1;
     bool is_boolean = 2;
+}
+message SimulationOutputMappingDTO {
+    repeated SimulationOutputMapEntryDTO entries = 2;
+}
+message SimulationOutputMapEntryDTO {
+    SimulationOutputParameterDTO sim_output_parameter = 1;
+    VariableNameDTO optimization_output_name = 2;
 }
 
 // a simulation that requires the optimizer stop and ask this connected client
@@ -314,6 +416,9 @@ message AnchorLocationDTO {
     uint32 occurance = 2;
 }
 
+// endregion
+
+// ..
 message OptimizationSettingsDTO {
 
     // the amount of time to let the optimization run for
@@ -328,7 +433,31 @@ message OptimizationSettingsDTO {
     optional double target_objective_value = 13;
 
     optional uint32 concurrent_run_count = 14;
+
+    // a field to indicate that the optimizer server must wait for the client to call
+    // `OfferNotificationAcknowledgement` before continuing to generate any more points.
+    bool wait_for_notification_acknowledgement = 16;
+
+    // value to specify the seed of randomness for the optimizer.
+    // a specific provided value will result in repeatable optimizations
+    // for given optimization configurations
+    // leaving blank will result in a unique seed used each time.
+    optional uint32 random_seed = 17;
+
+    optional InternalSettingsDTO internal_settings = 15;
 }
+
+// implementation details for OASIS internal use. Will be removed in a future release. Do not use.
+message InternalSettingsDTO {
+    option deprecated = true; // not really; since 1.6; not for external use
+
+    // [omitted]
+    uint32 concurrent_instance_count = 1;
+    // [omitted]
+    uint32 concurrent_instance_i1ndex = 2;
+}
+
+// region query stream
 
 // a request from the optimizer service to the simulator client, sent via 
 // the stream created from the StartOptimization call.
@@ -394,7 +523,9 @@ message SimulationCancelRequestDTO {
 // start optimization request and that an optimization run has started.
 // included is the run ID for that optimization run which can be used after completion to obtain the results.
 message OptimizationStartedNotificationDTO {
-    UUIDDTO run_ID = 1;
+    NotificationIDDTO notification_ID = 2;
+
+    RunIDDTO run_ID = 1;
 }
 
 // optimizer service notifies that it has finished an optimization run
@@ -402,26 +533,33 @@ message OptimizationStartedNotificationDTO {
 // or because an abort_optimization flag was set on an evaluation response
 // or because the StopOptimization
 message OptimizationFinishedNotificationDTO {
-    UUIDDTO run_ID = 1;
+    NotificationIDDTO notification_ID = 2;
+
+    RunIDDTO run_ID = 1;
 }
 
 // Response to start optimization indicating that the optimization
 // was not started for the reasons included here
 message OptimizationNotStartedNotificationDTO {
+    NotificationIDDTO notification_ID = 2;
+
     repeated string issues = 1;
 }
 
 // Produced by the optimizer at the start of an iteration
-message DesignIterationStartedNotificationDTO {
-    uint32 iteration_index = 1;
-    map<string, double> input_vector = 2;
-}
+//message DesignIterationStartedNotificationDTO {
+//    NotificationIDDTO notification_ID = 3;
+//
+//    uint32 iteration_index = 1;
+//    map<string, double> input_vector = 2;
+//}
 
 // Produced by the optimizer at the completion of an iteration
 // to describe all the data that was generated in iteration
 message DesignIterationCompletedNotificationDTO {
+    NotificationIDDTO notification_ID = 4;
 
-    DesignRowDTO design_point = 1 [deprecated = true];
+    DesignRowDTO design_point = 1 [deprecated = true]; //since 1.4
     DesignPointDTO design_point2 = 3;
     uint32 iteration_index = 2;
 }
@@ -438,7 +576,7 @@ message SimulationEvaluationCompletedResponseDTO {
     uint32 iteration_index = 4;
 
     // the results of the client evaluation
-    map<string, double> output_vector = 2 [deprecated = true];
+    map<string, double> output_vector = 2 [deprecated = true]; // since 1.4
     
     // indicates that the optimizer should not issue another evaluation request after this one
     bool abort_optimization = 3;
@@ -483,6 +621,11 @@ message SimulationEvaluationErrorResponseDTO {
 
 message SimulationEvaluationErrorConfirmDTO {}
 
+message NotificationAcknowledgementDTO {
+    NotificationIDDTO acknowledged_notification_id = 1;
+}
+message AcknowledgementConfirmDTO {}
+
 // A status update message emitted by the simulator client to the optimizer
 // to notify of progress.
 // These messages can be important for user experience:
@@ -499,18 +642,50 @@ message StatusMessageConfirmDTO {}
 
 message StopOptimizationCommandDTO {
     string name = 1;
-    UUIDDTO run_ID = 2;
+    RunIDDTO run_ID = 2;
 }
 message StopOptimizationConfirmDTO {
-    UUIDDTO run_ID = 2;
+    RunIDDTO run_ID = 2;
 }
 
 message OptimizationResultsQueryDTO {
-//    string name = 1;
-    UUIDDTO run_ID = 2;
+//    string name = 1; never used;
+
+    RunIDDTO run_ID = 2;
+
+    uint32 page_row_count = 3;
 }
+
+message OptimizationResultsStreamQueryDTO {
+//    string name = 1; never used;
+
+    RunIDDTO run_ID = 2;
+}
+
+message OptimizationResultsPageResponseDTO {
+    RunIDDTO run_ID = 1;
+
+    // the names of the input columns as specified in the problem definition,
+    // matching the order of the inputs specified in the points and frontier rows.
+    repeated string input_columns = 7;
+
+    // the names of the output columns as specified in the problem definition,
+    // matching the order of the outputs specified in the points and frontier rows.
+    repeated string output_columns = 8;
+
+    // the optimization matrix, including all input variables, all output variables, and meta-data.
+    // the count of points here will be equal to (or less-than in the case of the last page)
+    // the specified page_row_count in the request.
+    repeated DesignRowDTO points = 9;
+}
+
 // the results of an optimization run
+//
+// deprecated: this message can easily overflow the default buffer sizes for protobuf
+// as requested optimization data is likely to be larger than a single protobuf message can handle.
+// please use OptimizationResultsPageResponseDTO, returned from RequestRunResultStream
 message OptimizationResultsResponseDTO {
+    option deprecated = true; // since 1.6
 
     // the points field contains all rows and all columns.
     // a 300 var 10k pt optimization contains over 6MB of data.
@@ -519,7 +694,7 @@ message OptimizationResultsResponseDTO {
     // USERS MUST MANUALLY UPDATE THEIR CHANNEL SIZE TO SET MAX_RECEIVE TO 10MB!
     option (potential_message_size) = "10 MB";
 
-    UUIDDTO run_ID = 1;
+    RunIDDTO run_ID = 1;
 
     // the names of the input columns as specified in the problem definition,
     // matching the order of the inputs specified in the points and frontier rows.
@@ -596,21 +771,35 @@ message ValueSetDTO {
 //   "f1": "f1"
 //   "AN_OUT 2": "F2"
 //   "SIM_OUT*THREE": "f_3"
+//
+// deprecated: please use input_mapping_table and output_mapping_table
 message VariableMappingDTO {
+    option deprecated = true; // since 1.6; please use input_mapping_table and output_mapping_table
     
     // A strategy to map from optimization variable names to simulation input names.
     // This table is used to map from optimization variables, which must adhere to a strict naming scheme, 
     // to simulation input parameter names, which can be anything.
     //
     //  TO key:simulation-param-name TO value:optimization-var-name
-    map<string, VariableNameDTO> inputs = 1;
+    // deprecated as it will not support expressions or non scalar variables; please use:
+    // SimulationInputMappingDTO input_mapping_table = 13;
+    map<string, VariableNameDTO> inputs = 1 [deprecated = true]; // since 1.6
     
     // A strategy to map from simulation outputs to optimization outputs
     // This table is used to map from simulation output parameter names, which can be anything, 
     // to optimization output variables, which must adhere to a strict naming scheme. 
     // 
     // key:simulation-output-name TO value:optimization-var-name
-    map<string, VariableNameDTO> outputs = 2;
+    //
+    // deprecated as it will not support expressions or non scalar outputs; please use:
+    // SimulationOutputMappingDTO output_mapping_table = 13;
+    map<string, VariableNameDTO> outputs = 2 [deprecated = true]; // since 1.6
+}
+
+message DirectMappingDTO {
+
+    repeated SimulationInputParameterDTO inputs = 4;
+    repeated SimulationOutputParameterDTO outputs = 5;
 }
 
 // a babel math constraint, a type of cheap constraint,
@@ -654,6 +843,8 @@ message BabelScalarNodeDTO {
     // see https://empowerops.com/manual#babel_math_expressions for more details
     string scalar_expression = 2;
 }
+
+// TODO rename to "InitialDesignDTO"
 message SeedRowDTO {
 
     // The input values for this design.
@@ -670,6 +861,7 @@ message SeedRowDTO {
     // evaluable outputs
     repeated double outputs = 2;
 }
+
 message DesignRowDTO {
 
     // The input values for this design.
@@ -723,7 +915,7 @@ message DesignPointDTO {
     bool is_frontier = 4;
 }
 
-message UUIDDTO {
+message RunIDDTO {
     string value = 1;
 }
 
@@ -749,7 +941,7 @@ message InternalErrorDTO {
     string trace = 2;
 }
 message NoSuchOptimizationRunDTO {
-    UUIDDTO run_ID = 1;
+    RunIDDTO run_ID = 1;
 }
 
 // a legal variable name within the optimizer
@@ -764,5 +956,9 @@ message NoSuchOptimizationRunDTO {
 // - 5x
 
 message VariableNameDTO {
+    string value = 1;
+}
+
+message NotificationIDDTO {
     string value = 1;
 }

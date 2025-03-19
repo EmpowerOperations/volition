@@ -915,37 +915,6 @@ class Tests {
 //            // or demux it from the output channel?
 //            // another decision: do we need to do the same validation for the error result?
     }
-
-    @Test
-    fun `when call throws exception should be printed`(){
-        // soo kotlin grpc is swallowing exceptions
-        // this issue is to insert someting that wraps our implementation calls
-        // to catch and print excpetions
-
-        //some code I wrote
-        // note that you can put extra content on errors,
-        // the default error message type has a field:
-        // repeated Any details = 5;
-        // you can encode any message type to Any,
-
-//    catch (ex: Throwable) {
-//        val metadata = Metadata()
-//
-//        val formattedErrorMessage = Status.newBuilder()
-//            .setCode(io.grpc.Status.Code.ABORTED.value())
-//            .setMessage(ex::class.simpleName + " : " + ex.message)
-//            .addAllDetails(ex.stackTraceToString().lines().map { it.toProtobufAny() })
-//            .build()
-//
-//        fail; //oook, well somebody is swallowing these exceptions
-//        // also check in on https://github.com/grpc/grpc-java/issues/8678
-//
-//        metadata.put(ProtoUtils.keyForProto(Status.getDefaultInstance()), formattedErrorMessage)
-//        throw io.grpc.Status.OUT_OF_RANGE.asRuntimeException(metadata)
-//    }
-
-        TODO()
-    }
 }
 
 private val FourSigFigFixedPointFormat = DecimalFormat("##.##")

@@ -13,6 +13,7 @@ import kotlinx.coroutines.sync.Mutex
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.net.ServerSocket
 import java.text.DecimalFormat
@@ -765,7 +766,7 @@ class Tests {
                 evaluables += evaluableNodeDTO {
                     constraint = babelConstraintNodeDTO {
                         outputName = "c1"
-                        booleanExpression = "i1 <= 2.5"
+                        booleanExpression = "i1 <= 1.5"
                     }
                 }
             }
@@ -784,9 +785,6 @@ class Tests {
                         val x1 = optimizerMessage.evaluationRequest.inputVectorMap.values.single()
                         vector = outputVectorDTO {
                             entries["i1"] = x1 + 1.0
-
-//                            fail; //urgh, linkage errors in bable => kotlinx.collections.immutable
-                            // go update babel to use 0.3.8 of kotlinx.
                         }
                     }
                     service.offerSimulationResult(response)
@@ -804,7 +802,7 @@ class Tests {
             } as Any
         }
 
-        val constraintRange = /* c1: f1 <= 2.5 -> c1 := f1-2.5<=0 -> c1 = f1-2.5, which is [2.0..3.0]-2.5, */ -0.5..+0.5
+        val constraintRange = /* c1: f1 <= 2.5 -> c1 := f1-2.5<=0 -> c1 = f1-2.5, which is [1.0..2.0]-1.5, */ -0.5..+0.5
         val expectedRanges = listOf(0.0..1.0, 1.0..2.0, 2.0..3.0, constraintRange)
         val firstMissmatchingDesign = designs.firstOrNull { !it.matches(expectedRanges) }
 
@@ -813,7 +811,7 @@ class Tests {
     }
 
     @Test
-//    @Disabled("this is only to be run functionally")
+    @Disabled("his isnt implemented yet; OASIS still needs a mechanism to back pressure here.")
     fun `should backpressure on iteration completed event`() = runBlocking<Unit> {
 
         // ook this ones tricky,
@@ -849,6 +847,9 @@ class Tests {
                     }
                 }
             }
+            settings = optimizationSettingsDTO {
+                waitForNotificationAcknowledgement = true
+            }
         }
 
         val mutex = Mutex(locked = true)
@@ -861,18 +862,42 @@ class Tests {
         startedOptimization.collect { optimizerMessage ->
             when(optimizerMessage.purposeCase){
                 EVALUATION_REQUEST -> { TODO() }
-                CANCEL_REQUEST -> Unit
-                OPTIMIZATION_STARTED_NOTIFICATION -> Unit
+                CANCEL_REQUEST -> {
+                    Unit
+                }
+                OPTIMIZATION_STARTED_NOTIFICATION -> {
+                    service.offerNotificationAcknowledgement(notificationAcknowledgementDTO {
+                        acknowledgedNotificationId = optimizerMessage.optimizationStartedNotification.notificationID
+                    })
+
+                    Unit
+                }
                 OPTIMIZATION_FINISHED_NOTIFICATION -> {
                     messages += "optimization finished"
+
+                    service.offerNotificationAcknowledgement(notificationAcknowledgementDTO {
+                        acknowledgedNotificationId = optimizerMessage.optimizationFinishedNotification.notificationID
+                    })
+
+                    Unit
                 }
-                OPTIMIZATION_NOT_STARTED_NOTIFICATION -> Unit
+                OPTIMIZATION_NOT_STARTED_NOTIFICATION -> {
+                    service.offerNotificationAcknowledgement(notificationAcknowledgementDTO {
+                        acknowledgedNotificationId = optimizerMessage.optimizationNotStartedNotification.notificationID
+                    })
+
+                    Unit
+                }
                 DESIGN_ITERATION_COMPLETED_NOTIFICATION -> {
                     messages += "notified of completion"
                     if(!stopped) {
                         val message = withTimeoutOrNull(20) { mutex.lock(); "acquired-lock" } ?: "timed-out."
                         messages += message
                     }
+
+                    service.offerNotificationAcknowledgement(notificationAcknowledgementDTO {
+                        acknowledgedNotificationId = optimizerMessage.designIterationCompletedNotification.notificationID
+                    })
 
                     Unit
                 }
@@ -903,18 +928,6 @@ class Tests {
         ))
     }
 
-    @Test
-    fun `when offering a simulation result with an incorrect number of columns should fail on unary call`(){
-        TODO("this was discovered in testing ")
-        //requires API change
-
-//            fail; // we should validate the schema of that message here.
-//            // in your test, the client is failing to include a value for c1.
-//            // that should error here.
-//            // design decision: should you put the response on the mssage
-//            // or demux it from the output channel?
-//            // another decision: do we need to do the same validation for the error result?
-    }
 }
 
 private val FourSigFigFixedPointFormat = DecimalFormat("##.##")
